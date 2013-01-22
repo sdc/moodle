@@ -1,0 +1,24 @@
+.block_twitter_search .dir-rtl td.tweets {
+    direction:rtl;
+    text-align:right;
+}
+
+.block_twitter_search .dir-ltr td.tweets {
+    direction:ltr;
+    text-align:left;
+}
+
+.block_twitter_search ul {
+  margin: 0px;
+}
+
+.block_twitter_search li.tweet {
+    border-bottom:1px dotted #aaa;
+    padding:4px;
+    list-style: none;
+}
+
+.block_twitter_search li img {
+  float: left;
+  margin-right: 3px;
+}
