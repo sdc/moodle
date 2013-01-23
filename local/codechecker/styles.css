@@ -1,0 +1,45 @@
+#page-admin-local-codechecker-index .region-content ul {
+    display: block;
+    list-style-type: none;
+    margin: 1em 0;
+    padding: 0;
+}
+#page-admin-local-codechecker-index .region-content li {
+    display: block;
+    list-style-type: none;
+    margin: 0.5em 0;
+    padding: 0;
+}
+#page-admin-local-codechecker-index .fail.error .info,
+#page-admin-local-codechecker-index .region-content .fail {
+    color: #660000;
+}
+#page-admin-local-codechecker-index .fail.warning {
+    color: #996600;
+    font-weight: normal;
+    font-style: normal;
+}
+#page-admin-local-codechecker-index .good {
+    color: #006600;
+}
+#page-admin-local-codechecker-index tt {
+    display: inline; /* Override silly rule in Canvas theme. */
+}
+#page-admin-local-codechecker-index pre {
+    margin-bottom: 0;
+}
+#page-admin-local-codechecker-index pre span {
+    color: #888;
+}
+#page-admin-local-codechecker-index .checkresults {
+    padding:5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background-color:#f2f2f2;
+    margin: 1em 0;
+}
+#page-admin-local-codechecker-index h3 :link,
+#page-admin-local-codechecker-index h3 :visited {
+    color: inherit;
+}
