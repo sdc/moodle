@@ -1,0 +1,36 @@
+/**
+ * @file CSS file to manage the layout elements of the mediacapture plugin
+ */
+
+/* General layout rules  */
+#content {
+    width:525px;
+    height:320px;
+    /* Firefox */
+    display: -moz-inline-box;
+    -moz-box-orient:horizontal;
+    -moz-box-pack:center;
+    -moz-box-align:center;
+
+    /* Safari and Chrome */
+    display:-webkit-box;
+    -webkit-box-orient:horizontal;
+    -webkit-box-pack:center;
+    -webkit-box-align:center;
+
+    /* W3C */
+    display: -webkit-inline-box;
+    box-orient:horizontal;
+    box-pack:center;
+    box-align:center;
+}
+
+#mediacontainer fieldset {
+    min-width:175px;
+    padding:0px;
+    margin:0px;
+}
+
+#id_startvideo, #id_startaudio {
+    margin:0px 20px 5px 20px;
+}
