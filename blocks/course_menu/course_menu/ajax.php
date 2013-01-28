@@ -4,7 +4,7 @@
  *
  * This file is part of the Course Menu block for Moodle
  *
- * The Course Menu block for Moodle software package is Copyright ï¿½ 2008 onwards NetSapiensis AB and is provided under
+ * The Course Menu block for Moodle software package is Copyright © 2008 onwards NetSapiensis AB and is provided under
  * the terms of the GNU GENERAL PUBLIC LICENSE Version 3 (GPL). This program is free software: you can redistribute it
  * and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
  * either version 3 of the License, or (at your option) any later version.
@@ -21,9 +21,25 @@
  * ---------------------------------------------------------------------------------------------------------------------
  */
 
-$plugin->version    = 2013012500;
+require_once('../../config.php');
+require_login();
 
-$plugin->component  = 'block_course_menu';
-$plugin->release    = '2.3.0';
-$plugin->requires   = 2012062500; // Moodle 2.3
-$plugin->maturity   = MATURITY_STABLE;
+$name = required_param('element_name', PARAM_RAW);
+$action = required_param('action', PARAM_RAW);
+$name = md5(urldecode($name));
+$instance_id = required_param('instance', PARAM_INT);
+
+if ($action == "add") {
+    if (!in_array($name, $_SESSION['cm_tree'][$instance_id]['expanded_elements'])) {
+        $_SESSION['cm_tree'][$instance_id]['expanded_elements'][] = $name;
+    }
+} elseif ($action == "remove") {
+    foreach ($_SESSION['cm_tree'][$instance_id]['expanded_elements'] as $k => $v) {
+        if ($name == $v) {
+            unset($_SESSION['cm_tree'][$instance_id]['expanded_elements'][$k]);
+            break;
+        }
+    }
+}
+exit();
+?>
