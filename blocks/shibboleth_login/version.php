@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,4 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-$plugin->version = 2011110700;
+/**
+ * Version strings for the Shibboleth login block.
+ *
+ * @package     block
+ * @subpackage  shibboleth_login
+ * @copyright   2011 onwards Paul Vaughan, Kevin Hughes
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+$plugin->version        = 2013012600;
+$plugin->requires       = 2010112400;
+$plugin->component      = 'block_shibboleth_login';
+$plugin->cron           = 0;
+$plugin->maturity       = MATURITY_STABLE;
+$plugin->release        = '2.0.4';
+$plugin->dependencies   = array (
+    'auth_shibboleth'       => 2012112900,              // Needs Shibboleth auth plugin.
+);
