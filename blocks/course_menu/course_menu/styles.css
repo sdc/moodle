@@ -1,4 +1,3 @@
-<?php
 /*
  * ---------------------------------------------------------------------------------------------------------------------
  *
@@ -21,9 +20,10 @@
  * ---------------------------------------------------------------------------------------------------------------------
  */
 
-$plugin->version    = 2013012500;
+.active_tree_node {
+    font-weight: bold !important;
+}
 
-$plugin->component  = 'block_course_menu';
-$plugin->release    = '2.3.0';
-$plugin->requires   = 2012062500; // Moodle 2.3
-$plugin->maturity   = MATURITY_STABLE;
+.block_navigation .block_tree p.tree_item {
+    padding-top: 1px;
+}
