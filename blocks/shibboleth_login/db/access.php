@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * 'en-gb' language strings for the Shibboleth login block.
+ * Capability definitions for the Shibboleth login block.
  *
  * @package     block
  * @subpackage  shibboleth_login
@@ -23,4 +23,19 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Shibboleth Login';
+defined('MOODLE_INTERNAL') || die();
+
+$capabilities = array(
+
+    // New standard capability 'addinstance'.
+    'block/shibboleth_login:addinstance' => array(
+        'captype'       => 'write',
+        'contextlevel'  => CONTEXT_COURSE,
+        'archetypes'    => array(
+            'editingteacher'    => CAP_ALLOW,
+            'manager'           => CAP_ALLOW
+        ),
+        'clonepermissionsfrom'  => 'moodle/site:manageblocks'
+    )
+
+);
