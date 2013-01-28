@@ -4,7 +4,7 @@
  *
  * This file is part of the Course Menu block for Moodle
  *
- * The Course Menu block for Moodle software package is Copyright ï¿½ 2008 onwards NetSapiensis AB and is provided under
+ * The Course Menu block for Moodle software package is Copyright © 2008 onwards NetSapiensis AB and is provided under
  * the terms of the GNU GENERAL PUBLIC LICENSE Version 3 (GPL). This program is free software: you can redistribute it
  * and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
  * either version 3 of the License, or (at your option) any later version.
@@ -20,10 +20,31 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------------------------------------------------------
  */
+?>
+<style type="text/css">
+td#chaptersTableContainer table tr td {
+    padding: 2px 6px;
+    border: 1px solid #000;
+}
+a.enableDisable {
+    text-decoration: none !important;
+}
+a.showHide {
+    display: block;
+    padding-left: 20px;
+}
+a.showHide.minus {
+    background: url("<?php echo $OUTPUT->pix_url('t/expanded') ?>") right center no-repeat;
+    padding-left: 0;
+    padding-right: 20px;
+}
 
-$plugin->version    = 2013012500;
+a.showHide.plus {
+    background: url("<?php echo $OUTPUT->pix_url('t/collapsed') ?>") left center no-repeat;
+}
 
-$plugin->component  = 'block_course_menu';
-$plugin->release    = '2.3.0';
-$plugin->requires   = 2012062500; // Moodle 2.3
-$plugin->maturity   = MATURITY_STABLE;
+.showHideCont {
+    float: right;
+    margin-right: 50px;
+}
+</style>
