@@ -82,6 +82,18 @@ urn:mace:organization2:providerID, Example Organization 2, /Shibboleth.sso/WAYF/
 </tr>
 
 <tr valign="top">
+    <td align="right"><?php print_string("auth_shib_affiliation_list","auth_shibboleth") ?>:</td>
+    <td>
+        <input name="affiliation_list" type="text" size="30" value="<?php
+        if (isset($config->affiliation_list) and !empty($config->affiliation_list)) {
+            echo $config->affiliation_list;
+        }
+        ?>" />
+    </td>
+    <td><?php print_string("auth_shib_affiliation_list_description","auth_shibboleth") ?></td>
+</tr>
+
+<tr valign="top">
     <td align="right"><label for="logout_handler"><?php print_string("auth_shib_logout_url", "auth_shibboleth") ?>: </label></td>
     <td>
         <input name="logout_handler" id="logout_handler" type="text" size="30" value="<?php
