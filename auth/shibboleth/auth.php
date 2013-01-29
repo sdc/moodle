@@ -19,8 +19,7 @@
  * 2006-10-27  Upstream 1.7 changes merged in, added above credits from lib.php :-)
  * 2007-03-09  Fixed authentication but may need some other changes
  * 2007-10-03  Removed requirement for email address, surname and given name on request of Markus Hagman
-  * 2008-01-21 Added WAYF functionality
-
+ * 2008-01-21 Added WAYF functionality
  */
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -273,9 +272,10 @@ class auth_plugin_shibboleth extends auth_plugin_base {
         if (isset($config->organization_selection) && !empty($config->organization_selection)) {
             set_config('organization_selection',    $config->organization_selection,    'auth/shibboleth');
         }
+        set_config('affiliation_list',  $config->affiliation_list,  'auth/shibboleth');
         set_config('logout_handler',    $config->logout_handler,    'auth/shibboleth');
-        set_config('logout_return_url',    $config->logout_return_url,    'auth/shibboleth');
-        set_config('login_name',    $config->login_name,    'auth/shibboleth');
+        set_config('logout_return_url', $config->logout_return_url, 'auth/shibboleth');
+        set_config('login_name',        $config->login_name,        'auth/shibboleth');
         set_config('convert_data',      $config->convert_data,      'auth/shibboleth');
         set_config('auth_instructions', $config->auth_instructions, 'auth/shibboleth');
         set_config('changepasswordurl', $config->changepasswordurl, 'auth/shibboleth');
