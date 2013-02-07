@@ -3,12 +3,13 @@ if ENV['environment'] == "production"
     role :app,  "moodle.southdevon.ac.uk","commoodle.southdevon.ac.uk","appmoodle.southdevon.ac.uk"
     role :web,  "moodle.southdevon.ac.uk"
     role :db,   "moodle.southdevon.ac.uk", :primary => true
-
+    set :keep_releases, 5
 else
     set :application, "moodle2_dev"
     role :app,  "webdev.southdevon.ac.uk"
     role :web,  "webdev.southdevon.ac.uk"
     role :db,   "webdev.southdevon.ac.uk", :primary => true
+    set :keep_releases, 3
 end
 
 default_run_options[:pty] = true
