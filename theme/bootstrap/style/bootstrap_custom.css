@@ -4,6 +4,13 @@
  * Some code to make bootstrap work with Moodle
  * 
  */
+ 
+ 
+/* contributed by Paul Hibbitts, see http://msdn.microsoft.com/en-us/library/ie/jj583807(v=vs.85).aspx*/
+canvas {
+    -ms-touch-action: auto;
+}
+ 
 #page-header {
 	margin: 2% 0;
 }
@@ -157,11 +164,11 @@ input[type="radio"],input[type="checkbox"] {
 	float: left;
 	width: 43px;
 	overflow: hidden;
-	margin-left: 20px;
+	margin-left: 3px;
 }
 
 .forumpost .row {
-	margin-left: -19px;
+	margin-left: 0px;
 }
 
 .forumpost .subject {
