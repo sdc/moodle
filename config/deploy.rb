@@ -3,7 +3,7 @@ if ENV['environment'] == "production"
     role :app,  "moodle.southdevon.ac.uk","commoodle.southdevon.ac.uk","appmoodle.southdevon.ac.uk"
     role :web,  "moodle.southdevon.ac.uk"
     role :db,   "moodle.southdevon.ac.uk", :primary => true
-    set :keep_releases, 5
+    set :keep_releases, 3
 else
     set :application, "moodle2_dev"
     role :app,  "webdev.southdevon.ac.uk"
