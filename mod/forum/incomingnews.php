@@ -6,13 +6,16 @@
  * Note: Designed to be used by automated scripts, NOT by people.
  *
  * Author:  Paul Vaughan
+ * Date:    26th February 2013
+ * Version: 1.1.3
+ * Notes:   Added in a new host as Kev moved the server somewhere.
+ *
  * Date:    28th September 2011
  * Version: 1.1.2
  * Notes:   Modded the script to post news as Moodle's admin user if the user doesn't exit
  *              in Moodle (this happened after starting over with Moodle 2).
  *          Also added code to remove instancesempty <p> tags.
  *
- * Author:  Paul Vaughan
  * Date:    12th September 2011
  * Version: 1.1.1
  * Notes:   Updated the 'user not known' error to report the user which wasn't found.
@@ -53,7 +56,7 @@ require_once('../../config.php');
  * Constants
  */
 // Version details
-define ('VERSION', '20110928-1.1.2');
+define ('VERSION', '20130226-1.1.3');
 // Set to true, the script will dump messages to the screen (if run from the URL).
 // Set to false, the script will fail quietly (with logging) unless it utterly screws up.
 define('DEBUG', true);
@@ -94,7 +97,7 @@ function fail($err) {
  * don't want more than about 4 allowed 'users'.
  */
 $remote = getremoteaddr(); // Moodle's most reliable way of getting the remote host's IP address.
-if ($remote != '172.21.4.85' && $remote != '172.21.11.5' && $remote != '172.20.1.12' && $remote != '172.20.1.50') { // PV, KH, Dev server, webapp0.
+if ($remote != '172.21.4.85' && $remote != '172.21.11.5' && $remote != '172.20.1.12' && $remote != '172.20.1.50' && $remote != '172.20.1.55' ) { // PV, KH, Dev server, webapp0.
     /**
      * Produce a 'fail' header + Moodle log + Apache log with a specific number so
      * the failure can be traced. It gives enough detail that errors can be
