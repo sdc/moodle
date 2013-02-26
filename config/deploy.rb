@@ -1,6 +1,7 @@
 if ENV['environment'] == "production"
     set :application, "moodle2"
-    role :app,  "moodle.southdevon.ac.uk","commoodle.southdevon.ac.uk","appmoodle.southdevon.ac.uk"
+#    role :app,  "moodle.southdevon.ac.uk","commoodle.southdevon.ac.uk","appmoodle.southdevon.ac.uk"
+    role :app,  "moodle.southdevon.ac.uk","appmoodle.southdevon.ac.uk"
     role :web,  "moodle.southdevon.ac.uk"
     role :db,   "moodle.southdevon.ac.uk", :primary => true
     set :keep_releases, 3
