@@ -566,7 +566,7 @@ class assignment_uploadpdf extends assignment_base {
         // Count the number of assignments that have been submitted, but for
         // which a response file has not been generated (ie data2 = 'submitted',
         // not 'responded')
-        $uparam['data2'] = ASSIGNMENT_UPLOADPDF_STATUS_RESPONDED;
+        $uparam['data2'] = ASSIGNMENT_UPLOADPDF_STATUS_SUBMITTED;
         $unmarkedcount = $DB->count_records_sql('SELECT COUNT(*)
                                 FROM {assignment_submissions}
                                 WHERE assignment = :cminstance AND
@@ -1671,6 +1671,9 @@ class assignment_uploadpdf extends assignment_base {
                           'fullpath' => new moodle_url('/mod/assignment/type/uploadpdf/scripts/annotate.js'),
                           'requires' => array('yui2-yahoo-dom-event', 'yui2-container', 'yui2-element',
                                               'yui2-button', 'yui2-menu', 'yui2-utilities'));
+        if ($CFG->version >= 2012120300) {
+            $jsmodule['fullpath'] = new moodle_url('/mod/assignment/type/uploadpdf/scripts/annotate24.js');
+        }
         $PAGE->requires->js_init_call('uploadpdf_init', null, true, $jsmodule);
 
         echo $OUTPUT->footer();
