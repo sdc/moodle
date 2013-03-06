@@ -48,7 +48,7 @@ class block_navbuttons extends block_base {
     }
 
     function instance_create() {
-        global $DB;
+        global $DB, $CFG;
 
         $courseid = get_courseid_from_context($this->context);
 
@@ -57,6 +57,8 @@ class block_navbuttons extends block_base {
             $settings = new stdClass;
             $settings->course = $courseid;
             $settings->enabled = 1;
+            $settings->extra1title = 'My Moodle';
+            $settings->extra1link = $CFG->wwwroot.'/my/';
             // All other records as database defaults
             $DB->insert_record('navbuttons', $settings);
         } else {
