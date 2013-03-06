@@ -149,7 +149,7 @@ function draw_navbuttons() {
         $lastsection = false;
     }
 
-    $output .=  '<div id="navbuttons" style="float: right; width: 400px; right: 0; margin-top: 5px;">';
+    $output .=  '<div id="navbuttons" style="float: right; width: 500px; right: 0; margin-top: 5px; text-align: right;">';
     if ($settings->homebuttonshow) {
         $home = new stdClass;
         if ($settings->homebuttontype == BLOCK_NAVBUTTONS_HOME_COURSE) {
@@ -274,7 +274,7 @@ function make_navbutton($imgsrc, $bgcolour, $title, $url, $newwindow = false) {
     if ($bgcolour) {
         $output .= 'background-color: '.$bgcolour.'; ';
     }
-    $output .= 'margin-right: 5px;" width="50" height="50" /></a>';
+    $output .= 'margin-right: 5px;" width="100" height="100" /></a>';
     return $output;
 }
 
