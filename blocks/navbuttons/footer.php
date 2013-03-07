@@ -274,7 +274,7 @@ function make_navbutton($imgsrc, $bgcolour, $title, $url, $newwindow = false) {
     if ($bgcolour) {
         $output .= 'background-color: '.$bgcolour.'; ';
     }
-    $output .= 'margin-right: 5px;" width="100" height="100" /></a>';
+    $output .= 'margin-right: 5px;" width="50" height="50" /></a>';
     return $output;
 }
 
