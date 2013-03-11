@@ -36,7 +36,7 @@ class block_course_contents extends block_base {
      * Initializes the block, called by the constructor
      */
     public function init() {
-        $this->title = get_string('config_blocktitle_default', 'block_course_contents');
+        $this->title = get_string('pluginname', 'block_course_contents');
     }
 
     /**
@@ -45,6 +45,8 @@ class block_course_contents extends block_base {
     public function specialization() {
         if (!empty($this->config->blocktitle)) {
             $this->title = $this->config->blocktitle;
+        } else {
+            $this->title = get_string('config_blocktitle_default', 'block_course_contents');
         }
     }
 
@@ -76,8 +78,8 @@ class block_course_contents extends block_base {
             return $this->content;
         }
 
-        $course = $this->page->course;
-        $format = course_get_format($course);
+        $format = course_get_format($this->page->course);
+        $course = $format->get_course(); // Needed to have numsections property available.
 
         if (!$format->uses_sections()) {
             if (debugging()) {
@@ -98,6 +100,9 @@ class block_course_contents extends block_base {
         $r = 0;
         foreach ($sections as $section) {
             $i = $section->section;
+            if ($i > $course->numsections) {
+                break;
+            }
             if (!$section->uservisible) {
                 continue;
             }
