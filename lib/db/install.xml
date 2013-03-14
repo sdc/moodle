@@ -557,7 +557,7 @@
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="ip" NEXT="module"/>
         <FIELD NAME="module" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" PREVIOUS="course" NEXT="cmid"/>
         <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="module" NEXT="action"/>
-        <FIELD NAME="action" TYPE="char" LENGTH="40" NOTNULL="true" SEQUENCE="false" PREVIOUS="cmid" NEXT="url"/>
+        <FIELD NAME="action" TYPE="char" LENGTH="60" NOTNULL="true" SEQUENCE="false" PREVIOUS="cmid" NEXT="url"/>
         <FIELD NAME="url" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" PREVIOUS="action" NEXT="info"/>
         <FIELD NAME="info" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="url"/>
       </FIELDS>
@@ -592,7 +592,7 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="module"/>
         <FIELD NAME="module" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="action"/>
-        <FIELD NAME="action" TYPE="char" LENGTH="40" NOTNULL="true" SEQUENCE="false" PREVIOUS="module" NEXT="mtable"/>
+        <FIELD NAME="action" TYPE="char" LENGTH="60" NOTNULL="true" SEQUENCE="false" PREVIOUS="module" NEXT="mtable"/>
         <FIELD NAME="mtable" TYPE="char" LENGTH="30" NOTNULL="true" SEQUENCE="false" PREVIOUS="action" NEXT="field"/>
         <FIELD NAME="field" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false" PREVIOUS="mtable" NEXT="component"/>
         <FIELD NAME="component" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="owner of the log action" PREVIOUS="field"/>
@@ -2919,7 +2919,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="userid"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="course"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="action"/>
-        <FIELD NAME="action" TYPE="char" LENGTH="40" NOTNULL="true" SEQUENCE="false" PREVIOUS="course"/>
+        <FIELD NAME="action" TYPE="char" LENGTH="60" NOTNULL="true" SEQUENCE="false" PREVIOUS="course"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
