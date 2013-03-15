@@ -71,7 +71,7 @@ abstract class qtype_ddtoimage_edit_form_base extends question_edit_form {
                                         get_string('shuffleimages', 'qtype_'.$this->qtype()));
         $mform->setDefault('shuffleanswers', 0);
         $mform->closeHeaderBefore('shuffleanswers');
-        //add the draggable image fields to the form
+        // Add the draggable image fields to the form.
         $this->definition_draggable_items($mform, $itemrepeatsatstart);
 
         $this->add_combined_feedback_fields(true);
@@ -101,7 +101,7 @@ abstract class qtype_ddtoimage_edit_form_base extends question_edit_form {
         $this->repeat_elements($this->drop_zone($mform, $imagerepeats), $dropzonerepeatsatstart,
                 $this->drop_zones_repeated_options(),
                 'nodropzone', 'adddropzone', self::ADD_NUM_ITEMS,
-                get_string('addmoredropzones', 'qtype_ddimageortext'));
+                get_string('addmoredropzones', 'qtype_ddimageortext'), true);
     }
     abstract protected function drop_zone($mform, $imagerepeats);
 
