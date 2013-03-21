@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('MOODLE_INTERNAL')) die ('You cannot use this script directly');
+
 /**
 * direct log construction implementation
 *
@@ -23,10 +25,11 @@
     $selform = new SelectorForm($id, 'user');
     if ($data = $selform->get_data()){
 	} else {
-		$data->from = -1;
-		$data->userid = $USER->id;
-		$data->fromstart = 0;
-		$data->output = 'html';
+		$data = new StdClass;
+		$data->from = optional_param('from', -1, PARAM_NUMBER);
+		$data->userid = optional_param('userid', $USER->id, PARAM_INT);
+		$data->fromstart = optional_param('fromstart', 0, PARAM_BOOL);
+		$data->output = optional_param('output', 'html', PARAM_ALPHA);
 	}
 
 // calculate start time
@@ -35,7 +38,7 @@
         $data->from = $course->startdate;
     }
 
-	if (!$asxls){
+	if ($data->output == 'html'){
 	    $selform->set_data($data);
 	    $selform->display();
 	}
@@ -46,17 +49,18 @@
     $logs = use_stats_extract_logs($data->from, time(), $data->userid, $course->id);
     $aggregate = use_stats_aggregate_logs($logs, 'module');
     
+    if (empty($aggregate['sessions'])) $aggregate['sessions'] = array();
+    
 // get course structure
 
     $coursestructure = reports_get_course_structure($course->id, $items);
     
 // print result
 
-    if (!$asxls){
+    if ($data->output == 'html'){
         // time period form
 
         echo "<link rel=\"stylesheet\" href=\"reports.css\" type=\"text/css\" />";
-
         
         $str = '';
         $dataobject = training_reports_print_html($str, $coursestructure, $aggregate, $done);
@@ -72,16 +76,18 @@
         */
 
         if ($dataobject->done > $items) $dataobject->done = $items;
-        
+
         // fix global course times
-        $dataobject->activityelapsed = $dataobject->elapsed;
+        $dataobject->course = new StdClass;
+        $dataobject->activityelapsed = @$aggregate['activities']->elapsed;
         $dataobject->elapsed += @$aggregate['course'][0]->elapsed;
 		$dataobject->course->elapsed = 0 + @$aggregate['course'][0]->elapsed;
-		$dataobject->course->hits = 0 + @$aggregate['course'][0]->hits;
+		$dataobject->course->hits = 0 + @$aggregate['course'][0]->events;
+		$dataobject->sessions = (!empty($aggregate['sessions'])) ? count(@$aggregate['sessions']) - 1 : 0 ;
 		if (array_key_exists('upload', $aggregate)){
 	        $dataobject->elapsed += @$aggregate['upload'][0]->elapsed;
 			$dataobject->upload->elapsed = 0 + @$aggregate['upload'][0]->elapsed;
-			$dataobject->upload->hits = 0 + @$aggregate['upload'][0]->hits;
+			$dataobject->upload->hits = 0 + @$aggregate['upload'][0]->events;
 		}
 
 
@@ -91,7 +97,7 @@
         
         echo $str;
 
-        $url = $CFG->wwwroot.'/report/trainingsessions/index.php?id='.$course->id.'&amp;view=user&amp;userid='.$data->userid.'&amp;from='.$data->from.'&amp;output=xls&amp;asxls=1';
+        $url = $CFG->wwwroot.'/report/trainingsessions/index.php?id='.$course->id.'&amp;view=user&amp;userid='.$data->userid.'&amp;from='.$data->from.'&amp;output=xls';
         echo '<br/><center>';
         echo $OUTPUT->single_button($url, get_string('generateXLS', 'report_trainingsessions'), 'get');
         echo '</center>';
@@ -114,6 +120,7 @@
         $startrow = 15;
         $worksheet = training_reports_init_worksheet($data->userid, $startrow, $xls_formats, $workbook);
         $overall = training_reports_print_xls($worksheet, $coursestructure, $aggregate, $done, $startrow, $xls_formats);
+        $datarec = new StdClass;
         $datarec->items = $items;
         $datarec->done = $done;
         $datarec->from = $data->from;
@@ -122,7 +129,7 @@
         training_reports_print_header_xls($worksheet, $data->userid, $course->id, $datarec, $xls_formats);
 
         $worksheet = training_reports_init_worksheet($data->userid, $startrow, $xls_formats, $workbook, 'sessions');
-        training_reports_print_sessions_xls($worksheet, 15, @$aggregate['sessions'], $xls_formats);
+        training_reports_print_sessions_xls($worksheet, 15, $aggregate['sessions'], $xls_formats);
         training_reports_print_header_xls($worksheet, $data->userid, $course->id, $data, $xls_formats);
 
         $workbook->close();
