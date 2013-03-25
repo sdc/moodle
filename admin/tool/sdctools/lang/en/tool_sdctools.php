@@ -17,8 +17,7 @@
 /**
  * Strings for component 'tool_sdctools', language 'en'.
  *
- * @package    tool
- * @subpackage sdctools
+ * @package    tool_sdctools
  * @copyright  2013 Paul Vaughan {@link http://commoodle.southdevon.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -27,6 +26,7 @@ $string['pluginname']       = 'SDC Tools';
 $string['pageheader']       = 'South Devon College Admin Tools';
 
 // Email-checking strings.
+$string['emptyemailname']   = 'Empty email check';
 $string['noemailheader']    = 'Users without email addresses';
 $string['noemailstrapline'] = 'Having no email address prevents a user logging in to Moodle, as they are presented with their profile to edit, but are not allowed to change their email address.';
 $string['noemptyemails']    = '<strong>Result:</strong> All users in the \'users\' table have email addresses.';
