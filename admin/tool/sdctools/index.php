@@ -17,8 +17,7 @@
 /**
  * Admin plugin to do whatever we want!
  *
- * @package    tool
- * @subpackage sdctools
+ * @package    tool_sdctools
  * @copyright  2013 Paul Vaughan {@link http://commoodle.southdevon.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
