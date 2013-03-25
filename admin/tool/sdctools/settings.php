@@ -17,8 +17,7 @@
 /**
  * Link to SDC Tools admin page
  *
- * @package    tool
- * @subpackage sdctools
+ * @package    tool_sdctools
  * @copyright  2013 Paul Vaughan {@link http://commoodle.southdevon.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,6 +25,11 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
+    // Add to development menu.
     $ADMIN->add('development', new admin_externalpage('toolsdctools', get_string('pluginname', 'tool_sdctools'),
+        $CFG->wwwroot.'/'.$CFG->admin.'/tool/sdctools/index.php', 'moodle/site:config'));
+
+    // Add to reports menu with a different lang string.
+    $ADMIN->add('reports', new admin_externalpage('toolsdctools', get_string('emptyemailname', 'tool_sdctools'),
         $CFG->wwwroot.'/'.$CFG->admin.'/tool/sdctools/index.php', 'moodle/site:config'));
 }
