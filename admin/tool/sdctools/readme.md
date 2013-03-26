@@ -2,9 +2,11 @@
 
 Moodle admin tool to do minor admin tasks at South Devon College. Currently it does:
 
-* User email checking: blank emails prevent user login
+* User email checking: 
+  * blank emails (prevent user login)
+  * non-SDC email addresses being used
 
-Has been checked against the Code Checker local plugin for Moodle coding standards conformity.
+Has been checked against the 'Code Checker' and 'Moodle PHPDoc Check' local plugins for Moodle coding standards conformity and appropriate documentation of code.
 
 ## Requirements
 
@@ -21,10 +23,11 @@ After installation, you should see a new option 'SDC Tools' in the Site Administ
 
 ## To do
 
-* Non-standard / non-SDC email address checks.
+-
 
 ## History
 
+* 2013-03-26, version 0.1.2:    Check for non-SDC email addresses; change to code to better select/exclude email addresses.
 * 2013-03-25, version 0.1.1:    Added to Reports admin menu with different lang string; better readme.
 * 2013-03-22, version 0.1:      Initial release.
 
