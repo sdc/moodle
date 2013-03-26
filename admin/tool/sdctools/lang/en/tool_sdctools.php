@@ -31,3 +31,9 @@ $string['noemailheader']    = 'Users without email addresses';
 $string['noemailstrapline'] = 'Having no email address prevents a user logging in to Moodle, as they are presented with their profile to edit, but are not allowed to change their email address.';
 $string['noemptyemails']    = '<strong>Result:</strong> All users in the \'users\' table have email addresses.';
 $string['emptyemails']      = '<strong>Result:</strong> The following users have empty email fields and cannot currently log in:';
+
+// Non-standard email checking strings.
+$string['nonsdcemailheader']    = 'Users with non-SDC email addresses';
+$string['nonsdcemailstrapline'] = 'Users with email addresses which aren\'t from SDC email accounts (e.g. Gmail, Hotmail).';
+$string['nonsdcemails']         = '<strong>Result:</strong> The following users have non-SDC (personal) email addresses:';
+$string['sdcemails']            = '<strong>Result:</strong> No users have non-SDC (personal) email addresses.';
