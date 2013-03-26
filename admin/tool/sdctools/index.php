@@ -37,7 +37,8 @@ if (empty($CFG->loginhttps)) {
 }
 
 $stredit    = get_string('edit');
-$site = get_site();
+$site       = get_site();
+$stdwhere   = ' AND deleted = 0 AND id != 1'; // No deleted users and not the guest user.
 
 echo $OUTPUT->header();
 
@@ -49,7 +50,7 @@ echo $OUTPUT->box_start();
 echo $OUTPUT->heading(get_string('noemailheader', 'tool_sdctools'));
 echo '<p>'.get_string('noemailstrapline', 'tool_sdctools')."</p>\n";
 
-$noemail = get_users(true, 'email = ""', false, null, null, null, null, null, 500);
+$noemail = $DB->get_records_select('user', 'email = "" '.$stdwhere, null, 'timecreated DESC');
 
 if (!$noemail) {
     echo '<p>'.get_string('noemptyemails', 'tool_sdctools').'</p>';
@@ -63,13 +64,73 @@ if (!$noemail) {
     $table->align[] = 'left';
     $table->head[] = get_string('username');
     $table->align[] = 'left';
-    $table->head[] = get_string('lastaccess');
+    $table->head[] = get_string('firstaccess');
     $table->align[] = 'left';
     $table->head[] = get_string('actions');
     $table->align[] = 'left';
     $table->width = "50%";
 
     foreach ($noemail as $user) {
+
+        $buttons = array();
+        $row = array ();
+
+        if (is_siteadmin($USER) or !is_siteadmin($user)) {
+            $buttons[] = html_writer::link(new moodle_url($securewwwroot.'/user/editadvanced.php',
+                array('id' => $user->id, 'course' => $site->id)),
+                html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('t/edit'),
+                'alt' => $stredit, 'class' => 'iconsmall')), array('title' => $stredit));
+        }
+        if ($user->firstaccess) {
+            $strfirstaccess = format_time(time() - $user->firstaccess);
+        } else {
+            $strfirstaccess = get_string('never');
+        }
+        $fullname = fullname($user, true);
+        $row[] = '<a href="'.$securewwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$site->id.'">'.$fullname.'</a>';
+        $row[] = $user->username;
+        $row[] = $strfirstaccess;
+        $row[] = implode(' ', $buttons);
+        $table->data[] = $row;
+    }
+
+    if (!empty($table)) {
+        echo html_writer::table($table);
+    }
+
+}
+
+// End drawing 'no emails' table.
+echo $OUTPUT->box_end();
+
+
+// Users with non-SDC email addresses.
+echo $OUTPUT->box_start();
+echo $OUTPUT->heading(get_string('nonsdcemailheader', 'tool_sdctools'));
+echo '<p>'.get_string('nonsdcemailstrapline', 'tool_sdctools')."</p>\n";
+
+$nonsdcemail = $DB->get_records_select('user', '(email NOT LIKE "%southdevon.ac.uk" AND email NOT LIKE "")'.$stdwhere,
+    null, 'timecreated DESC');
+
+if (!$nonsdcemail) {
+    echo '<p>'.get_string('sdcemails', 'tool_sdctools').'</p>';
+} else {
+    echo '<p>'.get_string('nonsdcemails', 'tool_sdctools').'</p>';
+
+    $table = new html_table();
+    $table->head = array ();
+    $table->align = array();
+    $table->head[] = get_string('fullnameuser');
+    $table->align[] = 'left';
+    $table->head[] = get_string('username');
+    $table->align[] = 'left';
+    $table->head[] = get_string('email');
+    $table->align[] = 'left';
+    $table->head[] = get_string('actions');
+    $table->align[] = 'left';
+    $table->width = "50%";
+
+    foreach ($nonsdcemail as $user) {
 
         $buttons = array();
         $row = array ();
@@ -89,7 +150,7 @@ if (!$noemail) {
         $fullname = fullname($user, true);
         $row[] = '<a href="'.$securewwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$site->id.'">'.$fullname.'</a>';
         $row[] = $user->username;
-        $row[] = $strlastaccess;
+        $row[] = $user->email;
         $row[] = implode(' ', $buttons);
         $table->data[] = $row;
     }
@@ -98,7 +159,11 @@ if (!$noemail) {
         echo html_writer::table($table);
     }
 
-} // End drawing 'no emails' table.
+}
 
+// End non-SDC email addresses table.
 echo $OUTPUT->box_end();
+
+
+// End the page.
 echo $OUTPUT->footer();
