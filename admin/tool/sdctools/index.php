@@ -60,6 +60,8 @@ if (!$noemail) {
     $table = new html_table();
     $table->head = array ();
     $table->align = array();
+    $table->head[] = '';
+    $table->align[] = '';
     $table->head[] = get_string('fullnameuser');
     $table->align[] = 'left';
     $table->head[] = get_string('username');
@@ -70,6 +72,7 @@ if (!$noemail) {
     $table->align[] = 'left';
     $table->width = "50%";
 
+    $items = 0;
     foreach ($noemail as $user) {
 
         $buttons = array();
@@ -87,6 +90,7 @@ if (!$noemail) {
             $strfirstaccess = get_string('never');
         }
         $fullname = fullname($user, true);
+        $row[] = ++$items;
         $row[] = '<a href="'.$securewwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$site->id.'">'.$fullname.'</a>';
         $row[] = $user->username;
         $row[] = $strfirstaccess;
@@ -120,6 +124,8 @@ if (!$nonsdcemail) {
     $table = new html_table();
     $table->head = array ();
     $table->align = array();
+    $table->head[] = '';
+    $table->align[] = '';
     $table->head[] = get_string('fullnameuser');
     $table->align[] = 'left';
     $table->head[] = get_string('username');
@@ -130,6 +136,7 @@ if (!$nonsdcemail) {
     $table->align[] = 'left';
     $table->width = "50%";
 
+    $items = 0;
     foreach ($nonsdcemail as $user) {
 
         $buttons = array();
@@ -148,6 +155,7 @@ if (!$nonsdcemail) {
             $strlastaccess = get_string('never');
         }
         $fullname = fullname($user, true);
+        $row[] = ++$items;
         $row[] = '<a href="'.$securewwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$site->id.'">'.$fullname.'</a>';
         $row[] = $user->username;
         $row[] = $user->email;
