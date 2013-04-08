@@ -1,46 +1,28 @@
-This theme is Based on the Bootstrap CSS framework
+This theme is based on the Bootstrap CSS framework, version 2.3
 
-Latest bugfixes:
+NOTE FOR USERS UPGRADING FROM THE OLD THEME:
+Read the changelog. using this version will remove your bootstrap theme settings
 
-Enabled submenu navigation to Moodles submenu items
+Changelog:
+- CSS compiled with less. Learn less to modify this theme, don't worry that's easy. Just read
+http://www.lesscss.org. Further instructions in less/README
+- This version uses a 2-1-3 layout. In raw HTML this means content goes first. Good for Google indexing & screen reader
+- This version uses YUI. The YUI libs for bootstrap are a work in progress. If you want to use jQuery download and use the moodle_25_jquery branch on github.
 
-Release notes version Version 2.0
-
-- Now really resonsive on mobile devices
-- Collapsed menu (only when jQuery is enabled)
-- Improved Gradebook view
-- Improved Quiz layout
-- Tested on different browsers
-- Improved Data mod layout
-- Bootstrap tabs
-- Restored default editor
-- Tested for Moodle 2.4
-- Options to use glyphicons for moodle 2.3 in the settings menu
-
-Using Bootstrap Version 2.1.1
-
-All bootstrap CSS is untouched and can be upgraded on a new Bootstrap release
-
-You can preview this theme here:
-
-http://theming.sonsbeekmedia.nl
+http://getbootstrap.com
 
 This is a GPL theme that is available on GitHub:
+
 https://github.com/bmbrands/theme_bootstrap
 
 Feel free to modify / improve / share
 
-Features:
-
--Responsive design
--Contains fixes for IE7 users
--Focussed on usablity
--Coloured action buttons by Stuart Lamour
+For more information on this theme go to:
+https://github.com/bmbrands/theme_bootstrap/wiki
 
 This theme has been created with the help of:
-Stuart Lamour
-David Scotson
+Stuart Lamour, Mark Aberdour, Paul Hibbitts, Mary Evans
 
-Author: Bas Brands
+Authors: Bas Brands, David Scotson
 Contact: bmbrands@gmail.com
 Website: www.basbrands.nl
