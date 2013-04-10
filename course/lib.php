@@ -1674,7 +1674,8 @@ function print_section($course, $section, $mods, $modnamesused, $absolute=false,
                                 'type' => 'hidden', 'name' => 'completionstate',
                                 'value' => $newstate));
                         echo html_writer::empty_tag('input', array(
-                                'type' => 'image', 'src' => $imgsrc, 'alt' => $imgalt, 'title' => $imgtitle));
+                                'type' => 'image', 'src' => $imgsrc, 'alt' => $imgalt, 'title' => $imgtitle,
+                                'aria-live' => 'polite'));
                         echo html_writer::end_tag('div');
                         echo html_writer::end_tag('form');
                     } else {
@@ -3163,17 +3164,19 @@ function moveto_module($mod, $section, $beforemod=NULL) {
     }
 
     // if moving to a hidden section then hide module
-    if (!$section->visible && $mod->visible) {
-        // Set this in the object because it is sent as a response to ajax calls.
-        $mod->visible = 0;
-        set_coursemodule_visible($mod->id, 0);
-        // Set visibleold to 1 so module will be visible when section is made visible.
-        $DB->set_field('course_modules', 'visibleold', 1, array('id' => $mod->id));
-    }
-    if ($section->visible && !$mod->visible) {
-        set_coursemodule_visible($mod->id, $mod->visibleold);
-        // Set this in the object because it is sent as a response to ajax calls.
-        $mod->visible = $mod->visibleold;
+    if ($mod->section != $section->id) {
+        if (!$section->visible && $mod->visible) {
+            // Set this in the object because it is sent as a response to ajax calls.
+            $mod->visible = 0;
+            set_coursemodule_visible($mod->id, 0);
+            // Set visibleold to 1 so module will be visible when section is made visible.
+            $DB->set_field('course_modules', 'visibleold', 1, array('id' => $mod->id));
+        }
+        if ($section->visible && !$mod->visible) {
+            set_coursemodule_visible($mod->id, $mod->visibleold);
+            // Set this in the object because it is sent as a response to ajax calls.
+            $mod->visible = $mod->visibleold;
+        }
     }
 
 /// Add the module into the new section
