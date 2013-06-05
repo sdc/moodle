@@ -176,10 +176,10 @@ abstract class backup_cron_automated_helper {
                     // Output the next execution time when it has been updated.
                     if ($backupcourse->nextstarttime != $nextstarttime) {
                         mtrace('Backup of \'' . $course->fullname . '\' is scheduled on ' . $showtime);
+                        $backupcourse->laststatus = self::BACKUP_STATUS_SKIPPED;
+                        $backupcourse->nextstarttime = $nextstarttime;
+                        $DB->update_record('backup_courses', $backupcourse);
                     }
-                    $backupcourse->laststatus = self::BACKUP_STATUS_SKIPPED;
-                    $backupcourse->nextstarttime = $nextstarttime;
-                    $DB->update_record('backup_courses', $backupcourse);
                     mtrace('Skipping '.$course->fullname.' ('.$skippedmessage.')');
                 } else {
                     // Backup every non-skipped courses.
