@@ -6,6 +6,7 @@ Thanks also to the US company that sponsored the development, who wish to remain
 
 Changes:
 
+2013-05-22 - Minor Moodle 2.5 compatibility fixes
 2013-03-15 - Fixed PHP 5.3 compatibility issue
 2012-12-30 - Fixed settings page in Moodle 2.4
 2012-12-07 - Now compatible with Moodle 2.4
@@ -37,6 +38,27 @@ $output = draw_navbuttons().$this->container_end_all(true);   // Change this lin
 
 Note: The block is only visible to users who are able to edit courses modules. Deleting the block will remove the navigation buttons (they can also be disabled through the settings).
 
+== Any Problems ==
+
+If you have a problem with the buttons not showing up as expected, then try the following:
+
+1. Click on the 'Edit the Navigation Buttons settings' link in the block and scroll down to the bottom.
+Check that the message reads 'Navbuttons self-test: required core modifications have been completed successfully'.
+If not, go back up to step 5 of the installation instructions.
+
+2. Visit 'Site admin > Plugins > Blocks > Navigation buttons' and check that the buttons are enabled for the activity
+type you are viewing (the settings are 'Always show', 'Never show' or 'Show when complete', some activities have extra,
+custom rules).
+
+3. Visit a page that should have the navigation buttons on it, then use your browsers 'view source' menu option to see
+the HTML code for the page. Search for '<!-- Navbuttons start -->' (without quotes). Look to see what message is displayed
+after this line (and before '<!-- Navbuttons end -->'). It will be one of:
+* Front page - navigation buttons are not displayed on the front page course
+* No settings - the block has not been added to this course
+* Not enabled - the block has been added, but the buttons are disabled in the settings
+* No course module - this page is not part of a course module (activity/resource) within a course
+* Activity not ready for navbuttons - the global settings mean that the buttons are not displayed for this activity (or
+they will not be displayed until this activity is complete).
 
 If you have any questions about this block, suggestions for improvement, drop me an email at:
 moodle@davosmith.co.uk
