@@ -28,7 +28,7 @@ namespace :deploy do
     end
 end
 
-task :after_deploy do
+after "deploy:create_symlink" do
     run "cp #{shared_path}/config.php #{current_path}/"
     run "echo \\$CFG-\\>dirroot  = \\'#{release_path}\\'\\; >> #{current_path}/config.php"
     run "echo require_once\\(\\'#{release_path}/lib/setup.php\\'\\)\\; >> #{current_path}/config.php"
