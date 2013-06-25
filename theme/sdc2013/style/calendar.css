@@ -1,0 +1,59 @@
+/** calendar **/
+.path-calendar .region-main h1 {font-size:1.0em;margin:0;}
+.path-calendar .region-main h2,
+.path-calendar .region-main h3 {text-align: center;}
+
+.path-calendar .maincalendar {border:1px solid #ddd;}
+.path-calendar .maincalendar div.header {font-weight:bold;padding:2px 4px 6px;}
+.path-calendar .maincalendar .filters {width:98%;margin:10px auto;}
+.path-calendar .maincalendar .filters table {background-color: #eee;}
+.path-calendar .maincalendar .eventlist {padding: 10px;}
+.path-calendar .maincalendar .eventlist .event {border-color:#ddd;}
+.path-calendar .maincalendar .eventlist .event .referer {font-weight:bold;}
+.path-calendar .maincalendar .eventlist .event .course {font-size:0.8em;}
+.path-calendar .maincalendar .eventlist .event .description {padding:5px;}
+.path-calendar .maincalendar .eventlist .event .description .commands {text-align: right;}
+.dir-rtl.path-calendar .maincalendar .eventlist .event .description .commands {text-align: left;}
+.path-calendar .maincalendar .eventlist .event .topic {background-color:#eee;padding: 5px;border:0px solid #eee;border-bottom-width: 1px;}
+.path-calendar .maincalendar .eventlist .event .picture {background-color:#eee;padding:8px;}
+.path-calendar .maincalendar .eventlist .event .side {background-color:#eee;}
+.path-calendar .maincalendar .calendarmonth th {border-color: #000;}
+.path-calendar .maincalendar .calendarmonth td {font-size:0.8em;}
+.path-calendar .maincalendar .calendarmonth ul.events-underway {color:#999;}
+.path-calendar .maincalendar .controls {font-size:1.2em;}
+.path-calendar .maincalendar .day {font-weight: bold;}
+.path-calendar .maincalendar .cal_courses_flt {text-align:center;margin:5px;}
+.path-calendar .maincalendar .calendar-controls .current {font-weight: bold;}
+
+.path-calendar .minicalendarblock h3 {font-size:1.0em;margin:0;font-weight:normal;text-align:center;}
+
+.calendartable a {color:#007;}
+.calendartable th,
+.calendartable td {border-width:0;}
+
+.calendartable .hasevent {border:2px solid;}
+.calendar_event_course {border-color: #ffd3bd;}
+.calendar_event_global {border-color: #d6f8cd;}
+.calendar_event_group {border-color: #fee7ae;}
+.calendar_event_user {border-color: #dce7ec;}
+
+.calendartable .duration.duration_global {border-top-color:#66d14d; border-bottom-color:#66d14d;}
+.calendartable .duration.duration_course {border-top-color:#ff9966; border-bottom-color:#ff9966;}
+.calendartable .duration.duration_course0 {border-top-color:#ff9966; border-bottom-color:#ff9966;}
+.calendartable .duration.duration_course1 {border-top-color:#0099ff; border-bottom-color:#0099ff;}
+.calendartable .duration.duration_course2 {border-top-color:#ffff00; border-bottom-color:#ffff00;}
+.calendartable .duration.duration_group {border-top-color:#fbbb23; border-bottom-color:#fbbb23;}
+.calendartable .duration.duration_user {border-top-color:#a1becb; border-bottom-color:#a1becb;}
+
+.calendartable .weekend {color:#900;}
+.calendartable .today {border:2px solid #444;}
+.calendartable .nottoday {border-color:#eee;}
+.calendartable .eventnone a {text-decoration:none;color:black;cursor:text;}
+
+.block .minicalendar {font-size:0.85em;border:1px solid #ddd;margin: 10px 0;border-collapse:separate;border-spacing:1px;}
+.block .minicalendar .duration {border-width:1px 0;}
+
+.calendar_event_global {border-color: #d6f8cd; background-color:#d6f8cd;}
+.calendar_event_course {border-color: #ffd3bd; background-color:#ffd3bd;}
+.calendar_event_user {border-color: #dce7ec; background-color:#dce7ec;}
+.calendar_event_group {border-color: #fee7ae; background-color:#fee7ae;}

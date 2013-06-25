@@ -1,0 +1,22 @@
+/** question **/
+
+.que {border-color: #ddd;}
+.que .correct {background-color: #afa;}
+.que .feedback {border-color: #ddd;}
+.que .history {font-size:0.8em;}
+.que .incorrect {background-color: #faa;}
+.que .partiallycorrect {background-color: #ff9;}
+.que .r0 {background-color: #f5f5f5;}
+.que .r1 {background-color: #eee;}
+
+#chooseqtype .qtypename {font-weight: bold;}
+
+#qtypechoicecontainer #chooseqtype .qtypename {font-weight: normal;}
+#qtypechoicecontainer #chooseqtype .instruction,
+#qtypechoicecontainer #chooseqtype .qtypesummary {border-left-color: gray;}
+
+.calculated .answer,
+.numerical .answer,
+.shortanswer .answer {background-color: #eee;}
+
+.essay .answerreview {background-color: #eee;}
