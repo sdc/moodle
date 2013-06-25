@@ -16,7 +16,7 @@ end
 default_run_options[:pty] = true
 
 set :repository,"git@github.com:sdc/moodle.git"
-set :branch,    "sdc_24"
+set :branch,    "sdc_25"
 set :deploy_to, "/srv/#{application}"
 set :scm, :git
 
