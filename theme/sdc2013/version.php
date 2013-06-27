@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2013062401;
+$plugin->version   = 2013062700;
 $plugin->requires  = 2013050100;
 $plugin->component = 'theme_sdc2013';
 $plugin->dependencies = array(
