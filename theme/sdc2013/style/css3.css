@@ -254,8 +254,16 @@ table.minicalendar {
           border-radius: 0.2em;
 }
 
-/* Additional CSS3 fun */
+/* SDC 2013 specific selectors. */
 
+#page-header {
+  background-image:   url([[pix:theme|hgradient_fpheader]]);
+  background-repeat:  repeat-x;
+  background-color:   #ad89c6;
+}
+
+/* Additional CSS3 fun */
+/*
 #page-header {
   background-image:         linear-gradient(top, #4f2170 0%, #fafafa 100%);
   background-image:      -o-linear-gradient(top, #4f2170 0%, #fafafa 100%);
@@ -272,7 +280,6 @@ table.minicalendar {
   );
 }
 
-/* Purple-white gradient fill. */
 .block .header,
 .generaltable thead th {
   background-image:         linear-gradient(top, #9d79b7, #fafafa);
@@ -290,8 +297,6 @@ table.minicalendar {
   );
 }
 
-
-/* 'Band' of colour for minor headers. */
 .generaltable tbody th,
 #frontpage-course-list .header,
 #frontpage-category-names .header,
@@ -313,13 +318,15 @@ table.minicalendar {
     color-stop(1, #fafafa)
   );
 }
+*/
 
 .block .header h2,
 #frontpage-course-list h2.header,
 .header div.title,
 .generaltable thead th,
-.generaltable tbody th {
-  color: #222;
+.generaltable tbody th,
+.dockeditempanel_hd h2 {
+  color: #222 !important;
   text-shadow: 1px 1px 3px rgba(255, 255, 255, .8);
 }
 
@@ -342,6 +349,8 @@ table.minicalendar {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
 }
 
+/*
 .course-content .single-section .section-navigation {
   margin-bottom: .5em;
 }
+*/
