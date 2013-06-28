@@ -26,5 +26,6 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
-    $ADMIN->add('development', new admin_externalpage('toolrebuildcoursecache', get_string('pluginname', 'tool_rebuildcoursecache'), "$CFG->wwwroot/$CFG->admin/tool/rebuildcoursecache/index.php", 'moodle/site:config'));
+    $ADMIN->add('development', new admin_externalpage('toolrebuildcoursecache', get_string('pluginname', 'tool_rebuildcoursecache'),
+        "$CFG->wwwroot/$CFG->admin/tool/rebuildcoursecache/index.php", 'moodle/site:config'));
 }
