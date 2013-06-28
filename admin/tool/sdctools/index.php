@@ -45,51 +45,6 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pageheader', 'tool_sdctools'));
 
 
-/* Some server details. */
-echo $OUTPUT->box_start();
-echo $OUTPUT->heading(get_string('serverdetailsheader', 'tool_sdctools'));
-
-echo '<ul><li><strong>Moodle Version:</strong> '.$CFG->release.' [Internal: '.$CFG->version.']</li>';
-if (is_readable('/proc/version') && $osver = @file('/proc/version')) {
-    echo '<li><strong>Operating System:</strong> '.$osver[0].'</li>';
-}
-if (is_readable('/proc/loadavg') && $loadavg = @file('/proc/loadavg')) {
-    $loads = explode(' ', $loadavg[0]);
-    echo '<li><strong>Average Load:</strong> (1/5/15m) '.$loads[0].' / '.$loads[1].' / '.$loads[2].'</li>';
-    echo '<li><strong>Processes:</strong> (running/total) '.$loads[3].'</li>';
-}
-echo '<li><strong>Web Server:</strong> '.$_SERVER["SERVER_SOFTWARE"].'</li>';
-echo '<li><strong>PHP Version:</strong> '.phpversion().'</li>';
-if (is_readable('/proc/uptime') && $uptime = @file('/proc/uptime')) {
-    $utime = explode(' ', $uptime[0]);
-
-    $years = intval($utime[0] / (60*60*24*365.25));
-    $remainder = $utime[0] % (60*60*24*365.25);
-    $days = intval($remainder / (60*60*24));
-    $remainder = $remainder % (60*60*24);
-    $hours = intval($remainder / (60*60));
-    $remainder = $remainder % (60*60);
-    $minutes = intval($remainder / 60);
-    $remainder = $remainder % 60;
-    $seconds = intval($remainder);
-    
-    $out = $years;
-    $out .= ($years == 1) ? ' year, ' : ' years, ';
-    $out .= $days;
-    $out .= ($days == 1) ? ' day, ' : ' days, ';
-    $out .= $hours;
-    $out .= ($hours == 1) ? ' hour, ' : ' hours, ';
-    $out .= $minutes;
-    $out .= ($minutes == 1) ? ' minute, ' : ' minutes, ';
-    $out .= $seconds;
-    $out .= ($seconds == 1) ? ' second.' : ' seconds.';
-    echo '<li><strong>Server Uptime:</strong> '.$out.'</li>';
-}
-
-// End drawing 'Server details' table.
-echo $OUTPUT->box_end();
-
-
 // Users without email addresses.
 echo $OUTPUT->box_start();
 echo $OUTPUT->heading(get_string('noemailheader', 'tool_sdctools'));
