@@ -25,9 +25,6 @@
 $string['pluginname']       = 'SDC Tools';
 $string['pageheader']       = 'South Devon College Admin Tools';
 
-// Server details strings.
-$string['serverdetailsheader']  = 'Server details';
-
 // Email-checking strings.
 $string['emptyemailname']   = 'Empty email check';
 $string['noemailheader']    = 'Users without email addresses';
@@ -40,6 +37,3 @@ $string['nonsdcemailheader']    = 'Users with non-SDC email addresses';
 $string['nonsdcemailstrapline'] = 'Users with email addresses which aren\'t from SDC email accounts (e.g. Gmail, Hotmail).';
 $string['nonsdcemails']         = '<strong>Result:</strong> The following users have non-SDC (personal) email addresses:';
 $string['sdcemails']            = '<strong>Result:</strong> No users have non-SDC (personal) email addresses.';
-
-// Course report strings.
-$string['coursereportname'] = 'Cross-Moodle course report';
