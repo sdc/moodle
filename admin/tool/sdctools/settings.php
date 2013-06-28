@@ -30,10 +30,6 @@ if ($hassiteconfig) {
         $CFG->wwwroot.'/'.$CFG->admin.'/tool/sdctools/index.php', 'moodle/site:config'));
 
     // Add to reports menu with a different lang string.
-    $ADMIN->add('reports', new admin_externalpage('toolsdctoolsemail', get_string('emptyemailname', 'tool_sdctools'),
+    $ADMIN->add('reports', new admin_externalpage('toolsdctools', get_string('emptyemailname', 'tool_sdctools'),
         $CFG->wwwroot.'/'.$CFG->admin.'/tool/sdctools/index.php', 'moodle/site:config'));
-
-    // Add courses report to reports menu.
-    $ADMIN->add('reports', new admin_externalpage('toolsdctoolscourse', get_string('coursereportname', 'tool_sdctools'),
-        $CFG->wwwroot.'/'.$CFG->admin.'/tool/sdctools/course.php', 'moodle/site:config'));
 }
