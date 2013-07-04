@@ -24,9 +24,11 @@
 
 define('NO_OUTPUT_BUFFERING', true);
 
-require_once('../../../config.php');
+require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 require_once($CFG->libdir.'/adminlib.php');
+
+require_once('locallib.php');
 
 admin_externalpage_setup('toolsdctools');
 
@@ -36,186 +38,81 @@ if (empty($CFG->loginhttps)) {
     $securewwwroot = str_replace('http:', 'https:', $CFG->wwwroot);
 }
 
-$stredit    = get_string('edit');
-$site       = get_site();
-$stdwhere   = ' AND deleted = 0 AND id != 1'; // No deleted users and not the guest user.
-
 echo $OUTPUT->header();
 
 echo $OUTPUT->heading(get_string('pageheader', 'tool_sdctools'));
+
+echo sdctools_tableofcontents();
 
 
 /* Some server details. */
 echo $OUTPUT->box_start();
 echo $OUTPUT->heading(get_string('serverdetailsheader', 'tool_sdctools'));
 
-echo '<ul><li><strong>Moodle Version:</strong> '.$CFG->release.' [Internal: '.$CFG->version.']</li>';
+echo '<ul>';
 if (is_readable('/proc/version') && $osver = @file('/proc/version')) {
     echo '<li><strong>Operating System:</strong> '.$osver[0].'</li>';
 }
+/* For some reason, I can't use two file functions in the same if statement... */
 if (is_readable('/proc/loadavg') && $loadavg = @file('/proc/loadavg')) {
-    $loads = explode(' ', $loadavg[0]);
-    echo '<li><strong>Average Load:</strong> (1/5/15m) '.$loads[0].' / '.$loads[1].' / '.$loads[2].'</li>';
-    echo '<li><strong>Processes:</strong> (running/total) '.$loads[3].'</li>';
+    if (is_readable('/proc/cpuinfo') && $cpuinfo = @file('/proc/cpuinfo')) {
+        $loads = explode(' ', $loadavg[0]);
+        $cpucount = 0;
+        foreach ($cpuinfo as $cpu) {
+            if (preg_match('/processor/', $cpu)) {
+                $cpucount++;
+            }
+        }
+        echo '<li><strong>Average Load:</strong> (1/5/15m [100%]) '.$loads[0].' / '.$loads[1].' / '.$loads[2].' ['.$cpucount.'.0] (<a href="http://blog.scoutapp.com/articles/2009/07/31/understanding-load-averages">Understanding Linux CPU load</a>)</li>';
+        echo '<li><strong>Processes:</strong> (running/total) '.$loads[3].'</li>';
+    }
 }
 echo '<li><strong>Web Server:</strong> '.$_SERVER["SERVER_SOFTWARE"].'</li>';
 echo '<li><strong>PHP Version:</strong> '.phpversion().'</li>';
 if (is_readable('/proc/uptime') && $uptime = @file('/proc/uptime')) {
     $utime = explode(' ', $uptime[0]);
-
-    $years = intval($utime[0] / (60*60*24*365.25));
-    $remainder = $utime[0] % (60*60*24*365.25);
-    $days = intval($remainder / (60*60*24));
-    $remainder = $remainder % (60*60*24);
-    $hours = intval($remainder / (60*60));
-    $remainder = $remainder % (60*60);
-    $minutes = intval($remainder / 60);
-    $remainder = $remainder % 60;
-    $seconds = intval($remainder);
-    
-    $out = $years;
-    $out .= ($years == 1) ? ' year, ' : ' years, ';
-    $out .= $days;
-    $out .= ($days == 1) ? ' day, ' : ' days, ';
-    $out .= $hours;
-    $out .= ($hours == 1) ? ' hour, ' : ' hours, ';
-    $out .= $minutes;
-    $out .= ($minutes == 1) ? ' minute, ' : ' minutes, ';
-    $out .= $seconds;
-    $out .= ($seconds == 1) ? ' second.' : ' seconds.';
+    $out = sdctools_timeago($utime[0], false);
     echo '<li><strong>Server Uptime:</strong> '.$out.'</li>';
 }
+echo '</ul>';
+
+echo $OUTPUT->heading(get_string('moodledetailsheader', 'tool_sdctools'));
+
+echo '<ul>';
+echo '<li><strong>Moodle Version:</strong> '.$CFG->release.' [Internal: '.$CFG->version.']</li>';
+$users_active = $DB->get_record_sql('SELECT COUNT(*) AS users FROM mdl_user WHERE deleted = 0;');
+$users_deleted = $DB->get_record_sql('SELECT COUNT(*) AS users FROM mdl_user WHERE deleted = 1;');
+echo '<li><strong>Users: Active / Deleted / Total:</strong> '.number_format($users_active->users).' / '.number_format($users_deleted->users).' / '.number_format($users_active->users + $users_deleted->users).'</li>';
+$courses_visible = $DB->get_record_sql('SELECT COUNT(*) AS courses FROM mdl_course WHERE visible = 1;');
+$courses_hidden = $DB->get_record_sql('SELECT COUNT(*) AS courses FROM mdl_course WHERE visible = 0;');
+echo '<li><strong>Courses: Visible / Hidden / Total:</strong> '.number_format($courses_visible->courses).' / '.number_format($courses_hidden->courses).' / '.number_format($courses_visible->courses + $courses_hidden->courses).'</li>';
+// backups
+$out = '';
+$backup_status = $DB->get_record('config_plugins', array('plugin' => 'backup', 'name' => 'backup_auto_active'), 'value');
+if ($backup_status->value == 0) {
+    // Disabled.
+    $out = '<span class="error">'.get_string('autoactivedisabled', 'backup').'</span> ('.
+        html_writer::link(new moodle_url('/admin/settings.php', array('section' => 'automated')), get_string('automatedsetup', 'backup')).')';
+} else if ($backup_status->value == 1) {
+    // Enabled.
+    $out = get_string('autoactiveenabled', 'backup');
+} else if ($backup_status->value == 2) {
+    // Manual.
+    $out = get_string('autoactivemanual', 'backup');
+}
+$backup_running = $DB->get_record('config_plugins', array('plugin' => 'backup', 'name' => 'backup_auto_running'), 'value');
+if ($backup_running && $backup_running->value == 1) {
+    $out .= ' and running';
+}
+echo '<li><strong>Backup Status:</strong> '.$out.'</li>';
+
+
+echo '</ul>';
+
 
 // End drawing 'Server details' table.
 echo $OUTPUT->box_end();
 
-
-// Users without email addresses.
-echo $OUTPUT->box_start();
-echo $OUTPUT->heading(get_string('noemailheader', 'tool_sdctools'));
-echo '<p>'.get_string('noemailstrapline', 'tool_sdctools')."</p>\n";
-
-$noemail = $DB->get_records_select('user', 'email = "" '.$stdwhere, null, 'timecreated DESC');
-
-if (!$noemail) {
-    echo '<p>'.get_string('noemptyemails', 'tool_sdctools').'</p>';
-} else {
-    echo '<p>'.get_string('emptyemails', 'tool_sdctools').'</p>';
-
-    $table = new html_table();
-    $table->head = array ();
-    $table->align = array();
-    $table->head[] = '';
-    $table->align[] = '';
-    $table->head[] = get_string('fullnameuser');
-    $table->align[] = 'left';
-    $table->head[] = get_string('username');
-    $table->align[] = 'left';
-    $table->head[] = get_string('firstaccess');
-    $table->align[] = 'left';
-    $table->head[] = get_string('actions');
-    $table->align[] = 'left';
-    $table->width = "50%";
-
-    $items = 0;
-    foreach ($noemail as $user) {
-
-        $buttons = array();
-        $row = array ();
-
-        if (is_siteadmin($USER) or !is_siteadmin($user)) {
-            $buttons[] = html_writer::link(new moodle_url($securewwwroot.'/user/editadvanced.php',
-                array('id' => $user->id, 'course' => $site->id)),
-                html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('t/edit'),
-                'alt' => $stredit, 'class' => 'iconsmall')), array('title' => $stredit));
-        }
-        if ($user->firstaccess) {
-            $strfirstaccess = format_time(time() - $user->firstaccess);
-        } else {
-            $strfirstaccess = get_string('never');
-        }
-        $fullname = fullname($user, true);
-        $row[] = ++$items;
-        $row[] = '<a href="'.$securewwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$site->id.'">'.$fullname.'</a>';
-        $row[] = $user->username;
-        $row[] = $strfirstaccess;
-        $row[] = implode(' ', $buttons);
-        $table->data[] = $row;
-    }
-
-    if (!empty($table)) {
-        echo html_writer::table($table);
-    }
-
-}
-
-// End drawing 'no emails' table.
-echo $OUTPUT->box_end();
-
-
-// Users with non-SDC email addresses.
-echo $OUTPUT->box_start();
-echo $OUTPUT->heading(get_string('nonsdcemailheader', 'tool_sdctools'));
-echo '<p>'.get_string('nonsdcemailstrapline', 'tool_sdctools')."</p>\n";
-
-$nonsdcemail = $DB->get_records_select('user', '(email NOT LIKE "%southdevon.ac.uk" AND email NOT LIKE "")'.$stdwhere,
-    null, 'timecreated DESC');
-
-if (!$nonsdcemail) {
-    echo '<p>'.get_string('sdcemails', 'tool_sdctools').'</p>';
-} else {
-    echo '<p>'.get_string('nonsdcemails', 'tool_sdctools').'</p>';
-
-    $table = new html_table();
-    $table->head = array ();
-    $table->align = array();
-    $table->head[] = '';
-    $table->align[] = '';
-    $table->head[] = get_string('fullnameuser');
-    $table->align[] = 'left';
-    $table->head[] = get_string('username');
-    $table->align[] = 'left';
-    $table->head[] = get_string('email');
-    $table->align[] = 'left';
-    $table->head[] = get_string('actions');
-    $table->align[] = 'left';
-    $table->width = "50%";
-
-    $items = 0;
-    foreach ($nonsdcemail as $user) {
-
-        $buttons = array();
-        $row = array ();
-
-        // Edit button.
-        if (is_siteadmin($USER) or !is_siteadmin($user)) {
-            $buttons[] = html_writer::link(new moodle_url($securewwwroot.'/user/editadvanced.php',
-                array('id' => $user->id, 'course' => $site->id)),
-                html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('t/edit'),
-                'alt' => $stredit, 'class' => 'iconsmall')), array('title' => $stredit));
-        }
-        if ($user->lastaccess) {
-            $strlastaccess = format_time(time() - $user->lastaccess);
-        } else {
-            $strlastaccess = get_string('never');
-        }
-        $fullname = fullname($user, true);
-        $row[] = ++$items;
-        $row[] = '<a href="'.$securewwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$site->id.'">'.$fullname.'</a>';
-        $row[] = $user->username;
-        $row[] = $user->email;
-        $row[] = implode(' ', $buttons);
-        $table->data[] = $row;
-    }
-
-    if (!empty($table)) {
-        echo html_writer::table($table);
-    }
-
-}
-
-// End non-SDC email addresses table.
-echo $OUTPUT->box_end();
 
 
 // End the page.
