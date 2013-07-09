@@ -466,7 +466,7 @@ table#tag-management-list {margin: 10px auto;width: 80%;}
 #page-message-edit table.generaltable td.disallowed {text-align: center;vertical-align:middle;}
 #messagewarning {font-style:italic;}
 
-/* SDC Moodle logo styles */
+/* SDC Moodle logo and profile pic styles */
 
 #sdclogo {
     float: left;
@@ -477,15 +477,9 @@ table#tag-management-list {margin: 10px auto;width: 80%;}
 #profilepic {
     text-align: right;
     float: right;
-/*    margin-top: 0;
-    margin-left: 5px;
-    margin-bottom: 0;
-    margin-right: 0;
-*/
     margin: 0 0 0 5px;
     width: 80px;
     height: 80px;
-    /*border: 1px solid #eeeeee;*/
     display: inline;
 }
 #profilepic img {
