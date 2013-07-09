@@ -354,3 +354,14 @@ table.minicalendar {
   margin-bottom: .5em;
 }
 */
+
+#profilepic {
+  -webkit-border-radius: 100px;
+     -moz-border-radius: 100px;
+          border-radius: 100px;
+}
+#profilepic img {
+  -webkit-border-radius: 100px;
+     -moz-border-radius: 100px;
+          border-radius: 100px;
+}
