@@ -100,8 +100,8 @@ if ($bootstrap == 'enable') {
    <?php if ($hasheading || $hasnavbar) { ?>
     <div id="page-header">
         <?php if ($hasheading) { ?>
-         <table style="width:100%; height:133px; margin: 0px;"><tr><td width="700px" style="margin:0px; padding:0px;">
-		 <a class="logo" href="#"></a>
+         <table style="width:100%; height:133px; margin: 0px;"><tr><td width="250px" style="margin:0px; padding:0px;">
+		 <a class="logo" href="<?php echo $CFG->wwwroot; ?>" title="<?php print_string('home'); ?>"></a>
 		 </td><td valign="bottom" style="margin:0px; padding:0px;">
          <div class="headermenu"><?php
             if ($haslogininfo) {
