@@ -63,11 +63,24 @@ echo $OUTPUT->doctype() ?>
             <img src="<?php echo $OUTPUT->pix_url($sdc_mdl_url, 'theme'); ?>" alt="SDC Moodle logo du jour [<?php echo $OUTPUT->pix_url($sdc_mdl_url, 'theme'); ?>]" />
         </div>
 
-        <div class="headermenu"><?php
+        <div class="headermenu">
+            <div class="profilepic" id="profilepic">
+            <?php
+                if (!isloggedin() or isguestuser()) {
+                    echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$USER->id.'&amp;course='.$COURSE->id.'"><img src="'.$CFG->wwwroot.'/user/pix.php?file=/'.$USER->id.'/f1.jpg" title="Guest" alt="Guest"></a>';
+                } else {
+                    echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$USER->id.'&amp;course='.$COURSE->id.'"><img src="'.$CFG->wwwroot.'/user/pix.php?file=/'.$USER->id.'/f1.jpg" title="'.$USER->firstname.' '.$USER->lastname.'" alt="'.$USER->firstname.' '.$USER->lastname.'"></a>';
+                }
+            ?>
+            </div>
+
+        <?php
             echo $OUTPUT->login_info();
             echo $OUTPUT->lang_menu();
             echo $PAGE->headingmenu;
-        ?></div>
+        ?>
+        </div>
+
         <?php if ($hascustommenu) { ?>
         <div id="custommenu"><?php echo $custommenu; ?></div>
          <?php } ?>
