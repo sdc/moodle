@@ -85,26 +85,30 @@ function sdctools_timeago($int, $ago = true) {
     // Omit any period of time with no data.
     if ($years) {
         $out .= $years;
-        $out .= ($years == 1) ? ' year, ' : ' years, ';
+        $out .= ($years == 1) ? ' '.get_string('year').', ' : ' '.get_string('years').', ';
     }
     if ($days) {
         $out .= $days;
-        $out .= ($days == 1) ? ' day, ' : ' days, ';
+        $out .= ($days == 1) ? ' '.get_string('day').', ' : ' '.get_string('days').', ';
     }
     if ($hours) {
         $out .= $hours;
-        $out .= ($hours == 1) ? ' hour, ' : ' hours, ';
+        $out .= ($hours == 1) ? ' '.get_string('hour').', ' : ' '.get_string('hours').', ';
     }
     if ($minutes) {
         $out .= $minutes;
-        $out .= ($minutes == 1) ? ' minute, ' : ' minutes, ';
+        $out .= ($minutes == 1) ? ' '.get_string('minute').', ' : ' '.get_string('minutes').', ';
     }
     if ($seconds) {
         $out .= $seconds;
-        $out .= ($seconds == 1) ? ' second' : ' seconds';
+        $out .= ($seconds == 1) ? ' '.get_string('second', 'tool_sdctools') : ' '.get_string('seconds');
     }
 
-    return $out;
+    if ($ago) {
+        return sdctools_trimcomma($out).' '.get_string('ago', 'tool_sdctools');
+    } else {
+        return sdctools_trimcomma($out);
+    }
 }
 
 /**
