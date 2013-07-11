@@ -51,7 +51,7 @@ echo $OUTPUT->heading(get_string('serverdetailsheader', 'tool_sdctools'));
 
 echo '<ul>';
 if (is_readable('/proc/version') && $osver = @file('/proc/version')) {
-    echo '<li><strong>Operating System:</strong> '.$osver[0].'</li>';
+    echo '<li><strong>'.get_string('operatingsystem', 'tool_sdctools').':</strong> '.$osver[0].'</li>';
 }
 /* For some reason, I can't use two file functions in the same if statement... */
 if (is_readable('/proc/loadavg') && $loadavg = @file('/proc/loadavg')) {
@@ -63,29 +63,29 @@ if (is_readable('/proc/loadavg') && $loadavg = @file('/proc/loadavg')) {
                 $cpucount++;
             }
         }
-        echo '<li><strong>Average Load:</strong> (1/5/15m [100%]) '.$loads[0].' / '.$loads[1].' / '.$loads[2].' ['.$cpucount.'.0] (<a href="http://blog.scoutapp.com/articles/2009/07/31/understanding-load-averages">Understanding Linux CPU load</a>)</li>';
-        echo '<li><strong>Processes:</strong> (running/total) '.$loads[3].'</li>';
+        echo '<li><strong>'.get_string('averageload', 'tool_sdctools').':</strong> '.get_string('averageloadexample', 'tool_sdctools').' '.$loads[0].' / '.$loads[1].' / '.$loads[2].' ['.$cpucount.'.0] (<a href="http://blog.scoutapp.com/articles/2009/07/31/understanding-load-averages">'.get_string('linuxcpuload', 'tool_sdctools').'</a>)</li>';
+        echo '<li><strong>'.get_string('processes', 'tool_sdctools').':</strong> '.get_string('processesexample', 'tool_sdctools').' '.$loads[3].'</li>';
     }
 }
-echo '<li><strong>Web Server:</strong> '.$_SERVER["SERVER_SOFTWARE"].'</li>';
-echo '<li><strong>PHP Version:</strong> '.phpversion().'</li>';
+echo '<li><strong>'.get_string('webserver', 'tool_sdctools').':</strong> '.$_SERVER["SERVER_SOFTWARE"].'</li>';
+echo '<li><strong>'.get_string('phpversion', 'tool_sdctools').':</strong> '.phpversion().'</li>';
 if (is_readable('/proc/uptime') && $uptime = @file('/proc/uptime')) {
     $utime = explode(' ', $uptime[0]);
     $out = sdctools_timeago($utime[0], false);
-    echo '<li><strong>Server Uptime:</strong> '.$out.'</li>';
+    echo '<li><strong>'.get_string('serveruptime', 'tool_sdctools').':</strong> '.$out.'</li>';
 }
 echo '</ul>';
 
 echo $OUTPUT->heading(get_string('moodledetailsheader', 'tool_sdctools'));
 
 echo '<ul>';
-echo '<li><strong>Moodle Version:</strong> '.$CFG->release.' [Internal: '.$CFG->version.']</li>';
+echo '<li><strong>'.get_string('moodleversion', 'tool_sdctools').':</strong> '.$CFG->release.' ['.get_string('internal', 'tool_sdctools').': '.$CFG->version.']</li>';
 $users_active = $DB->get_record_sql('SELECT COUNT(*) AS users FROM mdl_user WHERE deleted = 0;');
 $users_deleted = $DB->get_record_sql('SELECT COUNT(*) AS users FROM mdl_user WHERE deleted = 1;');
-echo '<li><strong>Users: Active / Deleted / Total:</strong> '.number_format($users_active->users).' / '.number_format($users_deleted->users).' / '.number_format($users_active->users + $users_deleted->users).'</li>';
+echo '<li><strong>'.get_string('usersactivedeletedtotal', 'tool_sdctools').':</strong> '.number_format($users_active->users).' / '.number_format($users_deleted->users).' / '.number_format($users_active->users + $users_deleted->users).'</li>';
 $courses_visible = $DB->get_record_sql('SELECT COUNT(*) AS courses FROM mdl_course WHERE visible = 1;');
 $courses_hidden = $DB->get_record_sql('SELECT COUNT(*) AS courses FROM mdl_course WHERE visible = 0;');
-echo '<li><strong>Courses: Visible / Hidden / Total:</strong> '.number_format($courses_visible->courses).' / '.number_format($courses_hidden->courses).' / '.number_format($courses_visible->courses + $courses_hidden->courses).'</li>';
+echo '<li><strong>'.get_string('coursesvisiblehiddentotal', 'tool_sdctools').':</strong> '.number_format($courses_visible->courses).' / '.number_format($courses_hidden->courses).' / '.number_format($courses_visible->courses + $courses_hidden->courses).'</li>';
 // backups
 $out = '';
 $backup_status = $DB->get_record('config_plugins', array('plugin' => 'backup', 'name' => 'backup_auto_active'), 'value');
@@ -102,18 +102,14 @@ if ($backup_status->value == 0) {
 }
 $backup_running = $DB->get_record('config_plugins', array('plugin' => 'backup', 'name' => 'backup_auto_running'), 'value');
 if ($backup_running && $backup_running->value == 1) {
-    $out .= ' and running';
+    $out .= get_string('running', 'tool_sdctools');
 }
-echo '<li><strong>Backup Status:</strong> '.$out.'</li>';
-
+echo '<li><strong>'.get_string('backupstatus', 'tool_sdctools').':</strong> '.$out.'</li>';
 
 echo '</ul>';
 
-
 // End drawing 'Server details' table.
 echo $OUTPUT->box_end();
-
-
 
 // End the page.
 echo $OUTPUT->footer();
