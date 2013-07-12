@@ -1,3 +1,15 @@
 dl dt {
-  font-weight:  bold !important;
+  font-weight: bold !important;
+}
+.sdctool_ok {
+	color: #070;
+}
+.sdctool_unfinished {
+	color: #f00;
+}
+.sdctool_skipped {
+	color: #f70;
+}
+.sdctool_error {
+	color: #f00;
 }

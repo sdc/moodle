@@ -28,6 +28,7 @@ $string['pageheader']       = 'South Devon College Admin Tools';
 // Table of contents strings.
 $string['tableofcontents']        = 'Table of Contents';
 $string['emailchecks']            = 'Email Checks';
+$string['userchecks']             = 'User Checks';
 $string['coursereports']          = 'Course Reports';
 $string['coursereportspictures']  = 'with pictures';
 $string['second']                 = 'second';
@@ -50,16 +51,20 @@ $string['usersactivedeletedtotal']    = 'Users: Active / Deleted / Total';
 $string['coursesvisiblehiddentotal']  = 'Courses: Visible / Hidden / Total';
 $string['running']                    = ' and running';
 $string['backupstatus']               = 'Backup Status';
+$string['newuserstatsheading']        = 'Recent new user statistics';
+$string['newuserstatsstrapline']      = 'Number of users created per <i>time period</i>. Date used is <i>firstaccess</i> which is not always populated.';
+$string['firstaccessstrapline']       = 'Those with <i>firstaccess</i> set, compared to those without.';
+
 
 // Email-checking strings.
 $string['emptyemailname']   = 'Empty email check';
 $string['noemailheader']    = 'Users without email addresses';
 $string['noemailstrapline'] = 'Having no email address prevents a user logging in to Moodle, as they are presented with their profile to edit, but are not allowed to change their email address.';
 $string['noemptyemails']    = '<strong>Result:</strong> All users in the \'users\' table have email addresses.';
-$string['emptyemails']      = '<strong>Result:</strong> The following users have empty email fields and cannot currently log in:';
+$string['emptyemails']      = '<strong>Result:</strong> The following {$a} users have empty email fields and cannot currently log in:';
 $string['nonsdcemailheader']    = 'Users with non-SDC email addresses';
-$string['nonsdcemailstrapline'] = 'Users with email addresses which aren\'t from SDC email accounts (e.g. Gmail, Hotmail).';
-$string['nonsdcemails']         = '<strong>Result:</strong> The following users have non-SDC (personal) email addresses:';
+$string['nonsdcemailstrapline'] = 'Users with email addresses which aren\'t from SDC email accounts (e.g. Gmail, Hotmail). Not a problem, just a check.';
+$string['nonsdcemails']         = '<strong>Result:</strong> The following {$a} users have non-SDC (personal) email addresses:';
 $string['sdcemails']            = '<strong>Result:</strong> No users have non-SDC (personal) email addresses.';
 
 // Course report strings.
@@ -76,3 +81,18 @@ $string['coursedetail']     = 'Course Detail';
 $string['full']             = 'Full';
 $string['short']            = 'Short';
 $string['id']               = 'ID';
+$string['blank']            = '<i>(blank)</i>';
+$string['none']             = '<i>(none)</i>';
+$string['nonefound']        = '<i>(none found)</i>';
+$string['picturewarning']   = '<b>Note:</b> Pictures are only shown where the user has uploaded one: the theme default picture is not shown.';
+
+// User-checking strings.
+$string['restoredusersheader']    = 'Restored users';
+$string['restoredusersstrapline'] = 'Users with the password set to &quot;restored&quot; possibly shouldn\'t exist within the system.';
+$string['norestoredusers']        = '<strong>Result:</strong> No users in the \'users\' table have their password set to &quot;restored&quot;.';
+$string['restoredusers']          = '<strong>Result:</strong> The following {$a} users have their password set to &quot;restored&quot;:';
+
+$string['anonusersheader']    = 'Anonymous users';
+$string['anonusersstrapline'] = 'Users with the word &quot;anon&quot; in their first and last name.';
+$string['noanonusers']        = '<strong>Result:</strong> No users in the \'users\' table have &quot;anon&quot; as part of their first or last name.';
+$string['anonusers']          = '<strong>Result:</strong> The following {$a} users have &quot;anon&quot; as part of their first or last name:';
