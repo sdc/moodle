@@ -50,17 +50,17 @@ echo $OUTPUT->heading(get_string('pageheader', 'tool_sdctools'));
 echo sdctools_tableofcontents();
 
 
-// Users without email addresses.
+// Users obviously restored from backups.
 echo $OUTPUT->box_start();
-echo $OUTPUT->heading(get_string('noemailheader', 'tool_sdctools'));
-echo '<p>'.get_string('noemailstrapline', 'tool_sdctools')."</p>\n";
+echo $OUTPUT->heading(get_string('restoredusersheader', 'tool_sdctools'));
+echo '<p>'.get_string('restoredusersstrapline', 'tool_sdctools')."</p>\n";
 
-$noemail = $DB->get_records_select('user', 'email = "" '.$stdwhere, null, 'timecreated DESC, id DESC');
+$restored = $DB->get_records_select('user', 'password = "restored" '.$stdwhere, null, 'lastaccess DESC');
 
-if (!$noemail) {
-    echo '<p>'.get_string('noemptyemails', 'tool_sdctools').'</p>';
+if (!$restored) {
+    echo '<p>'.get_string('norestoredusers', 'tool_sdctools').'</p>';
 } else {
-    echo '<p>'.get_string('emptyemails', 'tool_sdctools', number_format(count($noemail))).'</p>';
+    echo '<p>'.get_string('restoredusers', 'tool_sdctools', number_format(count($restored))).'</p>';
 
     $table = new html_table();
     $table->head = array ();
@@ -82,7 +82,89 @@ if (!$noemail) {
     $table->width = "75%";
 
     $items = 0;
-    foreach ($noemail as $user) {
+    foreach ($restored as $user) {
+
+        $buttons = array();
+        $row = array ();
+
+        if (is_siteadmin($USER) or !is_siteadmin($user)) {
+            // Edit.
+            $buttons[] = html_writer::link(new moodle_url($securewwwroot.'/user/editadvanced.php',
+                array('id' => $user->id, 'course' => $site->id)),
+                html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('t/edit'),
+                'alt' => $stredit, 'class' => 'iconsmall')), array('title' => $stredit));
+            // Delete.
+            $buttons[] = html_writer::link(new moodle_url($securewwwroot.'/admin/user.php',
+                array('delete' => $user->id, 'sesskey' => sesskey())),
+                html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('t/delete'),
+                'alt' => $strdelete, 'class' => 'iconsmall')), array('title' => $strdelete));
+
+        }
+        if ($user->firstaccess) {
+            $strfirstaccess = format_time(time() - $user->firstaccess);
+        } else {
+            $strfirstaccess = get_string('never');
+        }
+        if ($user->lastaccess) {
+            $strlastaccess = format_time(time() - $user->lastaccess);
+        } else {
+            $strlastaccess = get_string('never');
+        }
+        $fullname = fullname($user, true);
+        $row[] = number_format(++$items);
+        $row[] = $user->id;
+        $row[] = '<a href="'.$securewwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$site->id.'">'.$fullname.'</a>';
+        $row[] = $user->username;
+        $row[] = $strfirstaccess;
+        $row[] = $strlastaccess;
+        $row[] = implode(' ', $buttons);
+        $table->data[] = $row;
+    }
+
+    if (!empty($table)) {
+        echo html_writer::table($table);
+    }
+
+}
+
+// End Users obviously restored from backups table.
+echo $OUTPUT->box_end();
+
+
+
+// Users obviously restored from backups.
+echo $OUTPUT->box_start();
+echo $OUTPUT->heading(get_string('anonusersheader', 'tool_sdctools'));
+echo '<p>'.get_string('anonusersstrapline', 'tool_sdctools')."</p>\n";
+
+$anon = $DB->get_records_select('user', 'firstname LIKE "anonfirstname%" AND lastname LIKE "anonlastname%" '.$stdwhere, null, 'lastaccess DESC');
+
+if (!$anon) {
+    echo '<p>'.get_string('noanonusers', 'tool_sdctools').'</p>';
+} else {
+    echo '<p>'.get_string('anonusers', 'tool_sdctools', number_format(count($anon))).'</p>';
+
+    $table = new html_table();
+    $table->head = array ();
+    $table->align = array();
+    $table->head[] = '#';
+    $table->align[] = '';
+    $table->head[] = get_string('id', 'tool_sdctools');
+    $table->align[] = 'left';
+    $table->head[] = get_string('fullnameuser');
+    $table->align[] = 'left';
+    $table->head[] = get_string('username');
+    $table->align[] = 'left';
+    $table->head[] = get_string('firstaccess');
+    $table->align[] = 'left';
+    $table->head[] = get_string('lastaccess');
+    $table->align[] = 'left';
+    $table->head[] = get_string('actions');
+    $table->align[] = 'left';
+    $table->width = "75%";
+
+    $items = 0;
+    foreach ($anon as $user) {
 
         $buttons = array();
         $row = array ();
@@ -130,92 +212,6 @@ if (!$noemail) {
 // End drawing 'no emails' table.
 echo $OUTPUT->box_end();
 
-
-// Users with non-SDC email addresses.
-echo $OUTPUT->box_start();
-echo $OUTPUT->heading(get_string('nonsdcemailheader', 'tool_sdctools'));
-echo '<p>'.get_string('nonsdcemailstrapline', 'tool_sdctools')."</p>\n";
-
-$nonsdcemail = $DB->get_records_select('user', '(email NOT LIKE "%southdevon.ac.uk" AND email NOT LIKE "")'.$stdwhere,
-    null, 'timecreated DESC, id DESC');
-
-if (!$nonsdcemail) {
-    echo '<p>'.get_string('sdcemails', 'tool_sdctools').'</p>';
-} else {
-    echo '<p>'.get_string('nonsdcemails', 'tool_sdctools', number_format(count($nonsdcemail))).'</p>';
-
-    $table = new html_table();
-    $table->head = array ();
-    $table->align = array();
-    $table->head[] = '#';
-    $table->align[] = '';
-    $table->head[] = get_string('id', 'tool_sdctools');
-    $table->align[] = 'left';
-    $table->head[] = get_string('fullnameuser');
-    $table->align[] = 'left';
-    $table->head[] = get_string('username');
-    $table->align[] = 'left';
-    $table->head[] = get_string('email');
-    $table->align[] = 'left';
-    $table->head[] = get_string('firstaccess');
-    $table->align[] = 'left';
-    $table->head[] = get_string('lastaccess');
-    $table->align[] = 'left';
-
-    $table->head[] = get_string('actions');
-    $table->align[] = 'left';
-    $table->width = "75%";
-
-    $items = 0;
-    foreach ($nonsdcemail as $user) {
-
-        $buttons = array();
-        $row = array ();
-
-        // Edit button.
-        if (is_siteadmin($USER) or !is_siteadmin($user)) {
-            // Edit.
-            $buttons[] = html_writer::link(new moodle_url($securewwwroot.'/user/editadvanced.php',
-                array('id' => $user->id, 'course' => $site->id)),
-                html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('t/edit'),
-                'alt' => $stredit, 'class' => 'iconsmall')), array('title' => $stredit));
-            // Delete.
-            $buttons[] = html_writer::link(new moodle_url($securewwwroot.'/admin/user.php',
-                array('delete' => $user->id, 'sesskey' => sesskey())),
-                html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('t/delete'),
-                'alt' => $strdelete, 'class' => 'iconsmall')), array('title' => $strdelete));
-
-        }
-        if ($user->firstaccess) {
-            $strfirstaccess = format_time(time() - $user->firstaccess);
-        } else {
-            $strfirstaccess = get_string('never');
-        }
-        if ($user->lastaccess) {
-            $strlastaccess = format_time(time() - $user->lastaccess);
-        } else {
-            $strlastaccess = get_string('never');
-        }
-        $fullname = fullname($user, true);
-        $row[] = number_format(++$items);
-        $row[] = $user->id;
-        $row[] = '<a href="'.$securewwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$site->id.'">'.$fullname.'</a>';
-        $row[] = $user->username;
-        $row[] = $user->email;
-        $row[] = $strfirstaccess;
-        $row[] = $strlastaccess;
-        $row[] = implode(' ', $buttons);
-        $table->data[] = $row;
-    }
-
-    if (!empty($table)) {
-        echo html_writer::table($table);
-    }
-
-}
-
-// End non-SDC email addresses table.
-echo $OUTPUT->box_end();
 
 
 // End the page.
