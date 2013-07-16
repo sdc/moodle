@@ -134,4 +134,64 @@ class moodlestandard_testcase extends local_codechecker_testcase {
         // Let's do all the hard work!
         $this->verify_cs_results();
     }
+
+    /**
+     * Test call time pass by reference.
+     */
+    public function test_phpcompatibility_php_forbiddencalltimepassbyreference() {
+
+        // Define the standard, sniff and fixture to use.
+        $this->set_standard('moodle');
+        $this->set_sniff('PHPCompatibility_Sniffs_PHP_ForbiddenCallTimePassByReferenceSniff');
+        $this->set_fixture(__DIR__ . '/fixtures/phpcompatibility_php_forbiddencalltimepassbyreference.php');
+
+        // Define expected results (errors and warnings). Format, array of:
+        //   - line => number of problems,  or
+        //   - line => array of contents for message / source problem matching.
+        //   - line => string of contents for message / source problem matching (only 1).
+        $this->set_errors(array(
+            6 => array('call-time pass-by-reference is prohibited'),
+            7 => array('@Source: phpcompat')));
+        $this->set_warnings(array());
+
+        // Let's do all the hard work!
+        $this->verify_cs_results();
+    }
+
+    /**
+     * Test variable naming standards
+     */
+    public function test_moodle_namingconventions_variablename() {
+
+        // Define the standard, sniff and fixture to use.
+        $this->set_standard('moodle');
+        $this->set_sniff('moodle_Sniffs_NamingConventions_ValidVariableNameSniff');
+        $this->set_fixture(__DIR__ . '/fixtures/moodle_namingconventions_variablename.php');
+
+        // Define expected results (errors and warnings). Format, array of:
+        //   - line => number of problems,  or
+        //   - line => array of contents for message / source problem matching.
+        //   - line => string of contents for message / source problem matching (only 1).
+        $this->set_errors(array(
+            4 => 'must not contain underscores',
+            5 => 'must be all lower-case',
+            6 => 'must not contain underscores',
+            7 => array('must be all lower-case', 'must not contain underscores'),
+            8 => 0,
+            9 => 0,
+            12 => 'must not contain underscores',
+            13 => 'must be all lower-case',
+            14 => array('must be all lower-case', 'must not contain underscores'),
+            15 => 0,
+            16 => 0,
+            17 => 'The \'var\' keyword is not permitted',
+            20 => 'must be all lower-case',
+            21 => 'must not contain underscores',
+            22 => array('must be all lower-case', 'must not contain underscores'),
+        ));
+        $this->set_warnings(array());
+
+        // Let's do all the hard work!
+        $this->verify_cs_results();
+    }
 }
