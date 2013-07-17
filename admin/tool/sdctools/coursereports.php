@@ -90,7 +90,7 @@ if ($cid) {
 
         echo '  <dd><b>'.get_string('full', 'tool_sdctools').':</b> '.$course->fullname.' '.implode(' ', $buttons).'</dd>';
         echo '  <dd><b>'.get_string('short', 'tool_sdctools').':</b> '.$course->shortname.'</dd>';
-        
+
         $coursecategory = $DB->get_record('course_categories', array('id' => $course->category), 'name');
         if ($coursecategory) {
             echo '  <dd><b>'.get_string('category').':</b> '.$coursecategory->name.'</dd>';
@@ -98,7 +98,7 @@ if ($cid) {
             echo '  <dd><b>'.get_string('category').':</b> No category</dd>';
         }
         echo '  <dd><b>'.get_string('id', 'tool_sdctools').':</b> '.$course->id.'</dd>';
-        $idnumber = ($course->idnumber == '') ? get_string('blank', 'tool_sdctools') : $course->idnumber; 
+        $idnumber = ($course->idnumber == '') ? get_string('blank', 'tool_sdctools') : $course->idnumber;
         echo '  <dd><b>'.get_string('idnumbercourse').':</b> '.$idnumber.'</dd>';
         $visible = ($course->visible == 1) ? get_string('yes') : '<span class="error">'.get_string('no').'</span>';
         echo '  <dd><b>'.get_string('visible').':</b> '.$visible.'</dd>';
@@ -110,8 +110,7 @@ if ($cid) {
         echo '  <dd><b>Modified:</b> '.strftime(get_string('strftimedaydate'), $course->timemodified).' ('.sdctools_timeago($course->timemodified).')</dd>';
         echo '</dl>';
 
-
-        // Format and Access. 
+        // Format and Access.
         echo '<dl>';
         echo '<dt>Format and Access</dt>';
         echo '  <dd><b>Format:</b> '.ucfirst($course->format).'</dd>';
@@ -135,12 +134,13 @@ if ($cid) {
             $out = '<i>(never)</i>';
         }
         echo '  <dd><b>Last accessed:</b> '.$out.'</dd>';
-//SELECT COUNT( mdl_grade_grades.id ) FROM mdl_grade_grades, mdl_grade_items WHERE mdl_grade_grades.itemid = mdl_grade_items.id AND courseid =7
-//$cs_n = $DB->get_records_select('course_sections', 'name LIKE ? AND course = ?', $searchterm, null, 'id');
-        $grades = $DB->get_record_sql("SELECT COUNT(mdl_grade_grades.id) AS grades FROM mdl_grade_grades, mdl_grade_items WHERE mdl_grade_grades.itemid = mdl_grade_items.id AND courseid = ".$cid);
+        // SELECT COUNT( mdl_grade_grades.id ) FROM mdl_grade_grades, mdl_grade_items WHERE mdl_grade_grades.itemid = mdl_grade_items.id AND courseid =7
+        // $cs_n = $DB->get_records_select('course_sections', 'name LIKE ? AND course = ?', $searchterm, null, 'id');
+        $grades = $DB->get_record_sql("SELECT COUNT(mdl_grade_grades.id) AS grades FROM mdl_grade_grades, mdl_grade_items
+            WHERE mdl_grade_grades.itemid = mdl_grade_items.id AND courseid = ".$cid);
         if ($grades) {
             echo '  <dd><b>Grades:</b> '.number_format($grades->grades).'</dd>';
-        } 
+        }
 
         echo '</dl>';
 
@@ -171,7 +171,8 @@ if ($cid) {
                     // If pictures are on and the user has uploaded one.
                     if ($pictures && $haspicture->picture > 0) {
                         $out .= html_writer::link(new moodle_url('/user/view.php', array('id' => $roleuserkey)),
-                            html_writer::empty_tag('img', array('src' => $CFG->wwwroot.'/user/pix.php/'.$roleuserkey.'/f1.jpg', 'alt' => $roleuservalue)), array('title' => $roleuservalue));
+                            html_writer::empty_tag('img', array('src' => $CFG->wwwroot.'/user/pix.php/'.$roleuserkey.'/f1.jpg',
+                                'alt' => $roleuservalue)), array('title' => $roleuservalue));
                     } else {
                         $out .= html_writer::link(new moodle_url('/user/view.php', array('id' => $roleuserkey)), $roleuservalue).', ';
                     }
@@ -181,7 +182,8 @@ if ($cid) {
                 $out = get_string('none', 'tool_sdctools');
             }
             $plural = (substr($role->name, -1) == 's') ? '' : $rolecount == 1 ? '' : 's';
-            echo '  <dd><b><abbr title="'.strip_tags($role->description).'">'.number_format($rolecount).' '.ucfirst($role->name).$plural.':</abbr></b> '.$out.'</dd>';
+            echo '  <dd><b><abbr title="'.strip_tags($role->description).'">'.number_format($rolecount).' '.
+                ucfirst($role->name).$plural.':</abbr></b> '.$out.'</dd>';
         }
         echo '</dl>';
 
@@ -230,52 +232,52 @@ if ($cid) {
         $needle = 'absence';
         $searchterm = array('%'.$needle.'%', $cid);
         $out = '';
-        $cs_n = $DB->get_records_select('course_sections', 'name LIKE ? AND course = ?', $searchterm, null, 'id');
-        if ($cs_n) {
-            //$cs_n_count = count($cs_n);
-            //$out .= 'Section name: '.$cs_n_count.'. ';
+        $csn = $DB->get_records_select('course_sections', 'name LIKE ? AND course = ?', $searchterm, null, 'id');
+        if ($csn) {
+            // $csn_count = count($csn);
+            // $out .= 'Section name: '.$csncount.'. ';
             $out .= 'section name, ';
         }
-        $cs_s = $DB->get_records_select('course_sections', 'summary LIKE ? and course like ?', $searchterm, null, 'id');
-        if ($cs_s) {
-            //$cs_s_count = count($cs_s);
-            //$out .= 'Section summary: '.$cs_s_count.'. ';
+        $css = $DB->get_records_select('course_sections', 'summary LIKE ? and course like ?', $searchterm, null, 'id');
+        if ($css) {
+            // $csscount = count($css);
+            // $out .= 'Section summary: '.$csscount.'. ';
             $out .= 'section summary, ';
         }
-        $r_n = $DB->get_records_select('resource', 'name LIKE ? and course like ?', $searchterm, null, 'id');
-        if ($r_n) {
-            //$r_n_count = count($r_n);
-            //$out .= 'Resource name: '.$r_n_count.'. ';
+        $rn = $DB->get_records_select('resource', 'name LIKE ? and course like ?', $searchterm, null, 'id');
+        if ($rn) {
+            // $rncount = count($rn);
+            // $out .= 'Resource name: '.$rncount.'. ';
             $out .= 'resource name, ';
         }
-        $r_i = $DB->get_records_select('resource', 'intro LIKE ? and course like ?', $searchterm, null, 'id');
-        if ($r_i) {
-            //$r_i_count = count($r_i);
-            //$out .= 'Resource introduction: '.$r_i_count.'. ';
+        $ri = $DB->get_records_select('resource', 'intro LIKE ? and course like ?', $searchterm, null, 'id');
+        if ($ri) {
+            // $ri_count = count($ri);
+            // $out .= 'Resource introduction: '.$ricount.'. ';
             $out .= 'resource introduction, ';
         }
-        $p_n = $DB->get_records_select('page', 'name LIKE ? and course like ?', $searchterm, null, 'id');
-        if ($p_n) {
-            //$p_n_count = count($p_n);
-            //$out .= 'Page name: '.$p_n_count.'. ';
+        $pn = $DB->get_records_select('page', 'name LIKE ? and course like ?', $searchterm, null, 'id');
+        if ($pn) {
+            // $pn_count = count($pn);
+            // $out .= 'Page name: '.$pncount.'. ';
             $out .= 'page name, ';
         }
-        $p_i = $DB->get_records_select('page', 'intro LIKE ? and course like ?', $searchterm, null, 'id');
-        if ($p_i) {
-            //$p_i_count = count($p_i);
-            //$out .= 'Page intro: '.$p_i_count.'. ';
+        $pi = $DB->get_records_select('page', 'intro LIKE ? and course like ?', $searchterm, null, 'id');
+        if ($pi) {
+            // $pi_count = count($pi);
+            // $out .= 'Page intro: '.$picount.'. ';
             $out .= 'page intro, ';
         }
-        $u_n = $DB->get_records_select('url', 'name LIKE ? and course like ?', $searchterm, null, 'id');
-        if ($u_n) {
-            //$u_n_count = count($u_n);
-            //$out .= 'URL name: '.$u_n_count.'. ';
+        $un = $DB->get_records_select('url', 'name LIKE ? and course like ?', $searchterm, null, 'id');
+        if ($un) {
+            // $uncount = count($un);
+            // $out .= 'URL name: '.$uncount.'. ';
             $out .= 'URL name, ';
         }
-        $l_n = $DB->get_records_select('label', 'name LIKE ? and course like ?', $searchterm, null, 'id');
-        if ($l_n) {
-            //$l_n_count = count($l_n);
-            //$out .= 'Label name: '.$l_n_count.'. ';
+        $ln = $DB->get_records_select('label', 'name LIKE ? and course like ?', $searchterm, null, 'id');
+        if ($ln) {
+            // $lncount = count($ln);
+            // $out .= 'Label name: '.$lncount.'. ';
             $out .= 'label name';
         }
         $out = sdctools_trimcomma($out);
@@ -311,14 +313,14 @@ if ($cid) {
     }
 
     // Courses in alphanumeric order by name.
-    $courses_alpha = $courses;
-    asort($courses_alpha);
-    $courses_alpha = array(0 => 'Select...', -1 => 'All courses') + sdctools_idprefix($courses_alpha);
+    $coursesalpha = $courses;
+    asort($coursesalpha);
+    $coursesalpha = array(0 => 'Select...', -1 => 'All courses') + sdctools_idprefix($coursesalpha);
 
     // Courses in numeric order by course ID.
-    $courses_numeric = sdctools_idprefix($courses);
-    ksort($courses_numeric);
-    $courses_numeric = array(0 => 'Select...', -2 => 'All courses') + $courses_numeric;
+    $coursesnumeric = sdctools_idprefix($courses);
+    ksort($coursesnumeric);
+    $coursesnumeric = array(0 => 'Select...', -2 => 'All courses') + $coursesnumeric;
 
     unset($courses);
 
@@ -333,7 +335,7 @@ if ($cid) {
     echo '<form class="courseselectalphaform" action="coursereports.php" method="get">'."\n";
     echo "  <div>\n";
     echo html_writer::label(get_string('selectacourse'), 'menuid', false, array('class' => 'accesshide'));
-    echo html_writer::select($courses_alpha, 'id', $cid, false);
+    echo html_writer::select($coursesalpha, 'id', $cid, false);
     echo '  <input type="hidden" name="pictures" value="'.$pictures.'" />';
     echo '  <input type="submit" value="'.get_string('getcoursereport', 'tool_sdctools').'" />';
     echo '  </div>';
@@ -344,7 +346,7 @@ if ($cid) {
     echo '<form class="courseselectnumericform" action="coursereports.php" method="get">'."\n";
     echo "  <div>\n";
     echo html_writer::label(get_string('selectacourse'), 'menuid', false, array('class' => 'accesshide'));
-    echo html_writer::select($courses_numeric, 'id', $cid, false);
+    echo html_writer::select($coursesnumeric, 'id', $cid, false);
     echo '  <input type="hidden" name="pictures" value="'.$pictures.'" />';
     echo '  <input type="submit" value="'.get_string('getcoursereport', 'tool_sdctools').'" />';
     echo '  </div>';

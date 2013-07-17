@@ -32,6 +32,7 @@ $string['userchecks']             = 'User Checks';
 $string['coursereports']          = 'Course Reports';
 $string['coursereportspictures']  = 'with pictures';
 $string['second']                 = 'second';
+$string['module']                 = 'Module';
 
 // Server details strings.
 $string['serverdetailsheader']        = 'Server details';
@@ -54,7 +55,6 @@ $string['backupstatus']               = 'Backup Status';
 $string['newuserstatsheading']        = 'Recent new user statistics';
 $string['newuserstatsstrapline']      = 'Number of users created per <i>time period</i>. Date used is <i>firstaccess</i> which is not always populated.';
 $string['firstaccessstrapline']       = 'Those with <i>firstaccess</i> set, compared to those without.';
-
 
 // Email-checking strings.
 $string['emptyemailname']   = 'Empty email check';
@@ -96,3 +96,13 @@ $string['anonusersheader']    = 'Anonymous users';
 $string['anonusersstrapline'] = 'Users with the word &quot;anon&quot; in their first and last name.';
 $string['noanonusers']        = '<strong>Result:</strong> No users in the \'users\' table have &quot;anon&quot; as part of their first or last name.';
 $string['anonusers']          = '<strong>Result:</strong> The following {$a} users have &quot;anon&quot; as part of their first or last name:';
+
+$string['recentusersheader']    = 'Recent users';
+$string['recentusersstrapline'] = 'Some of the most recently created users from the database. This will change frequently during induction week.';
+$string['norecentusers']          = '<strong>Result:</strong> There are no users in the users table: hopefully there has been a mistake but this would be quite bad if true...';
+$string['recentusers']            = '<strong>Result:</strong> The following are the {$a} most recent users who have joined Moodle:';
+
+$string['recentlogsheader']     = 'Recent logs';
+$string['recentlogsstrapline']  = 'Some of the most recent log entries. This will change frequently as this logs every action performed in Moodle by anyone.';
+$string['norecentlogs']         = '<strong>Result:</strong> There are no users in the logs table: hopefully there has been a mistake but this would be quite bad if true...';
+$string['recentlogs']           = '<strong>Result:</strong> The following are the {$a} most recent log entries:';
