@@ -29,15 +29,15 @@ defined('MOODLE_INTERNAL') || die;
  */
 function sdctools_tableofcontents() {
     global $OUTPUT, $pictures;
-    
+
     $out = '';
 
     $out .= '<ul>';
     $out .= '<li><a href="index.php">'.get_string('pluginname', 'tool_sdctools').'</a></li>';
     $out .= '<li><a href="emails.php">'.get_string('emailchecks', 'tool_sdctools').'</a></li>';
     $out .= '<li><a href="users.php">'.get_string('userchecks', 'tool_sdctools').'</a></li>';
-    //$out .= '<li><a href="coursereports.php">'.get_string('coursereports', 'tool_sdctools').'</a>';
-    //$out .= ' (<a href="coursereports.php?pictures=1">'.get_string('coursereportspictures', 'tool_sdctools').'</a>)</li>';
+    // $out .= '<li><a href="coursereports.php">'.get_string('coursereports', 'tool_sdctools').'</a>';
+    // $out .= ' (<a href="coursereports.php?pictures=1">'.get_string('coursereportspictures', 'tool_sdctools').'</a>)</li>';
 
     $out .= '<li>'.html_writer::link(new moodle_url('coursereports.php'), get_string('coursereports', 'tool_sdctools'));
 
@@ -66,7 +66,7 @@ function sdctools_idprefix($in) {
 function sdctools_timeago($int, $ago = true, $short = true) {
 
     $in = ($ago) ? (time() - $int) : $int;
-    
+
     $secsyear = 60*60*24*365.25;
     $secsday  = 60*60*24;
     $secshour = 60*60;
@@ -81,7 +81,7 @@ function sdctools_timeago($int, $ago = true, $short = true) {
     $minutes = intval($remainder / $secsmin);
     $remainder = $remainder % $secsmin;
     $seconds = intval($remainder);
-    
+
     $out = '';
     // Omit any period of time with no data.
     if ($years) {
