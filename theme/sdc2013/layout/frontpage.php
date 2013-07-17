@@ -69,7 +69,11 @@ echo $OUTPUT->doctype() ?>
                 if (!isloggedin() or isguestuser()) {
                     echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$USER->id.'&amp;course='.$COURSE->id.'"><img src="'.$CFG->wwwroot.'/user/pix.php?file=/'.$USER->id.'/f1.jpg" title="Guest" alt="Guest"></a>';
                 } else {
-                    echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$USER->id.'&amp;course='.$COURSE->id.'"><img src="'.$CFG->wwwroot.'/user/pix.php?file=/'.$USER->id.'/f1.jpg" title="'.$USER->firstname.' '.$USER->lastname.'" alt="'.$USER->firstname.' '.$USER->lastname.'"></a>';
+                    if (date('j', time()) == 1 && date('n', time()) == 4 ) {
+                        echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$USER->id.'&amp;course='.$COURSE->id.'"><img src="http://lorempixel.com/100/100/cats/" title="Cat du jour" alt="Cat du jour"></a>';
+                    } else {
+                        echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$USER->id.'&amp;course='.$COURSE->id.'"><img src="'.$CFG->wwwroot.'/user/pix.php?file=/'.$USER->id.'/f1.jpg" title="'.$USER->firstname.' '.$USER->lastname.'" alt="'.$USER->firstname.' '.$USER->lastname.'"></a>';
+                    }
                 }
             ?>
             </div>
