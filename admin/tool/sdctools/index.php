@@ -131,7 +131,7 @@ $backuprunning = $DB->get_record('config_plugins', array('plugin' => 'backup', '
 if ($backuprunning && $backuprunning->value == 1) {
     $out .= get_string('running', 'tool_sdctools');
 }
-echo '<li><strong>'.get_string('backupstatus', 'tool_sdctools').':</strong> '.$out.'</li>';
+echo '<li><strong>'.get_string('backupstatus', 'tool_sdctools').'</strong> '.$out.'</li>';
 
 echo '</ul>';
 
@@ -170,24 +170,24 @@ $userstats = $DB->get_records_sql("SELECT
 
 $table = new html_table();
 $table->head = array ();
-$table->head[] = '1m';
-$table->head[] = '5m';
-$table->head[] = '15m';
-$table->head[] = '1h';
-$table->head[] = '2h';
-$table->head[] = '6h';
-$table->head[] = '12h';
-$table->head[] = '1d';
-$table->head[] = '2d';
-$table->head[] = '1w';
-$table->head[] = '2w';
-$table->head[] = '1mn';
-$table->head[] = '2mn';
-$table->head[] = '3mn';
-$table->head[] = '6mn';
-$table->head[] = '1y';
-$table->head[] = '2y';
-$table->head[] = '3y';
+$table->head[] = get_string('one', 'tool_sdctools');
+$table->head[] = get_string('five', 'tool_sdctools');
+$table->head[] = get_string('fifteen', 'tool_sdctools');
+$table->head[] = get_string('onehour', 'tool_sdctools');
+$table->head[] = get_string('twohours', 'tool_sdctools');
+$table->head[] = get_string('sixhours', 'tool_sdctools');
+$table->head[] = get_string('twelvehours', 'tool_sdctools');
+$table->head[] = get_string('twentyfour', 'tool_sdctools');
+$table->head[] = get_string('fortyeight', 'tool_sdctools');
+$table->head[] = get_string('oneweek', 'tool_sdctools');
+$table->head[] = get_string('twoweeks', 'tool_sdctools');
+$table->head[] = get_string('onemonth', 'tool_sdctools');
+$table->head[] = get_string('twomonths', 'tool_sdctools');
+$table->head[] = get_string('threemonths', 'tool_sdctools');
+$table->head[] = get_string('sixmonths', 'tool_sdctools');
+$table->head[] = get_string('oneyear', 'tool_sdctools');
+$table->head[] = get_string('twoyears', 'tool_sdctools');
+$table->head[] = get_string('threeyears', 'tool_sdctools');
 $table->width = "100%";
 $row = array ();
 $row[] = number_format($userstats[0]->one);
