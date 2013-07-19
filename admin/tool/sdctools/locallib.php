@@ -28,21 +28,16 @@ defined('MOODLE_INTERNAL') || die;
  * Draw a common table of contents.
  */
 function sdctools_tableofcontents() {
-    global $OUTPUT, $pictures;
+    global $OUTPUT;
 
     $out = '';
 
     $out .= '<ul>';
-    $out .= '<li><a href="index.php">'.get_string('pluginname', 'tool_sdctools').'</a></li>';
-    $out .= '<li><a href="emails.php">'.get_string('emailchecks', 'tool_sdctools').'</a></li>';
-    $out .= '<li><a href="users.php">'.get_string('userchecks', 'tool_sdctools').'</a></li>';
-    // $out .= '<li><a href="coursereports.php">'.get_string('coursereports', 'tool_sdctools').'</a>';
-    // $out .= ' (<a href="coursereports.php?pictures=1">'.get_string('coursereportspictures', 'tool_sdctools').'</a>)</li>';
-
+    $out .= '<li>'.html_writer::link(new moodle_url('index.php'), get_string('pluginname', 'tool_sdctools')).'</li>';
+    $out .= '<li>'.html_writer::link(new moodle_url('emails.php'), get_string('emailchecks', 'tool_sdctools')).'</li>';
+    $out .= '<li>'.html_writer::link(new moodle_url('users.php'), get_string('userchecks', 'tool_sdctools')).'</li>';
     $out .= '<li>'.html_writer::link(new moodle_url('coursereports.php'), get_string('coursereports', 'tool_sdctools'));
-
     $out .= ' ('.html_writer::link(new moodle_url('coursereports.php', array('pictures' => 1)), get_string('coursereportspictures', 'tool_sdctools')).')</li>';
-
     $out .= '<ul>';
 
     return $out;
