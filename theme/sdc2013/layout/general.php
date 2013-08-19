@@ -49,6 +49,7 @@ echo $OUTPUT->doctype() ?>
     <title><?php echo $PAGE->title ?></title>
     <link rel="shortcut icon" href="<?php echo $OUTPUT->pix_url('favicon', 'theme')?>" />
     <?php echo $OUTPUT->standard_head_html() ?>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700|Roboto:400,100,300,500,700,900' rel='stylesheet' type='text/css'>
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-1183265-2']);
