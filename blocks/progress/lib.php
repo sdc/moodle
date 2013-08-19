@@ -77,14 +77,15 @@ function get_monitorable_modules() {
                                     WHERE i.itemmodule = 'assign'
                                       AND i.iteminstance = :eventid
                                       AND i.id = g.itemid
-                                      AND g.userid = :userid",
+                                      AND g.userid = :userid
+                                      AND g.finalgrade IS NOT NULL",
                 'passed'       => "SELECT g.rawgrade
                                      FROM {grade_grades} g, {grade_items} i
                                     WHERE i.itemmodule = 'assign'
                                       AND i.iteminstance = :eventid
                                       AND i.id = g.itemid
                                       AND g.userid = :userid
-                                      AND g.rawgrade >= i.gradepass"
+                                      AND g.finalgrade >= i.gradepass"
             ),
             'defaultAction' => 'submitted'
         ),
@@ -104,16 +105,42 @@ function get_monitorable_modules() {
                                     WHERE i.itemmodule = 'assignment'
                                       AND i.iteminstance = :eventid
                                       AND i.id = g.itemid
-                                      AND g.userid = :userid",
+                                      AND g.userid = :userid
+                                      AND g.finalgrade IS NOT NULL",
                 'passed'       => "SELECT g.rawgrade
                                      FROM {grade_grades} g, {grade_items} i
                                     WHERE i.itemmodule = 'assignment'
                                       AND i.iteminstance = :eventid
                                       AND i.id = g.itemid
                                       AND g.userid = :userid
-                                      AND g.rawgrade >= i.gradepass"
+                                      AND g.finalgrade >= i.gradepass"
             ),
             'defaultAction' => 'submitted'
+        ),
+        'bigbluebuttonbn' => array(
+            'defaultTime'=>'timedue',
+            'actions'=>array(
+                'viewed'       => "SELECT id
+                                     FROM {log}
+                                    WHERE course = :courseid
+                                      AND module = 'bigbluebuttonbn'
+                                      AND action = 'view'
+                                      AND cmid = :cmid
+                                      AND userid = :userid"
+            ),
+            'defaultAction' => 'viewed'
+        ),
+        'recordingsbn' => array(
+            'actions'=>array(
+                'viewed'       => "SELECT id
+                                     FROM {log}
+                                    WHERE course = :courseid
+                                      AND module = 'recordingsbn'
+                                      AND action = 'view'
+                                      AND cmid = :cmid
+                                      AND userid = :userid"
+            ),
+            'defaultAction' => 'viewed'
         ),
         'book' => array(
             'actions'=>array(
@@ -292,7 +319,8 @@ function get_monitorable_modules() {
                                     WHERE i.itemmodule = 'lesson'
                                       AND i.iteminstance = :eventid
                                       AND i.id = g.itemid
-                                      AND g.userid = :userid"
+                                      AND g.userid = :userid
+                                      AND g.finalgrade IS NOT NULL"
             ),
             'defaultAction' => 'attempted'
         ),
@@ -325,14 +353,15 @@ function get_monitorable_modules() {
                                     WHERE i.itemmodule = 'quiz'
                                       AND i.iteminstance = :eventid
                                       AND i.id = g.itemid
-                                      AND g.userid = :userid",
+                                      AND g.userid = :userid
+                                      AND g.finalgrade IS NOT NULL",
                 'passed'       => "SELECT g.rawgrade
                                      FROM {grade_grades} g, {grade_items} i
                                     WHERE i.itemmodule = 'quiz'
                                       AND i.iteminstance = :eventid
                                       AND i.id = g.itemid
                                       AND g.userid = :userid
-                                      AND g.rawgrade >= i.gradepass"
+                                      AND g.finalgrade >= i.gradepass"
             ),
             'defaultAction' => 'finished'
         ),
@@ -356,6 +385,17 @@ function get_monitorable_modules() {
                                       AND {$DB->sql_compare_text('value')} = 'passed'"
             ),
             'defaultAction' => 'attempted'
+        ),
+        'turnitintool' => array(
+            'defaultTime'=>'defaultdtdue',
+            'actions'=>array(
+                'submitted'    => "SELECT id
+                                     FROM {turnitintool_submissions}
+                                    WHERE turnitintoolid = :eventid
+                                      AND userid = :userid
+                                      AND submission_score IS NOT NULL"
+            ),
+            'defaultAction' => 'submitted'
         ),
         'url' => array(
             'actions'=>array(
@@ -399,7 +439,8 @@ function get_monitorable_modules() {
                                     WHERE i.itemmodule = 'workshop'
                                       AND i.iteminstance = :eventid
                                       AND i.id = g.itemid
-                                      AND g.userid = :userid"
+                                      AND g.userid = :userid
+                                      AND g.finalgrade IS NOT NULL"
             ),
             'defaultAction' => 'submitted'
         ),
@@ -447,7 +488,7 @@ function modules_in_use() {
  * @return mixed   returns array of visible events monitored,
  *                 empty array if none of the events are visible,
  *                 null if all events are configured to "no" monitoring and
- *                 0 if events are available but no cofig is set
+ *                 0 if events are available but no config is set
  */
 function event_information($config, $modules) {
     global $COURSE, $DB;
@@ -580,7 +621,7 @@ function get_attempts($modules, $config, $events, $userid, $instance) {
         else {
             $action = isset($config->{'action_'.$uniqueid})?
                       $config->{'action_'.$uniqueid}:
-                      $details['defaultAction'];
+                      $module['defaultAction'];
             $query =  $module['actions'][$action];
         }
         $parameters = array('courseid' => $COURSE->id, 'courseid1' => $COURSE->id,
@@ -660,6 +701,9 @@ function progress_bar($modules, $config, $events, $userid, $instance, $attempts,
     $content .= HTML_WRITER::start_tag('tr');
     foreach ($events as $event) {
         $attempted = $attempts[$event['type'].$event['id']];
+        $action = isset($config->{'action_'.$event['type'].$event['id']})?
+                  $config->{'action_'.$event['type'].$event['id']}:
+                  $modules[$event['type']]['defaultAction'];
 
         // A cell in the progress bar
         $celloptions = array(
@@ -672,8 +716,8 @@ function progress_bar($modules, $config, $events, $userid, $instance, $attempts,
                 '\''.get_string($event['type'], 'block_progress').'\', '.
                 '\''.$event['cmid'].'\', '.
                 '\''.addslashes($event['name']).'\', '.
-                '\''.get_string($config->{'action_'.$event['type'].$event['id']}, 'block_progress').'\', '.
-                '\''.userdate($event['expected'], $dateformat, $CFG->timezone).'\', '.
+                '\''.get_string($action, 'block_progress').'\', '.
+                '\''.addslashes(userdate($event['expected'], $dateformat, $CFG->timezone)).'\', '.
                 '\''.$instance.'\', '.
                 '\''.$userid.'\', '.
                 '\''.($attempted?'tick':'cross').'\''.
