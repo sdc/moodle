@@ -27,6 +27,7 @@
 $string['assign'] = 'Assignment';
 $string['assignment'] = 'Assignment';
 $string['book'] = 'Book';
+$string['bigbluebuttonbn'] = 'Big Blue Button';
 $string['certificate'] = 'Certificate';
 $string['chat'] = 'Chat';
 $string['choice'] = 'Choice';
@@ -43,7 +44,9 @@ $string['lesson'] = 'Lesson';
 $string['page'] = 'Page';
 $string['quiz'] = 'Quiz';
 $string['resource'] = 'File';
+$string['recordingsbn'] = 'BBB Recordings';
 $string['scorm'] = 'SCORM';
+$string['turnitintool'] = 'Turnitin Tool';
 $string['url'] = 'URL';
 $string['wiki'] = 'Wiki';
 $string['workshop'] = 'Workshop';
