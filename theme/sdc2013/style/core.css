@@ -1,6 +1,3 @@
-/* Google Web Fonts FTW, falling back to standard theme fonts (order changed). */
-@import url(http://fonts.googleapis.com/css?family=Droid+Sans:400,700|Roboto:400,100,300,500,700,900);
-
 html, body#tinymce {background-color:#fafafa;}
 body {font-family: Roboto, verdana, helvetica, arial, sans-serif;padding: 4px; font-weight: 300;}
 body.lang-vi {font-family: Roboto, verdana, helvetica, arial, sans-serif !important; font-weight: 300;}
