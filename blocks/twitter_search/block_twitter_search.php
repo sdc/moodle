@@ -27,6 +27,11 @@ class block_twitter_search extends block_base {
     }
 
     public function get_content() {
+
+        function cmp($a, $b) {
+            return strlen($b)-strlen($a);
+        }
+
         global $PAGE, $CFG;
         if ($this->content != null) {
             return $this->content;
@@ -65,15 +70,15 @@ class block_twitter_search extends block_base {
 
             $searchterm = (isset($this->config->search_term)) ? $this->config->search_term : '#moodle';
             $searchtermenc = urlencode($searchterm);
-            // $searchtermenc = $searchterm;
 
-            $numtweets = (isset($this->config->numtweets)) ? $this->config->numtweets : 5;
-            $username = (isset($this->config->show_usernames)) ? $this->config->show_usernames : true;
-            $realname = (isset($this->config->show_names)) ? $this->config->show_names : false;
-            $image = (isset($this->config->show_images)) ? $this->config->show_images : true;
-            $update = (isset($this->config->show_update)) ? $this->config->show_update : true;
-            $title = (isset($this->config->title_block)) ? $this->config->title_block : false;
-            $type = (isset($this->config->tweettype)) ? $this->config->tweettype : 'recent';
+            $numtweets      = (isset($this->config->numtweets)) ? $this->config->numtweets : 5;
+            $username       = (isset($this->config->show_usernames)) ? $this->config->show_usernames : true;
+            $realname       = (isset($this->config->show_names)) ? $this->config->show_names : false;
+            $image          = (isset($this->config->show_images)) ? $this->config->show_images : true;
+            $update         = (isset($this->config->show_update)) ? $this->config->show_update : true;
+            $title          = (isset($this->config->title_block)) ? $this->config->title_block : false;
+            $type           = (isset($this->config->tweettype)) ? $this->config->tweettype : 'recent';
+            $expandimglinks = (isset($this->config->expand_img_links)) ? $this->config->expand_img_links : true;
 
             $data = $connection->get('search/tweets', array('q' => $searchtermenc, 'count' => $numtweets));
 
@@ -82,25 +87,29 @@ class block_twitter_search extends block_base {
                 $output .= '<ul class="block_twitter_search_tweets">';
                 foreach ($data->statuses as $status) {
 
-                    $output .= '<li class="tweet">';
+                    // Beginnings of a blacklist.
+                    if ($status->user->screen_name == 'e1doom') {
+                        break;
+                    }
 
                     // Get all the nice information from the returned data.
                     $author     = $status->user->screen_name;
                     $authorname = $status->user->name;
                     $authorimg  = $status->user->profile_image_url;
-                    // $authorlink = $status->user->url;
                     $authorlink = 'http://twitter.com/'.$author;
-                    $tweet      = $status->text;
+                    $tweet      = ' '.$status->text;
+
+                    $output .= '<li class="tweet">';
 
                     // Formatting the user's username and/or name.
                     if ($username == false && $realname == false) {
                         $authortext = '';
                     } else if ($username == true && $realname == true) {
-                        $authortext = '@'.$author.' ('.$authorname.'): ';
+                        $authortext = '@'.$author.' ('.$authorname.')';
                     } else if ($username == true) {
-                        $authortext = '@'.$author.': ';
+                        $authortext = '@'.$author.'';
                     } else if ($realname == true) {
-                        $authortext = $authorname.': ';
+                        $authortext = $authorname.'';
                     }
 
                     // Adding in the image.
@@ -108,7 +117,44 @@ class block_twitter_search extends block_base {
                         $output .= '<img src="'.$authorimg.'">';
                     }
 
-                    $output .= '<a href="'.$authorlink.'">'.$authortext.'</a>';
+                    // Replacing #hashtags with linked #hashtags. It's not perfect.
+                    $allhashtags = array();
+                    foreach ($status->entities->hashtags as $hashtag) {
+                        $allhashtags[] = $hashtag->text;
+                    }
+
+                    // Sorting the hashtags into length order.
+                    usort($allhashtags, "cmp");
+
+                    // Replacing #hashtags with linked #hashtags. It's not perfect.
+                    foreach ($allhashtags as $hashtag) {
+                        $tweet = preg_replace('/ #'.$hashtag.'/i',
+                            ' <a href="https://twitter.com/search?q='.urlencode('#'.$hashtag).'">#'.$hashtag.'</a>', $tweet);
+                    }
+
+                    // Replacing @usernames with linked @usernames. It's not perfect.
+                    foreach ($status->entities->user_mentions as $usermention) {
+                        $tweet = preg_replace('/@'.$usermention->screen_name.'/i',
+                            '<a href="https://twitter.com/'.$usermention->screen_name.'">'.'@'.$usermention->screen_name.'</a>', $tweet);
+                    }
+
+                    // Replacing links with linked links. Again, it's not perfect.
+                    foreach ($status->entities->urls as $url) {
+                        $tweet = preg_replace('#'.$url->url.'#i', '<a href="'.$url->url.'">'.$url->display_url.'</a>', $tweet);
+                    }
+
+                    // Replacing media links with linked media links. Again, it's not perfect.
+                    if (isset($status->entities->media)) {
+                        foreach ($status->entities->media as $url) {
+                            if ($expandimglinks) {
+                                $tweet = preg_replace('#'.$url->url.'#i', '<a href="'.$url->url.'">'.$url->display_url.'<img class="ts_embedded_img" src="'.$url->media_url.':thumb"></a>', $tweet);
+                            } else {
+                                $tweet = preg_replace('#'.$url->url.'#i', '<a href="'.$url->url.'">'.$url->display_url.'</a>', $tweet);
+                            }
+                        }
+                    }
+
+                    $output .= '<a href="'.$authorlink.'">'.$authortext.'</a> ';
                     $output .= format_text($tweet, FORMAT_HTML);
                     $output .= '</li>';
                 }

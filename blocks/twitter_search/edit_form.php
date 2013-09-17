@@ -28,8 +28,9 @@ class block_twitter_search_edit_form extends block_edit_form {
         $mform->setDefault('config_search_term', '#moodle');
         $mform->setType('config_search_term', PARAM_MULTILANG);
 
-        $mform->addElement('select', 'config_numtweets', get_string('numtweets', 'block_twitter_search'), range(1, 20));
-        $mform->setDefault('config_numtweets', 2);
+        $mform->addElement('select', 'config_numtweets', get_string('numtweets', 'block_twitter_search'),
+            array(1 => 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15 => 15, 20 =>20, 25 => 25, 30 => 30, 40 => 40, 50 => 50));
+        $mform->setDefault('config_numtweets', 5);
         $mform->setType('config_numtweets', PARAM_INT);
 
         // New option: tweet types.
@@ -49,6 +50,10 @@ class block_twitter_search_edit_form extends block_edit_form {
         $mform->addElement('advcheckbox', 'config_show_images', get_string('show_images', 'block_twitter_search'));
         $mform->setDefault('config_show_images', true);
         $mform->setType('config_show_images', PARAM_BOOL);
+
+        $mform->addElement('advcheckbox', 'config_expand_img_links', get_string('expand_img_links', 'block_twitter_search'));
+        $mform->setDefault('config_expand_img_links', true);
+        $mform->setType('config_expand_img_links', PARAM_BOOL);
 
         $mform->addElement('advcheckbox', 'config_show_update', get_string('show_update', 'block_twitter_search'));
         $mform->setDefault('config_show_update', true);
