@@ -28,9 +28,9 @@ class block_twitter_search extends block_base {
 
     public function get_content() {
 
-        function cmp($a, $b) {
-            return strlen($b)-strlen($a);
-        }
+        //function cmp($a, $b) {
+        //    return strlen($b)-strlen($a);
+        //}
 
         global $PAGE, $CFG;
         if ($this->content != null) {
@@ -124,7 +124,7 @@ class block_twitter_search extends block_base {
                     }
 
                     // Sorting the hashtags into length order.
-                    usort($allhashtags, "cmp");
+                    //usort($allhashtags, "cmp");
 
                     // Replacing #hashtags with linked #hashtags. It's not perfect.
                     foreach ($allhashtags as $hashtag) {
