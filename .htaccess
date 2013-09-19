@@ -1,4 +1,6 @@
 Options +FollowSymLinks
 RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/server-status
 RewriteRule ^([0-9]+)$ /course/view.php?id=$1 [R]
+RewriteCond %{REQUEST_URI} !^/server-status
 RewriteRule ^([a-zA-Z][a-zA-Z0-9\-\_]{2,}+)$ /course/view.php?name=$1 [R]
