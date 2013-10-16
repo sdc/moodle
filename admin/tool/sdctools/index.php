@@ -90,8 +90,14 @@ if (is_readable('/proc/uptime') && $uptime = @file('/proc/uptime')) {
     $out = sdctools_timeago($utime[0], false);
     echo '<li><strong>'.get_string('serveruptime', 'tool_sdctools').':</strong> '.$out.'</li>';
 }
-echo '</ul>';
 
+$maxsize = ini_get('post_max_size');
+$maxfilesize = ini_get('upload_max_filesize');
+$sameornot = ($maxsize == $maxfilesize) ? ' (Same)' : ' (<span class="error">Different!</span>)' ;
+echo '<li><strong>php.ini - post_max_size:</strong> '.$maxsize.'</li>';
+echo '<li><strong>php.ini - upload_max_filesize:</strong> '.$maxfilesize.$sameornot.'</li>';
+
+echo '</ul>';
 echo '<p>'.html_writer::link(new moodle_url($securewwwroot.'/admin/phpinfo.php',
     array()), get_string('phpinfo')).'.</p>';
 
