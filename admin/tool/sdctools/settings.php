@@ -35,5 +35,5 @@ if ($hassiteconfig) {
 
     // Add courses report to reports menu.
     $ADMIN->add('reports', new admin_externalpage('toolsdctoolscourse', get_string('coursereportname', 'tool_sdctools'),
-        $CFG->wwwroot.'/'.$CFG->admin.'/tool/sdctools/course.php', 'moodle/site:config'));
+        $CFG->wwwroot.'/'.$CFG->admin.'/tool/sdctools/coursereports.php', 'moodle/site:config'));
 }

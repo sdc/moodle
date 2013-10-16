@@ -40,6 +40,7 @@ After installation, you should see a new option 'SDC Tools' in the Site Administ
 
 * Make email domain check configurable.
 * Make the absence activity checker configurable.
+* More detailed breakdown of modules available in the course.
 
 ## History
 
