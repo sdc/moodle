@@ -33,7 +33,7 @@ $THEME->name = 'essential';
 $THEME->doctype = 'html5';
 $THEME->yuicssmodules = array();
 $THEME->parents = array('bootstrapbase');
-$THEME->sheets = array('slides', 'lightbox', 'font-awesome', 'custom');
+$THEME->sheets = array('slides', 'lightbox', 'font-awesome.min', 'essential', 'settings');
 $THEME->supportscssoptimisation = false;
 $THEME->enable_dock = false;
 $THEME->yuicssmodules = array();
@@ -67,25 +67,25 @@ $THEME->layouts = array(
     'standard' => array(
         'file' => 'columns3.php',
         'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
-        'defaultregion' => 'side-pre',
+        'defaultregion' => 'side-post',
     ),
     // Main course page.
     'course' => array(
         'file' => 'columns3.php',
         'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
-        'defaultregion' => 'side-pre',
+        'defaultregion' => 'side-post',
         'options' => array('langmenu'=>true),
     ),
     'coursecategory' => array(
         'file' => 'columns3.php',
         'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
-        'defaultregion' => 'side-pre',
+        'defaultregion' => 'side-post',
     ),
     // part of course, typical for modules - default page layout if $cm specified in require_login().
     'incourse' => array(
         'file' => 'columns3.php',
         'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
-        'defaultregion' => 'side-pre',
+        'defaultregion' => 'side-post',
     ),
     // Server administration scripts.
     'admin' => array(
@@ -97,14 +97,14 @@ $THEME->layouts = array(
     'mydashboard' => array(
         'file' => 'columns3.php',
         'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
-        'defaultregion' => 'side-pre',
+        'defaultregion' => 'side-post',
         'options' => array('langmenu'=>true),
     ),
     // My public page.
     'mypublic' => array(
         'file' => 'columns3.php',
         'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
-        'defaultregion' => 'side-pre',
+        'defaultregion' => 'side-post',
     ),
     'login' => array(
         'file' => 'columns1.php',
@@ -138,6 +138,7 @@ $THEME->layouts = array(
     'maintenance' => array(
         'file' => 'maintenance.php',
         'regions' => array('footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
+        'defaultregion' => 'hidden-dock',
     ),
     // Should display the content and basic headers only.
     'print' => array(
