@@ -59,14 +59,42 @@ Upgrade Instructions
 4. Copy new 'grid' to '/course/format/'.
 5. Go back in as an administrator and follow standard the 'plugin' update notification.  If needed, go to
    'Site administration' -> 'Notifications' if this does not happen.
-6. If automatic 'Purge all caches' appears not to work by lack of display etc. then perform a manual 'Purge all caches'
+6. If you have upgraded from Moodle 1.9 and were using the Grid format there, please follow 'Upgrading from M1.9' below
+   and then return back here.
+7. If automatic 'Purge all caches' appears not to work by lack of display etc. then perform a manual 'Purge all caches'
    under 'Home -> Site administration -> Development -> Purge all caches'.
-7. Put Moodle out of Maintenance Mode.
+8. Put Moodle out of Maintenance Mode.
+
+Upgrading from M1.9
+===================
+When upgrading from Moodle 1.9 the grid icon images are moved to a 'legacy' files area.  So they will not show up when you
+view the course as the format can no longer find them.  Therefore AFTER upgrading to Moodle 2.2+ please run the script
+'convert_legacy_image.php' as follows:
+
+1. Ensure you have updated fully to Moodle 2.2+.
+2. Ensure you have updated properly to the Moodle 2.2+ version of the Grid format by clicking on 'Notifications' if you had
+   not replaced the folder before performing the Moodle 2.2+ upgrade.
+3. Change the URL to have from the root of your Moodle installation: /course/format/grid/upgrade/convert_legacy_image.php -
+   i.e: http://www.mysite.com/moodle/course/format/grid/upgrade/convert_legacy_image.php
+   If you wish to crop instead of scaling the images then append '?crop=1' to the end of the URL like so:
+   http://www.mysite.com/moodle/course/format/grid/upgrade/convert_legacy_image.php?crop=1
+   If you wish to get the full log output then append '?logverbose=1' to the end of the URL like so:
+   http://www.mysite.com/moodle/course/format/grid/upgrade/convert_legacy_image.php?logverbose=1
+   or with crop:
+   http://www.mysite.com/moodle/course/format/grid/upgrade/convert_legacy_image.php?logverbose=1&crop=1
+   But keep in mind that with lots of records in the 'files' table this can cause the script to fail.
+4. Observe the output of the script which is also replicated in the PHP log file.
+5. Go back to the grid format course and confirm that the images are there.  It is possible that some old legacy files remain from
+   old images that were replaced.  At the present moment in time I have no way of detecting them (to be certain that they are
+   from the Grid format) in code.
+6. I'm not sure of the security vulnerabilities of the script on the server so after you have used it and are confident of the
+   results then move it from the '/course/format/grid/upgrade/' folder to a safe non-served folder.
 
 Downgrading
 ===========
 If for any reason you need to downgrade to a previous version of the format then the procedure will inform you how to
 do so:
+
 1.  Put Moodle in 'Maintenance Mode' so that there are no users using it bar you as the administrator.
 2.  In '/course/format/' remove the folder 'grid' i.e. ALL it's contents - this is VITAL.
 3.  Put in the replacement 'grid' folder into '/course/format/'.
@@ -202,10 +230,10 @@ Roadmap
 1. Improved instructions including Moodle docs.
 2. User definable grid row icon numbers - https://moodle.org/mod/forum/discuss.php?d=196716
 3. CONTRIB-3240 - Gridview course format more accessible.
-4. CONTRIB-4099 - Grid format does not allow the user to set the size of the image / box.
-5. Use of crowd funding facility to support development.
-6. Continued maintenance of issues: https://tracker.moodle.org/browse/CONTRIB/component/11231.
-7. Add in grid format specific capabilities to change things.
+4. Use of crowd funding facility to support development.
+5. Continued maintenance of issues: https://tracker.moodle.org/browse/CONTRIB/component/11231.
+6. Add in grid format specific capabilities to change things.
+7. Ongoing structured walk through and refactoring.
 
 Known Issues
 =============
@@ -214,9 +242,35 @@ Known Issues
 
 History
 =============
-3rd October 2013 Version 2.5.4.4 - Stable.
+5th November 2013 Version 2.5.5
+  1.  Fixed issue over prefixed '#' in colour picker.
+  2.  Added validation to HEX RGB colour codes.
+  3.  Added US English language file.
+  4.  Implemented MDL-21097.
+
+4th November 2013 Version 2.5.5 - CONTRIB-4099 - BETA
+Improvement by G J Barnard
+  1.  Implemented CONTRIB-4099 to add image icon size and colour changes.
+      Gratefully crowd funded by:
+        WL Wong
+        Guido Gautsch
+        Marcel de Leeuwe
+        Joseph Thibault
+        Gideon Williams
+        Jean-Marc Doucet
+        Nigel Barnett
+  2.  Changes for 'Accessibility' based upon MDL-41252.
+  3.  Fully implemented MDL-39542.
+  4.  Started implementing WAI-ARIA roles - http://www.w3.org/TR/wai-aria/roles.  If you have information to
+      help with this, then please contact us.
+
+23rd October 2013 Version 2.5.4.4 - Stable.
 Change by G J Barnard
   1.  Fix broken call to '_is_empty_text' as reported on CONTRIB-4589.
+  2.  Optimised fetching of icon data from database to one call instead of one call per shown section.
+  3.  Changed icon border size and radius to provide greater definition to the icon.
+  4.  Fixed shade box showing when pressing the 'Esc' key in 'Show one section per page' course layout - CONTRIB-4709.
+  5.  Fixed highlight this section text referring to 'topics'.
 
 2nd October 2013 Version 2.5.4.3 - Stable.
 Change by G J Barnard

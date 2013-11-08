@@ -24,16 +24,11 @@
  * @author     Based on code originally written by Paul Krix and Julian Ridden.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 /* Imports */
 require_once('../../../config.php');
 require_once($CFG->dirroot . '/repository/lib.php');
 require_once($CFG->dirroot . '/course/format/grid/editimage_form.php');
-require_once($CFG->libdir . '/gdlib.php');
-
-/* Script settings */
-define('GRID_ITEM_IMAGE_WIDTH', 210);
-define('GRID_ITEM_IMAGE_HEIGHT', 140);
+require_once($CFG->dirroot . '/course/format/grid/lib.php');
 
 /* Page parameters */
 $contextid = required_param('contextid', PARAM_INT);
@@ -48,12 +43,12 @@ $formdata->forcerefresh = optional_param('forcerefresh', null, PARAM_INT);
 $formdata->mode = optional_param('mode', null, PARAM_ALPHA);
 
 $url = new moodle_url('/course/format/grid/editimage.php', array(
-            'contextid' => $contextid,
-            'id' => $id,
-            'offset' => $formdata->offset,
-            'forcerefresh' => $formdata->forcerefresh,
-            'userid' => $formdata->userid,
-            'mode' => $formdata->mode));
+    'contextid' => $contextid,
+    'id' => $id,
+    'offset' => $formdata->offset,
+    'forcerefresh' => $formdata->forcerefresh,
+    'userid' => $formdata->userid,
+    'mode' => $formdata->mode));
 
 /* Not exactly sure what this stuff does, but it seems fairly straightforward */
 list($context, $course, $cm) = get_context_info_array($contextid);
@@ -70,93 +65,51 @@ $PAGE->set_context($context);
 $options = array(
     'subdirs' => 0,
     'maxfiles' => 1,
-    'accepted_types' => array('web_image'),
+    'accepted_types' => array('gif', 'jpe', 'jpeg', 'jpg', 'png'),
     'return_types' => FILE_INTERNAL);
 
 $mform = new grid_image_form(null, array(
-            'contextid' => $contextid,
-            'userid' => $formdata->userid,
-            'sectionid' => $sectionid,
-            'options' => $options));
+    'contextid' => $contextid,
+    'userid' => $formdata->userid,
+    'sectionid' => $sectionid,
+    'options' => $options));
 
 if ($mform->is_cancelled()) {
     // Someone has hit the 'cancel' button.
     redirect(new moodle_url($CFG->wwwroot . '/course/view.php?id=' . $course->id));
 } else if ($formdata = $mform->get_data()) { // Form has been submitted.
-    $fs = get_file_storage();
+    if (!empty($formdata->deleteimage)) {
+        // Delete the old images....
+        $courseformat = course_get_format($course);
+        $courseformat->delete_image($sectionid, $context->id);
+    } else if ($newfilename = $mform->get_new_filename('imagefile')) {
+        $fs = get_file_storage();
 
-    if ($newfilename = $mform->get_new_filename('icon_file')) {
         // We have a new file so can delete the old....
-        $sectionicon = course_get_format($course)->grid_get_icon($course->id, $sectionid);
-        if ($sectionicon) {
-            if ($file = $fs->get_file($context->id, 'course', 'section', $sectionid, '/', $sectionicon->imagepath)) {
+        $courseformat = course_get_format($course);
+        $sectionimage = $courseformat->get_image($course->id, $sectionid);
+        if (isset($sectionimage->image)) {
+            if ($file = $fs->get_file($context->id, 'course', 'section', $sectionid, '/', $sectionimage->image)) {
                 $file->delete();
             }
         }
 
         // Resize the new image and save it...
-        $created = time();
-        $storedfile_record = array(
-            'contextid' => $contextid,
-            'component' => 'course',
-            'filearea' => 'section',
-            'itemid' => $sectionid,
-            'filepath' => '/',
-            'filename' => $newfilename,
-            'timecreated' => $created,
-            'timemodified' => $created);
+        $storedfilerecord = $courseformat->create_original_image_record($contextid, $sectionid, $newfilename);
 
-        $temp_file = $mform->save_stored_file(
-                'icon_file', $storedfile_record['contextid'], $storedfile_record['component'], $storedfile_record['filearea'],
-                             $storedfile_record['itemid'], $storedfile_record['filepath'], 'temp.'.$storedfile_record['filename'],
-                             true);
+        $tempfile = $mform->save_stored_file(
+                'imagefile',
+                $storedfilerecord['contextid'],
+                $storedfilerecord['component'],
+                $storedfilerecord['filearea'],
+                $storedfilerecord['itemid'],
+                $storedfilerecord['filepath'],
+                'temp.' . $storedfilerecord['filename'],
+                true);
 
-        try {
-            $convert_success = true;
-            // Ensure the right quality setting...
-            $mime = $temp_file->get_mimetype();
-
-            $storedfile_record['mimetype'] = $mime;
-
-            if ($mime != 'image/gif') {
-                $tmproot = make_temp_directory('gridformatimage');
-                $tmpfilepath = $tmproot . '/' . $temp_file->get_contenthash();
-                $temp_file->copy_content_to($tmpfilepath);
-
-                $data = generate_image_thumbnail($tmpfilepath, GRID_ITEM_IMAGE_WIDTH, GRID_ITEM_IMAGE_HEIGHT);
-                if (!empty($data)) {
-                    $fs->create_file_from_string($storedfile_record, $data);
-                } else {
-                    $convert_success = false;
-                }
-                unlink($tmpfilepath);
-            } else {
-                $fr = $fs->convert_image($storedfile_record, $temp_file, GRID_ITEM_IMAGE_WIDTH, GRID_ITEM_IMAGE_HEIGHT, true, null);
-
-                // Debugging...
-                if (debugging('', DEBUG_DEVELOPER)) {
-                    // Use 'print' function even though the documentation says you should not and yet everywhere does.
-                    print_object($fr);
-                }
-            }
-            $temp_file->delete();
-            unset($temp_file);
-
-            if ($convert_success == true) {
-                $DB->set_field('format_grid_icon', 'imagepath', $newfilename, array('sectionid' => $sectionid));
-            } else {
-                print_error('imagecannotbeusedasanicon', 'format_grid', $CFG->wwwroot . "/course/view.php?id=" . $course->id);
-            }
-        } catch (Exception $e) {
-            if (isset($temp_file)) {
-                $temp_file->delete();
-                unset($temp_file);
-            }
-            print('Grid Format Edit Image Exception:...');
-            debugging($e->getMessage());
-        }
-        redirect($CFG->wwwroot . "/course/view.php?id=" . $course->id);
+        $courseformat->create_section_image($tempfile, $storedfilerecord, $sectionimage);
     }
+    redirect($CFG->wwwroot . "/course/view.php?id=" . $course->id);
 }
 
 /* Draw the form */
