@@ -19,23 +19,19 @@
  *
  * @package    course/format
  * @subpackage grid
- * @copyright  &copy; 2012 G J Barnard in respect to modifications of standard topics format.
+ * @copyright  &copy; 2013 G J Barnard in respect to modifications of standard topics format.
  * @author     G J Barnard - gjbarnard at gmail dot com and {@link http://moodle.org/user/profile.php?id=442195}
- * @author     Based on code originally written by Paul Krix and Julian Ridden.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once('../../../config.php');
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/course/format/grid/lib.php');
-require_login();
 
-$course = optional_param('course', '', PARAM_INT);
-$showsummary = optional_param('showsummary', 0, PARAM_INT);
-
-// Ensure format_grid_summary field status exists.
-$courseformat = course_get_format($course);
-$summarystatus = $courseformat->get_summary_visibility($course);
-$DB->set_field('format_grid_summary', 'showsummary', $showsummary,
-    array('courseid' => $course, 'id' => $summarystatus->id));
-
-redirect($CFG->wwwroot . "/course/view.php?id=" . $course);
+echo '<!DOCTYPE html>';
+echo '<html dir="ltr" lang="en" xml:lang="en">';
+echo '<head>';
+echo '<title>Grid Format Image Test</title>';
+echo '<link rel="shortcut icon" href="'.$CFG->wwwroot.'/theme/image.php?theme=standard&amp;component=theme&amp;image=favicon" />';
+echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+echo '<meta name="keywords" content="moodle, Grid Format Image Test" />';
+echo '<meta http-equiv="pragma" content="no-cache" />';
+echo '<meta http-equiv="expires" content="0" />';
+echo '</head>';
+echo '<body>';

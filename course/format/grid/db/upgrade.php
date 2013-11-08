@@ -97,8 +97,24 @@ function xmldb_format_grid_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint(true, '2012071500', 'format', 'grid');
     }
 
+    if ($oldversion < 2013110400) {
+        $table = new xmldb_table('format_grid_icon');
+
+        $field = new xmldb_field('imagepath', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        // Rename imagepath.
+        $dbman->rename_field($table, $field, 'image');
+
+        $field = new xmldb_field('displayedimageindex', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0');
+        // Conditionally launch add field displayediconpath.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_plugin_savepoint(true, '2013110400', 'format', 'grid');
+    }
+
     // Automatic 'Purge all caches'....
-    if ($oldversion < 2013100300) {
+    if ($oldversion < 2013110400) {
         purge_all_caches();
     }
 
