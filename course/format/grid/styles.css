@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- .course-content a {
+.course-content a {
     outline: none;
 }
 .course-content .grid_title {
@@ -105,19 +105,8 @@ div#gridmiddle-column ul {
     text-align: left;
     display: inline-table;
 }
-.course-content ul.gridicons li:hover {
-    background-color: #f1f2f2;
-    color: #333;
-}
 
-/* Over ride in theme CSS if you want a different colour. */
-.course-content ul.gridicons li.current {
-    background-color: #d9edf7;
-}
-
-/* Over ride in theme CSS if you want a different colour. */
 .course-content ul.gridicons li.currentselected {
-    background: #0C0;
     filter:alpha(opacity=70); /* IE */
     -moz-opacity:0.7; /* Mozilla */
     opacity: 0.7; /* CSS3 */
@@ -125,9 +114,8 @@ div#gridmiddle-column ul {
 
 .course-content ul.gridicons img.new_activity {
     position: absolute;
-    margin-top: 86px;
-    margin-left: 116px;
 }
+
 .course-content .gridicon_link {
     cursor: pointer;
 }
@@ -135,7 +123,6 @@ div#gridmiddle-column ul {
     font-size: 14px;
     font-weight: bold;
     margin: 0;
-    width: 212px;
     white-space: nowrap;
     overflow: hidden;
     color: black;
@@ -143,17 +130,12 @@ div#gridmiddle-column ul {
     text-align: center;
 }
 .course-content ul.gridicons li .image_holder {
-    width: 210px;
-    height: 140px;
     overflow: hidden;
-    border: 1px solid #ddd;
-    background-color: #f1f2f2;
+    border-style: solid;
     text-align: center;
     vertical-align: middle;
 }
-.course-content ul.gridicons li:hover .image_holder {
-    border: 1px dashed #dededf;
-}
+
 .course-content ul.gridicons li img {
     margin-top: 0;
 }

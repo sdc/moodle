@@ -24,19 +24,21 @@
  * @author     Based on code originally written by Paul Krix and Julian Ridden.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("{$CFG->libdir}/formslib.php");
 
 class grid_image_form extends moodleform {
+
     public function definition() {
         $mform = $this->_form;
         $instance = $this->_customdata;
 
         // Visible elements.
-        $mform->addElement('filepicker', 'icon_file',
-            get_string('uploadafile'), null, $instance['options']);
+        $mform->addElement('filepicker', 'imagefile', get_string('imagefile', 'format_grid'), null, $instance['options']);
+        $mform->addHelpButton('imagefile', 'imagefile', 'format_grid');
+        $mform->addElement('selectyesno', 'deleteimage', get_string('deleteimage', 'format_grid'));
+        $mform->addHelpButton('deleteimage', 'deleteimage', 'format_grid');
 
         // Hidden params.
         $mform->addElement('hidden', 'contextid', $instance['contextid']);
@@ -51,4 +53,5 @@ class grid_image_form extends moodleform {
         // Buttons:...
         $this->add_action_buttons(true, get_string('savechanges', 'admin'));
     }
+
 }

@@ -32,6 +32,8 @@ M.format_grid = M.format_grid || {
     ourYUI: null,
     // Boolean - states if editing is on.
     editing_on: null,
+    // String - If set will contain a URL prefix for the section page redirect functionality and not show the shade box.
+    section_redirect: null,
     // Boolean - states if the user can update.
     update_capability: null,
     // YUI Node object for the grid icon element.
@@ -55,15 +57,17 @@ M.format_grid = M.format_grid || {
  * Initialise with the information supplied from the course format so we can operate.
  * @param {Object} Y YUI instance
  * @param {Boolean} the_editing_on If editing is on.
+ * @param {String} the_section_redirect If set will contain a URL prefix for the section page redirect functionality and not show the shade box.
  * @param {Boolean} the_update_capability If the calling user can update the course.
  * @param {Integer} the_num_sections the number of sections in the course.
  * @param {Array} the_shadebox_shown_array States what sections are not shown (value of 1) and which are (value of 2)
  *                                         index is the section no.
  */
-M.format_grid.init = function(Y, the_editing_on, the_update_capability, the_num_sections, the_shadebox_shown_array) {
+M.format_grid.init = function(Y, the_editing_on, the_section_redirect, the_update_capability, the_num_sections, the_shadebox_shown_array) {
     "use strict";
     this.ourYUI = Y;
     this.editing_on = the_editing_on;
+    this.section_redirect = the_section_redirect;
     this.update_capability = the_update_capability;
     this.selected_section = null;
     this.num_sections = parseInt(the_num_sections);
@@ -151,10 +155,13 @@ M.format_grid.icon_click = function(e) {
 M.format_grid.icon_toggle = function(e) {
     "use strict";
     e.preventDefault();
-    //console.log(this.selected_section_no);
     if (this.selected_section_no != -1) { // Then a valid shown section has been selected.
         if ((this.editing_on == true) && (this.update_capability == true)) {
+            // Jump to the section on the page.
             window.scroll(0,document.getElementById("section-" + this.selected_section_no).offsetTop);
+        } else if (this.section_redirect !== null) {
+            // Keyboard control of 'toggle' in 'One section per page' layout.
+            location.replace(this.section_redirect + "&section=" + this.selected_section_no);
         } else if (M.format_grid.shadebox.shadebox_open == true) {
             //console.log("Shadebox was open");
             this.shadebox.toggle_shadebox();
@@ -323,7 +330,7 @@ M.format_grid.shadebox.initialize_shadebox = function() {
     this.shadebox_open = false;
 
     this.shadebox_overlay = document.getElementById('gridshadebox_overlay');
-    this.shadebox_overlay.style.display="";
+    this.shadebox_overlay.style.display = "";
     this.grid_shadebox = document.getElementById('gridshadebox');
     document.body.appendChild(this.grid_shadebox); // Adds the shade box to the document.
 

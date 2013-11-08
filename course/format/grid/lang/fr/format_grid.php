@@ -25,8 +25,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['namegrid']='Vue en image'; // Name of a section within your format.
-$string['formatgrid']='Vue en image'; // Name to display for format.
+$string['namegrid'] = 'Vue en image'; // Name of a section within your format.
+$string['formatgrid'] = 'Vue en image'; // Name to display for format.
 
 $string['sectionname'] = 'Section';
 $string['pluginname'] = 'Vue en image';
