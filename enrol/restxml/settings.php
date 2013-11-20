@@ -19,7 +19,7 @@
  *
  * @package    enrol
  * @subpackage restxml
- * @copyright  2011 Paul Vaughan, South Devon College
+ * @copyright  2011-2013 Paul Vaughan, South Devon College
  * @author     Paul Vaughan - based on code by Petr Skoda and others
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,23 +28,26 @@ defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
 
-    // heading
+    // Heading.
     $settings->add(new admin_setting_heading('enrol_restxml_settings', '', get_string('pluginname_desc', 'enrol_restxml')));
 
     if (!function_exists('curl_init')) {
         $settings->add(new admin_setting_heading('enrol_restxml_noextension', '', get_string('phpldap_nocurlextension', 'enrol_restxml')));
     } else {
 
-        // shib-login
-        $settings->add(new admin_setting_configtext('enrol_restxml_shiblogin', get_string('shiblogin', 'enrol_restxml'), get_string('shiblogin_desc', 'enrol_restxml'), ''));
+        // Shib-login.
+        $settings->add(new admin_setting_configtext('enrol_restxml_shiblogin', get_string('shiblogin', 'enrol_restxml'),
+            get_string('shiblogin_desc', 'enrol_restxml'), ''));
 
-        // shib-password
-        $settings->add(new admin_setting_configpasswordunmask('enrol_restxml_shibpassword', get_string('shibpassword', 'enrol_restxml'), get_string('shibpassword_desc', 'enrol_restxml'), ''));
+        // Shib-password.
+        $settings->add(new admin_setting_configpasswordunmask('enrol_restxml_shibpassword', get_string('shibpassword', 'enrol_restxml'),
+            get_string('shibpassword_desc', 'enrol_restxml'), ''));
 
-        // default url
-        $settings->add(new admin_setting_configtext('enrol_restxml_url', get_string('url', 'enrol_restxml'), get_string('url_desc', 'enrol_restxml'), ''));
+        // Default url.
+        $settings->add(new admin_setting_configtext('enrol_restxml_url', get_string('url', 'enrol_restxml'),
+            get_string('url_desc', 'enrol_restxml'), ''));
 
-        // magic
+        // Magic.
         $options = array('magic', 'more magic');
         $options = array_combine($options, $options);
         $settings->add(new admin_setting_configselect('enrol_restxml_magic', get_string('magic', 'enrol_restxml'), '', '', $options));
