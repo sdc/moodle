@@ -19,7 +19,7 @@
  *
  * @package    enrol
  * @subpackage restxml
- * @copyright  2011 Paul Vaughan, South Devon College
+ * @copyright  2011-2013 Paul Vaughan, South Devon College
  * @author     Paul Vaughan - based on code by Petr Skoda and others
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -42,7 +42,7 @@ $string['password'] = 'ILP password:';
 $string['password_desc'] = 'Well, duh.';
 
 $string['url'] = 'Default XML URL:';
-$string['url_desc'] = 'The location of the default XML source, probably within ILP. USERNAME will be replaced with the username of the enrolee.<br /><br />Production: https://leap.southdevon.ac.uk/people/USERNAME/views/courses';
+$string['url_desc'] = 'The location of the default XML source, probably within ILP. USERNAME will be replaced with the username of the enrolee.<br /><br />Production: https://leap.southdevon.ac.uk/people/USERNAME/views/courses.xml';
 
 $string['staff_url'] = 'Staff XML URL:';
 $string['staff_url_desc'] = 'The location of the XML source for staff. USERNAME will be replaced with the username of the enrolee. <strong>Not yet developed.</strong>';
