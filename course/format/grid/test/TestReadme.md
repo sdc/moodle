@@ -247,3 +247,21 @@ Capabilities
 11. On the other browser refresh the page and confirm that the teacher can see
     and reset all of the options that you, the administrator can, bar the
     'Reset all' group under 'Grid reset options'.
+
+Delete course
+-------------
+1.  Ensure you have run the 'Restore from a previous version' test.
+2.  Note down the course id in the URL.
+3.  In the database look at the entries in the 'format_grid_icon' table and
+    observe that there are the following rows with the attribute of 'image'
+    set to: 360-110no09.jpg, 515-797no09sa.jpg, 633-396no10.jpg,
+    515-797no10.jpg, 568-111no01.jpg and 515-797no12.jpg where the 'courseid'
+    attribute is set to the number you noted down in step 2.
+4.  Also look at the entries in the 'format_grid_summary' table and confirm that
+    there is one row for the course id you noted down in step 2.
+5.  Back at the course, edit the course settings and change the format to
+    'Topics format'.
+6.  Now delete the course.  Confirm that you have been able to do this.
+7.  Refresh the entries for the 'format_grid_icon' and 'format_grid_summary'
+    tables and confirm that there are no rows for the course id you noted down
+    in step 2.

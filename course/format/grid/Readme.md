@@ -4,10 +4,11 @@ A topics based format that uses a grid of user selectable images to pop up a lig
 
 Required version of Moodle
 ==========================
-This version works with Moodle version 2013051400.00 release 2.5 (Build: 20130514) and above until the next release.
+This version works with Moodle version 2013110600.00 release 2.6beta+ (Build: 20131106) and above within the 2.6 branch until the
+next release.
 
 Please ensure that your hardware and software complies with 'Requirements' in 'Installing Moodle' on
-'docs.moodle.org/25/en/Installing_Moodle' / 'docs.moodle.org/dev/Moodle_2.5_release_notes'.
+'docs.moodle.org/26/en/Installing_Moodle' / 'docs.moodle.org/dev/Moodle_2.6_release_notes'.
 
 Free Software
 =============
@@ -238,15 +239,21 @@ Roadmap
 Known Issues
 =============
 1. All listed on https://tracker.moodle.org/browse/CONTRIB/component/11231.
-2. Unable to delete a grid icon image.
 
 History
 =============
-5th November 2013 Version 2.5.5
+14th November 2013 Version 2.6.0.1
+  1.  Initial BETA code for Moodle 2.6.
+
+14th November 2013 Version 2.5.5
   1.  Fixed issue over prefixed '#' in colour picker.
   2.  Added validation to HEX RGB colour codes.
   3.  Added US English language file.
   4.  Implemented MDL-21097.
+  5.  Fixed an issue when deleting a course that was not in the grid format where
+      the function 'format_grid_delete_course' in 'lib.php' was being called even
+      though the course is not in the format and the wrong format object was being
+      retrieved.  This then resulted in a method call on a non-existent method.
 
 4th November 2013 Version 2.5.5 - CONTRIB-4099 - BETA
 Improvement by G J Barnard
