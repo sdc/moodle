@@ -324,7 +324,7 @@ class format_grid_renderer extends format_section_renderer_base {
         $sectionupdated = $this->new_activity($course);
 
         // Get the section images for the course.
-        $sectionimages = $this->courseformat->get_images($course->id, false);
+        $sectionimages = $this->courseformat->get_images($course->id);
 
         // CONTRIB-4099:...
         $gridimagepath = $this->courseformat->get_image_path();
@@ -358,9 +358,9 @@ class format_grid_renderer extends format_section_renderer_base {
                 echo html_writer::start_tag('li', $liattributes);
 
                 // Ensure the record exists.
-                if (empty($sectionimages[$thissection->id])) {
-                    $sectionimage = $this->courseformat->create_get_imagecontainer(
-                            $course->id, $thissection->id);
+                if  (($sectionimages === false) || (!array_key_exists($thissection->id, $sectionimages))) {
+                    // get_image has 'repair' functionality for when there are issues with the data.
+                    $sectionimage = $this->courseformat->get_image($course->id, $thissection->id);
                 } else {
                     $sectionimage = $sectionimages[$thissection->id];
                 }
