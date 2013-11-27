@@ -192,7 +192,7 @@ class format_grid extends format_base {
     public function get_section_name($section) {
         $section = $this->get_section($section);
         if (!empty($section->name)) {
-            return format_string($section->name, true, array('context' => get_context_instance(CONTEXT_COURSE, $this->courseid)));
+            return format_string($section->name, true, array('context' => context_course::instance($this->courseid)));
         } if ($section->section == 0) {
             return get_string('topic0', 'format_grid');
         } else {
@@ -902,7 +902,7 @@ class format_grid extends format_base {
 
     /**
      * Restores the course settings when restoring a pre CONTRIB-4099 course and sets the settings when upgrading
-     * from a prevous version.
+     * from a previous version.
      */
     public function restore_grid_setting($courseid, $imagecontainerwidth, $imagecontainerratio, $imageresizemethod, $bordercolour,
             $borderwidth, $borderradius, $imagecontainerbackgroundcolour, $currentselectedsectioncolour,
@@ -1624,6 +1624,14 @@ class format_grid extends format_base {
         return $retr;
     }
 
+    /**
+     * Returns a new instance of us so that specialised methods can be called.
+     * @param int $courseid The course id of the course.
+     * @return format_grid object.
+     */
+    public static function get_instance($courseid) {
+        return new format_grid('grid', $courseid);
+    }
 }
 
 /**
@@ -1665,9 +1673,13 @@ function callback_grid_definition() {
 function format_grid_delete_course($courseid) {
     global $DB;
 
-    // Delete any images associated with the course....
-    $courseformat = course_get_format($courseid);
+    /* Delete any images associated with the course.
+       Done this way so will work if the course has
+       been a grid format course in the past even if
+       it is not now. */
+    $courseformat = format_grid::get_instance($courseid); // 
     $courseformat->delete_images();
+    unset($courseformat);  // Destruct.
 
     $DB->delete_records("format_grid_summary", array("courseid" => $courseid));
 }
