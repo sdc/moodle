@@ -59,14 +59,15 @@ class backup_format_grid_plugin extends backup_format_plugin {
     }
 
     private function delete_displayed_images() {
-        global $COURSE, $CFG, $DB;
+        global $CFG, $DB;
 
         /* We only process this information if the course we are backing up is in the
           'grid' format (target format can change depending of restore options).
           Note: This appears to be a bit silly as this code is executed even if the
           course is not in the 'grid' format.
          */
-        $format = $DB->get_field('course', 'format', array('id' => $COURSE->id));
+        $courseid = $this->task->get_courseid();
+        $format = $DB->get_field('course', 'format', array('id' => $courseid));
         if ($format != 'grid') {
             return;
         }
@@ -75,10 +76,10 @@ class backup_format_grid_plugin extends backup_format_plugin {
         require_once($CFG->dirroot . '/course/format/grid/lib.php'); // For format_grid.
 
         if (format_grid::is_developer_debug()) {
-            error_log('backup_format_grid_plugin::delete_displayed_images() courseid: ' . $COURSE->id);
+            error_log('backup_format_grid_plugin::delete_displayed_images() courseid: ' . $courseid);
         }
 
-        $courseformat = course_get_format($COURSE->id);
+        $courseformat = course_get_format($courseid);
         $courseformat->delete_displayed_images();
     }
 

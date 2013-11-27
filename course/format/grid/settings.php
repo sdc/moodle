@@ -72,7 +72,7 @@ if ($ADMIN->fulltree) {
     );
     $settings->add(new admin_setting_configselect($name, $title, $description, $default, $choices));
 
-    // Default border colour in hexidecimal RGB without preceeding '#'.
+    // Default border colour in hexadecimal RGB with preceding '#'.
     $name = 'format_grid/defaultbordercolour';
     $title = get_string('defaultbordercolour', 'format_grid');
     $description = get_string('defaultbordercolour_desc', 'format_grid');
@@ -99,7 +99,7 @@ if ($ADMIN->fulltree) {
     );
     $settings->add(new admin_setting_configselect($name, $title, $description, $default, $choices));
 
-    // Default imagecontainer background colour in hexidecimal RGB without preceeding '#'.
+    // Default imagecontainer background colour in hexadecimal RGB with preceding '#'.
     $name = 'format_grid/defaultimagecontainerbackgroundcolour';
     $title = get_string('defaultimagecontainerbackgroundcolour', 'format_grid');
     $description = get_string('defaultimagecontainerbackgroundcolour', 'format_grid');
@@ -107,7 +107,7 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_configcolourpicker($name, $title, $description, $default);
     $settings->add($setting);
 
-    // Default current selected section colour in hexidecimal RGB without preceeding '#'.
+    // Default current selected section colour in hexadecimal RGB with preceding '#'.
     $name = 'format_grid/defaultcurrentselectedsectioncolour';
     $title = get_string('defaultcurrentselectedsectioncolour', 'format_grid');
     $description = get_string('defaultcurrentselectedsectioncolour', 'format_grid');
@@ -115,7 +115,7 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_configcolourpicker($name, $title, $description, $default);
     $settings->add($setting);
 
-    // Default current selected imagecontainer colour in hexidecimal RGB without preceeding '#'.
+    // Default current selected imagecontainer colour in hexadecimal RGB with preceding '#'.
     $name = 'format_grid/defaultcurrentselectedimagecontainercolour';
     $title = get_string('defaultcurrentselectedimagecontainercolour', 'format_grid');
     $description = get_string('defaultcurrentselectedimagecontainercolour', 'format_grid');
