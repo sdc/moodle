@@ -1,0 +1,42 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+        <td class="elbp_summary_icon">
+            <img src="<?= $CFG->wwwroot ?><?= $obj->getPath() ?>pix/elbp_target_grades/icon.png" alt="<?= $obj->getTitle() ?>">
+        </td>
+        <td class="elbp_summary_right">
+            <?= get_string('mytargetpredictedgrades', 'block_bcgt') ?>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<table class="elbp_summary_table">
+    <tbody>
+        
+        <?php if($courses): ?>
+        
+            <tr>
+                <th style="text-transform: uppercase;"><?= $string['course'] ?></th>
+                <th style="text-transform: uppercase;"><?= $string['type'] ?></th>
+                <th style="text-transform: uppercase;"><?= $string['grade'] ?></th>
+            </tr>
+        
+                <?php foreach($courses as $course): ?>
+                <tr>
+                    <td><?= $course->fullname ?></td>
+                    <td><?= get_string('aspirational', 'block_bcgt') ?></td>
+                    <td><?= (isset($course->aspirationalGrade) && isset($course->aspirationalGrade->grade)) ? $course->aspirationalGrade->grade : '-'; ?></td>
+                </tr>
+                <?php endforeach; ?>
+        
+        <?php else: ?>
+            <tr>
+                <td class='c'><?= $string['noresults'] ?></td>
+            </tr>
+        <?php endif; ?>
+        
+    </tbody>
+</table>
