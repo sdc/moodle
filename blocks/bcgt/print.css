@@ -1,0 +1,62 @@
+body
+{
+     font-family: "Trebuchet MS", Arial, sans-serif;   
+     background: url('pix/bc.png') no-repeat;
+}
+
+.c
+{
+    text-align: center;
+}
+
+div#key img
+{
+    width: 20px;
+}
+
+table#printGridTable
+{
+    min-width:60%;
+    margin:auto;
+    text-align:left;   
+    border-collapse: collapse;
+}
+
+#printGridTable td, #printGridTable th
+{
+    padding: 8px 4px;
+    border: 1px solid silver;
+    text-align: center;
+}
+
+#printGridTable th
+{
+    font-size: 11pt;
+    color: #fff;
+    background-color: #696969;
+}
+
+#printGridTable td
+{
+    font-size: 10pt;
+    color: #000;
+}
+
+.grid_cell_blank { 
+    background-color: #F3F3F3;
+}
+
+.tooltipContent
+{
+    display: none;
+}
+
+.page_break
+{
+    page-break-after: always;
+}
+
+.divider
+{
+    background-color: #696969;
+}
