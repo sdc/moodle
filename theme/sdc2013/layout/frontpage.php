@@ -150,5 +150,16 @@ echo $OUTPUT->doctype() ?>
     <div class="clearfix"></div>
 </div>
 <?php echo $OUTPUT->standard_end_of_body_html() ?>
+
+<script type="text/javascript" src="http://moodle.southdevon.ac.uk/clickheat/js/clickheat.js"></script>
+<script type="text/javascript">
+<!--
+clickHeatSite = 'mainmoodle';
+clickHeatGroup = (document.title == '' ? '-none-' : encodeURIComponent(document.title));
+clickHeatServer = 'http://moodle.southdevon.ac.uk/clickheat/click.php';
+initClickHeat();
+//-->
+</script>
+
 </body>
 </html>
