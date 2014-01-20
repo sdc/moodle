@@ -105,6 +105,9 @@ div#gridmiddle-column ul {
     text-align: left;
     display: inline-table;
 }
+.dir-rtl #gridiconcontainer ul.gridicons li {
+   text-align: right;
+}
 
 .course-content ul.gridicons li.currentselected {
     filter:alpha(opacity=70); /* IE */
