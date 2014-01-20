@@ -34,8 +34,6 @@ M.format_grid = M.format_grid || {
     editing_on: null,
     // String - If set will contain a URL prefix for the section page redirect functionality and not show the shade box.
     section_redirect: null,
-    // Boolean - states if the user can update.
-    update_capability: null,
     // YUI Node object for the grid icon element.
     selected_section: null,
     // Integer - number of sections in the course.
@@ -58,17 +56,15 @@ M.format_grid = M.format_grid || {
  * @param {Object} Y YUI instance
  * @param {Boolean} the_editing_on If editing is on.
  * @param {String} the_section_redirect If set will contain a URL prefix for the section page redirect functionality and not show the shade box.
- * @param {Boolean} the_update_capability If the calling user can update the course.
  * @param {Integer} the_num_sections the number of sections in the course.
  * @param {Array} the_shadebox_shown_array States what sections are not shown (value of 1) and which are (value of 2)
  *                                         index is the section no.
  */
-M.format_grid.init = function(Y, the_editing_on, the_section_redirect, the_update_capability, the_num_sections, the_shadebox_shown_array) {
+M.format_grid.init = function(Y, the_editing_on, the_section_redirect, the_num_sections, the_shadebox_shown_array) {
     "use strict";
     this.ourYUI = Y;
     this.editing_on = the_editing_on;
     this.section_redirect = the_section_redirect;
-    this.update_capability = the_update_capability;
     this.selected_section = null;
     this.num_sections = parseInt(the_num_sections);
     //console.log("SSA parameter: " + the_shadebox_shown_array);
@@ -86,32 +82,32 @@ M.format_grid.init = function(Y, the_editing_on, the_section_redirect, the_updat
         this.selected_section_no = -1;
     }
 
-    Y.delegate('click', this.icon_click, Y.config.doc, 'ul.gridicons a.gridicon_link', this);
-
-    var shadeboxtoggleone = Y.one("#gridshadebox_overlay");
-    if (shadeboxtoggleone) {
-        shadeboxtoggleone.on('click', this.icon_toggle, this);
-    }
-    var shadeboxtoggletwo = Y.one("#gridshadebox_close");
-    if (shadeboxtoggletwo) {
-        shadeboxtoggletwo.on('click', this.icon_toggle, this);
-    }
-    var shadeboxarrowleft = Y.one("#gridshadebox_left");
-    if (shadeboxarrowleft) {
-        shadeboxarrowleft.on('click', this.arrow_left, this);
-    }
-    var shadeboxarrowright = Y.one("#gridshadebox_right");
-    if (shadeboxarrowright) {
-        shadeboxarrowright.on('click', this.arrow_right, this);
-    }
-
-    // Have to show the column when editing / capability to update.
-    if (the_editing_on && the_update_capability) {
+    // Have to show the sections when editing.
+    if (the_editing_on) {
         // Show the sections when editing.
         Y.all(".grid_section").removeClass('hide_section');
     } else {
-        // Remove href link from icon anchors so they don't compete with javascript onlick calls.
-        var icon_links = getElementsByClassName(document.getElementById("gridiconcontainer"), "a", "icon_link");
+
+        Y.delegate('click', this.icon_click, Y.config.doc, 'ul.gridicons a.gridicon_link', this);
+
+        var shadeboxtoggleone = Y.one("#gridshadebox_overlay");
+        if (shadeboxtoggleone) {
+            shadeboxtoggleone.on('click', this.icon_toggle, this);
+        }
+        var shadeboxtoggletwo = Y.one("#gridshadebox_close");
+        if (shadeboxtoggletwo) {
+            shadeboxtoggletwo.on('click', this.icon_toggle, this);
+        }
+        var shadeboxarrowleft = Y.one("#gridshadebox_left");
+        if (shadeboxarrowleft) {
+            shadeboxarrowleft.on('click', this.arrow_left, this);
+        }
+        var shadeboxarrowright = Y.one("#gridshadebox_right");
+        if (shadeboxarrowright) {
+            shadeboxarrowright.on('click', this.arrow_right, this);
+        }
+        // Remove href link from icon anchors so they don't compete with JavaScript onlick calls.
+        var icon_links = getElementsByClassName(document.getElementById("gridiconcontainer"), "a", "gridicon_link");
         for(var i = 0; i < icon_links.length; i++) {
             icon_links[i].href = "#";
         }
@@ -124,13 +120,13 @@ M.format_grid.init = function(Y, the_editing_on, the_section_redirect, the_updat
         window.onresize = function() {
             M.format_grid.shadebox.update_shadebox();
         }
-    }
 
+        // Arrows.
+        this.shadebox_arrow_l = document.getElementById("gridshadebox_left");
+        this.shadebox_arrow_r = document.getElementById("gridshadebox_right");
+    }
     this.shadebox_content = Y.one("#gridshadebox_content");
     this.shadebox_content.removeClass('hide_content'); // Content 'flash' prevention.
-    // Arrows.
-    this.shadebox_arrow_l = document.getElementById("gridshadebox_left");
-    this.shadebox_arrow_r = document.getElementById("gridshadebox_right");
 };
 
 /**
