@@ -90,7 +90,6 @@ class format_grid_renderer extends format_section_renderer_base {
         $summarystatus = $this->courseformat->get_summary_visibility($course->id);
         $context = context_course::instance($course->id);
         $editing = $PAGE->user_is_editing();
-        $hascapupdate = has_capability('moodle/course:update', $context);
         $hascapvishidsect = has_capability('moodle/course:viewhiddensections', $context);
 
         if ($editing) {
@@ -110,7 +109,7 @@ class format_grid_renderer extends format_section_renderer_base {
         // Start at 1 to skip the summary block or include the summary block if it's in the grid display.
         $this->topic0_at_top = $summarystatus->showsummary == 1;
         if ($this->topic0_at_top) {
-            $this->topic0_at_top = $this->make_block_topic0($course, $sections, $modinfo, $editing, $hascapupdate, $urlpicedit,
+            $this->topic0_at_top = $this->make_block_topic0($course, $sections, $modinfo, $editing, $urlpicedit,
                     $streditsummary, false);
             // For the purpose of the grid shade box shown array topic 0 is not shown.
             $this->shadeboxshownarray[0] = 1;
@@ -119,7 +118,7 @@ class format_grid_renderer extends format_section_renderer_base {
             'aria-label' => get_string('gridimagecontainer', 'format_grid')));
         echo html_writer::start_tag('ul', array('class' => 'gridicons'));
         // Print all of the imaege containers.
-        $this->make_block_icon_topics($context->id, $modinfo, $course, $editing, $hascapupdate, $hascapvishidsect, $urlpicedit);
+        $this->make_block_icon_topics($context->id, $modinfo, $course, $editing, $hascapvishidsect, $urlpicedit);
         echo html_writer::end_tag('ul');
         echo html_writer::end_tag('div');
         echo html_writer::start_tag('div', array('id' => 'gridshadebox'));
@@ -148,12 +147,12 @@ class format_grid_renderer extends format_section_renderer_base {
 
         // Print Section 0 with general activities.
         if (!$this->topic0_at_top) {
-            $this->make_block_topic0($course, $sections, $modinfo, $editing, $hascapupdate, $urlpicedit, $streditsummary, false);
+            $this->make_block_topic0($course, $sections, $modinfo, $editing, $urlpicedit, $streditsummary, false);
         }
 
         // Now all the normal modules by topic.
         // Everything below uses "section" terminology - each "section" is a topic/module.
-        $this->make_block_topics($course, $sections, $modinfo, $editing, $hascapupdate, $hascapvishidsect, $streditsummary,
+        $this->make_block_topics($course, $sections, $modinfo, $editing, $hascapvishidsect, $streditsummary,
                 $urlpicedit, false);
 
         echo html_writer::end_tag('div');
@@ -171,7 +170,6 @@ class format_grid_renderer extends format_section_renderer_base {
         $PAGE->requires->js_init_call('M.format_grid.init', array(
             $PAGE->user_is_editing(),
             $sectionredirect,
-            has_capability('moodle/course:update', $context),
             $course->numsections,
             json_encode($this->shadeboxshownarray)));
         // Initialise the key control functionality...
@@ -228,7 +226,7 @@ class format_grid_renderer extends format_section_renderer_base {
     /**
      * Makes section zero.
      */
-    private function make_block_topic0($course, $sections, $modinfo, $editing, $hascapupdate, $urlpicedit, $streditsummary,
+    private function make_block_topic0($course, $sections, $modinfo, $editing, $urlpicedit, $streditsummary,
             $onsectionpage) {
         $section = 0;
         if (!array_key_exists($section, $sections)) {
@@ -264,7 +262,7 @@ class format_grid_renderer extends format_section_renderer_base {
 
         echo $this->format_summary_text($thissection);
 
-        if ($editing && $hascapupdate) {
+        if ($editing) {
             $link = html_writer::link(
                             new moodle_url('editsection.php', array('id' => $thissection->id)),
                                 html_writer::empty_tag('img', array('src' => $urlpicedit,
@@ -305,7 +303,7 @@ class format_grid_renderer extends format_section_renderer_base {
     /**
      * Makes the grid image containers.
      */
-    private function make_block_icon_topics($contextid, $modinfo, $course, $editing, $hascapupdate, $hascapvishidsect,
+    private function make_block_icon_topics($contextid, $modinfo, $course, $editing, $hascapvishidsect,
             $urlpicedit) {
         global $USER, $CFG;
 
@@ -366,7 +364,7 @@ class format_grid_renderer extends format_section_renderer_base {
                 }
 
                 // If the image is set then check that displayedimageindex is greater than 0 otherwise create the displayed image.
-                // This is a catchall for existing courses.
+                // This is a catch-all for existing courses.
                 if (isset($sectionimage->image) && ($sectionimage->displayedimageindex < 1)) {
                     // Set up the displayed image:...
                     $sectionimage->newimage = $sectionimage->image;
@@ -380,7 +378,7 @@ class format_grid_renderer extends format_section_renderer_base {
 
                 if ($course->coursedisplay != COURSE_DISPLAY_MULTIPAGE) {
                     echo html_writer::start_tag('a', array(
-                        'href' => '#',
+                        'href' => '#section-' . $thissection->section,
                         'id' => 'gridsection-' . $thissection->section,
                         'class' => 'gridicon_link',
                         'role' => 'link',
@@ -419,7 +417,7 @@ class format_grid_renderer extends format_section_renderer_base {
                     echo html_writer::end_tag('div');
                     echo html_writer::end_tag('a');
 
-                    if ($editing && $hascapupdate) {
+                    if ($editing) {
                         echo html_writer::link(
                                 $this->courseformat->grid_moodle_url('editimage.php', array(
                                     'sectionid' => $thissection->id,
@@ -492,7 +490,7 @@ class format_grid_renderer extends format_section_renderer_base {
                     }
                     echo $title;
 
-                    if ($editing && $hascapupdate) {
+                    if ($editing) {
                         echo html_writer::link(
                                 $this->courseformat->grid_moodle_url('editimage.php', array(
                                     'sectionid' => $thissection->id,
@@ -556,7 +554,7 @@ class format_grid_renderer extends format_section_renderer_base {
     /**
      * Makes the list of sections to show.
      */
-    private function make_block_topics($course, $sections, $modinfo, $editing, $hascapupdate, $hascapvishidsect, $streditsummary,
+    private function make_block_topics($course, $sections, $modinfo, $editing, $hascapvishidsect, $streditsummary,
             $urlpicedit, $onsectionpage) {
         $context = context_course::instance($course->id);
         unset($sections[0]);
@@ -585,7 +583,7 @@ class format_grid_renderer extends format_section_renderer_base {
                 'aria-label' => $sectionname)
             );
 
-            if ($editing && $hascapupdate) {
+            if ($editing) {
                 // Note, 'left side' is BEFORE content.
                 $leftcontent = $this->section_left_content($thissection, $course, $onsectionpage);
                 echo html_writer::tag('div', $leftcontent, array('class' => 'left side'));
@@ -603,7 +601,7 @@ class format_grid_renderer extends format_section_renderer_base {
 
                 echo $this->format_summary_text($thissection);
 
-                if ($editing && $hascapupdate) {
+                if ($editing) {
                     echo html_writer::link(
                             new moodle_url('editsection.php', array('id' => $thissection->id)),
                             html_writer::empty_tag('img', array('src' => $urlpicedit, 'alt' => $streditsummary,
@@ -630,7 +628,7 @@ class format_grid_renderer extends format_section_renderer_base {
             unset($sections[$section]);
         }
 
-        if ($editing and $hascapupdate) {
+        if ($editing) {
             // Print stealth sections if present.
             foreach ($modinfo->get_section_info_all() as $section => $thissection) {
                 if ($section <= $course->numsections or empty($modinfo->sections[$section])) {

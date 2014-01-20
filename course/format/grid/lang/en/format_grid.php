@@ -35,11 +35,15 @@ $string['hidden_topic'] = 'This section has been hidden';
 $string['hide_summary'] = 'move section into grid';
 $string['hide_summary_alt'] = 'Move this section into the grid';
 $string['namegrid'] = 'Grid view';
-$string['pluginname'] = 'Grid format';
 $string['title'] = 'Section title';
 $string['topic'] = 'Section';
 $string['topic0'] = 'General';
 $string['topicoutline'] = 'Section';  // No longer used kept for legacy versions.
+
+// Moodle 2.0 Enhancement - Moodle Tracker MDL-15252, MDL-21693 & MDL-22056 - http://docs.moodle.org/en/Development:Languages.
+$string['sectionname'] = 'Section';
+$string['pluginname'] = 'Grid format';
+$string['section0name'] = 'General';
 
 // WAI-ARIA - http://www.w3.org/TR/wai-aria/roles.
 $string['gridimagecontainer'] = 'Grid images';
