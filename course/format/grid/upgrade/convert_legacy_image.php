@@ -25,7 +25,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 /* Imports */
-require_once('../../../config.php');
+require_once('../../../../config.php');
 require_once($CFG->dirroot . '/repository/lib.php');
 require_once($CFG->libdir . '/gdlib.php');
 
@@ -102,7 +102,7 @@ if ($courseids) {
         $sectionicons = grid_get_icons($courseid);
 
         if ($sectionicons) {
-            $context = get_context_instance(CONTEXT_COURSE, $courseid);
+            $context = context_course::instance($courseid);
             $contextid = $context->id;
 
             if ($contextid) {
@@ -184,8 +184,8 @@ if ($courseids) {
                                 error_log('Image ' . $sectionicon->image . ' could not be found in the legacy files.');
                             }
                         } else {
-                            echo('<p>No section icon found for course id: ' . $courseid . ', section id: ' . $sectionicon->sectionid . '.</p>');
-                            error_log('No section icon found for course id: ' . $courseid . ', section id: ' . $sectionicon->sectionid . '.');
+                            echo('<p>Section icon not set for course id: ' . $courseid . ', section id: ' . $sectionicon->sectionid . '.</p>');
+                            error_log('Section icon not set for course id: ' . $courseid . ', section id: ' . $sectionicon->sectionid . '.');
                         }
                     }
                 } else {

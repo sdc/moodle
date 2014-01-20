@@ -4,11 +4,11 @@ A topics based format that uses a grid of user selectable images to pop up a lig
 
 Required version of Moodle
 ==========================
-This version works with Moodle version 2013051400.00 release 2.5 (Build: 20130514) and above within the 2.5
-branch until the next release.
+This version works with Moodle version 2013111800.00 release 2.6 (Build: 20131118) and above within the 2.6 branch until the
+next release.
 
 Please ensure that your hardware and software complies with 'Requirements' in 'Installing Moodle' on
-'docs.moodle.org/25/en/Installing_Moodle' / 'docs.moodle.org/dev/Moodle_2.5_release_notes'.
+'docs.moodle.org/26/en/Installing_Moodle' / 'docs.moodle.org/dev/Moodle_2.6_release_notes'.
 
 Free Software
 =============
@@ -242,7 +242,49 @@ Known Issues
 
 History
 =============
-26th November 2013 Version 2.5.5.3
+16th January 2014 Version 2.6.1.5
+Change by G J Barnard
+  1.  Fix to RTL CSS thanks to Nadav Kavalerchik - https://github.com/gjb2048/moodle-courseformat_grid/pull/3 being:
+      Right align "New Activity" image in RTL mode.
+  2.  Fixed missing strings in 'en' language file for 'One section per page' mode.
+
+18th December 2013 Version 2.6.1.4
+Change by G J Barnard
+  1.  Fixed path and message confusion issue with the M1.9 upgrade script.
+  2.  Fixed issue reported by Graham Woodsford whereby teachers could not create Collapsed Topics courses.  The code in the area
+      concerned is identical to the Grid format and hence the same issue affects it too.  This is because the validation method
+      'edit_form_validation' in 'lib.php' was failing the values passed to it.  These happened to be the hidden label values from
+      'course_format_options' which were being used because the 'Course creator' role that teachers have before becoming an
+      'editingteacher' role as defined in 'db/access.php' does not allow the teacher to have the
+      'format/grid:changeimagecontainersize', 'format/grid:changeimageresizemethod' and 'format/grid:changeimagecontainerstyle'
+      capabilities.  This also implies that the values of the other settings are wrong, which in fact they are, causing courses to
+      be created (after fixing the colour settings for 'edit_form_validation') with odd values and not the defaults resulting in no
+      icon set etc.  And therefore needing to go back to edit the course settings.
+
+      Ok, this now leads on to a dilemma.  Currently the course creator role does not have the Grid capabilities listed above.  If
+      they were added to 'access.php' then the role would have them (existing Grid admins would have to add manually).  Then the
+      teacher would see all the options when first creating a course as they do whilst editing.  However, this means that if you
+      wish to restrict the teacher from changing things as is the purpose of the capabilities in the first place, then you have
+      to remove the capability in both the 'coursecreator' and 'editingteacher' roles.  This is because by default 'coursecreator'
+      is above 'editingteacher' and once enrolled on the course after having created it, the teacher has both.  This makes things
+      a bit complex and to be honest not that admin friendly.  Therefore to keep things simple in what is in reality an event
+      that is rare, I have decided not to add the capabilities to the 'coursecreator' role.  This is additionally based on the
+      presumed work-flow of a teacher where they create the course using the defaults, look at it and then decide what to change
+      in the settings.  The fix as it stands will facilitate this.
+
+13th December 2013 Version 2.6.1.3 - Zombie release.
+Change by G J Barnard
+  1.  Fixed shade box still being shown in editing mode when update capability is denied.  Historical
+      issue that has not been spotted before.  Given http://docs.moodle.org/26/en/Capabilities/moodle/course:update
+      I have no idea why that specific capability was in the format for checking editing
+      capability in conjunction with actual editing capability in the first place.  Fix
+      is to remove the use of it completely which should marginally speed things up a bit.
+  2.  Fixed sections disappearing when the icon is clicked on in editing mode.
+  3.  Fixed icon image eventually disappearing when the section name / summary is changed.  See CONTRIB-4784, a
+      big thank you to Nadav Kavalerchik for spotting what was the cause of this and thus providing a reliable
+      means of replicating the issue.
+
+26th November 2013 Version 2.6.1.2
 Change by G J Barnard
   1.  Fix automated backups including displayed images when they should not.
   2.  Fix 'reset_grid_setting' in 'lib.php' not resetting a course if it's only on default options.
@@ -282,14 +324,19 @@ know with as much information as possible, like additional add-ons and when you 
 
 So, I have decided to release as is as the fixes above are important to distribute to the community.
 
-20th November 2013 Version 2.5.5.2
+20th November 2013 Version 2.6.1.1
 Change by G J Barnard
   1.  Fix incorrect detection of non-existent entry in format_grid_icon table.  Thanks to
       Llywelyn Morgan for reporting this.
 
-18th November 2013 Version 2.5.5.1
+18th November 2013 Version 2.6.1
 Change by G J Barnard
-  1.  Fixed slight issue with lack of prefixing '#' for colour settings in default settings.
+  1.  Stable release for Moodle 2.6.
+  2.  Fixed slight issue with lack of prefixing '#' for colour settings in default settings.
+
+14th November 2013 Version 2.6.0.1
+Change by G J Barnard
+  1.  Initial BETA code for Moodle 2.6.
 
 14th November 2013 Version 2.5.5
 Change by G J Barnard
