@@ -14,9 +14,7 @@ require_once($CFG->dirroot.'/mod/realtimequiz/lib.php');
 require_once($CFG->libdir.'/filelib.php');
 
 require_login();
-if (!confirm_sesskey()) {
-    error(get_string('badsesskey','realtimequiz'));
-}
+require_sesskey();
 $requesttype = required_param('requesttype', PARAM_ALPHA);
 $quizid = required_param('quizid', PARAM_INT);
 
@@ -307,7 +305,11 @@ if (! $cm = get_coursemodule_from_instance("realtimequiz", $realtimequiz->id, $c
     realtimequiz_end_response();
     die();
 }
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+if ($CFG->version < 2011120100) {
+    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+} else {
+    $context = context_module::instance($cm->id);
+}
 
 if (!has_capability('mod/realtimequiz:attempt', $context)) {
     realtimequiz_send_error(get_string('notallowedattempt','realtimequiz'));

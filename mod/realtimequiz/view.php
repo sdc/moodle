@@ -8,33 +8,20 @@
 
 require_once("../../config.php");
 require_once("lib.php");
+global $CFG, $DB, $PAGE, $OUTPUT;
 
 $id = optional_param('id', 0, PARAM_INT); // Course Module ID, or
 $a  = optional_param('a', 0, PARAM_INT);  // realtimequiz ID
 
 if ($id) {
-    if (! $cm = $DB->get_record("course_modules", array('id' => $id))) {
-        error("Course Module ID was incorrect");
-    }
-
-    if (! $course = $DB->get_record("course", array('id' => $cm->course))) {
-        error("Course is misconfigured");
-    }
-
-    if (! $realtimequiz = $DB->get_record("realtimequiz", array('id' => $cm->instance))) {
-        error("Course module is incorrect");
-    }
-
+    $cm = get_coursemodule_from_id('realtimequiz', $id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $realtimequiz = $DB->get_record('realtimequiz', array('id' => $cm->instance), '*', MUST_EXIST);
 } else {
-    if (! $realtimequiz = $DB->get_record("realtimequiz", array('id' => $a))) {
-        error("Course module is incorrect");
-    }
-    if (! $course = $DB->get_record("course", array('id' => $realtimequiz->course))) {
-        error("Course is misconfigured");
-    }
-    if (! $cm = get_coursemodule_from_instance("realtimequiz", $realtimequiz->id, $course->id)) {
-        error("Course Module ID was incorrect");
-    }
+    $realtimequiz = $DB->get_record('realtimequiz', array('id' => $bid), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance('realtimequiz', $realtimequiz->id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $id = $cm->id;
 }
 
 $PAGE->set_url(new moodle_url('/mod/realtimequiz/view.php', array('id' => $cm->id)));
@@ -42,7 +29,11 @@ $PAGE->set_url(new moodle_url('/mod/realtimequiz/view.php', array('id' => $cm->i
 require_login($course->id, false, $cm);
 $PAGE->set_pagelayout('incourse');
 
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+if ($CFG->version < 2011120100) {
+    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+} else {
+    $context = context_module::instance($cm->id);
+}
 
 $questioncount = $DB->count_records('realtimequiz_question', array('quizid' => $realtimequiz->id));
 if ($questioncount == 0 && has_capability('mod/realtimequiz:editquestions', $context)) {
@@ -70,6 +61,15 @@ echo format_text($realtimequiz->intro, $realtimequiz->introformat);
 
 /// Print the main part of the page
 
+if ($CFG->version < 2013111800) {
+    $tickimg = $OUTPUT->pix_url('i/tick_green_big');
+    $crossimg = $OUTPUT->pix_url('i/cross_red_big');
+} else {
+    $tickimg = $OUTPUT->pix_url('i/grade_correct');
+    $crossimg = $OUTPUT->pix_url('i/grade_incorrect');
+}
+
+
 echo $OUTPUT->box_start('generalbox boxwidthwide boxaligncenter realtimequizbox');
 ?>
 <div id="questionarea"></div>
@@ -84,8 +84,8 @@ echo $OUTPUT->box_start('generalbox boxwidthwide boxaligncenter realtimequizbox'
     realtimequiz_set_coursepage('<?php echo "$CFG->wwwroot/course/view.php?id=$course->id"; ?>');
     realtimequiz_set_siteroot('<?php echo "$CFG->wwwroot"; ?>');
 
-    realtimequiz_set_image('tick',"<?php echo $OUTPUT->pix_url('/i/tick_green_big'); ?>");
-    realtimequiz_set_image('cross',"<?php echo $OUTPUT->pix_url('/i/cross_red_big'); ?>");
+    realtimequiz_set_image('tick',"<?php echo $tickimg ?>");
+    realtimequiz_set_image('cross',"<?php echo $crossimg ?>");
     realtimequiz_set_image('blank',"<?php echo $OUTPUT->pix_url('spacer'); ?>");
 
     //Pass all the text strings into the javascript (to allow for translation)
