@@ -47,7 +47,11 @@ $PAGE->set_url($url);
 
 require_login($course->id, false, $cm);
 $PAGE->set_pagelayout('incourse');
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+if ($CFG->version < 2011120100) {
+    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+} else {
+    $context = context_module::instance($cm->id);
+}
 require_capability('mod/realtimequiz:seeresponses', $context);
 
 if ($questionid != 0) {
@@ -134,11 +138,21 @@ foreach ($sessions as $session) {
 }
 echo '</select> <input type="submit" value="'.get_string('showsession','realtimequiz').'" /></form></center>';
 
-$tickimg = '<img src="'.$OUTPUT->pix_url('i/tick_green_big').'" alt="'.get_string('tick','realtimequiz').'" />';
-$crossimg = '<img src="'.$OUTPUT->pix_url('i/cross_red_big').'" alt="'.get_string('cross','realtimequiz').'" />';
+if ($CFG->version < 2013111800) {
+    $tickimg = '<img src="'.$OUTPUT->pix_url('i/tick_green_big').'" alt="'.get_string('tick','realtimequiz').'" />';
+    $crossimg = '<img src="'.$OUTPUT->pix_url('i/cross_red_big').'" alt="'.get_string('cross','realtimequiz').'" />';
+} else {
+    $tickimg = '<img src="'.$OUTPUT->pix_url('i/grade_correct').'" alt="'.get_string('tick','realtimequiz').'" />';
+    $crossimg = '<img src="'.$OUTPUT->pix_url('i/grade_incorrect').'" alt="'.get_string('cross','realtimequiz').'" />';
+}
 
 if ($questionid == 0) { // Show all of the questions
-    if (check_browser_version('Gecko')) {
+    if ($CFG->version < 2013111800) {
+        $isff = check_browser_version('Gecko');
+    } else {
+        $isff = core_useragent::check_browser_version('Gecko');
+    }
+    if ($isff) {
         $blankcolspan = 'colspan="999" ';
     } else {
         $blankcolspan = '';
@@ -355,8 +369,8 @@ if ($questionid == 0) { // Show all of the questions
     $question = $DB->get_record('realtimequiz_question', array('id' => $questionid) );
 
     echo '<h2>'.get_string('question','realtimequiz').$question->questionnum.'</h2>';
-    $questiontext = format_text($question->questiontext, $question->questiontextformat);
-    $questiontext = file_rewrite_pluginfile_urls($questiontext, 'pluginfile.php', $context->id, 'mod_realtimequiz', 'question', $question->id);
+    $questiontext = file_rewrite_pluginfile_urls($question->questiontext, 'pluginfile.php', $context->id, 'mod_realtimequiz', 'question', $question->id);
+    $questiontext = format_text($questiontext, $question->questiontextformat);
     echo '<p>'.$questiontext.'</p><br />';
     echo '<table border="1" class="realtimequiz_report_answer"><tr class="realtimequiz_report_question"><td width="30%">&nbsp;</td>';
     $answers = $DB->get_records('realtimequiz_answer', array('questionid' => $questionid),'id');
