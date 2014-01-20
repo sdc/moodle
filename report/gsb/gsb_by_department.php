@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_login();
 
-$context = get_context_instance(CONTEXT_SYSTEM);
+$context = context_system::instance();
 require_capability('report/gsb:viewmygsbreport', $context);
 
 global $DB, $CFG;
@@ -321,7 +321,7 @@ foreach($get_dept_codes as $row => $values) {
 					$updgsb->headingsnum = $headingnum;						
 					
 
-					$labelfilenum = $DB->get_record_sql("SELECT ROUND((LENGTH(intro)-LENGTH(REPLACE(intro, '@@PLUGINFILE@@', '')))/13) AS COUNT FROM {label} WHERE course ='$courseid'");
+					$labelfilenum = $DB->get_record_sql("SELECT DISTINCT ROUND((LENGTH(intro)-LENGTH(REPLACE(intro, '@@PLUGINFILE@@', '')))/13) AS COUNT FROM {label} WHERE course ='$courseid'");
 					if(isset($labelfilenum->count)){					
 					$labelfilenum = $labelfilenum->count;
 					}else{
