@@ -99,7 +99,7 @@ class qtype_ddmarker_edit_form extends qtype_ddtoimage_edit_form_base {
 
     protected function draggable_items_repeated_options() {
         $repeatedoptions = array();
-        $repeatedoptions['drags[label]']['type'] = PARAM_TEXT;
+        $repeatedoptions['drags[label]']['type'] = PARAM_RAW;
         return $repeatedoptions;
     }
 
@@ -113,7 +113,7 @@ class qtype_ddmarker_edit_form extends qtype_ddtoimage_edit_form_base {
         $grouparray[] = $mform->createElement('text', 'coords',
                                                 get_string('coords', 'qtype_ddmarker'),
                                                 array('size'=>50, 'class'=>'tweakcss'));
-        $mform->setType('coords', PARAM_NOTAGS);
+        $mform->setType('coords', PARAM_RAW); // These are validated manually.
         $markernos = array();
         $markernos[0] = '';
         for ($i = 1; $i <= $imagerepeats; $i += 1) {
@@ -128,7 +128,7 @@ class qtype_ddmarker_edit_form extends qtype_ddtoimage_edit_form_base {
 
     protected function drop_zones_repeated_options() {
         $repeatedoptions = array();
-        $repeatedoptions['drops[coords]']['type']      = PARAM_TEXT;
+        $repeatedoptions['drops[coords]']['type'] = PARAM_RAW;
         return $repeatedoptions;
     }
 
@@ -264,7 +264,7 @@ class qtype_ddmarker_edit_form extends qtype_ddtoimage_edit_form_base {
 
     public function get_image_size_in_draft_area($draftitemid) {
         global $USER;
-        $usercontext = get_context_instance(CONTEXT_USER, $USER->id);
+        $usercontext = context_user::instance($USER->id);
         $fs = get_file_storage();
         $draftfiles = $fs->get_area_files($usercontext->id, 'user', 'draft', $draftitemid, 'id');
         if ($draftfiles) {
