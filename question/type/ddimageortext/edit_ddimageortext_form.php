@@ -168,7 +168,7 @@ class qtype_ddimageortext_edit_form extends qtype_ddtoimage_edit_form_base {
         $draggableimageitem[] = $mform->createElement('text', 'draglabel',
                                                 get_string('label', 'qtype_ddimageortext'),
                                                 array('size'=>30, 'class'=>'tweakcss'));
-        $mform->setType('draglabel', PARAM_NOTAGS);
+        $mform->setType('draglabel', PARAM_RAW); // These are validated manually.
         return $draggableimageitem;
     }
 
@@ -213,7 +213,7 @@ class qtype_ddimageortext_edit_form extends qtype_ddtoimage_edit_form_base {
         // We do the necessary validation in the validation method.
         $repeatedoptions['drops[xleft]']['type']     = PARAM_RAW;
         $repeatedoptions['drops[ytop]']['type']      = PARAM_RAW;
-        $repeatedoptions['drops[droplabel]']['type'] = PARAM_TEXT;
+        $repeatedoptions['drops[droplabel]']['type'] = PARAM_RAW;
         $repeatedoptions['choice']['default'] = '0';
         return $repeatedoptions;
     }
