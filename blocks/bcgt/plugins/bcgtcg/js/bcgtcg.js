@@ -193,7 +193,6 @@ function update(action, params)
     Y.all("#popUpContent select, #popUpContent input, #popUpContent textarea").setAttribute('disabled', true);
         
     $.post(M.cfg.wwwroot + '/blocks/bcgt/plugins/bcgtcg/ajax/update.php', {action: action, params: params}, function(d){
-        console.log(d);
         eval(d);
         Y.all('#studentGridDiv select, #studentGridDiv input, #studentGridDiv textarea').removeAttribute('disabled');
         Y.all('#unitGridDiv select, #unitGridDiv input, #unitGridDiv textarea').removeAttribute('disabled');
@@ -513,6 +512,250 @@ M.mod_bcgtcg.initunitgrid = function(Y, qualID, unitID, columnsLocked, configCol
      $(this).addClass("gridbuttonswitchON");
     });
 }
+
+
+
+M.mod_bcgtcg.initstudunits = function(Y) {
+    
+    $(document).ready( function () {
+        var tables = $('.cgStudentsUnitsTable');
+        var count = tables.length;
+        var tablesArray = [];
+        for(var i=1;i<=count;i++)
+        {
+            tablesArray[i] = $('#cgStudentUnits'+i).dataTable( {
+                "sScrollX": "100%",
+                "sScrollY": "400px",
+                "bScrollCollapse": true,
+                "bPaginate": false,
+                "bSortClasses": false
+            });
+                
+            new FixedColumns( tablesArray[i], {
+                "iLeftColumns": 4,
+                "iLeftWidth": 250 
+           }); 
+        }
+    });
+         
+    var unitCopy = Y.all('.unitsColumn');
+    unitCopy.each(function(unit){
+        unit.on('click', function(e){
+            e.preventDefault();
+            //id is in the form of qIDuID
+            var id = unit.get('id');
+            var toggle = true;
+            var className = unit.getAttribute('class');
+            var toggleOn = className.indexOf('tOn');
+            var toggleOff = className.indexOf('tOff');
+            if(toggleOn == -1 && toggleOff == -1)
+            {
+                className = className + 'tOn'; 
+            }
+            else
+            {
+                //knock off the tOn or tOff and put the other back
+                //then swicth what we are doing checking or unchecking
+                if(toggleOn != -1)
+                {
+                    className = className.substring(0,className.indexOf('tOn'));
+                    toggle = false;
+                    className = className + 'tOff';
+                }
+                else
+                {
+                    className = className.substring(0,className.indexOf('tOff'));
+                    className = className + 'tOn';
+                }
+            }
+            var checkboxes = Y.all('.ch'+id);
+            checkboxes.each(function(input){
+                if(!toggle)
+                {
+                    input.set('checked', '');
+                }
+                else
+                {
+                    input.set('checked', 'checked'); 
+                } 
+            });
+            unit.setAttribute('class', className);
+            //get the id of it so we can get the unitid
+            //then find all of the checkboxes that have a class that contains
+            //uUnitID and set them to checked. 
+        });
+    }); 
+    
+    var studentCopy = Y.all('.studentRow');
+    studentCopy.each(function(student){
+        student.on('click', function(e){
+            e.preventDefault();
+            var id = student.get('id');
+            var toggle = true;
+            var className = student.getAttribute('class');
+            var toggleOn = className.indexOf('tOn');
+            var toggleOff = className.indexOf('tOff');
+            if(toggleOn == -1 && toggleOff == -1)
+            {
+                className = className + 'tOn'; 
+            }
+            else
+            {
+                //knock off the tOn or tOff and put the other back
+                //then swicth what we are doing checking or unchecking
+                if(toggleOn != -1)
+                {
+                    className = className.substring(0,className.indexOf('tOn'));
+                    toggle = false;
+                    className = className + 'tOff';
+                }
+                else
+                {
+                    className = className.substring(0,className.indexOf('tOff'));
+                    className = className + 'tOn';
+                }
+            }
+            var checkboxes = Y.all('.ch'+id);
+            checkboxes.each(function(input){
+                if(!toggle)
+                {
+                    input.set('checked', '');
+                }
+                else
+                {
+                    input.set('checked', 'checked'); 
+                } 
+            });
+            student.setAttribute('class', className);
+        }); 
+    });
+    
+    var studentCopyAll = Y.all('.studentAll');
+    studentCopyAll.each(function(student){
+       student.on('click',function(e){
+          e.preventDefault();
+          var id = student.get('id');
+          //this will get all of the checkboxes for the student
+          var checkboxes = Y.all('.'+id);
+          checkboxes.each(function(input){
+              var idName = input.getAttribute('id');
+              //comes down in the form of 'chs{STUDENTID}q{QUALID}u{UNITID}'
+              var q = idName.indexOf('q');
+              var unitID = idName.substring(q);
+              var checked = input.get('checked');
+              var unitChecks = Y.all('.ch'+unitID);
+              unitChecks.each(function(check){
+                  check.set('checked', checked);
+              });
+          });
+       }); 
+    });
+    
+    var none = Y.all('.none');
+    none.each(function(input){
+        input.on('click', function(e){
+            e.preventDefault();
+            var id = input.get('id');
+            //id is none123
+            var q = id.indexOf('e');
+            var qID = id.substring(q + 1);
+            var checkboxes = Y.all('.eSU'+qID);
+            checkboxes.each(function(check){
+               check.set('checked', ''); 
+            });
+      });  
+    })
+
+    var all = Y.all('.all');
+    all.each(function(input){
+        input.on('click', function(e){
+            e.preventDefault();
+            var id = input.get('id');
+            //id is none123
+            var q = id.indexOf('l');
+            var qID = id.substring(q + 2);
+            var checkboxes = Y.all('.eSU'+qID);
+            checkboxes.each(function(check){
+               check.set('checked', 'checked'); 
+            });
+      });   
+    })
+    
+}
+
+M.mod_bcgtcg.initsinglestudunits = function(Y) {
+    $(document).ready( function () {
+        var tables = $('.singleStudentUnits');
+        var count = tables.length;
+        var tablesArray = [];
+        for(var i=1;i<=count;i++)
+        {
+            tablesArray[i] = $('#singleStudentUnits'+i).dataTable( {
+                "sScrollX": "100%",
+                "bScrollCollapse": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSort": false,
+                "bInfo":false
+            });
+                
+            new FixedColumns( tablesArray[i], {
+                "iLeftColumns": 2,
+                "iLeftWidth": 60 
+           }); 
+        }
+    });
+    
+    var studentCopy = Y.all('.studentRow');
+    studentCopy.each(function(student){
+        student.on('click', function(e){
+            e.preventDefault();
+            var id = student.get('id');
+            //this is in the form of
+            //chs'.$this->studentID.'q'.$this->id
+            //so chs2321q2133
+            var toggle = true;
+            var className = student.getAttribute('class');
+            var toggleOn = className.indexOf('tOn');
+            var toggleOff = className.indexOf('tOff');
+            if(toggleOn == -1 && toggleOff == -1)
+            {
+                className = className + 'tOn'; 
+            }
+            else
+            {
+                //knock off the tOn or tOff and put the other back
+                //then swicth what we are doing checking or unchecking
+                if(toggleOn != -1)
+                {
+                    className = className.substring(0,className.indexOf('tOn'));
+                    toggle = false;
+                    className = className + 'tOff';
+                }
+                else
+                {
+                    className = className.substring(0,className.indexOf('tOff'));
+                    className = className + 'tOn';
+                }
+            }
+            //get all of them that have the class of chsIDqID and 
+            var checkboxes = Y.all('.ch'+id);
+            checkboxes.each(function(input){
+                if(!toggle)
+                {
+                    input.set('checked', '');
+                }
+                else
+                {
+                    input.set('checked', 'checked'); 
+                } 
+            });
+            student.setAttribute('class', className);
+        }); 
+    });
+}
+
+
 
 
 var redraw_CG_unit_table = function(qualID, unitID, grid, flag, courseID) {
@@ -1153,7 +1396,7 @@ function applyTT()
 //        new webkit_draggable('genericPopup');
 //    }
     
-    $('#genericPopup').resizable();
+    //$('#genericPopup').resizable();
     
     $(document).on('click', 'body', function(){
         $('.ui-tooltip').fadeOut();
@@ -1766,7 +2009,6 @@ function update_student_grid(id, o){
     var data = o.responseText; // Response data.
     var json = Y.JSON.parse(o.responseText);
     
-    console.log(json);
             
             //alert(JSON.stringify(json));
     //renabled everything

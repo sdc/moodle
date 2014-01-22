@@ -55,7 +55,6 @@ $out = $OUTPUT->header();
 //get the courses students, by child course. 
 
 $currentQuals = bcgt_get_course_quals($courseID);
-$role = bcgt_get_role('student');
 $users = bcgt_get_course_students($courseID);
 $heading = '';
 $course = $DB->get_record_select('course', 'id = ?', array($courseID));
@@ -74,92 +73,77 @@ $out .= '<form name="editCourseQual" action="edit_course_qual_user.php" method="
 $out .= '<input type="submit" name="save" value="'.get_string('save', 'block_bcgt').'"/>';
 $out .= '<input type="hidden" name="cID" value="'.$courseID.'"/>';
 $out .= '<input type="hidden" name="oCID" value="'.$originalCourseID.'"/>';
+
+$out .= '<p><img src="'.$CFG->wwwroot.'/blocks/bcgt/images/linksymbol.jpg"/> = '.get_string('linkedonotherquals', 'block_bcgt');
+$context = context_course::instance($COURSE->id);
+if(has_capability('block/bcgt:checkuseraccess', $context))
+{
+    $out .= ' '.get_string('viewusersaccessquals', 'block_bcgt');
+}
+$out .= '</p>';
+
 $out .= '<table id="courseQualUserTable1" class="courseQualUserTable">';
-$out .= '<thead><tr><th>'.get_string('enrolment', 'block_bcgt').'</th><th></th><th>'.get_string('username').
+$header = '<thead><tr><th>'.get_string('enrolment', 'block_bcgt').'</th><th></th><th>'.get_string('username').
         '</th><th>'.get_string('name').'</th><th></th>';
+$staffHeader = '';
+$headerStu = '';
 if($currentQuals)
 {
     foreach($currentQuals AS $qual)
     {
         //Select all Students for this Qual
-        $out .= '<th>'.$qual->family.'<br />'.$qual->trackinglevel.'<br />'.
+        $headerStu .= '<th>'.$qual->family.'<br />'.$qual->trackinglevel.'<br />'.
                 $qual->subtype.'<br />'.$qual->name.'<br /><br />'.
                 '<a href="edit_course_qual_user?cID='.$courseID.'" 
                     title="'.get_string('selectallstudentsqual', 'block_bcgt').'">'.
                         '<img src="'.$CFG->wwwroot.'/blocks/bcgt/images/arrowdown.jpg"'. 
                         'width="25" height="25" class="qualColumnAll" id="q'.$qual->id.'"/>'.
                         '</a></th>';
+        $staffHeader .= '<th>'.$qual->family.'<br />'.$qual->trackinglevel.'<br />'.
+                $qual->subtype.'<br />'.$qual->name.'<br /><br />'.
+                '<a href="edit_course_qual_user?cID='.$courseID.'" 
+                    title="'.get_string('selectallstudentsqual', 'block_bcgt').'">'.
+                        '<img src="'.$CFG->wwwroot.'/blocks/bcgt/images/arrowdown.jpg"'. 
+                        'width="25" height="25" class="qualColumnStaffAll" id="q'.$qual->id.'st"/>'.
+                        '</a></th>';
     }
 }
-$out .= '</tr>';
-$out .= '</thead><tbody>';
-$count = 0;
-$lastCourse = $courseID;
-foreach($users AS $student)
+$headerStu = $header.$headerStu;
+$headerStu .= '</tr>';
+$headerStu .= '</thead>';
+$out .= $headerStu;
+$out .= '<tbody>';
+$role = bcgt_get_role('student');
+$out .= display_course_tracker_users($courseID, $users, $currentQuals, $role, true);
+//now get the old students
+if(has_capability('block/bcgt:editredundanttrackeruserlinks', $context))
 {
-    $count++;
-    $out .= '<tr>';
-    $currentCourse = $student->courseid;
-    if($count == 1)
-    {
-        $out .= '<td>'.get_string('direct', 'block_bcgt').'</td><td></td><td></td><td></td><td></td>';
-        foreach($currentQuals AS $qual)
-        {
-            //Select all Students on this course for this Qual
-            $out .= '<td class="qualSelect"><a class="qualSelect" href="edit_course_qual_user?cID='.$courseID.'" 
-                    title="'.get_string('courseualusersselectall','block_bcgt').'">'.
-                        '<img src="'.$CFG->wwwroot.'/blocks/bcgt/images/arrowdown.jpg"'. 
-                        'width="25" height="25" class="qualColumnCourse" '.
-                    'id="q'.$qual->id.'c'.$currentCourse.'"/></a></td>';
-        }
-        $out .= '</tr>';
-        $out .= '<tr>';
-    }
-    if($currentCourse != $lastCourse)
-    {
-        $lastCourse = $currentCourse;
-        $out .= '<td>'.$student->courseshortname.'</td><td></td><td></td><td></td><td></td>';
-        foreach($currentQuals AS $qual)
-        {
-            //Select all Students on this course for this Qual
-            $out .= '<td class="qualSelect"><a class="qualSelect" href="edit_course_qual_user?cID='.$courseID.'" 
-                    title="'.get_string('courseualusersselectall', 'block_bcgt').'">'.
-                        '<img src="'.$CFG->wwwroot.'/blocks/bcgt/images/arrowdown.jpg"'. 
-                        'width="25" height="25" class="qualColumnCourse" '.
-                    'id="q'.$qual->id.'c'.$currentCourse.'"/></a></td>';
-        }
-        $out .= '</tr>';
-        $out .= '<tr>';
-    }
-    $out .= '<td></td>';
-    //if commenting this back in dont forget that the student object doesnt have
-    //the id as the user id, is the the role assignment id
-    //so $userObj = $student
-    //userObj->id = $student->userid
-//    $out .= '<td>'.$OUTPUT->user_picture($student, array(1)).'</td>';
-    $out .= '<td></td>';
-    $out .= '<td>'.$student->username.'</td>';
-    $out .= '<td>'.$student->firstname.' '.$student->lastname.'</td>';
-    //, 
-    $out .= '<td class="qualSelect"><a class="qualSelect" href="edit_course_qual_course.php?qID='.$qual->id.'&sID='.$student->userid.'"'.
-            'title="'.get_string('selectallusersquals', 'block_bcgt').'">'.
-            '<img src="'.$CFG->wwwroot.'/blocks/bcgt/images/arrowright.jpg"'. 
-            'width="25" height="25" class="studentRow" id="s'.$student->userid.'"/>'.
-            '</a></td>';
-    foreach($currentQuals AS $qual)
-    {
-        $checked = '';
-        if(Qualification::check_user_on_qual($student->userid, $role->id, $qual->id))
-        {
-            $checked = 'checked';
-        }
-        $out .= '<td class="qualSelect"><input type="checkbox" name="chq'.$qual->id.'s'.$student->userid.'"'.
-            'id="" class="qualSelect chq'.$qual->id.' chq'.$qual->id.'c'.$currentCourse.' '.
-                'chs'.$student->userid.'" '.$checked.'/></td>';
-    }
-    $out .= '</tr>';
+    $oldStudents = bcgt_get_old_students_still_on_qual($courseID, $currentQuals);
+    $out .= display_course_tracker_unlinked_users($courseID, $oldStudents, $currentQuals);
 }
+
 $out .= '</tbody></table>';
+
+//now get the staff
+if(has_capability('block/bcgt:editstafftrackerlinks', $context))
+{
+    $staff = bcgt_get_course_staff($courseID);
+    if($staff)
+    {
+        $out .= '<h3 class="enroledstaff">'.get_string('enroledstaff', 'block_bcgt').'</h3>';
+        $role = bcgt_get_role('student');
+        $out .= '<table id="courseQualUserTableStaff" class="courseQualUserTableStaff">';
+        
+        $staffHeader = $header.$staffHeader;
+        $staffHeader .= '</tr>';
+        $staffHeader .= '</thead>';
+        $out .= $staffHeader;
+        $out .= '<tbody>';
+        $checkForOtherRoles = true;
+        $out .= display_course_tracker_staff($courseID, $staff, $currentQuals, $role, false, $checkForOtherRoles);
+        $out .= '</tbody></table>';
+    }
+}
 $out .= '<input type="submit" name="save" value="'.get_string('save', 'block_bcgt').'"/>';
 $out .= '</form>';
 

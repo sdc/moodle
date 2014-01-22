@@ -814,13 +814,13 @@ abstract class AlevelQualification extends Qualification{
     
     public function call_display_student_grid_external()
     {
-        return $this->display_student_grid(false, true);
+        return $this->display_student_grid(true, true, true);
     }
     
     /**
      * Displays the Grid
      */
-    public function display_student_grid($fullGridView = true, $studentView = true)
+    public function display_student_grid($fullGridView = true, $studentView = true, $externalView = false)
     {
         if(isset($_POST['save']))
         {
@@ -858,6 +858,11 @@ abstract class AlevelQualification extends Qualification{
                 $retval .= "<input type='submit' id='save' name='save' class='gridbuttonswitch gridsave' value='Save'/>";
             }
         }
+        
+        if ($externalView && has_capability('block/bcgt:printstudentgrid', $context)){
+            $retval .= "<a href='{$CFG->wwwroot}/blocks/bcgt/grids/print_grid.php?sID={$this->studentID}&qID={$this->id}' target='_blank'><input type='button' class='gridbuttonswitch printsimple' value='Print Grid'/></a>";
+        }
+        
         $retval .= "</div><br clear='all' /><br />";
         $retval .= '<input type="hidden" id="grid" name="g" value="'.$grid.'"/>';
         $jsModule = array(
@@ -875,7 +880,8 @@ abstract class AlevelQualification extends Qualification{
         {
             $seeTargetGrade = true;
         }
-        if(has_capability('block/bcgt:viewweightedtargetgrade', $context))
+        if(has_capability('block/bcgt:viewweightedtargetgrade', $context) && get_config('bcgt', 
+                    'alevelallowalpsweighting'))
         {
             $seeWeightedTargetGrade = true;
         }
@@ -884,7 +890,12 @@ abstract class AlevelQualification extends Qualification{
         {
             $seeValueAdded = true;
         }
-        $retval .= $this->display_summary_table($seeTargetGrade, $seeWeightedTargetGrade, $seeValueAdded);
+        $seeBoth = false;
+        if(has_capability('block/bcgt:viewbothweightandnormaltargetgrade', $context))
+        {
+            $seeBoth = true;
+        }
+        $retval .= $this->display_summary_table($seeTargetGrade, $seeWeightedTargetGrade, $seeValueAdded, false, $seeBoth);
         
         $retval .= '<div id="alevelStudentGridOuter" class="alevelgrid">';
         if(get_config('bcgt', 'alevelusefa') && get_config('bcgt', 'alevelManageFACentrally') 
@@ -929,12 +940,13 @@ abstract class AlevelQualification extends Qualification{
     }
     
     protected function display_student_grid_actual($editing = false, $formalAssessments = false, 
-            $gradebook = false, $displayBody = true)
+            $gradebook = false, $displayBody = true, $print = false)
     {
         $this->get_projects();
         //create the table
         //create the header
-        $retval = '<table class="alevelStudentsGridTables" id="alevelStudentGridQ'.$this->id.'">';
+        $id = ($print) ? 'printGridTable' : 'alevelStudentGridQ'.$this->id;
+        $retval = '<table class="alevelStudentsGridTables" id="'.$id.'">';
             $retval .= $this->get_display_grid_header(false, $formalAssessments, $gradebook, true);
             $retval .= '<tbody>';
             if($displayBody)
@@ -969,14 +981,20 @@ abstract class AlevelQualification extends Qualification{
         {
             $context = context_course::instance($courseID);
         }
+        
+        $seeBoth = false;
+        if(has_capability('block/bcgt:viewbothweightandnormaltargetgrade', $context))
+        {
+            $seeBoth = true;
+        }
+        
         $seeTargetGrade = false;
         if(has_capability('block/bcgt:viewtargetgrade', $context))
         {
             $seeTargetGrade = true;
-            $retval .= '<th rowspan="'.$rowSpan.'">'.get_string('target', 'block_bcgt').'</th>';
         }
         // | Weighted |
-        
+        $seeWeightedGrade = false;
         if(has_capability('block/bcgt:viewweightedtargetgrade', $context) && get_config('bcgt', 
                 'alevelallowalpsweighting'))
         {
@@ -985,6 +1003,14 @@ abstract class AlevelQualification extends Qualification{
             {
                 $string = 'specifictargetgrade';
             }
+            $seeWeightedGrade = true;
+        }
+        if(($seeBoth && $seeTargetGrade) || (!$seeBoth && !$seeWeightedGrade && $seeTargetGrade))
+        {
+            $retval .= '<th rowspan="'.$rowSpan.'">'.get_string('target', 'block_bcgt').'</th>';
+        }
+        if($seeWeightedGrade)
+        {
             $retval .= '<th rowspan="'.$rowSpan.'">'.get_string($string, 'block_bcgt').'</th>';
         }
         // | Predicted |
@@ -1227,15 +1253,31 @@ abstract class AlevelQualification extends Qualification{
                 $retval .= '<td>'.$link1.$this->get_display_name(false, ' ', array('family', 'trackinglevel')).$link2.'</td>';
             }
             $seeTargetGrade = false;
+            
+            $seeBoth = false;
+            if(has_capability('block/bcgt:viewbothweightandnormaltargetgrade', $context))
+            {
+                $seeBoth = true;
+            }
+            
             if(has_capability('block/bcgt:viewtargetgrade', $context))
             {
                 $seeTargetGrade = true;
-                $retval .= '<td>'.$targetGrade.'</td>';
             }
+            
             $predictedGrade = 'N/A';
             // | Weighted |
+            $seeWeightedGrade = false;
             if(has_capability('block/bcgt:viewweightedtargetgrade', $context) && get_config('bcgt', 
                     'alevelallowalpsweighting'))
+            {
+                $seeWeightedGrade = true;
+            }
+            if(($seeBoth && $seeTargetGrade) | (!$seeBoth & !$seeWeightedGrade))
+            {
+                $retval .= '<td>'.$targetGrade.'</td>';
+            }
+            if($seeWeightedGrade)
             {
                 $retval .= '<td>'.$weightedTargetGrade.'</td>';
             }
@@ -1533,15 +1575,18 @@ abstract class AlevelQualification extends Qualification{
 		
 	}
     
-    protected function display_summary_table($seeTargetGrade, $seeWeightedGrade, $seeValueAdded)
+    protected function display_summary_table($seeTargetGrade, $seeWeightedGrade, $seeValueAdded, $print = false, $seeBoth)
     {
+                
+        $id = ($print) ? 'printGridTable' : 'alevelSummary';
+        
         $retval = '';
         //show the summary -> Get all of the subjects
         $retval .= '<div id="alevelSummary">';
-            $retval .= '<table id="alevelSummary">';
+            $retval .= '<table id="'.$id.'">';
                 $thirdRowNeeded = false;
                 $rowSpan = 2;
-                if($seeValueAdded && $seeTargetGrade && $seeWeightedGrade)
+                if($seeValueAdded && $seeBoth && $seeTargetGrade && $seeWeightedGrade)
                 {
                     $thirdRowNeeded = true;
                     $rowSpan = 3;
@@ -1549,7 +1594,7 @@ abstract class AlevelQualification extends Qualification{
                 $retval .= '<tr><th rowspan="'.$rowSpan.'">'.get_string('subject', 'block_bcgt').'</th>';
                 if($seeTargetGrade)
                 {
-                    $retval .= '<th rowspan="'.$rowSpan.'">'.get_string('target', 'block_bcgt').'</th>';
+                    $tg = '<th rowspan="'.$rowSpan.'">'.get_string('target', 'block_bcgt').'</th>';
                 }
                 if($seeWeightedGrade)
                 {
@@ -1561,7 +1606,16 @@ abstract class AlevelQualification extends Qualification{
                     {
                         $string = 'targetgrade';
                     }
-                    $retval .= '<th rowspan="'.$rowSpan.'">'.get_string($string, 'block_bcgt').'</th>';
+                    $wtg = '<th rowspan="'.$rowSpan.'">'.get_string($string, 'block_bcgt').'</th>';
+                }
+                
+                if(($seeBoth && $seeTargetGrade) || (!$seeBoth && !$seeWeightedGrade && $seeTargetGrade))
+                {
+                    $retval .= $tg;
+                }
+                if($seeWeightedGrade)
+                {
+                    $retval .= $wtg;
                 }
                 if(get_config('bcgt', 'alevelusecalcpredicted'))
                 {
@@ -1576,14 +1630,14 @@ abstract class AlevelQualification extends Qualification{
                     {
                         $colspan = 2;
                         $subColSpan = 1;
-                        $subRowSpan = 2;
-                        if($seeTargetGrade && $seeWeightedGrade)
+                        $subRowSpan = 1;
+                        if($seeBoth && $seeTargetGrade && $seeWeightedGrade)
                         {
                             $colspan = 3;
                             $subRowSpan = 2;
                             $subColSpan = 2;
                             $thirdRow .= '<th class="ceta">'.get_string('t', 'block_bcgt').
-                                    '</th><th class="ceta">'.get_string('st', 'block_bcgt').
+                                    '</th><th class="ceta">'.get_string('wt', 'block_bcgt').
                                     '</th>';
                         }
                         $subRow1 .= '<th rowspan="'.$subRowSpan.'" class="ceta">'.get_string('current', 'block_bcgt').'</th>';
@@ -1598,15 +1652,15 @@ abstract class AlevelQualification extends Qualification{
                     if($seeValueAdded && ($seeTargetGrade || $seeWeightedGrade))
                     {
                         $subColSpan = 1;
-                        $subRowSpan = 2;
+                        $subRowSpan = 1;
                         $colspan = 2;
-                        if($seeTargetGrade && $seeWeightedGrade)
+                        if($seeBoth && $seeTargetGrade && $seeWeightedGrade)
                         {
                             $colspan = 3;
                             $subRowSpan = 2;
                             $subColSpan = 2;
                             $thirdRow .= '<th class="fa">'.get_string('t', 'block_bcgt').
-                                    '</th><th class="fa">'.get_string('st', 'block_bcgt').
+                                    '</th><th class="fa">'.get_string('wt', 'block_bcgt').
                                     '</th>';
                         }
                         $subRow1 .= '<th rowspan="'.$subRowSpan.'" class="fa">'.get_string('current', 'block_bcgt').'</th>';
@@ -1634,7 +1688,7 @@ abstract class AlevelQualification extends Qualification{
                         $cetaRank = 0;
                         $retval .= '<tr>';
                             $retval .= '<td>'.$record->type.' '.$record->name.'</td>';
-                            if($seeTargetGrade)
+                            if(($seeBoth && $seeTargetGrade) || (!$seeBoth && !$seeWeightedGrade && $seeTargetGrade))
                             {
                                 $retval .= '<td>'.$record->targetgrade.'</td>';
                             }
@@ -1642,7 +1696,6 @@ abstract class AlevelQualification extends Qualification{
                             {
                                 $retval .= '<td>'.$record->weightedtargetgrade.'</td>';
                             }
-
                             if(get_config('bcgt', 'alevelusecalcpredicted'))
                             {
                                 $retval .= '<td>'.$record->predictedgrade.'</td>';
@@ -1674,7 +1727,7 @@ abstract class AlevelQualification extends Qualification{
                             
                                 if($seeValueAdded)
                                 {
-                                    if($seeTargetGrade)
+                                    if(($seeBoth && $seeTargetGrade) || (!$seeBoth && !$seeWeightedGrade && $seeTargetGrade))
                                     {
                                         if($cetaRank && $targetGradeRank)
                                         {
@@ -1717,7 +1770,7 @@ abstract class AlevelQualification extends Qualification{
                                 }
                                 if($seeValueAdded)
                                 {
-                                    if($seeTargetGrade)
+                                    if(($seeBoth && $seeTargetGrade) || (!$seeBoth && !$seeWeightedGrade && $seeTargetGrade))
                                     {
                                         if($formalAssessmentRank && $targetGradeRank)
                                         {
@@ -1770,14 +1823,14 @@ abstract class AlevelQualification extends Qualification{
             JOIN {block_bcgt_target_qual} targetqual ON targetqual.id = qual.bcgttargetqualid 
             JOIN {block_bcgt_type} type ON type.id = targetqual.bcgttypeid 
             LEFT OUTER JOIN {block_bcgt_user_course_trgts} usertargets ON usertargets.bcgtqualificationid = qual.id 
-            LEFT OUTER JOIN {block_bcgt_user_award} useraward ON useraward.bcgtqualificationid = qual.id 
+            LEFT OUTER JOIN {block_bcgt_user_award} useraward ON useraward.bcgtqualificationid = qual.id AND useraward.userid = ? 
             LEFT OUTER JOIN {block_bcgt_target_grades} targetgrades ON targetgrades.id = usertargets.bcgttargetgradesid
             LEFT OUTER JOIN {block_bcgt_target_grades} awardgrades ON awardgrades.id = useraward.bcgttargetgradesid 
             LEFT OUTER JOIN {block_bcgt_target_grades} targetgradesweighted ON targetgradesweighted.id = usertargets.bcgtweightedgradeid';
         
         $sql .= ' WHERE userqual.userid = ? AND (type.id = ? OR type.id = ?) AND usertargets.userid = ?
             ';
-        $params = array($this->studentID, ASLevelQualification::ID, A2LevelQualification::ID, $this->studentID);
+        $params = array($this->studentID, $this->studentID, ASLevelQualification::ID, A2LevelQualification::ID, $this->studentID);
         if($qualID != -1)
         {
             $sql .= ' AND qual.id = ?';
@@ -2438,6 +2491,185 @@ abstract class AlevelQualification extends Qualification{
         return $DB->get_record_sql($sql, array());
     }
     
+    public function print_grid()
+    {
+            
+        global $CFG, $COURSE;
+        
+        //show all formalAssessments iniially
+        $formalAssessments = true;
+        //show all gradebook initially
+        $gradebook = true;
+        //display body of the table through html
+        $displayBody = true;
+        
+        $courseID = optional_param('cID', -1, PARAM_INT);
+        if($courseID != -1)
+        {
+            $context = context_course::instance($courseID);
+        }
+        else
+        {
+            $context = context_course::instance($COURSE->id);
+        }
+        
+        $seeTargetGrade = false;
+        $seeWeightedTargetGrade = false;
+        if(has_capability('block/bcgt:viewtargetgrade', $context))
+        {
+            $seeTargetGrade = true;
+        }
+        if(has_capability('block/bcgt:viewweightedtargetgrade', $context))
+        {
+            $seeWeightedTargetGrade = true;
+        }
+        $seeValueAdded = false;
+        if(has_capability('block/bcgt:viewvalueaddedgrids', $context))
+        {
+            $seeValueAdded = true;
+        }
+        $seeBoth = false;
+        if(has_capability('block/bcgt:viewbothweightandnormaltargetgrade', $context))
+        {
+            $seeBoth = true;
+        }
+        
+        
+        echo "<!doctype html><html><head>";
+        echo "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/bcgt/print.css'>";
+        
+        $logo = get_config('bcgt', 'logoimgurl');
+        
+        echo load_javascript(false, true);
+        
+        echo "</head><body style='background: url(\"{$logo}\") no-repeat;'>";
+                
+        echo "<div class='c'>";
+            echo "<h1>{$this->get_display_name()}</h1>";
+            echo "<h2>".fullname($this->student)." ({$this->student->username})</h2>";
+            echo "<br><br><br>";
+            
+            echo $this->display_summary_table($seeTargetGrade, $seeWeightedTargetGrade, $seeValueAdded, true, $seeBoth);
+            
+            echo "<br><br><br>";
+            
+            if(get_config('bcgt', 'alevelusefa') && get_config('bcgt', 'alevelManageFACentrally') 
+                && !get_config('bcgt', 'alevelLinkAlevelGradeBook'))
+            {
+                //then all of the subjects can be in one table
+                //the content here is retrieved using ajax. 
+                    //the table is retrieved, where the header is retrieved
+                        //the body is retrieved in its own sub ajax call. 
+                echo $this->display_all_student_grids(false, $formalAssessments, $gradebook);
+            }
+            else
+            {
+                //else each subject needs to have its own table
+                //go and get the quals. 
+                $studentsQuals = get_role_quals($this->studentID, 'student', '', AlevelQualification::FAMILYID);
+                if($studentsQuals)
+                {
+                    $i=0;
+                    foreach($studentsQuals AS $qual)
+                    {
+                        $i++;
+                        echo '<div class="alevelSingleQual">';
+                        echo '<h2>'.bcgt_get_qualification_display_name($qual, 
+                                    true, ' ', array('family', 'trackinglevel')).'</h2>';
+                        if($qual->id != $this->id)
+                        {
+                            //need to get the qual from the session.
+                            $qualification = get_student_qual_from_session($qual->id, $this->studentID);
+                            echo $qualification->display_student_grid_actual(false, $formalAssessments, $gradebook, $displayBody, true);
+                        }
+                        else
+                        {
+                            echo $this->display_student_grid_actual(false, $formalAssessments, $gradebook, $displayBody, true);
+                        }
+                        echo '</div>';
+                    }
+                }
+            }
+            
+        
+        echo "</div>";
+            
+            //echo "<br class='page_break'>";
+            
+            // Comments and stuff
+            // TODO at some point
+            
+        echo "<script> $('a').contents().unwrap(); </script>";
+        echo "</body></html>";
+        
+    }
+    
+    public function print_class_grid()
+    {
+        
+        global $CFG;
+        
+        $formalAssessments = true;
+        $gradebook = true;
+        
+        $this->get_projects();
+        
+        echo "<!doctype html><html><head>";
+        echo "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/bcgt/print.css'>";
+        
+        $logo = get_config('bcgt', 'logoimgurl');
+        
+        echo load_javascript(false, true);
+        
+        echo "</head><body style='background: url(\"{$logo}\") no-repeat;'>";
+                
+        echo "<div class='c'>";
+            echo "<h1>{$this->get_display_name()}</h1>";
+                        
+            echo "<br><br><br><br>";
+            
+            echo "<table id='printGridTable' class='aLvl'>";
+            
+            echo '<thead>';
+            echo $this->get_display_grid_header($students = true, $formalAssessments, $gradebook,false);
+            echo '</thead>';
+            
+            
+            $loadParams = new stdClass();
+            $loadParams->loadLevel = Qualification::LOADLEVELALL;
+            $loadParams->loadTargets = true;
+            $students = $this->get_students('', 'lastname ASC, firstname ASC');
+            if($students)
+            {
+                foreach($students AS $student)
+                {
+                    echo '<tr>';
+                    //load_student_information will clear previous student's information. 
+                    $this->load_student_information($student->id, $loadParams);
+                    $this->get_gradebook_for_grid();
+                    echo $this->get_single_grid_row(false, true, 
+                        $formalAssessments, $gradebook, false, false);
+                    echo '</tr>';
+                }
+            }
+            
+            
+            echo "</table>";
+            echo "</div>";
+            
+            //echo "<br class='page_break'>";
+            
+            // Comments and stuff
+            // TODO at some point
+            
+        echo "<script> $('a').contents().unwrap(); </script>";
+        echo "</body></html>";
+        
+    }
+    
+    public function has_auto_target_grade_calculation(){
+        return true;
+    }
     
 }
 

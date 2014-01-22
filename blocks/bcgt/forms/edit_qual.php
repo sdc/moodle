@@ -29,10 +29,18 @@ else
 }
 require_login();
 $PAGE->set_context($context);
-require_capability('block/bcgt:addnewqual', $context);
+$qualID = optional_param('qID', -1, PARAM_INT);
+if($qualID == -1)
+{
+    require_capability('block/bcgt:addnewqual', $context);
+}
+else
+{
+    require_capability('block/bcgt:editqual', $context);
+}
 
 //$action = optional_param('action', 'add', PARAM_TEXT);
-$qualID = optional_param('qID', -1, PARAM_INT);
+
 $typeID = optional_param('tID', -1, PARAM_INT);
 $familyID = optional_param('fID', -1, PARAM_INT);
 $name = optional_param('name', '', PARAM_TEXT);
@@ -88,7 +96,6 @@ elseif($familyID != -1)
     //of the qualification has been selected.
 	$qualification = Qualification::get_qualification_class($typeID, $qualID, 
             $familyID, null, $loadParams);
-            
     if($qualification)
 	{
 		$typeID = $qualification->get_class_ID();
@@ -157,8 +164,23 @@ if(isset($_POST['save']))
 }
 elseif(isset($_POST['cancel']))
 {
+    $levelID = -1;
+    $subTypeID = -1;
+    if($qualification)
+    {
+        $level = $qualification->get_level();
+        if($level)
+        {
+            $levelID = $level->get_id();
+        }
+        $subtype = $qualification->get_subtype();
+        if($subtype)
+        {
+            $subTypeID = $subtype->get_id();
+        }
+    }
     //??
-	redirect($CFG->wwwroot.'/mod/qualification/qual_unit_menu.php');
+	redirect($CFG->wwwroot.'/blocks/bcgt/forms/qual_select.php?family='.$familyID.'&level='.$levelID.'&subtype='.$subTypeID);
 }
 elseif($qualification)
 {

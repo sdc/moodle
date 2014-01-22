@@ -83,7 +83,7 @@ $PAGE->set_title(get_string('bcgtmydashboard', 'block_bcgt'));
 $PAGE->set_heading(get_string('bcgtmydashboard', 'block_bcgt'));
 $PAGE->set_pagelayout('login');
 $PAGE->add_body_class(get_string('bcgtmydashboard', 'block_bcgt'));
-$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),$CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php','title');
+$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),$CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php?tab=track','title');
 $jsModule = array(
     'name'     => 'block_bcgt',
     'fullpath' => '/blocks/bcgt/js/block_bcgt.js',
@@ -92,11 +92,22 @@ $jsModule = array(
 $PAGE->requires->js_init_call('M.block_bcgt.initgridunit', null, true, $jsModule);
 require_once($CFG->dirroot.'/blocks/bcgt/lib.php');
 
+$link1 = null;
+if(has_capability('block/bcgt:viewclassgrids', $context))
+{
+    $link1 = $CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?&cID='.$courseID.'&g=u';
+}
+$PAGE->navbar->add(get_string('grids', 'block_bcgt'),$link1,'title');
+
 if(!$unit || empty($unit) || $unit == null || $unit == '')
 {
     $loadParams = new stdClass();
     $loadParams->loadLevel = Qualification::LOADLEVELALL;
     $unit = Unit::get_unit_class_id($unitID, $loadParams);
+}
+if($unit)
+{
+    $PAGE->navbar->add($unit->get_uniqueID().' - '.$unit->get_name(),null,'title');
 }
 $out = $OUTPUT->header();
     $out .= '<form id="unitGridForm" method="POST" name="unitGridForm" action="unit_grid.php?">';			
@@ -117,15 +128,14 @@ $out = $OUTPUT->header();
             }
             else
             {
-                $teacherRole = $DB->get_record_sql('SELECT * FROM {role} WHERE shortname = ?', array('teacher'));
-                //TODO only get the quals that the teacher can teach on. 
-                $quals = $unit->get_quals_on('', $USER->id, $teacherRole->id);
-                if(!$quals)
-                {
-                    $teacherRole = $DB->get_record_sql('SELECT * FROM {role} WHERE shortname = ?', array('editingteacher'));
-                    //TODO only get the quals that the teacher can teach on. 
-                    $quals = $unit->get_quals_on('', $USER->id, $teacherRole->id);
-                }
+                $quals = $unit->get_quals_on_roles('', $USER->id, array('teacher', 'editingteacher'));
+                
+//                $teacherRole = $DB->get_record_sql('SELECT * FROM {role} WHERE shortname = ?', array('teacher'));
+//                //TODO only get the quals that the teacher can teach on. 
+//                $quals = $unit->get_quals_on('', $USER->id, $teacherRole->id);
+//                $teacherRole = $DB->get_record_sql('SELECT * FROM {role} WHERE shortname = ?', array('editingteacher'));
+//                //TODO only get the quals that the teacher can teach on. 
+//                $quals = $unit->get_quals_on('', $USER->id, $teacherRole->id);
             }
             $out .= '<div class="bcgtQualChange">';
             $out .= '<label for="qualChange">Change Qualification to : </label>';
@@ -191,7 +201,7 @@ $out = $OUTPUT->header();
     $out .= '<input type="hidden" id="selects" name="selects" value="'.$dropDowns.'"/>'; 
     $out .= '<input type="hidden" id="user" name="user" value="'.$USER->id.'"/>';
     
-    $out .= get_grid_menu($unitID, $qualID);
+    $out .= get_grid_menu(null, $unitID, $qualID);
     $out .= '</div>';
     
     $heading = get_string('trackinggrid','block_bcgt');

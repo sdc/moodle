@@ -156,6 +156,8 @@ class BespokeCriteria extends Criteria {
         
         $output = "";
         
+        $this->comments = iconv('UTF-8', 'ASCII//TRANSLIT', $this->comments); 
+        
         $class = ($this->comments && !empty($this->comments)) ? 'hasComments' : '';
         $output .= "<td id='C_{$this->id}U_{$unit->get_id()}Q_{$qual->get_id()}S_{$this->studentID}' class='val {$class}' title='' criteriaID='{$this->id}' unitID='{$unit->get_id()}' qualID='{$qual->get_id()}' studentID='{$this->studentID}'>";
         

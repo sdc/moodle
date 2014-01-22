@@ -888,6 +888,16 @@ function xmldb_bcgtcg_install()
             $record->previoustargetqualid = -1; //if it has a disticnt previous one. 
             //e.g ASlevel to A2 Level
             $ID_HB_VRQ_L3_DIP = $DB->insert_record('block_bcgt_target_qual', $record); 
+            
+            // NEW
+            $record = new stdClass();
+            $record->bcgtlevelid = 3;
+            $record->bcgttypeid = 10; # HB VRQ
+            $record->bcgtsubtypeid = 5; # Cert
+            $record->previoustargetqualid = -1; //if it has a disticnt previous one. 
+            //e.g ASlevel to A2 Level
+            $ID_HB_VRQ_L3_CERT = $DB->insert_record('block_bcgt_target_qual', $record); 
+            // NEW
     
     
         // HB NVQ
@@ -1122,18 +1132,42 @@ function xmldb_bcgtcg_install()
             $DB->insert_record('block_bcgt_target_breakdown', $record);
             
             $record = new stdClass();
-            $record->bcgttargetqualid = $ID_HB_VRQ_L2_DIP;      
+            $record->bcgttargetqualid = $ID_HB_VRQ_L3_DIP;      
             $record->targetgrade = 'Merit';
             $record->unitsscorelower = 1.6; //Units score if needed
             $record->unitsscoreupper = 2.5;
             $DB->insert_record('block_bcgt_target_breakdown', $record);
             
             $record = new stdClass();
-            $record->bcgttargetqualid = $ID_HB_VRQ_L2_DIP;      
+            $record->bcgttargetqualid = $ID_HB_VRQ_L3_DIP;      
             $record->targetgrade = 'Distinction';
             $record->unitsscorelower = 2.6; //Units score if needed
             $record->unitsscoreupper = 3;
             $DB->insert_record('block_bcgt_target_breakdown', $record);
+            
+            
+        // HB VRQ L3 Cert - PMD
+            $record = new stdClass();
+            $record->bcgttargetqualid = $ID_HB_VRQ_L3_CERT;      
+            $record->targetgrade = 'Pass';
+            $record->unitsscorelower = 1; //Units score if needed
+            $record->unitsscoreupper = 1.5;
+            $DB->insert_record('block_bcgt_target_breakdown', $record);
+            
+            $record = new stdClass();
+            $record->bcgttargetqualid = $ID_HB_VRQ_L3_CERT;      
+            $record->targetgrade = 'Merit';
+            $record->unitsscorelower = 1.6; //Units score if needed
+            $record->unitsscoreupper = 2.5;
+            $DB->insert_record('block_bcgt_target_breakdown', $record);
+            
+            $record = new stdClass();
+            $record->bcgttargetqualid = $ID_HB_VRQ_L3_CERT;      
+            $record->targetgrade = 'Distinction';
+            $record->unitsscorelower = 2.6; //Units score if needed
+            $record->unitsscoreupper = 3;
+            $DB->insert_record('block_bcgt_target_breakdown', $record);
+            
     
         
         // HB NVQ - Only Pass for L1 L2 & L3

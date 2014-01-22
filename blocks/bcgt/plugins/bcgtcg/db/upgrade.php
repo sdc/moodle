@@ -100,4 +100,75 @@ function xmldb_block_bcgtcg_upgrade($oldversion = 0)
     }
     
     
+    
+    if ($oldversion < 2014011500)
+    {
+        
+        $record = new stdClass();
+        $record->bcgtlevelid = 3;
+        $record->bcgttypeid = 10; # HB VRQ
+        $record->bcgtsubtypeid = 5; # Cert
+        $record->previoustargetqualid = -1; //if it has a disticnt previous one. 
+        //e.g ASlevel to A2 Level
+        $ID_HB_VRQ_L3_CERT = $DB->insert_record('block_bcgt_target_qual', $record); 
+        
+        mtrace("Inserted targetqual record for HB VRQ L3 Certificate");
+        
+            
+        $check = $DB->get_record("block_bcgt_target_qual", array("bcgtlevelid" => 3, "bcgttypeid" => 10, "bcgtsubtypeid" => 3));
+        if ($check)
+        {
+            $ID_HB_VRQ_L3_DIP = $check->id;
+            
+            $record = new stdClass();
+            $record->bcgttargetqualid = $ID_HB_VRQ_L3_DIP;      
+            $record->targetgrade = 'Merit';
+            $record->unitsscorelower = 1.6; //Units score if needed
+            $record->unitsscoreupper = 2.5;
+            $DB->insert_record('block_bcgt_target_breakdown', $record);
+
+            $record = new stdClass();
+            $record->bcgttargetqualid = $ID_HB_VRQ_L3_DIP;      
+            $record->targetgrade = 'Distinction';
+            $record->unitsscorelower = 2.6; //Units score if needed
+            $record->unitsscoreupper = 3;
+            $DB->insert_record('block_bcgt_target_breakdown', $record);
+            
+            mtrace("Inserted target breakdowns for HB VRQ L3 DIP");
+            
+            // HB VRQ L3 Cert - PMD
+            $record = new stdClass();
+            $record->bcgttargetqualid = $ID_HB_VRQ_L3_CERT;      
+            $record->targetgrade = 'Pass';
+            $record->unitsscorelower = 1; //Units score if needed
+            $record->unitsscoreupper = 1.5;
+            $DB->insert_record('block_bcgt_target_breakdown', $record);
+            
+            $record = new stdClass();
+            $record->bcgttargetqualid = $ID_HB_VRQ_L3_CERT;      
+            $record->targetgrade = 'Merit';
+            $record->unitsscorelower = 1.6; //Units score if needed
+            $record->unitsscoreupper = 2.5;
+            $DB->insert_record('block_bcgt_target_breakdown', $record);
+            
+            $record = new stdClass();
+            $record->bcgttargetqualid = $ID_HB_VRQ_L3_CERT;      
+            $record->targetgrade = 'Distinction';
+            $record->unitsscorelower = 2.6; //Units score if needed
+            $record->unitsscoreupper = 3;
+            $DB->insert_record('block_bcgt_target_breakdown', $record);
+            
+            mtrace("Inserted target breakdown for HB VRQ L3 Cert");
+            
+            
+            
+        }
+        
+        
+        
+        
+        
+    }
+    
+    
 }

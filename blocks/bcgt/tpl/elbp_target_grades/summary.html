@@ -16,25 +16,37 @@
 <table class="elbp_summary_table">
     <tbody>
         
-        <?php if($courses): ?>
+        <?php if($quals || $courses): ?>
         
             <tr>
-                <th style="text-transform: uppercase;"><?= $string['course'] ?></th>
-                <th style="text-transform: uppercase;"><?= $string['type'] ?></th>
-                <th style="text-transform: uppercase;"><?= $string['grade'] ?></th>
+                <th><?= get_string('qualification', 'block_bcgt') ?>/<?= get_string('course', 'block_bcgt') ?></th>
+                <th><?= get_string('aspirational', 'block_bcgt') ?></th>
+                <th><?= get_string('target', 'block_bcgt') ?></th>
             </tr>
         
-                <?php foreach($courses as $course): ?>
-                <tr>
-                    <td><?= $course->fullname ?></td>
-                    <td><?= get_string('aspirational', 'block_bcgt') ?></td>
-                    <td><?= (isset($course->aspirationalGrade) && isset($course->aspirationalGrade->grade)) ? $course->aspirationalGrade->grade : '-'; ?></td>
-                </tr>
-                <?php endforeach; ?>
+                <?php if ($quals): ?>
+                    <?php foreach($quals as $qual): ?>
+                    <tr>
+                        <td><?= $qual->get_display_name() ?></td>
+                        <td><?= (isset($qual->aspirationalGrade) && isset($qual->aspirationalGrade->grade)) ? $qual->aspirationalGrade->grade : '-'; ?></td>
+                        <td><?= (isset($qual->targetGrade) && isset($qual->targetGrade->grade)) ? $qual->targetGrade->grade : '-'; ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+                
+                <?php if($courses): ?>
+                    <?php foreach($courses as $course): ?>
+                    <tr>
+                        <td><?= $course->fullname ?></td>
+                        <td><?= (isset($course->aspirationalGrade) && isset($course->aspirationalGrade->grade)) ? $course->aspirationalGrade->grade : '-'; ?></td>
+                        <td><?= (isset($course->targetGrade) && isset($course->targetGrade->grade)) ? $course->targetGrade->grade : '-'; ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
         
         <?php else: ?>
             <tr>
-                <td class='c'><?= $string['noresults'] ?></td>
+                <td class='c' colspan='3'><?= $string['noresults'] ?></td>
             </tr>
         <?php endif; ?>
         
