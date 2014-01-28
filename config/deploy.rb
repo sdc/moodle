@@ -33,6 +33,8 @@ after "deploy:create_symlink" do
     run "echo \\$CFG-\\>dirroot  = \\'#{release_path}\\'\\; >> #{current_path}/config.php"
     run "echo require_once\\(\\'#{release_path}/lib/setup.php\\'\\)\\; >> #{current_path}/config.php"
     run "echo ?\\> >> #{current_path}/config.php"
+    # Copy APC's admin script to /admin
+    run "cp #{shared_path}/apc.php #{current_path}/admin/"
     # copy SDC Three theme images from shared folder to theme folder
     run "cp #{shared_path}/sdcthree_theme_images/* #{current_path}/theme/sdcthree/pix/graphics/"
 end
