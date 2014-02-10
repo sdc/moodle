@@ -104,6 +104,11 @@ echo'<h2 class="bcgt_form_heading">'.get_string('selectcourse', 'block_bcgt').'<
 				echo '</form>';
 			// echo '</div>';
 			// echo '<div class="bcgt_admin_right bcgt_col">';
+                $useCourseCategories = false;
+                if(get_config('bcgt','showcoursecategories'))
+                {
+                    $useCourseCategories = true;
+                }
                                 echo '<br /><br />';
 				echo '<form method="post" name="courseSelectForm" action="course_select.php?">';
 					echo '<input type="hidden" name="oCID" value="'.$originalCourseID.'"/>';
@@ -124,7 +129,12 @@ echo'<h2 class="bcgt_form_heading">'.get_string('selectcourse', 'block_bcgt').'<
 								}
 								echo "<option value='$result->id'".
                                     "title=' $qualsCount Quals --- $studentsCount ".
-                                    "Students '>$result->shortname : ".
+                                    "Students '>";
+                                if($useCourseCategories)
+                                {
+                                    echo "($result->categoryname) --- ";
+                                }
+                                echo "$result->shortname : ".
                                     "$result->fullname </option>";
 							}
 						}

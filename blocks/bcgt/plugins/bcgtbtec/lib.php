@@ -18,7 +18,10 @@
     require_once($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbtec/classes/BTECFoundationQualification.class.php');  
     require_once($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbtec/classes/BTECHigherCriteria.class.php');    
     require_once($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbtec/classes/BTECLowerCriteria.class.php');  
-    require_once($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbtec/classes/BTECFoundationCriteria.class.php');  
+    require_once($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbtec/classes/BTECFoundationCriteria.class.php');
+    require_once($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbtec/classes/BTECFirst2013Qualification.class.php');
+    require_once($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbtec/classes/BTECFirst2013Unit.class.php');
+    require_once($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbtec/classes/BTECFirst2013Criteria.class.php');
     
     function run_btec_initial_import()
     {
@@ -912,7 +915,7 @@
                 foreach($criterias AS $criteria)
                 {
                     $checked = '';
-                    if($new && isset($_POST['u_'.$unitID.'_'.$criteria->get_id().'']))
+                    if($new && isset($_POST['u_'.$unitID.'_c_'.$criteria->get_id().'']))
                     {
                         $checked = 'checked="checked"';
                     }

@@ -14,6 +14,7 @@ class Award{
 	private $id;
 	private $award;
 	private $rank;
+    private $shortaward;
 	
 	function Award($id, $params = null)
 	{
@@ -27,6 +28,10 @@ class Award{
             if(isset($params->rank))
             {
                 $this->rank = $params->rank;
+            }
+            if(isset($params->shortaward))
+            {
+                $this->shortaward = $params->shortaward;
             }
         }
 	}
@@ -58,6 +63,16 @@ class Award{
         if ($this->id == -1) return "N/S";
 		return $this->award;
 	}	
+    
+    public function get_short_award()
+    {
+        return $this->shortaward;
+    }
+    
+    public function set_short_award($shortAward)
+    {
+        $this->shortaward = $shortAward;
+    }
 	
 	public function set_rank($rank)
 	{
@@ -85,6 +100,7 @@ class Award{
             $params = new stdClass();
             $params->award = $record->award;
             $params->rank = $record->ranking;
+            $params->shortaward = $record->shortaward;
 			return new Award($record->id, $params);
 		}
 		else

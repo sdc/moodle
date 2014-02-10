@@ -62,13 +62,12 @@ if($families)
     //then get the activity_view_page
     foreach($families AS $family)
     {
-        require_once($CFG->dirroot.$family->classfolderlocation.'/'.$family->type.'Qualification.class.php');
+        $type = str_replace(" ", "", $family->type);
+        require_once($CFG->dirroot.$family->classfolderlocation.'/'.$type.'Qualification.class.php');
         $class = $family->type.'Qualification';
         $out.= $class::add_activity_view_page($cID, $uID, $aID);
     }
 }
-
-
 $out .= html_writer::end_tag('div');//end main column
 $out .= $OUTPUT->footer();
 

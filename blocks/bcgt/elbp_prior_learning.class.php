@@ -219,13 +219,13 @@ class elbp_prior_learning extends Plugin {
         
     }
     
-    public function loadJavascript() {
+    public function loadJavascript($simple = false) {
         
 //        $this->js = array(
 //            '/blocks/bcgt/elbp_prior_learning.js'
 //        );
         
-        parent::loadJavascript();
+        parent::loadJavascript($simple);
     }
     
     

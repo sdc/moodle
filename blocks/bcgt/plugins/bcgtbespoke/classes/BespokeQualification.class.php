@@ -35,6 +35,8 @@ class BespokeQualification extends Qualification
         
         parent::Qualification($qualID, $params, $loadParams);
         
+        $this->bespoke = true;
+        
         // Qual stuff
 		$record = $DB->get_record("block_bcgt_qualification", array("id" => $qualID));
         if ($record)
@@ -154,7 +156,7 @@ class BespokeQualification extends Qualification
 	 * Get the display name for the qual
 	 * This is level, type, subtype and name 
 	 */
-	public function get_display_name($long = true, $seperator = ' ', $exclusions = array())
+	public function get_display_name($long = true, $seperator = ' ', $exclusions = array(), $returnType = 'String')
 	{
         $qual = new stdClass();
         $qual->family = $this->get_family();
@@ -166,7 +168,7 @@ class BespokeQualification extends Qualification
         $qual->levelid = $this->level->get_id();
         $qual->isbespoke = 1;
         $qual->displaytype = $this->get_display_type();
-        return bcgt_get_qualification_display_name($qual, $long, $seperator, $exclusions);
+        return bcgt_get_qualification_display_name($qual, $long, $seperator, $exclusions, $returnType);
 	}
     
     /**
@@ -1603,6 +1605,11 @@ JS;
         }
         
         
+        if ($basicView)
+        {
+            $output .= "<p class='c'><a href='".$CFG->wwwroot."/blocks/bcgt/grids/print_grid.php?sID={$this->studentID}&qID={$this->id}' target='_blank'><img src='".$OUTPUT->pix_url('t/print', 'core')."' alt='' /> ".get_string('printgrid', 'block_bcgt')."</a> &nbsp;&nbsp;&nbsp;&nbsp; <a href='".$CFG->wwwroot."/blocks/bcgt/grids/print_report.php?sID={$this->studentID}&qID={$this->id}' target='_blank'><img src='".$OUTPUT->pix_url('t/print', 'core')."' alt='' /> ".get_string('printreport', 'block_bcgt')."</a></p>";
+        }
+        
         // We don't want the buttons when looking at it in something like the ELBP
         if (!$basicView)
         {
@@ -1807,11 +1814,260 @@ JS;
         
     }
     
+    
+    public function print_grid(){
+        
+        global $CFG, $COURSE;
+        
+        echo "<!doctype html><html><head>";
+        echo "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/bcgt/print.css'>";
+        $logo = get_config('bcgt', 'logoimgurl');
+        
+        $criteriaNames = $this->get_used_criteria_names();
+        
+        echo "</head><body style='background: url(\"{$logo}\") no-repeat;'>";
+                
+        echo "<div class='c'>";
+            echo "<h1>{$this->get_display_name()}</h1>";
+            echo "<h2>".fullname($this->student)." ({$this->student->username})</h2>";
+
+            echo "<br>";
+            
+            // Key
+            echo "<div id='key'>";
+                echo $this->get_grid_key();
+            echo "</div>";
+            
+            echo "<br><br>";
+            
+            echo "<table id='printGridTable'>";
+            echo "<tr>";
+
+            echo "<th></th>";
+            echo "<th class='unit_name'>".get_string('unit', 'block_bcgt')."</th>";
+            echo "<th>".get_string('award', 'block_bcgt')."</th>";
+
+            if ($this->has_unit_percentages())
+            {
+                echo "<th>".get_string('percentcomplete', 'block_bcgt')."</th>";
+            }
+
+            if ($criteriaNames)
+            {
+                foreach($criteriaNames as $name)
+                {
+                    echo "<th>{$name}</th>";
+                }
+            }
+
+            echo "</tr>";
+            
+
+            
+            foreach($this->units AS $unit)
+            {
+
+                $loadParams = new stdClass();
+                $loadParams->loadLevel = Qualification::LOADLEVELALL;
+                $loadParams->loadAward = true;
+                $unit->load_student_information($this->student->id, $this->id, $loadParams);
+                
+                if($unit->is_student_doing())
+                {	
+
+                    echo "<tr>";
+                    
+                        $award = '-';
+                        $unitAward = $unit->get_user_award();   
+                        if($unitAward)
+                        {
+                            $award = $unitAward->get_award();
+                        }
+
+
+                        echo "<td></td>";
+
+                        echo "<td class='unitName' title=''>";
+                            echo $unit->get_name();
+                        echo "</td>";
+
+
+                        echo "<td id='unitAward_U{$unit->get_id()}_Q{$this->id}_S{$this->studentID}'>{$award}</td>";
+
+                        if ($this->has_unit_percentages())
+                        {
+                            echo "<td id='percentComplete_U{$unit->get_id()}_Q{$this->id}_S{$this->studentID}'>".$unit->display_percentage_completed()."</td>";
+                        }
+                        
+                        
+                        if ($criteriaNames)
+                        {
+                            foreach($criteriaNames as $name)
+                            {
+
+                                $studentCriteria = $unit->get_single_criteria(-1, $name);
+
+                                if ($studentCriteria)
+                                {
+                                    echo $studentCriteria->get_td('student', false, $this->student, $this, $unit);
+                                }
+                                else
+                                {
+                                    echo "<td></td>";
+                                }
+
+                            }
+                        }
+                        
+                    
+                    echo "</tr>";
+                    
+                }
+
+            }
+            
+            echo "</table>";
+            echo "</div>";
+            
+            
+            $context = context_course::instance($COURSE->id);
+            
+            if ($this->grading)
+            {
+                echo '<table class="bespokeSummaryAwardGrades">';
+                    echo $this->show_predicted_qual_award($this->predictedAward, $context);
+                    echo $this->show_final_qual_award($this->studentAward, $context);
+                echo '</table>';
+            }
+            
+            
+            //echo "<br class='page_break'>";
+            
+            // Comments and stuff
+            // TODO at some point
+            
+        
+        echo "</body></html>";
+        
+    }
+    
+    public function print_report(){
+        
+        global $CFG, $COURSE;
+        
+        echo "<!doctype html><html><head>";
+        echo "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/bcgt/print.css'>";
+        $logo = get_config('bcgt', 'logoimgurl');
+        
+        echo "</head><body style='background: url(\"{$logo}\") no-repeat;'>";
+        
+        echo "<h1 class='c'>{$this->get_display_name()}</h1>";
+        echo "<h2 class='c'>".fullname($this->student)."</h2>";
+        echo "<h3 class='c'>(".$this->student->username.")</h3>";
+
+        echo "<br><br><br>";
+        
+        echo "<div class='report_right'>";
+            echo "<table>";
+                echo "<tr><th>Criteria/Activity</th><th>Award</th><th>Date</th><th style='width:25%;'>Comments</th></tr>";
+                                
+                if ($this->units)
+                {
+                    foreach($this->units as $unit)
+                    {
+
+                        if ($unit->is_student_doing())
+                        {
+                                                        
+                            //get the users award from the unit
+                            $unitAward = $unit->get_user_award();   
+                            $award = '';
+                            if($unitAward)
+                            {
+                                $award = $unitAward->get_award();
+                            }
+                            
+                            $date = '';
+                            if(!is_null($unit->get_date_updated())){
+                                $date = date('d M Y', $unit->get_date_updated());
+                            }
+                                                        
+                            echo "<tr class='b'>";
+                            
+                                echo "<td>".$unit->get_name()."</td>";
+                                echo "<td class='c'>".$award."</td>";
+                                echo "<td class='c' style='min-width:50px;'>".$date."</td>";
+                                echo "<td style='padding:5px;'>".format_text($unit->get_comments(), FORMAT_PLAIN)."</td>";
+                            
+                            echo "</tr>";
+                            
+                            
+                            // Criteria
+                            if ($unit->get_criteria())
+                            {
+                                foreach($unit->get_criteria() as $criteria)
+                                {
+                                    
+                                    $value = '';
+                                    $date = '';
+                                    $valueObj = $criteria->get_student_value();
+                                    if($valueObj)
+                                    {
+                                        $value = $valueObj->get_value();
+                                        $date = (!is_null($criteria->get_date_updated())) ? $criteria->get_date_updated() : $criteria->get_date_set();
+                                        if($criteria->get_user_defined_value() && strlen($criteria->get_user_defined_value())){
+                                            $value .= " : {$criteria->get_user_defined_value()}";
+                                        }
+                                        
+                                    }
+                                                                        
+                                    echo '<tr>';
+                                        echo '<td style="vertical-align:top;">&nbsp;&nbsp;&nbsp;&nbsp;'.$criteria->get_name().' :- '.$criteria->get_details().'</td>';
+                                        echo '<td style="vertical-align:top;" class="c">'.$value.'</td>';
+                                        echo '<td style="vertical-align:top;" class="c">'.$date.'</td>';
+                                        echo '<td style="vertical-align:top;padding:5px;"><small>'.format_text($criteria->get_comments(), FORMAT_PLAIN).'</small></td>';
+                                    echo '</tr>';
+                                                                        
+                                    
+                                }
+                            }
+                            
+                            
+                            echo "<tr class='divider-row'><td colspan='4'></td></tr>";
+                            
+                        }
+                        
+                    }
+                }
+                
+            echo "<tr class='grey'><td colspan='4'><br></td></tr>";    
+                        
+            $context = context_course::instance($COURSE->id);
+            
+            //>>BEDCOLL TODO this need to be taken from the qual object
+            //as foundatonQual is different
+            //if we are looking at the student then show the qual award
+            echo $this->show_predicted_qual_award($this->predictedAward, $context);
+            echo $this->show_final_qual_award($this->studentAward, $context);
+            
+
+            echo "</table>";
+        
+        echo "</div>";
+        
+        
+        echo "</body></html>";
+        
+        
+        
+    }
+    
+    
     protected function show_final_qual_award($studentAward, $context)
     {
         
         $retval = "";
-        $retval .= "<tr>";
+        $retval .= "<tr class='award_row'>";
         $type = get_string('predictedfinalaward','block_bcgt');
         $award = 'N/A';
         if($studentAward)
@@ -1838,7 +2094,7 @@ JS;
     {
         
         $retval = "";
-        $retval .= "<tr>";
+        $retval .= "<tr class='award_row'>";
         $type = get_string('predictedavgaward','block_bcgt');
         $award = 'N/A';
         
@@ -2254,6 +2510,13 @@ JS;
         //examples see BTEC or Alevel.
         return new BespokeQualification($qualID, $params, $loadParams);
     }
+    
+    
+    public function has_printable_report() {
+        return true;
+    }
+    
+    
 }
 
 

@@ -2802,11 +2802,196 @@ function xmldb_block_bcgt_upgrade($oldversion = 0)
         if (!$dbman->index_exists($table, $index)) {
             $dbman->add_index($table, $index);
         }
+    }
+
+    if ($oldversion < 2013112000)
+    {
         
-        
+        // Changing nullability of field courseid on table block_bcgt_stud_course_grade to null
+        $table = new xmldb_table('block_bcgt_stud_course_grade');
+        $field = new xmldb_field('courseid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'userid');
+
+        // Launch change of nullability for field courseid
+        $dbman->change_field_notnull($table, $field);
         
     }
     
+    if ($oldversion < 2013112100)
+    {
+        
+        // Changing type of field valueid2 on table block_bcgt_logs to text
+        $table = new xmldb_table('block_bcgt_logs');
+        $field = new xmldb_field('valueid2', XMLDB_TYPE_TEXT, null, null, null, null, null, 'valueid');
+
+        // Launch change of type for field valueid2
+        $dbman->change_field_type($table, $field);
+        
+        
+        
+        // Changing type of field valueid3 on table block_bcgt_logs to text
+        $table = new xmldb_table('block_bcgt_logs');
+        $field = new xmldb_field('valueid3', XMLDB_TYPE_TEXT, null, null, null, null, null, 'valueid2');
+
+        // Launch change of type for field valueid3
+        $dbman->change_field_type($table, $field);
+        
+    }
+    
+    if($oldversion < 2013112607)
+    {
+        $sql = "SELECT * FROM {block_bcgt_plugins} WHERE title = ?";
+        $BTEC = $DB->get_record_sql($sql, array('BTEC'));
+        if($BTEC)
+        {
+            echo "Checking BTEC version<br />";
+            if($BTEC->version == 20131018000)
+            {
+                echo "UPDATING BTEC version<br />";
+                $BTEC->version = 2013101800;
+                $DB->update_record('block_bcgt_plugins',$BTEC);
+            }
+        }
+    }
+    
+    //create the folder in the datadir
+    if($oldversion < 2013120300)
+    {
+        global $CFG;
+        //does the dir exist in the moodledata folder?
+        if(!file_exists($CFG->dataroot.'/bcgt') && !is_dir($CFG->dataroot.'/bcgt'))
+        {
+            mkdir($CFG->dataroot.'/bcgt');
+        }
+        if(!file_exists($CFG->dataroot.'/bcgt/import') && !is_dir($CFG->dataroot.'/bcgt/import'))
+        {
+            mkdir($CFG->dataroot.'/bcgt/import');
+        }
+    }
+
+    if ($oldversion < 2013120600) {
+
+        // Define table block_bcgt_settings to be created
+        $table = new xmldb_table('block_bcgt_settings');
+
+        // Adding fields to table block_bcgt_settings
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('setting', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('value', XMLDB_TYPE_TEXT, null, null, null, null, null);
+
+        // Adding keys to table block_bcgt_settings
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Conditionally launch create table for block_bcgt_settings
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+    }
+    
+    if ($oldversion < 2013120601) {
+
+        // Define field specificationdesc to be added to block_bcgt_type
+        $table = new xmldb_table('block_bcgt_type');
+        $field = new xmldb_field('specificationdesc', XMLDB_TYPE_TEXT, null, null, null, null, null, 'bcgtpathwaytypeid');
+
+        // Conditionally launch add field specificationdesc
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        //new levels:
+        
+        //level 1 & 2
+        $sql = "SELECT * FROM {block_bcgt_level} WHERE trackinglevel = ?";
+        $record = $DB->get_record_sql($sql, array('Level 1 & 2'));
+        if(!$record)
+        {
+            $stdObj = new stdClass();
+            $stdObj->trackinglevel = 'Level 1 & 2';
+            $DB->insert_record('block_bcgt_level', $stdObj);
+        }
+
+        // Define field shortaward to be added to block_bcgt_type_award
+        $table = new xmldb_table('block_bcgt_type_award');
+        $field = new xmldb_field('shortaward', XMLDB_TYPE_TEXT, null, null, null, null, null, 'pointsupper');
+
+        // Conditionally launch add field shortaward
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        //need to change the length of targetgrade:
+        // Changing precision of field targetgrade on table block_bcgt_target_breakdown to (50)
+        $table = new xmldb_table('block_bcgt_target_breakdown');
+        $field = new xmldb_field('targetgrade', XMLDB_TYPE_CHAR, '50', null, XMLDB_NOTNULL, null, null, 'bcgttargetqualid');
+
+        // Launch change of precision for field targetgrade
+        $dbman->change_field_precision($table, $field);
+        
+        // Changing precision of field grade on table block_bcgt_target_grades to (50)
+        $table = new xmldb_table('block_bcgt_target_grades');
+        $field = new xmldb_field('grade', XMLDB_TYPE_CHAR, '50', null, XMLDB_NOTNULL, null, null, 'bcgttargetqualid');
+
+        // Launch change of precision for field grade
+        $dbman->change_field_precision($table, $field);
+    }
+    
+    if($oldversion < 2013120601)
+    {
+        // Define field displayname to be added to block_bcgt_criteria
+        $table = new xmldb_table('block_bcgt_criteria');
+        $field = new xmldb_field('displayname', XMLDB_TYPE_CHAR, '30', null, null, null, null, 'ordernum');
+
+        // Conditionally launch add field displayname
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+    }
+    
+    if($oldversion < 2013120601)
+    {
+        //seem to be missing the weighting
+        // Define field weighting to be added to block_bcgt_criteria_his
+        $table = new xmldb_table('block_bcgt_criteria_his');
+        $field = new xmldb_field('weighting', XMLDB_TYPE_NUMBER, '4, 2', null, null, null, null, 'bcgtqualificationid');
+
+        // Conditionally launch add field weighting
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        // Define field ordernum to be added to block_bcgt_criteria_his
+        $table = new xmldb_table('block_bcgt_criteria_his');
+        $field = new xmldb_field('ordernum', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'weighting');
+
+        // Conditionally launch add field ordernum
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        // Define field displayname to be added to block_bcgt_criteria_his
+        $table = new xmldb_table('block_bcgt_criteria_his');
+        $field = new xmldb_field('displayname', XMLDB_TYPE_CHAR, '30', null, null, null, null, 'ordernum');
+
+        // Conditionally launch add field displayname
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+    }
+    
+    if ($oldversion < 2014010600)
+    {
+        
+        // Define field courseid to be added to block_bcgt_custom_grades
+        $table = new xmldb_table('block_bcgt_custom_grades');
+        $field = new xmldb_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'id');
+
+        // Conditionally launch add field courseid
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+    }
     
     //update required:
     //values

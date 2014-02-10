@@ -17,15 +17,18 @@ require_once($CFG->dirroot.'/blocks/bcgt/classes/core/Unit.class.php');
 class BTECUnit extends Unit{
     //put your code here
     
+    const L1CRITERIANAME = 'L1_';
     const PASSCRITERIANAME = 'P';
 	const MERITCRITERIANAME = 'M';
 	const DISTINCTIONCRITERIANAME = 'D';
+    const L1CRITERIAPOSS = 30;
     const PASSCRITERIAPOSS = 30;
     const MERITCRITERIAPOSS = 30;
     const DISSCRITERIAPOSS = 30;
     const DEFAULTUNITCREDITSNAME = 'DEFAULT_UNIT_LEVEL_CREDITS';
 	protected $credits;
     protected $defaultColumns = array('picture', 'username', 'name');
+    protected $gridLocked;
     
     public function BTECUnit($unitID, $params, $loadParams)
     {
@@ -35,29 +38,28 @@ class BTECUnit extends Unit{
 			$creditsObj = BTECUnit::retrieve_credits($unitID);
 			if($creditsObj)
 			{
-                if(!$creditsObj->credits)
+                if($creditsObj->credits >= 0)
+                {
+                    $this->credits = $creditsObj->credits; 
+                }
+                else
                 {
                     //get default credits for this object if we can
                     $defaultCredits = $this->get_default_credits();
                     $this->credits = $defaultCredits;
                 }
-                else
-                {
-                    $this->credits = $creditsObj->credits;
-                }
 			}
 		}
 		elseif($params)
 		{
-            if(!isset($params->credits) || !$params->credits)
+            if(isset($params->credits) && $params->credits >= 0)
             {
-                //get default credits for this object if we can
-                $defaultCredits = $this->get_default_credits();
-                $this->credits = $defaultCredits;
+                $this->credits = $params->credits;
             }
             else
             {
-                $this->credits = $params->credits;
+                $defaultCredits = $this->get_default_credits();
+                $this->credits = $defaultCredits;
             }
 		}
         else 
@@ -89,11 +91,11 @@ class BTECUnit extends Unit{
 	
 	public function get_credits()
 	{
-        if(!$this->credits)
+        if(isset($this->credits) && $this->credits >= 0)
         {
-            return $this->get_default_credits();
+            return $this->credits;
         }
-		return $this->credits;
+        return $this->get_default_credits();
 	}
         
     public static function get_edit_form_menu($disabled = '', $unitID = -1)
@@ -105,11 +107,12 @@ class BTECUnit extends Unit{
         );
         global $PAGE;
         $PAGE->requires->js_init_call('M.mod_bcgtbtec.bteciniteditunit', null, true, $jsModule);
-        
+        $specID = optional_param('spec', -1, PARAM_INT);
 		$levelID = optional_param('level', -1, PARAM_INT);
 		$subTypeID = optional_param('subtype', -1, PARAM_INT);
 		$retval = "";
 		$levels = get_level_from_type(-1, BTECQualification::FAMILYID);
+        $types = bcgt_get_types(-1, BTECQualification::FAMILYID, 'specificationdesc ASC');
 		if(count($levels) == 1)
 		{
 			$level = end($levels);
@@ -127,9 +130,51 @@ class BTECUnit extends Unit{
 		{
 			$subTypeID = BTECUnit::get_unit_subtype($unitID);
 		}
+        $qualTypeID = -1;
+        if($unitID)
+        {
+            global $DB;
+            //then we need to know what type it was:
+            $unitDB = $DB->get_record_sql("SELECT * FROM {block_bcgt_unit} WHERE id = ?", array($unitID));
+            if($unitDB)
+            {
+                $qualTypeID = $unitDB->bcgttypeid;
+            }
+        }
 		$subTypes = get_subtype_from_type(-1, $levelID, BTECQualification::FAMILYID);
 		
-        
+        $retval .= '<div class="inputContainer"><div class="inputLeft">'.
+                '<label for="spec"><span class="required">*</span>'.
+                get_string('specification','block_bcgt').'</label></div>';
+			$retval .= '<div class="inputRight"><select '.$disabled.' name="spec" id="spec">';
+				if($types)
+				{
+					if(count($types) > 1)
+					{
+						$retval .= '<option value="-1">'.get_string('pleaseselect','block_bcgt').'</option>';
+					}				
+					foreach($types as $spec) {
+                        $selected = '';
+                        if(($specID != -1 && ($specID == $spec->id)) || $qualTypeID == $spec->id)
+                        {
+                            $selected = 'selected';
+                        }
+                        else
+                        {
+                            if(count($types) == 1)
+                            {
+                                $selected = 'selected';
+                            }
+                        }
+                        $retval .= '<option '.$selected.' value="'.$spec->id.'"'.
+                                '>'.$spec->specificationdesc.'</option>';
+					}	
+				}
+				else
+				{
+					$retval .= '<option value="">'.get_string('nospecs','block_bcgt').'</option>';
+				}
+			$retval .= '</select></div></div>';
         $retval .= '<div class="inputContainer"><div class="inputLeft">'.
                 '<label for="level"><span class="required">*</span>'.
                 get_string('level','block_bcgt').'</label></div>';
@@ -138,7 +183,7 @@ class BTECUnit extends Unit{
 				{
 					if(count($levels) > 1)
 					{
-						$retval .= '<option value="-1">Please Select one</option>';
+						$retval .= '<option value="-1">'.get_string('pleaseselect','block_bcgt').'</option>';
 					}				
 					foreach($levels as $level) {
                         $selected = '';
@@ -159,7 +204,7 @@ class BTECUnit extends Unit{
 				}
 				else
 				{
-					$retval .= '<option value="">There are no Levels for this Type</option>';
+					$retval .= '<option value="">'.get_string('noslevels','block_bcgt').'</option>';
 				}
 			$retval .= '</select></div></div>';
 			
@@ -173,14 +218,14 @@ class BTECUnit extends Unit{
 				require_once('BTECSubType.class.php');
                 if($subTypes)
 				{
-					$retval .= '<option value="-1">Please Select one</option>';
+					$retval .= '<option value="-1">'.get_string('pleaseselect','block_bcgt').'</option>';
 					$selected = '';
 					if($subTypeID == BTECSubType::BTECFndDipID)
 					{
 						$selected = 'selected';
 					}
 					$retval .= '<option '.$selected.' value="'.BTECSubType::BTECFndDipID.
-                            '">Foundation Diploma</option>';
+                            '">'.get_string('foundationdiploma','block_bcgt').'</option>';
 					$selected = '';
 					if($subTypeID != BTECSubType::BTECFndDipID)
 					{
@@ -190,7 +235,7 @@ class BTECUnit extends Unit{
 				}
 				else
 				{
-					$retval .= '<option value="">There are no Subtypes for this Combination</option>';
+					$retval .= '<option value="">'.get_string('nosubtypes','block_bcgt').'</option>';
 				}
 				$retval .= '</select></div></div>';	
 			}	
@@ -390,15 +435,25 @@ class BTECUnit extends Unit{
                 $studentsArray = get_users_on_unit_qual($this->id, $qualID);
             }
             $totalNoStudents = count($studentsArray);
-            $noPages = $totalNoStudents/$pageRecords;
-            $retval .= '<p>'.get_string('pagenumber', 'block_bcgt').' : ';
-            for($i=1;$i<=$noPages;$i++)
-            {
-                $retval .= '<a class="unitgridpage" page="'.$i.'" href="#&page='.$i.'">'.$i.', </a>';
-            }
-            $retval .= '</p>';
+            $noPages = ceil($totalNoStudents/$pageRecords);
+            $retval .= '<div class="bcgt_pagination">'.get_string('pagenumber', 'block_bcgt').' : ';
+                
+                for ($i = 1; $i <= $noPages; $i++)
+                {
+                    $class = ($i == 1) ? 'active' : '';
+                    $retval .= "<a class='unitgridpage pageNumber {$class}' page='{$i}' href='#&page={$i}'>{$i}</a>";
+                }
+            
+            $retval .= '</div>';
         }
         $retval .= '<input type="hidden" name="pageInput" id="pageInput" value="'.$page.'"/>';
+        if(has_capability('block/bcgt:viewajaxrequestdata', $context))
+        {
+            $retval .= '<ul>';
+            $retval .= '<li><a target="_blank" href="'.$CFG->wwwroot.'/blocks/bcgt/plugins/bcgtbtec/ajax/get_unit_grid.php?qID='.$qualID.'&uID='.$this->id.'&g='.$grid.'&page='.$page.'">'.get_string('ajaxrequest', 'block_bcgt').'</a></li>';
+            $retval .= '</ul>';
+
+        }
         //we need to work out how many columns are being locked and
         //what the widths are
         //default is columns (assignments, comments, unitaward)
@@ -494,6 +549,11 @@ class BTECUnit extends Unit{
         return false;
     }
     
+    public function set_grid_disabled($disabled)
+    {
+        $this->gridLocked = $disabled;
+    }
+    
     /**
      * 
      * @param type $qualID
@@ -565,23 +625,37 @@ class BTECUnit extends Unit{
         {
             $pageRecords = get_config('bcgt','pagingnumber');
             //then we only want a certain number!
-            //we also need to take into account the page number we are on. 
+            //we also need to take into account the page number we are on.
+            //studentsArray is the array of students on the unit on this qual. 
+            //the keys are the ids of the students. 
             $keys = array_keys($studentsArray);
+            //arrays keys returns an array of the keys of the first aray. This return aray has its keys set to 
+            //the numerical order, e.g. always starting at 0, then 1 etc.  
+            
             $studentsShowArray = array();
+            //are we at the first page, 
             if($pageNumber == 1)
             {
                $i = 0; 
             }
             else
             {
-                $i = $pageRecords * ($pageNumber - 1);
+                //no so we want to start at the page number times by how many we show per page
+                $i = ($pageRecords * ($pageNumber - 1)) + ($pageNumber - 1);
             }
+            //we want to loop over and only show the number of students in our page size. 
             $recordsEnd = ($i + $pageRecords);
             for($i;$i<=$recordsEnd;$i++)
             {
                 //gets the student object from the array by the key that we are looking at.
-                $student = $studentsArray[$keys[$i]];
-                $studentsShowArray[$keys[$i]] = $student;
+                if (isset($keys[$i]) && isset($studentsArray[$keys[$i]]))
+                {
+                    //so, if we have the student id for the nth student we need. 
+                    //then find the student that that id coresponds to from our original array of students. 
+                    $student = $studentsArray[$keys[$i]];
+                    //add this student to the array that we want to display.
+                    $studentsShowArray[$keys[$i]] = $student;
+                }
             }
         }
         else {
@@ -680,10 +754,12 @@ class BTECUnit extends Unit{
             $stuUnitAward = $studentUnit->get_user_award();
             $award = '';
             $rank = '';
+            $shortAward = null;
             if($stuUnitAward)
             {
                 $rank = $stuUnitAward->get_rank();
                 $award = $stuUnitAward->get_award();
+                $shortAward = $stuUnitAward->get_short_award();
             }
             if($editing && !$advancedMode)
             {
@@ -692,9 +768,14 @@ class BTECUnit extends Unit{
             }
             else
             {
+                $output = $award;
+                if($shortAward && $shortAward != '')
+                {
+                    $output = $shortAward;
+                }
                 //print out the unit award column
 //                $retval .= "<td id='unitAward_".$student->id."' class='unitAward r".$student->id." rank$rank'><span id='unitAward_$student->id'>".$award."</span></td>";
-                $row[] = "<span id='unitAwardAdv_$student->id'>".$award."</span>";
+                $row[] = "<span id='unitAwardAdv_$student->id'>".$output."</span>";
                 
             }	
 
@@ -716,7 +797,7 @@ class BTECUnit extends Unit{
                     if($studentCriteria = $studentUnit->get_single_criteria(-1, $criteriaName))
                     {
                         $row = $this->set_up_criteria_grid($studentCriteria, '', $student, 
-                                $possibleValues, $editing, $advancedMode, '', $row, $qualID);
+                                $possibleValues, $editing, $advancedMode, '', $row, $qualID);                        
                         if($subCriteriaDisplay)
                         {
                             $subCriterias = $studentCriteria->get_sub_criteria();
@@ -795,10 +876,13 @@ class BTECUnit extends Unit{
         {
             $studentComments = $criteria->load_comments();
         }
+        
+        $studentComments = iconv('UTF-8', 'ASCII//TRANSLIT', $studentComments);  
+        
 		$studentValueObj = $criteria->get_student_value();	
         if(!$studentValueObj)
         {
-            //then we need to create a default one
+            //then we need to create a default one to put in the database and get the symbol for
             $studentValueObj = new Value();
             $studentValueObj->create_default_object('N/A', BTECQualification::FAMILYID);
         }
@@ -862,7 +946,7 @@ class BTECUnit extends Unit{
                 $row[] = $retval;
 			}	
 		}//end else not editing
-		
+        
 		return $row;
 	}
     
@@ -870,6 +954,11 @@ class BTECUnit extends Unit{
 	$studentCriteria, $possibleValues, $studentValueObj, 
 	$studentComments, $extraCellClass, $firstLast, $row, $qualID)
 	{
+        $disabled = '';
+        if(isset($this->gridLocked) && $this->gridLocked)
+        {
+            $disabled = 'disabled="disabled"';
+        }
         global $CFG;
 		//advanced mode allows
 		//drop down options and comments
@@ -886,7 +975,7 @@ class BTECUnit extends Unit{
 		$retval = "";
 		$retval .= "<span class='stuValue' id='cID_".$studentCriteria->get_id().
                 "_uID_".$this->id."_sID_".$student->id."_qID_".$qualID."'>".
-                "<select id='sID_".$student->id."_cID_".$studentCriteria->get_id()."' class='criteriaValueSelect' name='cID_".$studentCriteria->get_id()."'><option value='-1'></option>";
+                "<select $disabled id='sID_".$student->id."_cID_".$studentCriteria->get_id()."' class='criteriaValueSelect' name='cID_".$studentCriteria->get_id()."'><option value='-1'></option>";
 		if($possibleValues)
 		{
 			foreach($possibleValues AS $value)
@@ -943,8 +1032,13 @@ class BTECUnit extends Unit{
 	protected function simple_editing_grid($student, 
 	$studentValueObj, $studentCriteria, $qualID)
 	{	
+        $disabled = '';
+        if(isset($this->gridLocked) && $this->gridLocked)
+        {
+            $disabled = 'disabled="disabled"';
+        }
 		$retval = "<span class='stuValue' id='cID_".$studentCriteria->get_id().
-                "_uID_".$this->id."_sID_".$student->id."_qID_".$qualID."'><input type='checkbox' class='criteriaValueMet criteriaCheck'".
+                "_uID_".$this->id."_sID_".$student->id."_qID_".$qualID."'><input $disabled type='checkbox' class='criteriaValueMet criteriaCheck'".
                 "name='cID_".$studentCriteria->get_id()."' id='sID_".$student->id.
                 "_cID_".$studentCriteria->get_id()."' ";
 		if($studentValueObj->get_short_value() == 'A')
@@ -958,8 +1052,13 @@ class BTECUnit extends Unit{
     
     protected function get_unit_award_edit($student, $qualID, $typeID, $rank, $award, $unitAwards)
 	{
+        $disabled = '';
+        if(isset($this->gridLocked) && $this->gridLocked)
+        {
+            $disabled = 'disabled="disabled"';
+        }
 		$retval = "";
-		$retval .= "<select class='unitAward' id='uAw_$student->id' name='unitAwardAPL'>";
+		$retval .= "<select $disabled class='unitAward' id='uAw_$student->id' name='unitAwardAPL'>";
 		$retval .= "<option value='-1'></option>";
 		if($unitAwards)
 		{
@@ -1043,6 +1142,9 @@ class BTECUnit extends Unit{
 		
 		return $row;	
 	}
+    
+    
+    
     
     /**
      * 
@@ -1153,7 +1255,7 @@ class BTECUnit extends Unit{
                 {
                     $header .= "' ";
                 }
-                $header .= ">$criteriaName</span></th>";
+                $header .= ">".BTECQualification::build_criteria_display_name($criteriaName, $criteria)."</span></th>";
                 $totalHeaderCount++;
 
                 if($subCriteriaDisplay && $subCriterias)
@@ -1221,6 +1323,11 @@ class BTECUnit extends Unit{
 		return -1;
 	}
     
+    protected function get_credits_display_name()
+    {
+        return get_string('bteccredits', 'block_bcgt');
+    }
+    
     /**
 	 * Returns the form fields that go on the 
 	 * edit unit form for this unit type
@@ -1232,10 +1339,17 @@ class BTECUnit extends Unit{
 		$creditsInputted = optional_param('credits', 0, PARAM_TEXT);
 		if($creditsInputted == 0)
 		{
-			$creditsInputted = $this->credits;
+            if(isset($this->id) && $this->id != -1)
+            {
+                $creditsInputted = $this->credits;
+            }
+            else
+            {
+                $creditsInputted = $this->get_default_credits();
+            }
 		}
 		return '<div class="inputContainer"><div class="inputLeft">'.
-                '<label for="credits">'.get_string('bteccredits', 'block_bcgt'). 
+                '<label for="credits">'.$this->get_credits_display_name(). 
                 ' : </label></div><div class="inputRight"><input type="text"'.
                 'name="credits" id="credits" value="'.$creditsInputted.'"/></div></div>';
 	}
@@ -1452,17 +1566,19 @@ class BTECUnit extends Unit{
 		$meritIDs = array();
 		$distinctionCriteria = array();
 		$distinctionIDs = array();
+        $l1IDs = array();
+        $l1Criteria = array();
 		foreach($this->criterias AS $criteria)
 		{
 			$this->check_criteria_award_level($criteria, 
-					$passCriteria, $meritCriteria, $distinctionCriteria, $passIDs, $meritIDs, $distinctionIDs);	
+					$passCriteria, $meritCriteria, $distinctionCriteria, $passIDs, $meritIDs, $distinctionIDs, $l1Criteria, $l1IDs);	
 				
 			if($criteria->get_sub_criteria())
 			{
 				foreach($criteria->get_sub_criteria() AS $subCriteria)
 				{
 					$this->check_criteria_award_level($subCriteria, 
-					$passCriteria, $meritCriteria, $distinctionCriteria, $passIDs, $meritIDs, $distinctionIDs);	
+					$passCriteria, $meritCriteria, $distinctionCriteria, $passIDs, $meritIDs, $distinctionIDs, $l1Criteria, $l1IDs);	
 				}
 			}	
 		}
@@ -1518,12 +1634,17 @@ class BTECUnit extends Unit{
      * @param type $meritIDs
      * @param type $distinctionIDs
      */
-    private function check_criteria_award_level($criteria, 
+    protected function check_criteria_award_level($criteria, 
 					&$passCriteria, &$meritCriteria, 
             &$distinctionCriteria, &$passIDs, 
-            &$meritIDs, &$distinctionIDs)
+            &$meritIDs, &$distinctionIDs, &$l1Criteria, &$l1IDs)
 	{
 		$letter = substr($criteria->get_name(), 0, 1);
+        if($letter == 'L')
+        {
+            $l1Criteria[$criteria->get_id()] = $criteria;	
+			$l1IDs[$criteria->get_id()] = $criteria->get_id();
+        }
 		if($letter == 'P')
 		{
 			$passCriteria[$criteria->get_id()] = $criteria;	
@@ -1673,7 +1794,14 @@ class BTECUnit extends Unit{
         $noPass = optional_param('noPass', 0, PARAM_INT);
         $noMerit = optional_param('noMerit', 0, PARAM_INT);
         $noDistinction = optional_param('noDiss', 0, PARAM_INT);
+        $noL1 = optional_param('noL1', 0, PARAM_INT);
         $criteriaArray = array();
+        for($i=1;$i<=$noL1;$i++)
+        {
+            $criteriaArray = $this->merge_criteria_array($criteriaArray, 
+                    $this->check_criteria_from_edit(BTECUnit::L1CRITERIANAME.$i, 
+                            -1, $subCriteria));
+        }
         for($i=1;$i<=$noPass;$i++)
         {
             $criteriaArray = $this->merge_criteria_array($criteriaArray, 
@@ -1693,7 +1821,7 @@ class BTECUnit extends Unit{
                     $this->check_criteria_from_edit(BTECUnit::DISTINCTIONCRITERIANAME.$i, 
                             -1, $subCriteria));
         }
-        $this->criterias = $criteriaArray;     
+        $this->criterias = $criteriaArray;
 	}
 	
 	/**
@@ -1718,14 +1846,16 @@ class BTECUnit extends Unit{
             $newCriteriaID = $oldCriteria->get_id();
         }
         $details = optional_param('details_'.$criteria, '', PARAM_TEXT);
+        $displayName = optional_param($criteria.'_name', '', PARAM_TEXT);
         $params = new stdClass();
         $params->details = $details;
         $params->name = $criteria;
         $params->awardID = $awardID;
+        $params->displayname = $displayName;
 
         //create a criteria object from the criteriaID (if it was used before then the id is from before)
         $criteriaOBJ = new Criteria($newCriteriaID, $params, Qualification::LOADLEVELCRITERIA);
-
+        
         if($subCriteria)
         {
             $subCriteriaArray = array();
@@ -1799,9 +1929,31 @@ class BTECUnit extends Unit{
 	 * When adding a new unit or editing a unit the user needs to be able
 	 * to add/edit criteria. This is different per unit type
 	 * This is the BTEC's form:
+     * The Type is used for: 
 	 */
-	protected function get_edit_criteria_table_actual($subCriteria = false, $type = '')
+	protected function get_edit_criteria_table_actual($subCriteria = false, $type = '', $level1Criteria = false)
 	{		
+        global $DB;
+        $displayCriteriaTable = true;
+        if($level1Criteria)
+        {
+            //then is it an externally assessed unit?
+            if($this->unitTypeID)
+            {
+                $sql = 'SELECT * FROM {block_bcgt_unit_type} WHERE type = ?';
+                $unitType = $DB->get_record_sql($sql, array('Externally Assessed'));
+                if($unitType && $unitType->id == $this->unitTypeID)
+                {
+                    $displayCriteriaTable = false;
+                }
+            }
+        }
+        
+        if(!$displayCriteriaTable)
+        {
+            return '';
+        }
+        
         $jsModule = array(
             'name'     => 'mod_bcgtbtec',
             'fullpath' => '/blocks/bcgt/plugins/bcgtbtec/js/bcgtbtec.js',
@@ -1810,6 +1962,7 @@ class BTECUnit extends Unit{
         global $PAGE;
         $PAGE->requires->js_init_call('M.mod_bcgtbtec.bteciniteditunitcriteria', null, true, $jsModule);
 		//The user can select to fill the criteria information in
+        $noL1 = optional_param('noL1', -1, PARAM_INT);
 		$noPass = optional_param('noPass', -1, PARAM_INT);
 		$noMerit = optional_param('noMerit', -1, PARAM_INT);
 		$noDiss = optional_param('noDiss', -1, PARAM_INT);
@@ -1823,31 +1976,48 @@ class BTECUnit extends Unit{
 			//Should we be displaying All of them?
 			//should we be displaying a set number of the criteria?
 			if($subCriteria || (($noPass == -1 || $noPass == 0) && 
-			($noMerit == -1 || $noMerit == 0) && ($noDiss == -1 || $noDiss == 0)))
+			($noMerit == -1 || $noMerit == 0) && ($noDiss == -1 || $noDiss == 0) 
+                    && (!$level1Criteria || 
+                            ($level1Criteria && ($noL1 == -1 || $noL1 == 0)))))
 			{
 				//ok so we are editing a criteria from before.
 				//we need to work out how many criteria to display
+                $loadFromBefore = false;
 				if($noPass == -1)
 				{
+                    //then we are loading from before
+                    $loadFromBefore = true;
 					$noPass = 0;	
 				}
 				if($noMerit == -1)
 				{
+                    $loadFromBefore = true;
 					$noMerit = 0;
 				}
 				if($noDiss == -1)
 				{
+                    $loadFromBefore = true;
 					$noDiss = 0;
 				}
+                if($noL1 == -1)
+                {
+                    $loadFromBefore = true;
+                    $noL1 = 0;
+                }
 				$criteriaArray = $this->criterias;
                 $noPassBefore = 0;
                 $noMeritBefore = 0;
                 $noDissBefore = 0;
+                $noLevel1Before = 0;
 				if($criteriaArray)
 				{
 					foreach($criteriaArray AS $criteria)
 					{
-						if(substr($criteria->get_name(), 0, 1) == BTECUnit::PASSCRITERIANAME)
+                        if(substr($criteria->get_name(), 0, 3) == BTECUnit::L1CRITERIANAME)
+                        {
+                            $noLevel1Before++;
+                        }
+						elseif(substr($criteria->get_name(), 0, 1) == BTECUnit::PASSCRITERIANAME)
 						{
 							$noPassBefore++;	
 						}
@@ -1861,6 +2031,31 @@ class BTECUnit extends Unit{
 						}
 					}	
 				}
+                //BUT WHAT HAPPENS IF WE WANT TO MAKE IT 0 NOW???
+                if($noLevel1Before != 0 && $noL1 != 0)
+                {
+                    //if the no of pass that was on the unit before
+                    //is more than has been requested then we need to remove them.
+                    if($noLevel1Before > $noL1)
+                    {
+                        $diff = $noLevel1Before - $noL1;
+                        $noL1 = $noLevel1Before - $diff;
+                    }
+                    elseif($noLevel1Before < $noL1)
+                    {
+                        //If more has been requested than there was before then we need to increas
+                        $diff = $noL1 - $noLevel1Before;
+                        $noL1 = $noLevel1Before + $diff;
+                    }
+                }
+                elseif(($loadFromBefore && $noL1 == 0 && $noLevel1Before != 0))
+                {
+                    //basically:
+                    //If we have loaded straight up from before then we will have no number in the drop down.
+                    //so we can simply set this to 0. 
+                    //if we havent loaded from before, then if noL1 is 0, thats because we set it to 0.
+                   $noL1 = $noLevel1Before; 
+                }
                 if($noPassBefore != 0 && $noPass != 0)
                 {
                     //if the no of pass that was on the unit before
@@ -1877,7 +2072,7 @@ class BTECUnit extends Unit{
                         $noPass = $noPassBefore + $diff;
                     }
                 }
-                elseif($noPass == 0 && $noPassBefore != 0)
+                elseif($loadFromBefore && $noPass == 0 && $noPassBefore != 0)
                 {
                    $noPass = $noPassBefore; 
                 }
@@ -1897,7 +2092,7 @@ class BTECUnit extends Unit{
                         $noMerit = $noMeritBefore + $diff;
                     }
                 }
-                elseif($noMerit == 0 && $noMeritBefore != 0)
+                elseif($loadFromBefore && $noMerit == 0 && $noMeritBefore != 0)
                 {
                    $noMerit = $noMeritBefore; 
                 }
@@ -1917,28 +2112,40 @@ class BTECUnit extends Unit{
                         $noDiss = $noDissBefore + $diff;
                     }
                 }
-                elseif($noDiss == 0 && $noDissBefore != 0)
+                elseif($loadFromBefore && $noDiss == 0 && $noDissBefore != 0)
                 {
                    $noDiss = $noDissBefore; 
                 }
                 
 			}
 		}
-		
-        
+		//Build the three/four drop downs, L1, Pass, Merit and Diss
 		$retval = '';
-        $retval .= '<div id="criteriaSelect"><p>'.get_string('bteccritdropdes','block_bcgt').
-                '<p><label for="noPass">'.get_string('btecpass', 'block_bcgt').' : </label>';
-		
-		//Build the three drop downs, Pass, Merit and Diss
+        $retval .= '<div id="criteriaSelect"><p>'.get_string('bteccritdropdes','block_bcgt').'</p>';
+        $passString = 'btecpass';
+        $meritString = 'btecmerit';
+        $dissString = 'btecdiss';
+        if($level1Criteria)
+        {
+            $passString = 'btecpassl2';
+            $meritString = 'btecmeritl2';
+            $dissString = 'btecdissl2';
+            $retval .= '<label for="noL1">'.get_string('btecl1', 'block_bcgt').' : </label>';
+            $retval .= '<select name="noL1" id="noL1">';
+            $retval .= $this->build_no_criteria_drop_down(BTECUnit::L1CRITERIAPOSS, $noL1);
+            $retval .= '</select>';
+        }
+        
+        $retval .= '<label for="noPass">'.get_string($passString, 'block_bcgt').' : </label>';
 		$retval .= '<select name="noPass" id="noPass">';
 		$retval .= $this->build_no_criteria_drop_down(BTECUnit::PASSCRITERIAPOSS, $noPass);
 		$retval .= '</select>';
-		$retval .= '<label for="noMerit">'.get_string('btecmerit', 'block_bcgt').
+		
+        $retval .= '<label for="noMerit">'.get_string($meritString, 'block_bcgt').
                 ' : </label><select name="noMerit" id="noMerit">';
 		$retval .= $this->build_no_criteria_drop_down(BTECUnit::MERITCRITERIAPOSS, $noMerit);
 		$retval .= '</select>';
-		$retval .= '<label for="noDiss">'.get_string('btecdiss', 'block_bcgt').
+		$retval .= '<label for="noDiss">'.get_string($dissString, 'block_bcgt').
                 ' : </label><select name="noDiss" id="noDiss">';
 		$retval .= $this->build_no_criteria_drop_down(BTECUnit::DISSCRITERIAPOSS, $noDiss);
 		$retval .= '</select>';
@@ -1956,22 +2163,28 @@ class BTECUnit extends Unit{
 		
 		//Now create the actual form. 
 		$retval .= '<div id="btecUnitCriteria">';
+        if($level1Criteria && $noL1 > 0)
+        {
+            //build the text fields for the number of p's wanted
+            $retval .= $this->build_criteria_edit_form_section(BTECUnit::L1CRITERIANAME, $noL1, "level1", $subCriteria, $type, $level1Criteria);
+        }
+        
 		if($noPass > 0)
 		{
 			//build the text fields for the number of p's wanted
-			$retval .= $this->build_criteria_edit_form_section(BTECUnit::PASSCRITERIANAME, $noPass, "Pass", $subCriteria, $type);
+			$retval .= $this->build_criteria_edit_form_section(BTECUnit::PASSCRITERIANAME, $noPass, $passString, $subCriteria, $type, $level1Criteria);
 		}
 		
 		if($noMerit > 0)
 		{
 			//build the text fields for the number of m's wanted
-			$retval .= $this->build_criteria_edit_form_section(BTECUnit::MERITCRITERIANAME, $noMerit, "Merit", $subCriteria, $type);
+			$retval .= $this->build_criteria_edit_form_section(BTECUnit::MERITCRITERIANAME, $noMerit, $meritString, $subCriteria, $type, $level1Criteria);
 		}
 		
 		if($noDiss > 0)
 		{
 			//build the text fields for the number of d's wanted
-			$retval .= $this->build_criteria_edit_form_section(BTECUnit::DISTINCTIONCRITERIANAME, $noDiss, "Distinction", $subCriteria, $type);
+			$retval .= $this->build_criteria_edit_form_section(BTECUnit::DISTINCTIONCRITERIANAME, $noDiss, $dissString, $subCriteria, $type, $level1Criteria);
 		}
 		$retval .= '</div>';
 		
@@ -2008,17 +2221,17 @@ class BTECUnit extends Unit{
 	 * @param unknown_type $noCriteria
 	 * @return string
 	 */
-	protected function build_criteria_edit_form_section($criteriaName, $noCriteria, $heading, $subCriteria = false, $type = '')
+	protected function build_criteria_edit_form_section($criteriaName, $noCriteria, $heading, $subCriteria = false, $type = '', $level1Criteria)
 	{
         global $CFG;
 		$retval = '';
 		$retval .= '<div id="btec'.$heading.'Criteria">'.
-                '<h3 class="criteriaHeading">'.$heading.'</h3>';
-        if($heading == 'Merit')
+                '<h3 class="criteriaHeading">'.get_string($heading, 'block_bcgt').'</h3>';
+        if($heading == 'btecmerit' || $heading == 'btecmeritl2')
         {
             $retval .= '<input type="button" name="pCopyMerit" value="Copy From Pass" id="pCopyMerit" class="bcgtFormButton" />';
         }
-        elseif($heading == 'Distinction')
+        elseif($heading == 'btecdiss' || $heading == 'btecdissl2')
         {  
             $retval .= '<input type="button" name="mCopyDiss" value="Copy From Merit" id="mCopyDiss" class="bcgtFormButton" />';
         }
@@ -2029,17 +2242,35 @@ class BTECUnit extends Unit{
 			{
 				$criteriaFound = false;
 				$details='';
+                $displayName = '';
 				$subCriterias = null;
 				if($criteria = $this->get_single_criteria(-1, $criteriaName.$i))
 				{
 					$criteriaFound = true;
 					$details = $criteria->get_details();
+                    $displayName = $criteria->get_display_name();
 					if($subCriteria)
 					{
 						$subCriterias = $criteria->get_sub_criteria();
 					}
 				}
-				$retval .= '<tr id="'.$criteriaName.$i.'"><td>'.$criteriaName.$i.'</td><td>';
+                $crieriaNameContents = $criteriaName.$i;
+                if($level1Criteria)
+                {
+                    $customName = optional_param($criteriaName.$i.'_name', $criteriaName.$i, PARAM_TEXT);
+                    if($criteriaFound && $customName == '')
+                    {
+                        //we have found a previous criteria and the current criteria is the same as the default
+                        //can we find from before?
+                        $customName = $displayName;
+                    }
+                    elseif($customName == '')
+                    {
+                        $customName = $criteriaName.$i;
+                    }
+                    $crieriaNameContents = '<input class="criteriaCustomName" type="text" name="'.$criteriaName.$i.'_name" value="'.$customName.'"/>';
+                }
+				$retval .= '<tr id="'.$criteriaName.$i.'"><td>'.$crieriaNameContents.'</td><td>';
                 if($details == '')
                 {
                     //if the details are blank can we get them if the form has been reloaded?
@@ -2163,6 +2394,202 @@ class BTECUnit extends Unit{
         return $DB->get_record_sql($sql, array('Predicted', $userID, $qualID));
     }
     
+    
+    public function print_grid($qualID){
+        
+        global $CFG, $COURSE;
+        $context = context_course::instance($COURSE->id);
+        $courseID = optional_param('cID', -1, PARAM_INT);
+        if($courseID != -1)
+        {
+            $context = context_course::instance($courseID);
+        }
+        
+        echo "<!doctype html><html><head>";
+        echo "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/bcgt/print.css'>";
+        echo load_javascript(false, true);
+        
+        $logo = get_config('bcgt', 'logoimgurl');
+        
+        echo "</head><body style='background: url(\"{$logo}\") no-repeat;'>";
+                
+        echo "<div class='c'>";
+            echo "<h1>{$this->get_display_name()}</h1>";
+
+            echo "<br><br>";
+            
+            // Key
+            echo "<div id='key'>";
+                echo BTECQualification::get_grid_key();
+            echo "</div>";
+            
+            echo "<br><br>";
+            
+            echo "<table id='printGridTable'>";
+            
+            // Header
+           
+            $criteriaNames = $this->get_used_criteria_names();
+
+            // Can't sort by ordernum here because could be different between units, can only do this on unit grid
+            require_once($CFG->dirroot.'/blocks/bcgt/classes/sorters/CriteriaSorter.class.php');
+            $criteriaSorter = new CriteriaSorter();
+            usort($criteriaNames, array($criteriaSorter, "ComparisonDelegateByArrayNameLetters"));
+
+
+            $headerObj = $this->get_unit_grid_header($criteriaNames, 's', false, $context);
+            $criteriaCountArray = $headerObj->criteriaCountArray;
+            $this->criteriaCount = $criteriaCountArray;
+            
+            echo $headerObj->header;
+            
+            $subCriteriaArray = null;
+            if ($this->has_sub_criteria()){
+                $subCriteriaArray = $this->get_used_sub_criteria_names($criteriaNames);
+            }
+            
+            $studentsArray = get_users_on_unit_qual($this->id, $qualID);
+            
+            if ($studentsArray)
+            {
+            
+                foreach($studentsArray as $student)
+                {
+                
+                    
+                    if(isset($student->unit))
+                    {
+                        //then we are coming from the session and the unit object has aleady
+                        //been loaded
+                        $studentUnit = $student->unit;
+                    }
+                    else
+                    {
+                        $loadParams = new stdClass();
+                        $loadParams->loadLevel = Qualification::LOADLEVELALL;
+                        $loadParams->loadAward = true;
+                        $studentUnit = Unit::get_unit_class_id($this->id, $loadParams);
+                        $studentUnit->load_student_information($student->id, $qualID, $loadParams);
+                        $student->unit = $studentUnit;
+
+                        //then we want to save the object to the session
+                        //but we also just want to sstudent load on this object (as each time it will
+                        //clear it down)
+                    }
+                    
+                    // Units & Grades
+                    if($studentUnit->is_student_doing())
+                    {	
+
+                        echo "<tr>";
+
+                        echo "<td></td><td></td>";
+                        
+                        $row = $this->build_unit_grid_students_details($student, $qualID, 
+                                array(), $context);
+                        
+                        foreach($row as $td)
+                        {
+                            echo "<td>{$td}</td>";
+                        }
+
+
+                        //work out the students unit award
+                        $stuUnitAward = $studentUnit->get_user_award();
+                        $award = '';
+                        $rank = '';
+                        if($stuUnitAward)
+                        {
+                            $rank = $stuUnitAward->get_rank();
+                            $award = $stuUnitAward->get_award();
+                        }
+                        
+                        echo "<td><span id='unitAwardAdv_$student->id'>".$award."</span></td>";
+
+
+                        if($criteriaNames)
+                        {
+                            $criteriaCount = 0;
+                            $previousLetter = '';
+
+                            foreach($criteriaNames AS $criteriaName)
+                            {	
+                                
+                                
+                                 $letter = substr($criteriaName, 0, 1);
+                                 if(($previousLetter != '' && $previousLetter != $letter))
+                                 {
+                                    echo "<td></td>";
+                                 }
+                                $previousLetter = $letter;
+                                
+                                if($studentCriteria = $studentUnit->get_single_criteria(-1, $criteriaName))
+                                {
+                                    $row = $this->set_up_criteria_grid($studentCriteria, '', $student, 
+                                            null, false, false, '', array(), $qualID);
+                                    
+                                    if ($row)
+                                    {
+                                        foreach($row as $td)
+                                        {
+                                            echo "<td>{$td}</td>";
+                                        }
+                                    }
+                                    
+                                    if($studentCriteria->get_sub_criteria())
+                                    {
+                                        $subCriterias = $studentCriteria->get_sub_criteria();
+                                        if($subCriterias)
+                                        {
+                                            $i = 0;
+                                            foreach($subCriterias AS $subCriteria)
+                                            {
+                                               
+                                                $row = $this->set_up_criteria_grid($subCriteria, 
+                                                        ' subCriteria subCriteria_'.$criteriaName.'', 
+                                                        $student, null, false, 
+                                                        false, 
+                                                        null, array(), $qualID);
+                                                
+                                                if ($row)
+                                                {
+                                                    foreach($row as $td)
+                                                    {
+                                                        echo "<td>{$td}</td>";
+                                                    }
+                                                }
+                                                
+                                            }
+                                        }//end if subCriterias found	
+                                    }//end if displaying sub criterias
+                                }//end if the criteria found
+                            }//end for each criteria Name
+                        }//end if criteriaNames
+                        
+
+                        echo "</tr>";
+
+                    }
+                
+                }
+                
+            }
+            
+            
+            echo "</table>";
+            echo "</div>";
+            
+            //echo "<br class='page_break'>";
+            
+            // Comments and stuff
+            // TODO at some point
+            
+            echo "<script> $('a').contents().unwrap(); $('.studentUnitInfo').remove(); </script>";
+            
+        
+        echo "</body></html>";
+        
+    }
     
 	
 }

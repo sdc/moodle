@@ -265,11 +265,17 @@ echo'<h2 class="bcgt_form_heading">'.get_string('addeditunitsheading', 'block_bc
 			//BTECS we do care about Level and sometimes we care about subtype (e.g. Foundation Diploma)
 			echo Unit::get_unit_edit_form_menu($familyID, $disabled, $unitID, $typeID);
 
-			echo '<div class="inputContainer"><div class="inputLeft">'.
+            if($unit)
+            {
+                if($unit->has_unique_id())
+                {
+                    echo '<div class="inputContainer"><div class="inputLeft">'.
                     '<label for="unique"><span class="required">*</span>'.
                     get_string('uniqueid','block_bcgt').' :</label></div>';
-			echo '<div class="inputRight"><input type="text" name="unique"'.
-                    'id="unique" value="'.$uniqueID.'"/></div></div>';		
+                    echo '<div class="inputRight"><input type="text" name="unique"'.
+                    'id="unique" value="'.$uniqueID.'"/></div></div>';
+                }
+            }
 			echo '<div class="inputContainer"><div class="inputLeft">'.
                     '<label for="name"><span class="required">*</span>'.
                     get_string('name','block_bcgt').' : </label></div>';
