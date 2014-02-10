@@ -33,7 +33,7 @@ $THEME->name = 'essential';
 $THEME->doctype = 'html5';
 $THEME->yuicssmodules = array();
 $THEME->parents = array('bootstrapbase');
-$THEME->sheets = array('slides', 'lightbox', 'font-awesome.min', 'essential', 'settings');
+$THEME->sheets = array('slides', 'categories', 'font-awesome.min', 'essential', 'alternative1', 'alternative2', 'alternative3', 'settings');
 $THEME->supportscssoptimisation = false;
 $THEME->enable_dock = false;
 
@@ -149,7 +149,7 @@ $THEME->layouts = array(
     ),
     // The pagelayout used for reports.
     'report' => array(
-        'file' => 'columns1.php',
+        'file' => 'columns2.php',
         'regions' => array('side-pre', 'footer-left', 'footer-middle', 'footer-right'),
         'defaultregion' => 'side-pre',
     ),
@@ -162,6 +162,7 @@ $THEME->layouts = array(
 );
 
 $THEME->javascripts = array(
+    'coloursswitcher'
 );
 
 $THEME->javascripts_footer = array(

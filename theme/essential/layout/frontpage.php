@@ -24,6 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $hashiddendock = (empty($PAGE->layout_options['noblocks']) && $PAGE->blocks->region_has_content('hidden-dock', $OUTPUT));
+$sideregionsmaxwidth = (!empty($PAGE->theme->settings->sideregionsmaxwidth));
 
 $hasslide1 = (!empty($PAGE->theme->settings->slide1));
 $hasslide1image = (!empty($PAGE->theme->settings->slide1image));
@@ -118,6 +119,16 @@ if ($hasslide4url) {
     $slide4url = $PAGE->theme->settings->slide4url;
 }
 
+theme_essential_check_colours_switch();
+theme_essential_initialise_colourswitcher($PAGE);
+
+$bodyclasses = array();
+$bodyclasses[] = 'two-column';
+$bodyclasses[] = 'essential-colours-' . theme_essential_get_colours();
+if ($sideregionsmaxwidth) {
+    $bodyclasses[] = 'side-regions-with-max-width';
+}
+
 $left = (!right_to_left());  // To know if to add 'pull-right' and 'desktop-first-column' classes in the layout for LTR.
 echo $OUTPUT->doctype() ?>
 <html <?php echo $OUTPUT->htmlattributes(); ?>>
@@ -135,7 +146,7 @@ echo $OUTPUT->doctype() ?>
     <?php require_once(dirname(__FILE__).'/includes/iosicons.php'); ?>
 </head>
 
-<body <?php echo $OUTPUT->body_attributes('two-column'); ?>>
+<body <?php echo $OUTPUT->body_attributes($bodyclasses); ?>>
 
 <?php echo $OUTPUT->standard_top_of_body_html() ?>
 
@@ -178,7 +189,9 @@ echo $OUTPUT->doctype() ?>
    	} else {
    		$alert1icon = $alertsuccess;
    	} 
-   	echo $alert1icon.'<span class="title">'.$PAGE->theme->settings->alert1title.'</span>'.$PAGE->theme->settings->alert1text; ?> 
+    $alert1title = 'alert1title_'.current_language();
+    $alert1text = 'alert1text_'.current_language();
+   	echo $alert1icon.'<span class="title">'.$PAGE->theme->settings->$alert1title.'</span>'.$PAGE->theme->settings->$alert1text; ?> 
 </div>
 <?php } ?>
 
@@ -194,7 +207,9 @@ echo $OUTPUT->doctype() ?>
    	} else {
    		$alert2icon = $alertsuccess;
    	} 
-   	echo $alert2icon.'<span class="title">'.$PAGE->theme->settings->alert2title.'</span>'.$PAGE->theme->settings->alert2text; ?> 
+    $alert2title = 'alert2title_'.current_language();
+    $alert2text = 'alert2text_'.current_language();
+   	echo $alert2icon.'<span class="title">'.$PAGE->theme->settings->$alert2title.'</span>'.$PAGE->theme->settings->$alert2text; ?> 
 </div>
 <?php } ?>
 
@@ -210,7 +225,9 @@ echo $OUTPUT->doctype() ?>
    	} else {
    		$alert3icon = $alertsuccess;
    	} 
-   	echo $alert3icon.'<span class="title">'.$PAGE->theme->settings->alert3title.'</span>'.$PAGE->theme->settings->alert3text; ?> 
+    $alert3title = 'alert3title_'.current_language();
+    $alert3text = 'alert3text_'.current_language();
+   	echo $alert3icon.'<span class="title">'.$PAGE->theme->settings->$alert3title.'</span>'.$PAGE->theme->settings->$alert3text; ?> 
 </div>
 <?php } ?>
 <!-- End Alerts -->
