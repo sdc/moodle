@@ -2016,7 +2016,6 @@
 					oSettings.iDraw = json.sEcho * 1;
 				}
 			}
-			
 			if ( !oSettings.oScroll.bInfinite ||
 				   (oSettings.oScroll.bInfinite && (oSettings.bSorted || oSettings.bFiltered)) )
 			{

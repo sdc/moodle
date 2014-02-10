@@ -17,6 +17,22 @@ M.block_bcgt.init = function(Y) {
 //    
 //    var searchText = Y.one('#searchStudent');
 //    searchText.on('change', helloWorld);
+
+    //go to course:
+//    
+//    var goToCourse = $('#gotocourse');
+//    if(goToCourse)
+//    {
+//        $('#gotocourse').on('change',function(){
+//           //then we want to go to that course (unless its -1)
+//            var courseID = $(this).val();
+//            if(courseID != -1)
+//            {
+//                location = '../../../course/view.php?id='+courseID;
+//            }
+//        });
+//    }
+
 };
 
 M.block_bcgt.inittrackerstab = function(Y) {
@@ -156,9 +172,9 @@ function applyReportingTT()
         edittargets.each( function(edittarget){
             edittarget.on('change', function(event){
                 var qualID = edittarget.getAttribute('qual');
-                var index = Y.one("#t_"+qualID).get('selectedIndex');
-                var value = Y.one("#t_"+qualID).get("options").item(index).getAttribute('value');
                 var sID = edittarget.getAttribute('sid');
+                var index = Y.one("#t_"+qualID+"_s_"+sID).get('selectedIndex');
+                var value = Y.one("#t_"+qualID+"_s_"+sID).get("options").item(index).getAttribute('value');
                 var cID = edittarget.getAttribute('cid');
                 var type = edittarget.getAttribute('type');
                 var index = Y.one("#uf_"+qualID).get('selectedIndex');
@@ -178,7 +194,7 @@ function applyReportingTT()
                     },
                     dataType: 'json',
                     on: {
-                        success: display_simple_qual_report
+//                        success: display_simple_qual_report
                     }
                 }
                 var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/update_user_target.php";
@@ -194,9 +210,9 @@ function applyReportingTT()
         editasps.each( function(editasp){
             editasp.on('change', function(event){
                 var qualID = editasp.getAttribute('qual');
-                var index = Y.one("#a_"+qualID).get('selectedIndex');
-                var value = Y.one("#a_"+qualID).get("options").item(index).getAttribute('value');
                 var sID = editasp.getAttribute('sid');
+                var index = Y.one("#a_"+qualID+"_s_"+sID).get('selectedIndex');
+                var value = Y.one("#a_"+qualID+"_s_"+sID).get("options").item(index).getAttribute('value');
                 var cID = editasp.getAttribute('cid');
                 var type = editasp.getAttribute('type');
                 var index = Y.one("#uf_"+qualID).get('selectedIndex');
@@ -216,9 +232,10 @@ function applyReportingTT()
                     },
                     dataType: 'json',
                     on: {
-                        success: display_simple_qual_report
+//                        success: display_simple_qual_report
                     }
                 }
+//                alert(JSON.stringfy(data));
                 var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/update_user_target.php";
                 var request = Y.io(url, data);
                 
@@ -431,9 +448,13 @@ M.block_bcgt.initeditunit = function(Y) {
     });
     var unique = Y.one('#unique');
     $('#unique').unbind('keypress');
-    unique.on('keypress', function(e){
-        check_edit_unit_valid();
-    })
+    if(unique)
+    {
+        unique.on('keypress', function(e){
+                check_edit_unit_valid();
+        })
+    }
+    
     var name = Y.one('#name');
     $('#name').unbind('keypress');
     name.on('keypress', function(e){
@@ -447,9 +468,13 @@ function check_edit_unit_valid()
     //get the level and subtype and name
     var typeIndex = Y.one('#unitTypeFamily').get('selectedIndex');
     var type = Y.one("#unitTypeFamily").get("options").item(typeIndex).getAttribute('value');
-    var unique = Y.one('#unique').get('value');
+    var uniqueInput = Y.one('#unique');
+    if(uniqueInput)
+    {
+        var unique = Y.one('#unique').get('value');
+    }
     var name = Y.one('#name').get('value');
-    if(name != '' && unique != '' && type != -1)
+    if(name != '' && ((uniqueInput && unique != '') || (!uniqueInput)) && type != -1)
     {
         Y.one('#save').set('disabled', '');
     }
@@ -662,7 +687,8 @@ M.block_bcgt.initcoursequalsusers = function(Y) {
                 "sScrollY": "800px",
                 "bScrollCollapse": true,
                 "bPaginate": false,
-                "bSort": false
+                "bSort": false,
+                "bInfo":false
             });
                 
             new FixedColumns( tablesArray[i], {
@@ -670,10 +696,182 @@ M.block_bcgt.initcoursequalsusers = function(Y) {
                 "iLeftWidth": 260 
            }); 
         }
+        var staffTable = $('#courseQualUserTableStaff');
+        if(staffTable.length)
+        {
+            var staffDataTable = $('#courseQualUserTableStaff').dataTable( {
+                "sScrollX": "100%",
+                "sScrollY": "800px",
+                "bScrollCollapse": true,
+                "bPaginate": false,
+                "bSort": false,
+                "bInfo":false
+            });
+            
+            if(staffDataTable)
+            {
+                new FixedColumns( staffDataTable, {
+                    "iLeftColumns": 4,
+                    "iLeftWidth": 260 
+               });
+            }
+            
+        }
+         
+        
     });
     
+    
+    //When the all button is clicked for the staff
+    var qualStaffAll = Y.all('.qualColumnStaffAll');
+    qualStaffAll.each(function(qual){
+        qual.on('click', function(e){
+            e.preventDefault();
+            //id is in the form of qID
+            var id = qual.get('id');
+            var toggle = true;
+            var className = qual.getAttribute('class');
+            var toggleOn = className.indexOf('tOn');
+            var toggleOff = className.indexOf('tOff');
+            if(toggleOn == -1 && toggleOff == -1)
+            {
+                className = className + 'tOn'; 
+            }
+            else
+            {
+                //knock off the tOn or tOff and put the other back
+                //then swicth what we are doing checking or unchecking
+                if(toggleOn != -1)
+                {
+                    className = className.substring(0,className.indexOf('tOn'));
+                    toggle = false;
+                    className = className + 'tOff';
+                }
+                else
+                {
+                    className = className.substring(0,className.indexOf('tOff'));
+                    className = className + 'tOn';
+                }
+            }
+            var checkboxes = Y.all('.ch'+id);
+            checkboxes.each(function(input){
+                if(!toggle)
+                {
+                    input.set('checked', '');
+                }
+                else
+                {
+                    input.set('checked', 'checked'); 
+                } 
+            });
+            qual.setAttribute('class', className);
+            //get the id of it so we can get the unitid
+            //then find all of the checkboxes that have a class that contains
+            //uUnitID and set them to checked. 
+        });
+    });
+    
+    //when the all buton is clicked for the students
     var qualAll = Y.all('.qualColumnAll');
     qualAll.each(function(qual){
+        qual.on('click', function(e){
+            e.preventDefault();
+            //id is in the form of qID
+            var id = qual.get('id');
+            var toggle = true;
+            var className = qual.getAttribute('class');
+            var toggleOn = className.indexOf('tOn');
+            var toggleOff = className.indexOf('tOff');
+            if(toggleOn == -1 && toggleOff == -1)
+            {
+                className = className + 'tOn'; 
+            }
+            else
+            {
+                //knock off the tOn or tOff and put the other back
+                //then swicth what we are doing checking or unchecking
+                if(toggleOn != -1)
+                {
+                    className = className.substring(0,className.indexOf('tOn'));
+                    toggle = false;
+                    className = className + 'tOff';
+                }
+                else
+                {
+                    className = className.substring(0,className.indexOf('tOff'));
+                    className = className + 'tOn';
+                }
+            }
+            var checkboxes = Y.all('.ch'+id);
+            checkboxes.each(function(input){
+                if(!toggle)
+                {
+                    input.set('checked', '');
+                }
+                else
+                {
+                    input.set('checked', 'checked'); 
+                } 
+            });
+            qual.setAttribute('class', className);
+            //get the id of it so we can get the unitid
+            //then find all of the checkboxes that have a class that contains
+            //uUnitID and set them to checked. 
+        });
+    });
+    
+    //when the summaryAll is clicked for the unlinked students
+    var unlinkedQual = Y.all('.qualUnlinkedColumnCourse');
+    unlinkedQual.each(function(qual){
+        qual.on('click', function(e){
+            e.preventDefault();
+            //id is in the form of qID
+            var id = qual.get('id');
+            var toggle = true;
+            var className = qual.getAttribute('class');
+            var toggleOn = className.indexOf('tOn');
+            var toggleOff = className.indexOf('tOff');
+            if(toggleOn == -1 && toggleOff == -1)
+            {
+                className = className + 'tOn'; 
+            }
+            else
+            {
+                //knock off the tOn or tOff and put the other back
+                //then swicth what we are doing checking or unchecking
+                if(toggleOn != -1)
+                {
+                    className = className.substring(0,className.indexOf('tOn'));
+                    toggle = false;
+                    className = className + 'tOff';
+                }
+                else
+                {
+                    className = className.substring(0,className.indexOf('tOff'));
+                    className = className + 'tOn';
+                }
+            }
+            var checkboxes = Y.all('.ch'+id);
+            checkboxes.each(function(input){
+                if(!toggle)
+                {
+                    input.set('checked', '');
+                }
+                else
+                {
+                    input.set('checked', 'checked'); 
+                } 
+            });
+            qual.setAttribute('class', className);
+            //get the id of it so we can get the unitid
+            //then find all of the checkboxes that have a class that contains
+            //uUnitID and set them to checked. 
+        });
+    });
+    
+    //when the summary button is clicked for staf (e.g by specific course)
+    var staffQual = Y.all('.qualColumnCourseStaff');
+    staffQual.each(function(qual){
         qual.on('click', function(e){
             e.preventDefault();
             //id is in the form of qID
@@ -850,6 +1048,43 @@ M.block_bcgt.initgridselect = function(Y) {
     course.on('change', function(e) {
         Y.one('#gridselect').submit();
     });
+    
+    var acourse = Y.one('#acourse');
+    if(acourse)
+    {
+        acourse.on('change', function(e) {
+        Y.one('#gridselect').submit();
+        });
+    }
+    
+    var aqual = Y.one('#aqual');
+    if(aqual)
+    {
+        aqual.on('change', function(e) {
+                var index = Y.one("#aqual").get('selectedIndex');
+                var qualID = Y.one("#aqual").get("options").item(index).getAttribute('value');
+                var grid = Y.one('#grid').get('value');
+                if(qualID != -1 && (grid == 'c' || grid == 'a'))
+                {
+                    e.preventDefault();
+                    var cID = Y.one("#cID").get('value');
+                    //then location will be the subject grid with the qualid passed in
+                    if(grid == 'c')
+                    {
+                         location = '../grids/class_grid.php?qID='+qualID+'&cID='+cID+'&g=c';   
+                    }
+                    else
+                    {
+                        location = '../grids/ass_grid_class.php?qID='+qualID+'&cID='+cID+'&g=a';
+                    }
+                }
+                else
+                {
+                    Y.one('#gridselect').submit();
+                }
+            });
+    }
+    
     
     var student = Y.one('#studentID');
     if(student)

@@ -19,6 +19,7 @@ require_login();
 $PAGE->set_context($context);
 
 $flag = optional_param('f', '', PARAM_TEXT);
+$lock = optional_param('lock', false, PARAM_BOOL);
 $unitID = required_param('uID', PARAM_INT);
 $qualID = required_param('qID', PARAM_INT);
 $grid = optional_param('g', 's', PARAM_TEXT);
@@ -48,9 +49,11 @@ if(array_key_exists($unitID, $sessionUnits))
 }
 if($unit)
 {
+    $unit->set_grid_disabled($lock);
     //this comes back as an object
     //there is a multidimentional array of rows and columns
     $unit->set_student_flag($flag);
+    //above, (e.g. Flat is late to denote if we are showing late)
     $data = $unit->get_unit_grid_data($qualID, $advancedMode, $editing, $courseID);
     $output = array(
 		"iTotalRecords" => count($data),

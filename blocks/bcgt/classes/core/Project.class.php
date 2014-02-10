@@ -1007,7 +1007,8 @@ class Project {
             $retval .= '<div class="bcgt_grid_table" id="ass_stu_grid">';
             $retval .= '<table>';
             $seeTargetGrade = false;
-            $seeWeightedTargetGrade = false; 
+            $seeWeightedTargetGrade = false;
+            $seeBoth = false;
             if(has_capability('block/bcgt:viewtargetgrade', $courseContext))
             {
                 $seeTargetGrade = true;
@@ -1015,6 +1016,10 @@ class Project {
             if(has_capability('block/bcgt:viewweightedtargetgrade', $courseContext))
             {
                 $seeWeightedTargetGrade = true;
+            }
+            if($seeTargetGrade && $seeWeightedTargetGrade)
+            {
+                $seeBoth = true;
             }
             $link = '';
             if($view == 'qg')
@@ -1034,7 +1039,7 @@ class Project {
                 $link = $CFG->wwwroot.'/blocks/bcgt/grids/ass.php?sID='.$studentID.'&qID='.$qualID.'&cID='.$courseID.'&v=s';
             }
             $retval .= $this->get_grid_heading($projects, 
-                    $seeTargetGrade, $seeWeightedTargetGrade, 'qual', $projectID, $link);
+                    $seeTargetGrade, $seeWeightedTargetGrade, 'qual', $projectID, $link, $seeBoth);
             
             $retval .= '<tbody>';
             foreach($userQuals AS $qual)
@@ -1056,7 +1061,7 @@ class Project {
                         $targetGradeObj = $targetGrades[$qual->id];
                     }
                     $obj = $this->get_grid_info("stu", $qual, $user, $seeTargetGrade, 
-                            $seeWeightedTargetGrade, $targetGradeObj);
+                            $seeWeightedTargetGrade, $targetGradeObj, $seeBoth);
                     $retval .= $obj->info;
                     $weightedGradeUsed = $obj->weightedgradeused;
                     if($save)
@@ -1095,7 +1100,7 @@ class Project {
     }
 
     public function get_grid_heading($projects, 
-            $seeTargetGrade, $seeWeightedTargetGrade, $view, $projectID = -1, $link = '')
+            $seeTargetGrade, $seeWeightedTargetGrade, $view, $projectID = -1, $link = '', $seeBoth = false)
     {
         $retval = '';
         $retval .= '<thead>';
@@ -1126,7 +1131,7 @@ class Project {
         }
         $subHead = '';
         //now the two different target grades
-        if($seeTargetGrade)
+        if(($seeBoth && $seeTargetGrade) || (!$seeBoth && !$seeWeightedTargetGrade && $seeTargetGrade))
         {
             $retval .= '<th rowspan="2">'.get_string('targetgrade', 'block_bcgt').'</th>';
         }
@@ -1220,7 +1225,7 @@ class Project {
     }
     
     public function get_grid_info($view, $qual, $user, 
-            $seeTargetGrade, $seeWeightedTargetGrade, $targetGradeObj)
+            $seeTargetGrade, $seeWeightedTargetGrade, $targetGradeObj, $seeBoth)
     {
         global $OUTPUT;
         $retval = '';
@@ -1294,7 +1299,7 @@ class Project {
             }
         }      
         
-        if($seeTargetGrade)
+        if(($seeBoth && $seeTargetGrade) || (!$seeBoth && !$seeWeightedTargetGrade && $seeTargetGrade))
         {
             $retval .= '<td>'.$targetGrade.'</td>';
         }

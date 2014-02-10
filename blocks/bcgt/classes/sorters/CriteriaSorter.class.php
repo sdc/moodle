@@ -91,14 +91,21 @@ class CriteriaSorter
 			return ((int)$aNum < (int)$bNum) ? -1 : 1;
 		}
 		
-		if($aStr == 'P')
-		{
-			//then  bStr must be M or D
-			return -1;
-		} 
+        if($aStr == 'L')
+        {
+            return -1;
+        }
+        elseif($aStr == 'P')
+        {
+            if($bStr == 'M' || $bStr == 'D')
+            {
+                return -1;
+            }
+            return 1;
+        }
 		elseif($aStr == 'M')
 		{
-			if($bStr == 'P')
+			if($bStr == 'P' || $bStr == 'L')
 			{
 				return 1;	
 			}

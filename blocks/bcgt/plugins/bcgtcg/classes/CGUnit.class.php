@@ -46,6 +46,7 @@ class CGUnit extends Unit {
             // Get grading from attributes
             $grading = $DB->get_record("block_bcgt_unit_attributes", array("bcgtunitid" => $unitID, "attribute" => "GRADING"));
             $this->grading = ($grading) ? $grading->value : null;
+            $this->weighting = (isset($params->weighting)) ? $params->weighting : null;
                       
 		}
 		elseif($params)

@@ -340,13 +340,138 @@ class CGQualification extends Qualification{
         
     }
     
-    public function print_grid(){
+    public function print_report(){
         
-        global $CFG;
+        global $CFG, $COURSE;
         
         echo "<!doctype html><html><head>";
         echo "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/bcgt/print.css'>";
-        echo "</head><body>";
+        $logo = get_config('bcgt', 'logoimgurl');
+        
+        echo "</head><body style='background: url(\"{$logo}\") no-repeat;'>";
+        
+        echo "<h1 class='c'>{$this->get_display_name()}</h1>";
+        echo "<h2 class='c'>".fullname($this->student)."</h2>";
+        echo "<h3 class='c'>(".$this->student->username.")</h3>";
+
+        echo "<br><br><br>";
+        
+//        echo "<div class='report_left'>";
+//        
+//            echo "<table>";
+//                echo "<tr><td class='b'>".get_string('date').":</td><td>".date('D jS M Y')."</td></tr>";
+//                echo "<tr><td class='b'>".get_string('student', 'block_bcgt').":</td><td>".fullname($this->student)."</td></tr>";
+//                echo "<tr><td class='b' colspan='2'>".get_string('qualificationcomments', 'block_bcgt').":<br><em>".format_text($this->comments, FORMAT_PLAIN)."</em></td></tr>";
+//                echo "<tr><td class='b' colspan='2'>".get_string('report').":<br><em><textarea style='height:300px;width:100%;'>Please add any additional comments to the report here</textarea></em></td></tr>";
+//                echo "<tr><td class='b' colspan='2'>Recommended Next Course:<br><br></td></tr>";
+//                echo "<tr><td class='b' colspan='2'>Signatures:<br><br></td></tr>";
+//                echo "<tr><td class='b' colspan='2'>Course Co-ordinator:<br></td></tr>";
+//            echo "</table>";
+//        
+//        echo "</div>";
+        
+        
+        echo "<div class='report_right'>";
+            echo "<table>";
+                echo "<tr><th>Criteria/Activity</th><th>Award</th><th>Date</th><th style='width:25%;'>Comments</th></tr>";
+                                
+                if ($this->units)
+                {
+                    foreach($this->units as $unit)
+                    {
+
+                        if ($unit->is_student_doing())
+                        {
+                                                        
+                            //get the users award from the unit
+                            $unitAward = $unit->get_user_award();   
+                            $award = '';
+                            if($unitAward)
+                            {
+                                $award = $unitAward->get_award();
+                            }
+                            
+                            $date = '';
+                            if(!is_null($unit->get_date_updated())){
+                                $date = date('d M Y', $unit->get_date_updated());
+                            }
+                                                        
+                            echo "<tr class='b'>";
+                            
+                                echo "<td>".$unit->get_name()."</td>";
+                                echo "<td class='c'>".$award."</td>";
+                                echo "<td class='c' style='min-width:50px;'>".$date."</td>";
+                                echo "<td style='padding:5px;'>".format_text($unit->get_comments(), FORMAT_PLAIN)."</td>";
+                            
+                            echo "</tr>";
+                            
+                            
+                            // Criteria
+                            if ($unit->get_criteria())
+                            {
+                                foreach($unit->get_criteria() as $criteria)
+                                {
+                                    
+                                    $value = '';
+                                    $date = '';
+                                    $valueObj = $criteria->get_student_value();
+                                    if($valueObj)
+                                    {
+                                        $value = $valueObj->get_value();
+                                        $date = (!is_null($criteria->get_date_updated())) ? $criteria->get_date_updated() : $criteria->get_date_set();
+                                        if($criteria->get_user_defined_value() && strlen($criteria->get_user_defined_value())){
+                                            $value .= " : {$criteria->get_user_defined_value()}";
+                                        }
+                                        
+                                    }
+                                                                        
+                                    echo '<tr>';
+                                        echo '<td style="vertical-align:top;">&nbsp;&nbsp;&nbsp;&nbsp;'.$criteria->get_name().' :- '.$criteria->get_details().'</td>';
+                                        echo '<td style="vertical-align:top;" class="c">'.$value.'</td>';
+                                        echo '<td style="vertical-align:top;" class="c">'.$date.'</td>';
+                                        echo '<td style="vertical-align:top;padding:5px;"><small>'.format_text($criteria->get_comments(), FORMAT_PLAIN).'</small></td>';
+                                    echo '</tr>';
+                                                                        
+                                    
+                                }
+                            }
+                            
+                            
+                            echo "<tr class='divider-row'><td colspan='4'></td></tr>";
+                            
+                        }
+                        
+                    }
+                }
+                
+            echo "<tr class='grey'><td colspan='4'><br></td></tr>";    
+                        
+            $context = context_course::instance($COURSE->id);
+            
+            //>>BEDCOLL TODO this need to be taken from the qual object
+            //as foundatonQual is different
+            //if we are looking at the student then show the qual award
+            echo $this->show_predicted_qual_award($this->predictedAward, $context);
+            
+
+            echo "</table>";
+        
+        echo "</div>";
+        
+        
+        echo "</body></html>";
+        
+    }
+    
+    public function print_grid(){
+        
+        global $CFG, $COURSE;
+        
+        echo "<!doctype html><html><head>";
+        echo "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/bcgt/print.css'>";
+        $logo = get_config('bcgt', 'logoimgurl');
+        
+        echo "</head><body style='background: url(\"{$logo}\") no-repeat;'>";
                 
         echo "<div class='c'>";
             echo "<h1>{$this->get_display_name()}</h1>";
@@ -468,12 +593,20 @@ class CGQualification extends Qualification{
                 }
 
             }
-
-            
-            
             
             echo "</table>";
             echo "</div>";
+            
+            
+            $context = context_course::instance($COURSE->id);
+            
+            //>>BEDCOLL TODO this need to be taken from the qual object
+            //as foundatonQual is different
+            echo '<table id="summaryAwardGrades">';
+            //if we are looking at the student then show the qual award
+            echo $this->show_predicted_qual_award($this->predictedAward, $context);
+            echo '</table>';
+            
             
             //echo "<br class='page_break'>";
             
@@ -577,7 +710,7 @@ class CGQualification extends Qualification{
         
         if ($basicView)
         {
-            $retval .= "<p class='c'><a href='".$CFG->wwwroot."/blocks/bcgt/grids/print_grid.php?sID={$this->studentID}&qID={$this->id}' target='_blank'><img src='".$OUTPUT->pix_url('t/print', 'core')."' alt='' /> ".get_string('printgrid', 'block_bcgt')."</a></p>";
+            $retval .= "<p class='c'><a href='".$CFG->wwwroot."/blocks/bcgt/grids/print_grid.php?sID={$this->studentID}&qID={$this->id}' target='_blank'><img src='".$OUTPUT->pix_url('t/print', 'core')."' alt='' /> ".get_string('printgrid', 'block_bcgt')."</a> &nbsp;&nbsp;&nbsp;&nbsp; <a href='".$CFG->wwwroot."/blocks/bcgt/grids/print_report.php?sID={$this->studentID}&qID={$this->id}' target='_blank'><img src='".$OUTPUT->pix_url('t/print', 'core')."' alt='' /> ".get_string('printreport', 'block_bcgt')."</a></p>";
         }
         
         $retval .= '<input type="hidden" id="grid" name="g" value="'.$grid.'"/>';   
@@ -1106,6 +1239,7 @@ JS;
             {
                 $loadParams = new stdClass();
                 $loadParams->loadLevel = Qualification::LOADLEVELUNITS;
+                $loadParams->loadAddUnits = false;
                 //load the users and load their qual objects
                 $this->load_users('student', true, 
                         $loadParams, $courseID);
@@ -1225,15 +1359,15 @@ JS;
     /**
 	 * What is the final grade
 	 */
-	public function calculate_final_grade()
+	public function calculate_predicted_grade()
     {
-        return true;
+        return false;
     }
     
     /**
 	 * Calculate the predicted grade
 	 */
-	public function calculate_predicted_grade()
+	public function calculate_final_grade()
     {
         
         global $DB;
@@ -1247,9 +1381,9 @@ JS;
         
         foreach($this->units as $unit)
         {
-            
+                        
             if(!$unit->is_student_doing()) continue;
-                
+
             $unitAward = $unit->get_user_award();
 
             if($unitAward && $unitAward->get_id() > 0)
@@ -2320,6 +2454,14 @@ JS;
         $record = $DB->get_record("block_bcgt_value", array("bcgttypeid" => $this->get_class_ID(), "shortvalue" => $val));
         return (isset($record->id)) ? $record->id : -1;
     }
+    
+    public function has_printable_report(){
+        return true;
+    }
+    
+    
+    
+    
     
     
 }

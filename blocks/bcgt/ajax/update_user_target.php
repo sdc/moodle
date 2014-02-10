@@ -32,7 +32,6 @@ $retval = null;
 $qualification = Qualification::get_qualification_class_id($qualID);
 if($qualification)
 {
-    
     $qualification->update_student_target_grade($userID, $value, $type, $courseID);
     $retval = $qualification->get_simple_qual_report($userID, 's', true, -1, $filter, $sortArray);
 }

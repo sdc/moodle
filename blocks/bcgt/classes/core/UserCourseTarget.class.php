@@ -55,6 +55,8 @@ class UserCourseTarget {
         }
     }
     
+    
+    
     public function get_test_page()
     {
         $score = optional_param('score', '', PARAM_TEXT);
@@ -455,7 +457,13 @@ class UserCourseTarget {
                 return $this->usersTargetGrades;
             }
         }
-        
+        else
+        {
+            //we need to remove all old target grades and also reset all target grades to na if 
+            //we have no avg gcse score
+            //e.g. we were enrolled on a course, and now we arent, or a qual
+            $this->reset_users_old_targets();
+        }
     }
     
     protected function process_target_grade_calc($qual, $userID, $useAsp, $averageGCSEScore, $justCalculateWeightedTargets)
@@ -554,8 +562,22 @@ class UserCourseTarget {
             $stdObj->teachersetbreakdown = $aspBreakdown;
             $stdObj->teachersettargetgrade = $aspTargetGrade;
         }
-        $stdObj->weightedbreakdown = $weightedBreakdown;
-        $stdObj->weightedtargetgrade = $weightedTargetGrade;
+        if($weightedBreakdown)
+        {
+            $stdObj->weightedbreakdown = $weightedBreakdown;
+        }
+        else
+        {
+            $stdObj->weightedbreakdown = $breakdown;
+        }
+        if($weightedTargetGrade)
+        {
+            $stdObj->weightedtargetgrade = $weightedTargetGrade;
+        }
+        else 
+        {
+            $stdObj->weightedtargetgrade = $targetGrade;
+        }
         $stdObj->coefficient = $coefficient;
         $stdObj->weighteducaspoints = $newUcasPointsTarget;
         $stdObj->newaveragegcsescore = $newAverageGcseScore;
@@ -566,12 +588,15 @@ class UserCourseTarget {
     
     public function save_user_target_grades()    
     {
+        $usersCourses = array();
         global $DB;
+        $usersQuals = array();
+        //we might not have any target grades!
         if($this->usersTargetGrades)
         {
             foreach($this->usersTargetGrades AS $qual)
             {
-                
+                $usersQuals[$qual->id] = $qual->id;
                 //what is the users course that this qualification is on?
                 $courseID = -1;
                 $courses = Qualification::get_user_course($qual->id, $this->userID, true);
@@ -580,6 +605,7 @@ class UserCourseTarget {
                     foreach($courses AS $course)
                     {
                         $courseID = $course->courseid;
+                        $usersCourses[$courseID] = $courseID;
                         $this->save_user_target_grades_db($qual, $courseID);
                     }
                 }
@@ -587,17 +613,115 @@ class UserCourseTarget {
                 {
                     $this->save_user_target_grades_db($qual, $courseID);
                 }
-                
             }
+            //so we need to now get rid of all of the target grades for old course
+            //and for old quals
         }
-        
+        $this->remove_users_old_targets(null, $usersQuals);
+    }
+    
+    /**
+     * Deletes all users course targets where the qualID and/or courseid is not in 
+     * the two arrays 
+     * @param type $usersCourses
+     * @param type $usersQuals
+     */
+    private function remove_users_old_targets($usersCourses = null, $usersQuals = null)
+    {
+        global $DB;
+        $sql = 'DELETE FROM {block_bcgt_user_course_trgts} WHERE userid = ?';
+        $params = array($this->userID);
+        if($usersCourses)
+        {
+            $totalCount = count($usersCourses);
+            $count = 0;
+            $sql .= ' AND courseid NOT IN (';
+            foreach($usersCourses AS $courseID)
+            {
+                $count++;
+                $sql .= '?';
+                if($totalCount != $count)
+                {
+                    $sql .= ',';
+                }
+                $params[] = $courseID;
+            }
+            $sql .= ')';
+        }
+        if($usersQuals)
+        {
+            $totalCount = count($usersQuals);
+            $count = 0;
+            $sql .= ' AND bcgtqualificationid NOT IN (';
+            foreach($usersQuals AS $qualID)
+            {
+                $count++;
+                $sql .= '?';
+                if($totalCount != $count)
+                {
+                    $sql .= ',';
+                }
+                $params[] = $qualID;
+            }
+            $sql .= ')';
+        }
+        $DB->execute($sql, $params); 
+    }
+    
+    /**
+     * Deletes all users course targets where the qualID and/or courseid is not in 
+     * the two arrays 
+     * @param type $usersCourses
+     * @param type $usersQuals
+     */
+    private function reset_users_old_targets($usersCourses = null, $usersQuals = null)
+    {
+        global $DB;
+        $sql = 'UPDATE {block_bcgt_user_course_trgts} SET bcgttargetbreakdownid = ?, bcgttargetgradesid = ?, 
+            bcgtweightedbreakdownid = ?, bcgtweightedgradeid = ? WHERE userid = ?';
+        $params = array(-1, -1, -1, -1, $this->userID);
+        if($usersCourses)
+        {
+            $totalCount = count($usersCourses);
+            $count = 0;
+            $sql .= ' AND courseid NOT IN (';
+            foreach($usersCourses AS $courseID)
+            {
+                $count++;
+                $sql .= '?';
+                if($totalCount != $count)
+                {
+                    $sql .= ',';
+                }
+                $params[] = $courseID;
+            }
+            $sql .= ')';
+        }
+        if($usersQuals)
+        {
+            $totalCount = count($usersQuals);
+            $count = 0;
+            $sql .= ' AND bcgtqualificationid NOT IN (';
+            foreach($usersQuals AS $qualID)
+            {
+                $count++;
+                $sql .= '?';
+                if($totalCount != $count)
+                {
+                    $sql .= ',';
+                }
+                $params[] = $qualID;
+            }
+            $sql .= ')';
+        }
+        $DB->execute($sql, $params); 
     }
     
     private function save_user_target_grades_db($qual, $courseID)
     {
         global $DB;
         $stdObj = new stdClass();
-        $stdObj->userID = $this->userID;
+        $stdObj->userid = $this->userID;
         $stdObj->bcgtqualificationid = $qual->id;
         if(isset($qual->targetgrade))
         {
@@ -620,13 +744,23 @@ class UserCourseTarget {
         $stdObj->teacherset_teacherid = $USER->id;
         $stdObj->courseid = $courseID;
         $stdObj->userid = $this->userID;
-        if(isset($qual->weightedtargetgrade))
+        if(isset($qual->weightedtargetgrade) && $qual->weightedtargetgrade->get_id() && $qual->weightedtargetgrade->get_id() != -1)
         {
             $stdObj->bcgtweightedgradeid = $qual->weightedtargetgrade->get_id();
         }
-        if(isset($qual->weightedbreakdown))
+        elseif(isset($qual->targetgrade))
+        {
+            //if we dont have a weighting then just add the target grade niormal
+            $stdObj->bcgtweightedgradeid = $qual->targetgrade->get_id();
+        }
+        if(isset($qual->weightedbreakdown) && $qual->weightedbreakdown->get_id() && $qual->weightedbreakdown->get_id() != -1)
         {
             $stdObj->bcgtweightedbreakdownid = $qual->weightedbreakdown->get_id();
+        }
+        elseif(isset($qual->breakdown))
+        {
+            //incase we dont have a weighted, lets just use the normal
+            $stdObj->bcgtweightedbreakdownid = $qual->breakdown->get_id();
         }
         if($records = $this->retrieve_users_target_grades($this->userID, $qual->id, $courseID))
         {
@@ -678,6 +812,26 @@ class UserCourseTarget {
         {
             $userCourseTarget->calculate_user_target_grade($user->id, null, $recaclculateAverageScore);
         }
+        //now remove all extra target grades
+        $this->remove_redundant_grade_records();
+    }
+    
+    private function remove_redundant_grade_records()
+    {
+        global $DB;
+        $sql = "DELETE FROM {block_bcgt_user_course_trgts} WHERE 
+            (bcgttargetbreakdownid = ? OR bcgttargetbreakdownid IS NULL OR bcgttargetbreakdownid = ?) 
+            AND (bcgttargetgradesid = ? OR bcgttargetgradesid IS NULL OR bcgttargetgradesid = ?) 
+            AND (bcgtweightedgradeid = ? OR bcgtweightedgradeid IS NULL OR bcgtweightedgradeid = ?)
+            AND (bcgtweightedbreakdownid = ? OR bcgtweightedbreakdownid IS NULL OR bcgtweightedbreakdownid = ?) 
+            AND (teacherset_targetid = ? OR teacherset_targetid IS NULL OR teacherset_targetid = ?)
+            AND (teacherset_breakdownid = ? OR teacherset_breakdownid IS NULL OR teacherset_breakdownid = ?)";
+        $DB->execute($sql, array(-1, 0,
+                -1, 0,
+                -1, 0,
+                -1, 0, 
+                -1, 0, 
+                -1, 0));
     }
     
     private function save_user_averagescore($userID)
@@ -824,22 +978,27 @@ class UserCourseTarget {
                             
                             //what is the users course that this qualification is on?
                             $courseID = -1;
-                            $course = Qualification::get_user_course($qual->id, $userID);
-                            if($course)
+                            $courses = Qualification::get_user_course($qual->id, $userID, true);
+                            print_object($courses);
+                            if($courses)
                             {
-                                $courseID = $course->id;
+                                foreach($courses AS $course)
+                                {
+                                    $courseID = $course->courseid;
+                                    //what happens if its already been inserted into the database?
+                                    //save will take care of this for us
+                                    $params = new stdClass();
+                                    $params->bcgtqualificationid = $qual->id;
+                                    $params->userid = $userID;
+                                    $params->courseid = $courseID;
+                                    $params->bcgttargetbreakdownid = $breakdownID;
+                                    $params->bcgttargetgradesid = $targetGradeID;
+                                    $userCourseTarget = new UserCourseTarget(-1, $params);
+                                    $userCourseTarget->save(true, $qual->id);
+                                    $successCount++;
+                                }
                             }
-                            //what happens if its already been inserted into the database?
-                            //save will take care of this for us
-                            $params = new stdClass();
-                            $params->bcgtqualificationid = $qual->id;
-                            $params->userid = $userID;
-                            $params->courseid = $courseID;
-                            $params->bcgttargetbreakdownid = $breakdownID;
-                            $params->bcgttargetgradesid = $targetGradeID;
-                            $userCourseTarget = new UserCourseTarget(-1, $params);
-                            $userCourseTarget->save(true, $qual->id);
-                            $successCount++;
+                            
                         }
                         else
                         {
@@ -973,8 +1132,8 @@ class UserCourseTarget {
     private function get_target_by_qual()
     {
         global $DB;
-        $sql = "SELECT * FROM {block_bcgt_user_course_trgts} WHERE bcgtqualificationid = ? AND userid = ?";
-        return $DB->get_record_sql($sql, array($this->bcgtqualificationid, $this->userid));
+        $sql = "SELECT * FROM {block_bcgt_user_course_trgts} WHERE bcgtqualificationid = ? AND userid = ? AND courseid = ?";
+        return $DB->get_record_sql($sql, array($this->bcgtqualificationid, $this->userid, $this->courseid));
     }
     
     //Reporting:

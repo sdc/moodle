@@ -21,7 +21,12 @@ class Import {
     protected $qualWeighting;
     protected $project;
     protected $userData;
+    protected $systemData;
     protected $errorMessage;
+    protected $backup;
+    
+    //I AM FULLY AWARE THAT HAVING THESE SWITCHES IN IT IS NOT FULLY OBJECT ORIENTED!!
+//THEY SHOULD BE inherited instancs of classes. in a workspace or something
     
     public function Import($action, $file)
     {
@@ -157,6 +162,12 @@ class Import {
             case 'ud':
                 $obj = new UserDataImport();
                 $this->userData = $obj;
+            case 'sd':
+                $obj = new SystemDataImport();
+                $this->systemData = $obj;
+            case 'b':
+                $obj = new BackupImport();
+                $this->backup = $obj;
         }
     }
     
@@ -167,15 +178,15 @@ class Import {
             //qualsOnEntry
             case 'pl':
                 return $this->userPriorLearning;
-            break;
+                break;
             //target grades
             case 'tg':
                 return $this->userCourseTarget;
-            break;
+                break;
             //qual weightings
             case 'w':
                 return $this->qualWeighting;
-            break;
+                break;
             //formal assessment marks
             case 'fam':
                 return $this->project;
@@ -183,6 +194,14 @@ class Import {
             //userdata
             case 'ud':
                 return $this->userData;
+                break;
+            //systemdata
+            case 'sd':
+                return $this->systemData;
+                break;
+            //backup
+            case 'b':
+                return $this->backup;
                 break;
         }
     }
@@ -231,6 +250,12 @@ class Import {
             case 'ud':
                 return html_writer::tag('h2', get_string('userdata', 'block_bcgt'). 
                         '', array('class'=>'formheading'));
+            case 'sd':
+                return html_writer::tag('h2', get_string('systemdata', 'block_bcgt'). 
+                        '', array('class'=>'formheading'));
+            case 'b':
+                return html_writer::tag('h2', get_string('backup', 'block_bcgt'). 
+                        '', array('class'=>'formheading'));
         }
         
     }
@@ -269,6 +294,12 @@ class Import {
         $out .= '<li>'.
                 '<a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/import.php?a=ud">'.
                 '<span>'.get_string('userdata', 'block_bcgt').'</span></a></li>';
+//        $out .= '<li>'.
+//                '<a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/import.php?a=sd">'.
+//                '<span>'.get_string('systemdata', 'block_bcgt').'</span></a></li>';
+//        $out .= '<li>'.
+//                '<a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/import.php?a=b">'.
+//                '<span>'.get_string('backups', 'block_bcgt').'</span></a></li>';
         $out .= '</ul>';
         $out .= '</div></div>';
         

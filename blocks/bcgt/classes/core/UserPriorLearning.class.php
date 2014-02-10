@@ -537,7 +537,7 @@ class UserPriorLearning {
             JOIN {block_bcgt_subject} subject ON subject.id = prlearn.bcgtsubjectid
             JOIN {block_bcgt_prior_qual} qual ON qual.id = grades.bcgtpriorqualid
             WHERE prlearn.userid = ?
-            ORDER BY qual.id ASC, grades.points DESC";
+            ORDER BY prlearn.examdate DESC, grades.points DESC, subject.subject ASC ";
         return $DB->get_records_sql($sql, array($userID));
     }
     
@@ -568,6 +568,36 @@ class UserPriorLearning {
         return $record;
         
         
+    }
+    
+    /**
+     * Thuis checks the database. 
+     * If the user has priorlearn it will return noGCSE
+     * If the user has no priorlearn it will return noQOE
+     * @global type $DB
+     * @param type $userID
+     * @return string
+     */
+    public function get_users_prlearn_status_when_no_target($userID)
+    {
+        $targetGradeOut = '';
+        global $DB;
+        //then do we have prior learning?
+        $sql = "SELECT * FROM {block_bcgt_user_prlearn} WHERE userid = ?";
+        $records = $DB->get_records_sql($sql, array($userID));
+        if($records)
+        {
+            //then we do have prior learning.
+            //do we have an avg score?
+            $targetGradeOut = '<span style="color:grey">'.
+                    get_string('reportnogcse', 'block_bcgt').'</span>';
+        }
+        else
+        {
+            $targetGradeOut = '<span style="color:grey">'.
+                    get_string('reportnopl', 'block_bcgt').'</span>';
+        }
+        return $targetGradeOut;
     }
     
 }

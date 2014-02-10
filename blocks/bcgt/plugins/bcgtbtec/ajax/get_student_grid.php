@@ -26,6 +26,7 @@ require_login();
 $PAGE->set_context($context);
 
 $flag = optional_param('f', '', PARAM_TEXT);
+$lock = optional_param('lock',false,PARAM_BOOL);
 $studentID = required_param('sID', PARAM_INT);
 $qualID = required_param('qID', PARAM_INT);
 $grid = optional_param('g', 's', PARAM_TEXT);
@@ -73,6 +74,7 @@ if (!$qualification)
 
 if($qualification)
 {
+    $qualification->set_grid_disabled($lock);
     //this comes back as an object
     //there is a multidimentional array of rows and columns
     $qualification->set_student_flag($flag);

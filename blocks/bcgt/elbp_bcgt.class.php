@@ -58,6 +58,9 @@ class elbp_bcgt extends Plugin {
      */
     public function install()
     {
+        
+        global $DB;
+        
         $return = true;
         $this->id = $this->createPlugin();
         $return = $return && $this->id;
@@ -72,6 +75,12 @@ class elbp_bcgt extends Plugin {
         $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:targetgrade", "getstringcomponent" => "block_bcgt"));
         $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:weightedtargetgrade", "getstringcomponent" => "block_bcgt"));
         $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:quals", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numcredits", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numexpectedcredits", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentcorrectcredits", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentabovecredits", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentbelowcredits", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:qualcredits", "getstringcomponent" => "block_bcgt"));
         
         
         // Hooks
@@ -157,6 +166,30 @@ class elbp_bcgt extends Plugin {
             
         }
         
+        if ($version < 2013120500)
+        {
+            
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numcredits", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numexpectedcredits", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentcorrectcredits", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentabovecredits", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentbelowcredits", "getstringcomponent" => "block_bcgt"));
+            $this->version = 2013120500;
+            $this->updatePlugin();
+            \mtrace("## Inserted plugin_report_element data for plugin: {$this->title}"); 
+            
+        }
+        
+        
+        if ($version < 2013121600)
+        {
+            
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:qualcredits", "getstringcomponent" => "block_bcgt"));
+            $this->version = 2013121600;
+            $this->updatePlugin();
+            \mtrace("## Inserted plugin_report_element data for plugin: {$this->title}"); 
+            
+        }
 
         return $result;
         
@@ -216,13 +249,13 @@ class elbp_bcgt extends Plugin {
         
     }
     
-    public function loadJavascript() {
+    public function loadJavascript($simple = false) {
         
         $this->js = array(
             '/blocks/bcgt/elbp_bcgt.js'
         );
         
-        parent::loadJavascript();
+        parent::loadJavascript($simple);
     }
     
     
@@ -248,11 +281,20 @@ class elbp_bcgt extends Plugin {
         $targetGrade = '-';
         $weightedTargetGrade = '-';
         $qualifications = '-';
+        $expectedCredits = 0;
+        $credits = 0;
+        $totalCorrectCredits = 0;
+        $totalAboveCredits = 0;
+        $totalBelowCredits = 0;
+        $creditsOnQual = '-';
         
         $totalQuals = 0;
         
         $PL = new \UserPriorLearning();
         $R = new \Reporting();
+        
+        $load = new \stdClass();
+        $load->loadLevel = \Qualification::LOADLEVELMIN;
                 
         // Loop students and find all their targets
         foreach($students as $student)
@@ -277,6 +319,20 @@ class elbp_bcgt extends Plugin {
             {
                 $totalWithTargetGrade++;
             }
+            
+            
+            // Credits
+            $userExpectedCredits = \get_users_expected_credits($this->student->id);
+            $userCredits = \get_users_credits($this->student->id);
+            
+            $expectedCredits += $userExpectedCredits;
+            $credits += $userCredits;
+            
+            if ($userCredits == $userExpectedCredits) $totalCorrectCredits++;
+            elseif ($userCredits < $userExpectedCredits) $totalBelowCredits++;
+            elseif ($userCredits > $userExpectedCredits) $totalAboveCredits++;
+            
+            
                         
             // If only one student, get their target grade and display
             if ($totalStudents == 1)
@@ -288,9 +344,13 @@ class elbp_bcgt extends Plugin {
                 {
                     foreach($records as $record)
                     {
-                        if (isset($record->targetgrade))
+                        if (isset($record->targetgrade) && $record->targetgrade->get_id())
                         {
                             $t[] = $record->qualname . ' (' . $record->targetgrade->get_grade() . ')';
+                        }
+                        elseif (isset($record->grade))
+                        {
+                            $t[] = $record->name . ' ('.$record->grade.')';
                         }
                     }
                 }
@@ -321,16 +381,54 @@ class elbp_bcgt extends Plugin {
                     {
                         if (!isset($qual->isbespoke)){
                             $level = str_replace("Level ", "", $qual->trackinglevel);
-                            $q[] = $qual->type . ' ' . 'L' . $level . ' ' . $qual->name;
+                            $q[] = $qual->type . ' L' . $level . ' ' . $qual->subtype . ' ' . $qual->name;
                         } elseif (isset($qual->isbespoke)){
-                            $q[] = $qual->displaytype . ' ' . $qual->subtype . ' L' . $qual->level . ' '. $qual->name;
-                        } else {
-                            $q[] = $qual->name;
-                        }
+                            $q[] = $qual->displaytype . ' L' . $qual->level . ' '. $qual->subtype . ' ' . $qual->name;
+                        } 
                     }
                 }
                 
                 $qualifications = implode(",\n ", $q);
+                
+                
+                // Credits on qual
+                $c = array();
+                
+                if ($quals)
+                {
+                    foreach($quals as $qual)
+                    {
+                        
+                        // Expecting
+                        $expecting = 0;
+                        $found = 0;
+                        
+                        $qualification = \Qualification::get_qualification_class_id($qual->id, $load);
+                        if ($qualification)
+                        {
+                            $check = $DB->get_record("block_bcgt_target_qual_att", array("bcgttargetqualid" => $qualification->get_target_qual_id(), "name" => \SubType::DEFAULTNUMBEROFCREDITSNAME));
+                            if ($check)
+                            {
+                                $expecting = $check->value;
+                            }
+                            
+                            $found = \get_users_credits($this->student->id, $qualification->get_id());
+                            
+                            
+                            if (!isset($qual->isbespoke)){
+                                $level = str_replace("Level ", "", $qual->trackinglevel);
+                                $c[] = $qual->type . ' L' . $level . ' ' . $qual->subtype . ' ' . $qual->name . ': ' . $found . '/' . $expecting;
+                            } elseif (isset($qual->isbespoke)){
+                                $c[] = $qual->displaytype . ' L' . $qual->level . ' '. $qual->subtype . ' ' . $qual->name . ': ' . $found . '/' . $expecting;
+                            } 
+                            
+                        }
+                        
+                    }
+                }
+                
+                $creditsOnQual = implode(",\n ", $c);
+                
                 
             }
                         
@@ -346,7 +444,13 @@ class elbp_bcgt extends Plugin {
         $data['reports:bcgt:targetgrade'] = $targetGrade;
         $data['reports:bcgt:weightedtargetgrade'] = $weightedTargetGrade;
         $data['reports:bcgt:quals'] = $qualifications;
-        
+        $data['reports:bcgt:numcredits'] = $credits;
+        $data['reports:bcgt:numexpectedcredits'] = $expectedCredits;
+        $data['reports:bcgt:percentcorrectcredits'] = round(($totalCorrectCredits / $totalStudents) * 100, 1);
+        $data['reports:bcgt:percentabovecredits'] = round(($totalAboveCredits / $totalStudents) * 100, 1);
+        $data['reports:bcgt:percentbelowcredits'] = round(($totalBelowCredits / $totalStudents) * 100, 1);
+        $data['reports:bcgt:qualcredits'] = $creditsOnQual;
+
         $names = array();
         $els = array();
         
@@ -473,16 +577,17 @@ class elbp_bcgt extends Plugin {
     
     
     
+    
     public function _callHook_Target_Grade($obj, $params)
     {
         
         if (!$this->isEnabled()) return false;
         if (!isset($obj->student->id)) return false;
-        if (!isset($params['courseID'])) return false;
+        //if (!isset($params['courseID'])) return false;
                         
         // Load student
         $this->loadStudent($obj->student->id);
-        
+                
         $return = array();
         $return['grades'] = $this->getUserTargetGrades(true);       
         

@@ -5,7 +5,7 @@ class bcgtcg extends bcgt {
     const NAME = 'bcgtplugin';
     const TITLE = 'CG';
     
-    const VERSION = 2013102800;  
+    const VERSION = 2014011500;  
     
     function bcgtcg()
     {

@@ -340,10 +340,15 @@ abstract class Qualification {
 	}
     
     /**
-	 * Get the display name for the qual
+     * Get the display name for the qual
 	 * This is level, type, subtype and name 
-	 */
-	public function get_display_name($long = true, $seperator = ' ', $exclusions = array())
+     * @param type $long
+     * @param type $seperator
+     * @param type $exclusions
+     * @param type $returnType
+     * @return type
+     */
+	public function get_display_name($long = true, $seperator = ' ', $exclusions = array(), $returnType = 'String')
 	{
         $qual = new stdClass();
         $qual->family = $this->get_family();
@@ -353,7 +358,7 @@ abstract class Qualification {
         $qual->name = $this->name;
         $qual->additionalname = $this->additionalName;
         $qual->levelid = $this->level->get_id();
-        return bcgt_get_qualification_display_name($qual, $long, $seperator, $exclusions);
+        return bcgt_get_qualification_display_name($qual, $long, $seperator, $exclusions, $returnType);
 	}
     
     
@@ -389,6 +394,10 @@ abstract class Qualification {
 		return count($this->units);
 	}
     
+    public function get_target_qual_id(){
+        return $this->bcgtTargetQualID;
+    }
+    
     /**
      * 
      * @global type $DB
@@ -397,20 +406,33 @@ abstract class Qualification {
      * @param type $courseID
      * @return type
      */
-    public function get_students($search = '', $sort = '', $courseID = -1)
+    public function get_students($search = '', $sort = '', $courseID = -1, $onCourse = true)
     {
-        if(!isset($this->students) || $this->students == null)
+        $this->oldStudents = array();
+        if($onCourse && !isset($this->students) || $onCourse && $this->students == null || !$onCourse)
         {
             global $DB;
+            $users = array();
             $studentRole = $DB->get_record_sql('SELECT id FROM {role} WHERE shortname = ?', array('student'));
             if($studentRole)
             {
-                $users = $this->get_users($studentRole->id, $search, $sort, $courseID);
-                $this->students = $users;
+                $users = $this->get_users($studentRole->id, $search, $sort, $courseID, $onCourse);
+                if($onCourse)
+                {
+                    $this->students = $users;
+                }
+                else
+                {
+                    $this->oldStudents = $users;
+                }
                 return $users;
             }
+            return $users;
         }
-        return $this->students;
+        else
+        {
+            return $this->students;
+        }
     }
     
     /**
@@ -441,20 +463,33 @@ abstract class Qualification {
      * @param type $courseID
      * @return type
      */
-    public function get_users($roleID, $search = '', $sort = '', $courseID = -1)
+    public function get_users($roleID, $search = '', $sort = '', $courseID = -1, $onCourse = true)
     {
         global $DB;
         $sql = "SELECT distinct(user.id), user.* FROM {block_bcgt_user_qual} userQual
             JOIN {user} user ON user.id = userQual.userid";
+        $params = array();
         if($courseID != -1)
         {
             $sql .= " JOIN {role_assignments} roleass ON roleass.userid = user.id 
                 JOIN {context} context ON context.id = roleass.contextid 
                 JOIN {course} course ON course.id = context.instanceid";
+            if($courseID != -1 && $onCourse)
+            {
+                $sql .= " AND course.id = ?";
+                $params[] = $courseID;
+            }
+            elseif($courseID != -1 && !$onCourse)
+            {
+                $sql .= " AND course.id != ?";
+                $params[] = $courseID;
+            }
         }
         $sql .= " WHERE userQual.bcgtqualificationid = ? AND userQual.roleid = ? 
-            AND user.deleted != 1";
-        $params = array($this->id, $roleID);
+            AND user.deleted != ?";
+        $params[] = $this->id;
+        $params[] = $roleID;
+        $params[] = 1;
         if($search != '')
         {
             $sql .= " AND (user.firstname LIKE ? OR user.lastname LIKE ? 
@@ -478,9 +513,18 @@ abstract class Qualification {
             }
             $sql .= ')';
         }
-        if($courseID != -1)
+        if($courseID != -1 && !$onCourse)
         {
-            $sql .= " AND course.id = $courseID";
+            //and where the userid are not the users that are actually on the course that this qual is on. 
+            $sql .= " AND user.id NOT IN 
+                (
+                    SELECT roleass.userid FROM {role_assignments} roleass  
+                    JOIN {context} context ON context.id = roleass.contextid 
+                    JOIN {course} course ON course.id = context.instanceid
+                    JOIN {role} role ON role.id = roleass.roleid
+                    WHERE role.shortname = ? AND course.id = ?
+                )";
+            $params[] = 'student';
             $params[] = $courseID;
         }
         if($sort != '')
@@ -491,7 +535,6 @@ abstract class Qualification {
         {
             $sql .= ' ORDER BY user.lastname ASC';
         }
-        
         return $DB->get_records_sql($sql, $params);
     }
     
@@ -618,6 +661,100 @@ abstract class Qualification {
         }
     }
     
+    public static function does_user_have_access($userID, $qualID)
+    {
+        global $DB;
+        $sql = "SELECT role.shortname FROM {block_bcgt_user_qual} userqual 
+            JOIN {role} role ON role.id = userqual.roleid 
+            WHERE userid = ? AND bcgtqualificationid = ?";
+        $records = $DB->get_records_sql($sql, array($userID, $qualID));
+        if($records)
+        {
+            $retval = '';
+            foreach($records AS $record)
+            {
+                $retval .= $record->shortname.'|';
+            }
+            return $retval;
+        }
+        return false;
+    }
+    
+    public static function activity_grade_tracker($courseID)
+    {
+        //need to get each qualification that is on the grade tracker. 
+        //for each go and get the activity grade tracker
+        $retval = '';
+        if($courseID && $courseID != 1)
+        {
+            //go and get all of the quals.
+            global $CFG;
+            $context = context_course::instance($courseID);
+            $aID = optional_param('aID', 0, PARAM_INT);
+            $showAll = optional_param('showall', false, PARAM_BOOL);
+            //get the quals
+            $quals = bcgt_get_course_quals($courseID);
+            if($quals)
+            {
+                $activities = bcgt_get_activities_on_course($courseID);
+                $retval .= '<form name="activitytrackers" method="POST" action="#"/>';
+                $retval .= '<div id="atcivityselector">';
+                $retval .= '<label for="aID">'.get_string('activity','block_bcgt').' : </label>';
+                $retval .= '<select name="aID">';
+                $retval .= '<option value="0"></option>';
+                if($activities)
+                {
+                    foreach($activities AS $activity)
+                    {
+                        $activityDetails = bcgt_get_module_from_course_mod($activity->id);
+                        if($activityDetails)
+                        {
+                            $selected = '';
+                            if($aID == $activity->id)
+                            {
+                                $selected = 'selected';
+                            }
+                            $retval .= '<option '.$selected.' value="'.$activity->id.'">'.$activityDetails->name.'</option>';
+                        }
+                    }
+                }
+                $retval .= '</select>';
+                $retval .= '<label for="showall">'.get_string('showall', 'block_bcgt').' : </label>';
+                $checked = '';
+                if($showAll)
+                {
+                    $checked = 'checked="checked"';
+                }
+                $retval .= '<input type="checkbox" name="showall" '.$checked.'/>';
+                $retval .= '<input type="submit" name="show" value="'.get_string('show', 'block_bcgt').'"/>';
+                $retval .= '</div>';
+                foreach($quals AS $qual)
+                {   
+                    $qualification = Qualification::get_qualification_class_id($qual->id);
+                    if($qualification)
+                    {
+                        if($showAll)
+                        {
+                            $activityShow = -1;
+                        }
+                        else
+                        {
+                            $activityShow = $aID;
+                        }
+                        $retval .= $qualification->get_activities_grid($courseID, $activityShow);
+                    }
+                }
+                $retval .= '</form>';
+            }
+        }
+        return $retval;
+    }
+    
+    public function get_activities_grid($courseID, $activityID = -1)
+    {
+        return "";
+    }
+    
     public function save_qual_user_projects()
     {
         //loop over the users, 
@@ -683,9 +820,15 @@ abstract class Qualification {
             $seeTargetGrade = true;
         }
         $seeWeightedTargetGrade = false;
-        if(has_capability('block/bcgt:viewweightedtargetgrade', $courseContext))
+        if(has_capability('block/bcgt:viewweightedtargetgrade', $courseContext) && get_config('bcgt', 
+                    'alevelallowalpsweighting'))
         {
             $seeWeightedTargetGrade = true;
+        }
+        $seeBoth = false;
+        if(has_capability('block/bcgt:viewbothweightandnormaltargetgrade', $courseContext))
+        {
+            $seeBoth = true;
         }
         $retval .= '<table>';
         $link = '';
@@ -706,7 +849,7 @@ abstract class Qualification {
             $link = $CFG->wwwroot.'/blocks/bcgt/grids/ass_grid.php?sID='.$this->studentID.'&qID='.$this->id.'&cID='.$courseID;
         }
         $retval .= $project->get_grid_heading($projects, 
-                    $seeTargetGrade, $seeWeightedTargetGrade, 'stu', $projectID, $link);
+                    $seeTargetGrade, $seeWeightedTargetGrade, 'stu', $projectID, $link, $seeBoth);
         $retval .= '<tbody>';
         
         foreach($users AS $user)
@@ -727,7 +870,7 @@ abstract class Qualification {
             $qual = new stdClass();
             $qual->id = $this->id;
             $obj = $project->get_grid_info("qual", $qual, $user, 
-                    $seeTargetGrade, $seeWeightedTargetGrade, $targetGradeObj);
+                    $seeTargetGrade, $seeWeightedTargetGrade, $targetGradeObj, $seeBoth);
             $retval .= $obj->info;
             $weightedGradeUsed = $obj->weightedgradeused;
             if($save)
@@ -991,6 +1134,10 @@ abstract class Qualification {
     {
         if(!Qualification::check_user_on_qual($userID, $roleID, $this->id))
         {
+//            if($this->id == 130 && $userID == 2456)
+//            {
+//                echo "not on user";
+//            }
             $this->insert_user($userID, $roleID);
             if($addToUnits)
             {
@@ -1664,6 +1811,7 @@ abstract class Qualification {
 			{
 				//ok so we dont have a final grade. can we predict one?
 				//will return final if its final.
+                //do we really need to recalculate one each time?
 				$awards = $this->calculate_predicted_grade();
                 //award is actually loads. 
 				if($awards)
@@ -1727,8 +1875,8 @@ abstract class Qualification {
 		//for example APL units
 		//find all extra units that are not on the qual that this student is doing
 		//for this qual.
-        if(!$loadParams || $loadParams && !isset($loadParams->loadAddUnits) ||
-                $loadParams && !isset($loadParams->loadAddUnits) && $loadParams->loadAddUnits == true)
+        if((!$loadParams) || ($loadParams && !isset($loadParams->loadAddUnits)) ||
+                ($loadParams && isset($loadParams->loadAddUnits) && $loadParams->loadAddUnits == true))
         {
             $this->add_students_other_units();
         }       
@@ -1957,15 +2105,35 @@ abstract class Qualification {
      * @param type $qualID
      * @return boolean
      */
-    public static function check_user_on_qual($userID, $roleID, $qualID)
+    public static function check_user_on_qual($userID, $roleID, $qualID, $isRole = true)
     {
         global $DB;
-        $check = $DB->get_record_sql("SELECT * FROM {block_bcgt_user_qual} 
-            WHERE bcgtqualificationid = ? AND userid = ? and roleid = ?", 
-                array($qualID, $userID, $roleID));
+        $sql = "SELECT * FROM {block_bcgt_user_qual} 
+            WHERE bcgtqualificationid = ? AND userid = ? and roleid";
+        if($isRole)
+        {
+            $sql .= ' = ';
+        }
+        else 
+        {
+            $sql .= ' != ';
+        }
+        $sql .= ' ?';
+        if($isRole)
+        {
+            $check = $DB->get_record_sql($sql,array($qualID, $userID, $roleID));
+        }
+        else
+        {
+            $check = $DB->get_records_sql($sql,array($qualID, $userID, $roleID));
+        }
         if($check)
         {
-            if($check->id)
+            if($isRole && $check->id)
+            {
+                return true;
+            }
+            elseif(!$isRole && count($check) > 0) 
             {
                 return true;
             }
@@ -2009,6 +2177,16 @@ abstract class Qualification {
 		WHERE bcgtqualificationid = ?";
 		return $DB->get_records_sql($sql, array($qualID));
 	}
+    
+    protected static function get_qual_type($qualID)
+    {
+        global $DB;
+		$sql = "SELECT type.* FROM {block_bcgt_type} AS type
+		JOIN {block_bcgt_target_qual} AS targetqual ON targetqual.bcgttypeid = type.id 
+		JOIN {block_bcgt_qualification} AS qual ON qual.bcgttargetqualid = targetqual.id 
+		WHERE qual.id = ?";	
+		return $DB->get_record_sql($sql, array($qualID));
+    }
 
     protected static function get_qual_level($qualID)
 	{
@@ -2416,13 +2594,15 @@ abstract class Qualification {
                 GROUP BY userid
             ) AS unitawarded ON unitawarded.userid = user.id";
         }
-		$sql .= " LEFT OUTER JOIN {block_bcgt_user_award} AS useraward ON useraward.userid = user.id AND useraward.bcgtqualificationid = ?";
+		$sql .= " LEFT OUTER JOIN {block_bcgt_user_award} AS useraward ON useraward.userid = user.id AND useraward.bcgtqualificationid = ? 
+            AND (useraward.type = ? OR useraward.type = ? OR useraward.type = ? OR useraward.type = ? OR useraward.type IS NULL)";
 		$sql .= " LEFT OUTER JOIN {block_bcgt_target_breakdown} AS awardbreakdown ON awardbreakdown.id = useraward.bcgtbreakdownid"; 
 		$sql .= " LEFT OUTER JOIN {block_bcgt_target_grades} AS awardgrade ON awardgrade.id = useraward.bcgttargetgradesid";
         $sql .= " LEFT OUTER JOIN {block_bcgt_user_course_trgts} AS coursetarget ON coursetarget.userid = user.id AND coursetarget.bcgtqualificationid = ? AND coursetarget.courseid = course.id";
-		$sql .= " LEFT OUTER JOIN {block_bcgt_target_breakdown} AS breakdown ON breakdown.id = coursetarget.bcgttargetbreakdownid";
+        //removed: AND (coursetarget.courseid = course.id OR coursetarget.courseid = ? OR coursetarget.courseid IS NULL)
+        $sql .= " LEFT OUTER JOIN {block_bcgt_target_breakdown} AS breakdown ON breakdown.id = coursetarget.bcgttargetbreakdownid";
 		$sql .= " LEFT OUTER JOIN {block_bcgt_target_grades} AS targetgrade ON targetgrade.id = coursetarget.bcgttargetgradesid";
-        $sql .= " WHERE role.shortname = ? AND (useraward.type = ? OR useraward.type = ? OR useraward.type = ? OR useraward.type = ? OR useraward.type = ? OR useraward.type IS NULL)";
+        $sql .= " WHERE role.shortname = ? ";
 		$params = array();
         $params[] = $qualID;
         $params[] = 'student';
@@ -2439,12 +2619,12 @@ abstract class Qualification {
             $params[] = -1;
         }
         $params[] = $qualID;
-        $params[] = $qualID;
-        $params[] = 'student';
         $params[] = 'CETA';
         $params[] = 'Predicted';
         $params[] = 'Final';
         $params[] = 'AVG';
+        $params[] = $qualID;
+        $params[] = 'student';
         $dbFields = $this->get_target_grade_db_fields();
         $dbTable = $dbFields->table;
         $dbType = $dbFields->type;
@@ -2464,7 +2644,6 @@ abstract class Qualification {
 					$unitsFilter = $filterOption;
 				} 	
 			}
-            
 			if($targetFilter != 'all')
 			{
 				if($targetFilter == 'ahead')
@@ -2479,8 +2658,8 @@ abstract class Qualification {
 				{
 					$sql .= " AND $difference = ?";
 				}
+                $params[] = 0;
 			}
-            $params[] = 0;
 			if($hasUnits && $unitsFilter != 'all')
 			{
 				if($unitsFilter == 'awarded')
@@ -2931,6 +3110,7 @@ abstract class Qualification {
                 $editAsp = true;
             }
         }
+        //add the filter to the page about selting ahead or behind target
         if($targetGrade || $aspGrade)
         {
             $retval .= "<label for='targets'>".get_string('targets', 'block_bcgt')."</label><select class='targetFilter' tab='s' id='tf_".$this->id."' qual='".$this->id."' name='targets'>";
@@ -2963,6 +3143,7 @@ abstract class Qualification {
         $dbType = $dbFields->type;
         $dbGradeField = $dbFields->gradeField;
         $dbTeacherSetField = $dbFields->teacherSetIdField;
+        //if we can edit the target grade then we need a button that says, edit/view 
         if($editTarget || $editAsp)
         {
 //            $dbWeightedSetField = $dbFields->weightedIdField;
@@ -2976,6 +3157,8 @@ abstract class Qualification {
             $retval .= '<input type="submit" qual="'.$this->id.'" tab="s" id="'.$id.'" name="edit" value="'.get_string($string,'block_bcgt').'"/>';
             if($editing)
             {
+                //if we are editing then get all of the grades. 
+                //either the target grades or the breakdowns. Different database tables. 
                 $targetGradeOptions = $this->get_possible_target_grades();
                 if($targetGradeOptions)
                 {
@@ -2990,6 +3173,13 @@ abstract class Qualification {
                         $field = 'targetgrade';
                     }
                 }
+                
+                //because the selects are all basically the same. They all have the same grades in them.
+                //we dont want to do multiple fors for exactly the same thing. 
+                //so do it once.
+                //build the string up. 
+                //then later we will try and do a string replace on the selected. 
+                
                 $selectTarget = '<select cidsid type="'.$dbType.'" qual="'.$this->id.'" id="t_'.$this->id.'" class="edittarget" name="target">';
                 $selectAsp = '<select cidsid type="asp'.$dbType.'" qual="'.$this->id.'" id="a_'.$this->id.'" class="editasp" name="asp">';
                 $targetSelects = $this->build_select($selectTarget, $options, 'id', $field);
@@ -3000,7 +3190,6 @@ abstract class Qualification {
 		//Go and get all of the students PLUS all of the data for this qual and
 		//course
 		$students = $this->get_students_course_qual_report($this->id, $filterArray, $sortArray);
-                
 		//default/reset the sort on the top of the columns. 
 		$sortUsername = -1;
 		$sortFirstName = -1;
@@ -3111,33 +3300,18 @@ abstract class Qualification {
 			//for each student output the record
             $lastCourse = '';
 			foreach($students AS $student)
-			{
+            {
                 if($useVa)
                 {
                     $qualAwardRankingField = ''.$dbType.'awardranking';
-                    $awardRanking = $student->$qualAwardRankingField;
                     $targetRankingField = $dbGradeField.'ranking';
-                    $targetRanking = $student->$targetRankingField;
-                    $diff = '';
-                    if($awardRanking && $targetRanking)
-                    {
-                        $diff = ($awardRanking - $targetRanking);
-                    }
-
-                    $onTarget = 'OnTarget';
-                    if($diff > 0)
-                    {
-                        $onTarget = 'Ahead';
-                    }
-                    elseif($diff < 0)
-                    {
-                        $onTarget = 'Behind';
-                    }
-                    elseif($diff === '')
-                    {
-                        $onTarget = 'Unknown';
-                    }
+                    //if useVA means we are using TargetGrade or ASP Grade and so 
+                    //we want to be able to check the ahead/behind.
+                    $userVA = new UserVa();
+                    $diff = $userVA->get_diff($student->$targetRankingField, $student->$qualAwardRankingField);
+                    $onTarget = $userVA->ahead_behind_on($student->$targetRankingField, $student->$qualAwardRankingField);
                 }
+                //check if we are displaying a new course (quals can be on more than one course)
                 if($lastCourse != $student->courseid)
                 {
                     $retval.= '<tr class="courserow"><td class="coursename" colspan="6">'.get_string('course').' = '.$student->coursefullname.' : '.$student->courseshortname.'</td></tr>';
@@ -3171,37 +3345,52 @@ abstract class Qualification {
                 {
                     $retval .= "<td colspan='2'>$student->firstname $student->lastname</td>";
                 }
+                
+                //Editing of the target grades
+                //is saved upon change. 
+                //this is loaded in the javascript file
+                //this javascipt file is loaded in DashTab.class , function 
+                //bcgt_tab_get_trackers_tab (loaded from my_dashboard.php)
+                //the function in block_bcgt.js
+                //is inittrackerstab
+                //this function loads /blocks/bcgt/ajax/get_simple_qual_report.php
+                //this file returns this function we are in now (eventually)
+                
+                //In the javascript function above it also calls an ApplyTT type of function
+                //this puts a JQuery listener on the selects. 
+                //this calls
+                //blocks/bcgt/ajax/update_user_target.php";
+                //which saves the target grades
+                
+                
                 if($targetGrade)
                 {
+                    //so are we editing? are we editing the Target?
                     if($editing && $editTarget)
                     {
+                        //we are now going to do some string replaces. 
+                        //first we need to remove the generic id's from the select name
+                        //and put in the students id and the course id. 
                         $targetSelectsStu = str_replace('cidsid', 'sid="'.$student->userid.'" cid="'.$student->courseid.'"', $targetSelects);
+                        $targetSelectsStu = str_replace('id="t_'.$this->id.'"', 'id="t_'.$this->id.'_s_'.$student->userid.'"', $targetSelectsStu);
                         if($student->$dbField)
                         {
+                            //if we have a databaseField set (e.g. breakdown or grades id) (in other words)
+                            //we already have a grade set, so we need to change the drop down to
+                            //be set to this. 
+                            //then we need to replace the selectedDatabaseID with just selected. 
+                            //so it gets selected. 
                             $targetSelectsStu = str_replace('selected'.$student->$dbField, 'selected', $targetSelectsStu);
                         }
                         $retval .= '<td colspan="2">'.$targetSelectsStu.'</td>';
                     }
                     else
                     {
+                        //lets just display it!
                         if(!$student->$dbGradeField || $student->$dbGradeField == '')
                         {
-                            $targetGradeOut = '';
-                            //then do we have prior learning?
-                            $sql = "SELECT * FROM {block_bcgt_user_prlearn} WHERE userid = ?";
-                            $records = $DB->get_records_sql($sql, array($student->userid));
-                            if($records)
-                            {
-                                //then we do have prior learning.
-                                //do we have an avg score?
-                                $targetGradeOut = '<span style="color:grey">'.
-                                        get_string('reportnogcse', 'block_bcgt').'</span>';
-                            }
-                            else
-                            {
-                                $targetGradeOut = '<span style="color:grey">'.
-                                        get_string('reportnopl', 'block_bcgt').'</span>';
-                            }
+                            $userPriorLearn = new UserPriorLearning();
+                            $targetGradeOut = $userPriorLearn->get_users_prlearn_status_when_no_target($student->userid);
                         }
                         else
                         {
@@ -3213,12 +3402,14 @@ abstract class Qualification {
                 }
 				if($aspGrade)
                 {
+                    //this is a mirror of above but for the aspirational grade. 
                     if($editing && $editAsp)
                     {
                         $aspSelectsStu = str_replace('cidsid', 'sid="'.$student->userid.'" cid="'.$student->courseid.'"', $aspSelects);
+                        $aspSelectsStu = str_replace('id="a_'.$this->id.'"', 'id="a_'.$this->id.'_s_'.$student->userid.'"', $aspSelectsStu);
                         if($student->$dbTeacherSetField)
                         {
-                            $aspSelectsStu = str_replace('selected'.$student->$dbTeacherSetField, 'selected', $aspSelects);
+                            $aspSelectsStu = str_replace('selected'.$student->$dbTeacherSetField, 'selected', $aspSelectsStu);
                         }
                         $retval .= '<td colspan="2">'.$aspSelectsStu.'</td>';
                     }
@@ -3663,6 +3854,23 @@ abstract class Qualification {
         $params = array($this->id, $courseID);
 		return $DB->execute($sql, $params);
     }
+    
+    /**
+	 * Inserts a history of the students units
+	 * @param unknown_type $studentID
+	 * @param unknown_type $unitID
+	 */
+	public static function insert_user_qual_history_by_id($recordID)
+	{
+		global $DB;
+		$sql = "INSERT INTO {block_bcgt_user_qual_his} 
+		(bcgtuserqualid, userid, bcgtqualificationid, roleid, comments) 
+        SELECT id, userid, bcgtqualificationid, roleid, 
+		comments  
+		FROM {block_bcgt_user_qual} WHERE id = ?";
+        $params = array($recordID);
+		return $DB->execute($sql, $params);
+	}
     
     /**
 	 * Inserts a history of the students units
@@ -4435,7 +4643,11 @@ abstract class Qualification {
     }
     
     public function print_grid(){
-        echo "Coming Soon";
+        echo "This default message has not been overwritten with a print_grid() method for this qual type";
+    }
+    
+    public function print_class_grid(){
+        echo "This default message has not been overwritten with a print_class_grid() method for this qual type";
     }
     
     public function get_attribute($name, $userID=null)
@@ -4502,6 +4714,19 @@ abstract class Qualification {
         return ($array) ? count($array) : 1;
 
     }
+    
+    public function has_printable_report(){
+        return false;
+    }
+    
+    public function has_auto_target_grade_calculation(){
+        return false;
+    }
+    
+    public function can_have_target_grade(){
+        return true;
+    }
+    
     
     
 }

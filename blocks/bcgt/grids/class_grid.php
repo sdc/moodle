@@ -25,7 +25,7 @@ else
 require_login();
 $PAGE->set_context($context);
 $qualID = optional_param('qID', -1, PARAM_INT);
-//$studentID = optional_param('sID', -1, PARAM_INT);
+$studentID = optional_param('sID', -1, PARAM_INT);
 $unitID = optional_param('uID', -1, PARAM_INT);
 $clearSession = optional_param('csess', true, PARAM_BOOL);
 $qualification = null;
@@ -77,7 +77,16 @@ $out = $OUTPUT->header();
     {
         $dropDowns = "yes";
         //Drop down of other quals
-        $qualifications = get_users_quals($USER->id);
+        
+        if(has_capability('block/bcgt:viewallgrids', context_system::instance()))
+        {
+            $qualifications = search_qualification(-1, -1, -1, '', 
+                -1, null, -1, true, true, null); 
+        }
+        else
+        {
+            $qualifications = get_users_quals($USER->id);
+        }
         if($qualifications)
         {
             $out .= '<div class="bcgtQualChange">';
@@ -111,7 +120,7 @@ $out = $OUTPUT->header();
     $out .= '<input type="hidden" id="selects" name="selects" value="'.$dropDowns.'"/>'; 
     $out .= '<input type="hidden" id="user" name="user" value="'.$USER->id.'"/>';
     
-    $out .= get_grid_menu($unitID, $qualID);
+    $out .= get_grid_menu($studentID, $unitID, $qualID);
     $out .= '</div>';
     
     $heading = get_string('trackinggrid','block_bcgt');

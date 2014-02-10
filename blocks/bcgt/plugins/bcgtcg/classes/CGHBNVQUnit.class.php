@@ -34,7 +34,7 @@ require_once $CFG->dirroot . '/blocks/bcgt/classes/core/Range.class.php';
 class CGHBNVQUnit extends CGUnit {
  
     
-    const MAX_OBSERVATIONS_ON_OUTCOME = 4;
+    const MAX_OBSERVATIONS_ON_OUTCOME = 10;
     
     /**
      * This method is on every non abstract class!
@@ -89,14 +89,12 @@ class CGHBNVQUnit extends CGUnit {
 	 */
 	public function get_submitted_criteria_edit_form_data()
     {
-              
-        
+                              
         if(isset($_POST['taskIDs']))
         {
             
             // Clear criteria array so that any we don't submit that were there before get deleted
-            $this->criterias = array();
-            
+                        
             // Overall tasks
             $taskIDs = $_POST['taskIDs'];
             $taskNames = $_POST['taskNames'];
@@ -125,6 +123,7 @@ class CGHBNVQUnit extends CGUnit {
             if(empty($taskNames) || empty($taskIDs)){
                 return false;
             }
+            
                         
             // We will store these details as:
             // Criteria -> SUb Criteria -> Sub Criteria
@@ -135,7 +134,7 @@ class CGHBNVQUnit extends CGUnit {
             // Foreach task as DynamicID => Actual ID
             foreach($taskIDs as $DID => $ID)
             {
-                                
+                                                
                 // if there is no criteria(task) on the unit with this id, add one
                 if(!isset($this->criterias[$ID]))
                 {
@@ -229,7 +228,7 @@ class CGHBNVQUnit extends CGUnit {
                             {
                                 $params->type = 'Read Only';
                             }
-                            
+                                                        
                             $subCritObj = new CGHBNVQCriteria(-1, $params, Qualification::LOADLEVELCRITERIA);                            
                             // Add to parent
                             $obj->add_sub_criteria($subCritObj);
@@ -306,7 +305,7 @@ class CGHBNVQUnit extends CGUnit {
                                         else
                                         {
                                             // Exists, so just update
-                                            $currentSubCriteria =& $subObj->get_sub_criteria();
+                                            $currentSubCriteria = $subObj->get_sub_criteria();
                                             $currentSubCriteria[$CID] = $subSubObj;
                                             $subObj->set_sub_criteria($currentSubCriteria);
                                         }
@@ -321,7 +320,7 @@ class CGHBNVQUnit extends CGUnit {
                             else
                             {
                                 // Exists, so just update
-                                $currentSubCriteria =& $obj->get_sub_criteria();
+                                $currentSubCriteria = $obj->get_sub_criteria();
                                 $currentSubCriteria[$OID] = $subObj;
                                 $obj->set_sub_criteria($currentSubCriteria);
                             }
@@ -344,6 +343,12 @@ class CGHBNVQUnit extends CGUnit {
                             $params->name = $subCritNames[$DID][$SCDID];
                             $params->details = $subCritDetails[$DID][$SCDID];
                             $params->ordernum = 1;
+                            
+                            if (!isset($subCritMarkable[$DID][$SCDID]))
+                            {
+                                $params->type = 'Read Only';
+                            }
+                            
                             $subCritObj = new CGHBNVQCriteria($SCID, $params, Qualification::LOADLEVELCRITERIA);                            
                             
                             if(!$subCritObj->exists())
@@ -353,7 +358,7 @@ class CGHBNVQUnit extends CGUnit {
                             else
                             {
                                 // Exists, so just update
-                                $currentSubCriteria =& $obj->get_sub_criteria();
+                                $currentSubCriteria = $obj->get_sub_criteria();
                                 $currentSubCriteria[$SCID] = $subCritObj;
                                 $obj->set_sub_criteria($currentSubCriteria);
                             }
@@ -373,6 +378,13 @@ class CGHBNVQUnit extends CGUnit {
         }
         
         
+        // Remove any not sent this time
+        foreach ($this->criterias as $criteria)
+        {
+            if (!in_array($criteria->get_id(), $taskIDs)){
+                unset($this->criterias[$criteria->get_id()]);
+            }
+        }
         
         
         
@@ -474,6 +486,8 @@ class CGHBNVQUnit extends CGUnit {
             }
         }
         
+        
+                
                          
     }
     
@@ -803,7 +817,7 @@ class CGHBNVQUnit extends CGUnit {
                 
                  $retval .= '<tr>';
                     $retval .= '<td><input type="hidden" name="sheetIDs['.$d.']" value="'.$sheet->id.'" /><input type="text" name="sheetNames['.$d.']" value="'.$sheet->name.'" /></td>';
-                    $retval .= '<td><input type="number" min="1" max="'.self::MAX_OBSERVATIONS_ON_OUTCOME.'" name="sheetNumObs['.$d.']" style="width:30px;" value="'.$sheet->numofobservations.'" /></td>';
+                    $retval .= '<td><input type="number" min="1" max="'.self::MAX_OBSERVATIONS_ON_OUTCOME.'" name="sheetNumObs['.$d.']" value="'.$sheet->numofobservations.'" /></td>';
                     $retval .= '<td id="signoffSheetRangeCell_'.$d.'"><a href="#" onclick="addNewSignOffRange('.$d.');return false;"><img src="'.$CFG->wwwroot.'/blocks/bcgt/plugins/bcgtcg/pix/plus.png" alt="add" /></a> <table id="signoffSheetRangeHolder_'.$d.'" class="signoffSheetRangeTable">';
                     
                     // Signoff ranges
@@ -918,7 +932,7 @@ class CGHBNVQUnit extends CGUnit {
 
                                             $retval .= '<tr>';
                                                 $retval .= '<td>No. Observations</td>';
-                                                $retval .= '<td><input type="number" name="outcomeNumOfObservations['.$d.']['.$num.']" min="1" max="'.self::MAX_OBSERVATIONS_ON_OUTCOME.'" style="width:30px;" value="'.$subCriteria->get_num_observations().'" onblur="checkCCNum(this);return false;" /> <small class="output" style="color:red;"></small></td>';
+                                                $retval .= '<td><input type="number" name="outcomeNumOfObservations['.$d.']['.$num.']" min="1" max="'.self::MAX_OBSERVATIONS_ON_OUTCOME.'" value="'.$subCriteria->get_num_observations().'" onblur="checkCCNum(this);return false;" /> <small class="output" style="color:red;"></small></td>';
                                             $retval .= '</tr>';
 
                                             $retval .= '<tr>';
@@ -1382,7 +1396,8 @@ class CGHBNVQUnit extends CGUnit {
         reset($criteria);
                 
         $numCompleted = $this->are_criteria_completed($criteria);
-        $percent = round(($numCompleted * 100) / $count);                
+        $percent = round(($numCompleted * 100) / $count);             
+                
         return $percent;
             
     }
@@ -1393,14 +1408,11 @@ class CGHBNVQUnit extends CGUnit {
         if(!$criteria) return 0;
 
         $numCompleted = 0;
-        
+                
         foreach($criteria as $criterion)
         {
                     
-            $sID = $criterion->get_student_ID();
-            if (is_null($sID)){
-                $criterion->load_student_information($this->studentID, $this->qualID, $this->id);
-            }
+            $criterion->load_student_information($this->studentID, $this->qualID, $this->id);
                 
             if ($criterion->has_outcomes())
             {
@@ -1414,7 +1426,9 @@ class CGHBNVQUnit extends CGUnit {
                     $award = $outcome->get_student_value();
                     if($award)
                     {
-                        if($award->is_criteria_met_bool()) $numCompleted++;
+                        if($award->is_criteria_met_bool()) {
+                            $numCompleted++;
+                        }
                     }
                     
                 }
@@ -1425,7 +1439,9 @@ class CGHBNVQUnit extends CGUnit {
                 $award = $criterion->get_student_value();
                 if($award)
                 {
-                    if($award->is_criteria_met_bool()) $numCompleted++;
+                    if($award->is_criteria_met_bool()){
+                        $numCompleted++;
+                    }
                 }
             }
 
@@ -1653,7 +1669,7 @@ class CGHBNVQUnit extends CGUnit {
         $retval .= "<h2>Key</h2>";
         //Are we looking at a student or just the actual criteria for the grid.
         //if students then get the key that tells everyone what things stand for
-        $retval .= CGQualification::get_grid_key();
+        $retval .= CGHBNVQQualification::get_grid_key();
 		$retval .= "</div>";
         
         $retval .= "<br style='clear:both;' /><br>";

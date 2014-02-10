@@ -69,6 +69,7 @@ $PAGE->set_heading(get_string('import', 'block_bcgt'));
 $PAGE->set_pagelayout('login');
 $PAGE->add_body_class(get_string('import', 'block_bcgt'));
 $PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php','title');
+$PAGE->navbar->add(get_string('admin', 'block_bcgt'),'my_dashboard.php?tab=adm','title');
 $PAGE->navbar->add(get_string('import', 'block_bcgt'),'','title');
 
 $jsModule = array(
@@ -105,6 +106,7 @@ $out .= html_writer::start_tag('div', array('class'=>'bcgt_import_controls',
 $out .= $import->get_description();
 
 $out .= '<form name="" id="importform" method="POST" action="#" enctype="multipart/form-data">';
+$out .= '<input type="hidden" name="a" value="'.$a.'"/>';
 $out .= '<h2>'.get_string('choosefile', 'block_bcgt').'</h2>';
 $out .= $import->display_import_options();
 $out .= $import->display_file_options();

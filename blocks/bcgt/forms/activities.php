@@ -58,10 +58,16 @@ $out.= '<div class="tabs"><div class="tabtree">';
 $out.= '<ul class="tabrow0">';
 $out.= '<li class="first">'.
         '<a href="?tab=unit&cID='.$cID.'">'.
-        '<span>'.get_string('unit', 'block_bcgt').'</span></a></li>';
+        '<span>'.get_string('activitiesbyunit', 'block_bcgt').'</span></a></li>';
 $out.= '<li class="last">'.
         '<a href="?tab=act&cID='.$cID.'">'.
-        '<span>'.get_string('activity', 'block_bcgt').'</span></a></li>';
+        '<span>'.get_string('activitiesbyactivity', 'block_bcgt').'</span></a></li>';
+//if(has_capability('block/bcgt:viewclassgrids', $context))
+//{
+//    $out.= '<li class="last">'.
+//            '<a href="?tab=actgrid&cID='.$cID.'">'.
+//            '<span>'.get_string('activitygrid', 'block_bcgt').'</span></a></li>';
+//}
 //$out.= '<li class="last">'.
 //        '<a href="?tab=actcal&cID='.$cID.'">'.
 //        '<span>'.get_string('activitycalendarview', 'block_bcgt').'</span></a></li>';
@@ -82,6 +88,25 @@ elseif($tab == 'ac')
 {
     $out .= '<p>This will show a grid of units and criteria showing which are on
         assignments/activities and which are not</p>';
+}
+elseif($tab == 'actgrid')
+{
+    //then we are showing the grade tracker!
+    //get all of the qual families that are on this course
+//    $families = get_course_qual_families($cID);
+//    if($families)
+//    {
+//        //for each family get the parent family
+//        //then get the activity_view_page
+//        foreach($families AS $family)
+//        {
+//            require_once($CFG->dirroot.$family->classfolderlocation.'/'.str_replace(' ', '', $family->type).'Qualification.class.php');
+//            //$class = $family->type.'Qualification';
+//            $class = str_replace(' ', '', $family->type).'Qualification';
+//            $out.= $class::activity_grade_tracker($cID);
+//        }
+//    }
+    $out.= Qualification::activity_grade_tracker($cID);
 }
 else
 {

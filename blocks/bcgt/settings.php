@@ -169,6 +169,21 @@ $settings->add(new admin_setting_configtext(
         '430'
         ));          
 
+$settings->add(new admin_setting_configtext(
+        'bcgt/logoimgurl',
+        get_string('logoimgurl', 'block_bcgt'),
+        get_string('desclogoimgurl', 'block_bcgt'),
+        $CFG->wwwroot . '/blocks/bcgt/pix/bc.png'
+        ));  
+
+$settings->add(new admin_setting_configcheckbox(
+        'bcgt/showcoursecategories',
+        get_string('labelshowcoursecategories', 'block_bcgt'),
+        get_string('descshowcoursecategories', 'block_bcgt'),
+        '0'
+        ));
+
+
 //$settings->add(new admin_setting_configcheckbox(
 //        'bcgt/enrolstudentqual',
 //        get_string('labelenrolstudentqual', 'block_bcgt'),
