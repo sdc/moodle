@@ -14,6 +14,9 @@ class UserCalculations {
     //put your code here
     protected $calculation;
     
+    //I AM FULLY AWARE THAT HAVING THESE SWITCHES IN IT IS NOT FULLY OBJECT ORIENTED!!
+//THEY SHOULD BE inherited instancs of classes. in a workspace or something
+    
     public function UserCalculations($calculation)
     {
         $this->calculation = $calculation;

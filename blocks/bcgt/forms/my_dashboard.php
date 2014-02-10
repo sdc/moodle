@@ -11,7 +11,7 @@
 //TODO submit on forms and POST rather than using links. 
 
 
-global $COURSE, $PAGE, $OUTPUT, $CFG;
+global $COURSE, $PAGE, $OUTPUT, $CFG, $USER;
 //require_once('../../../config.php');
 //require_once('../lib.php');
 //require_once($CFG->dirroot.'/user/profile/lib.php');
@@ -65,9 +65,32 @@ echo '<div id="studentSearchContent"></div>';
 
 //div for the content
 echo '<div class="bcgt_container" id="bcgtDashboard">';
+echo '<form method="POST" name="gotocourse" action="'.$CFG->wwwroot.'/course/view.php">';
+echo "<label for='id'>".get_string('gotomycourses', 'block_bcgt')."</label>";
+$hasQual = false;
+$hidden = false;
+$courses = bcgt_get_users_course_access($USER->id, $hasQual, $hidden);
+echo "<select id='gotocourse' name='id'>";
+echo "<option value='-1'></option>";
+if($courses)
+{
+    foreach($courses AS $course)
+    {
+        $selected = '';
+        if($courseID == $course->courseid)
+        {
+            $selected = 'selected';
+        }   
+        echo "<option $selected value='".$course->courseid."'>".$course->shortname." - ".$course->fullname."</option>";
+    }
+}
+echo "</select>";
+echo "<input type='submit' name='go' value='".get_string('go', 'block_bcgt')."'/>";
+echo "</form>";
 echo '<div id="bcgtDashTabs">';
 echo '<form method="POST" name="changeView" action="#tab">';
 echo '<input type="hidden" name="cID" value="'.$courseID.'"/>';
+
 echo '<div class="tabs"><div class="tabtree">';
 echo '<ul class="tabrow0">';
 //So get the tabs. 

@@ -55,6 +55,8 @@ class Criteria {
     protected $studentFlag;
     protected $awardDate;
     
+    protected $displayname;
+    
     public function Criteria($criteriaID = -1, $params = null, $loadLevel = Qualification::LOADLEVELCRITERIA)
     {
         if($criteriaID != -1 && $params == null)
@@ -76,6 +78,7 @@ class Criteria {
                 $this->weighting = $criteria->weighting;
                 $this->targetDate = $criteria->targetdate;
                 $this->defaultTargetDate = $criteria->targetdate;
+                $this->displayname = $criteria->displayname;
                 if(isset($criteria->comments))
                 {
                     $this->comments = $criteria->comments;
@@ -91,6 +94,10 @@ class Criteria {
                 if(isset($params->details))
                 {
                     $this->details = $params->details;
+                }
+                if(isset($params->displayname))
+                {
+                    $this->displayname = $params->displayname;
                 }
                 if(isset($params->awardID))
                 {
@@ -459,6 +466,16 @@ class Criteria {
         return $this->studentID;
     }
     
+    public function set_display_name($displayName)
+    {
+        $this->displayname = $displayName;
+    }
+    
+    public function get_display_name()
+    {
+        return $this->displayname;
+    }
+    
     public function get_tracking_type()
     {
         global $DB;
@@ -614,6 +631,11 @@ class Criteria {
         {         
             if($studentCriteria->bcgtvalueid && $studentCriteria->value)
             {
+                //TODO THIS NEEDS TO BE CHECKED AGAINST A SET OF VALUES PASSED IN to all
+                //criterias, LOADED BY THE UNIT
+                //e,g. load all possible values (there will only be a set number
+                //then, here, get the value from the array (that way we arent going off to the database
+                //EVERY SINGLE TIME!)
                 $value = new Value($studentCriteria->bcgtvalueid, null);
                 $this->studentValue = $value;
             }    
@@ -1110,6 +1132,7 @@ class Criteria {
         $stdObj->details = addslashes($this->details);
         $stdObj->targetdate = $this->targetDate;
         $stdObj->bcgttypeawardid = $this->awardID;
+        $stdObj->displayname = $this->displayname;
         if($unitID != -1)
         {
             $stdObj->bcgtqualificationid = null;
@@ -1291,6 +1314,7 @@ class Criteria {
         $stdObj->bcgtunitid = $unitID;
         $stdObj->targetdate = $this->targetDate;
         $stdObj->parentcriteriaid = $this->parentCriteriaID;
+        $stdObj->displayname = $this->displayname;
         if($qualID != -1)
         {
             $stdObj->bcgtqualificationid = $qualID;
@@ -1336,6 +1360,7 @@ class Criteria {
         }
         if($this->comments)
         {
+            $this->comments = iconv('UTF-8', 'ASCII//TRANSLIT', $this->comments); 
             $stdObj->comments = addslashes(trim($this->comments));
         }
         if($this->dateSet)
@@ -1378,6 +1403,12 @@ class Criteria {
             $stdObj->bcgttargetgradesid = $this->targetgradeID;
         }
         $stdObj->flag = $this->studentFlag; 
+        
+        if(isset($stdObj->bcgtvalueid) && $stdObj->bcgtvalueid > 0)
+        {
+            logAction(LOG_MODULE_GRADETRACKER, LOG_ELEMENT_GRADETRACKER_CRITERIA, LOG_VALUE_GRADETRACKER_UPDATED_CRIT_AWARD, $this->studentID, $this->qualID, $this->unitID, null, $stdObj->bcgtvalueid);
+        }
+        
         return $DB->update_record('block_bcgt_user_criteria', $stdObj); 
     }
     
@@ -1397,6 +1428,7 @@ class Criteria {
         }
         if($this->comments)
         {
+            $this->comments = iconv('UTF-8', 'ASCII//TRANSLIT', $this->comments); 
             $stdObj->comments = $this->comments;
         }
         if(!$this->dateSet)
@@ -1438,6 +1470,11 @@ class Criteria {
                 
         $this->studentCriteriaID = $DB->insert_record('block_bcgt_user_criteria', $stdObj); 
         //do we need to set a flag?
+        
+        if(isset($stdObj->bcgtvalueid) && $stdObj->bcgtvalueid > 0)
+        {
+            logAction(LOG_MODULE_GRADETRACKER, LOG_ELEMENT_GRADETRACKER_CRITERIA, LOG_VALUE_GRADETRACKER_UPDATED_CRIT_AWARD, $this->studentID, $this->qualID, $this->unitID, null, $stdObj->bcgtvalueid);
+        }
         
         return $this->studentCriteriaID;
         
@@ -1603,10 +1640,22 @@ class Criteria {
         global $DB;
         $sql = "INSERT INTO {block_bcgt_criteria_his}
         (bcgtcriteriaid, name, details, type, bcgttypeawardid, bcgtunitid, parentcriteriaid, 
-        targetdate, numofobservations, bcgtqualificationid, weighting, ordernum) 
+        targetdate, numofobservations, bcgtqualificationid, weighting, ordernum, displayname) 
         SELECT * FROM {block_bcgt_criteria} WHERE id = ?"; 
         return $DB->execute($sql, array($subCriteriaID));
     }
+    
+    public static function insert_user_criteria_history_by_id($id)
+    {
+        global $DB;
+        $sql = "INSERT INTO {block_bcgt_user_criteria_his}
+        (bcgtusercriteriaid, userid, bcgtqualificationid, bcgtcriteriaid, bcgtrangeid, bcgtvalueid, 
+        setbyuserid, dateset, dateupdated, updatedbyuserid, comments, bcgtprojectid, userdefinedvalue, targetdate, 
+        bcgttargetgradesid, bcgttargetbreakdownid, flag, awarddate) 
+        SELECT * FROM {block_bcgt_user_criteria} WHERE id = ?"; 
+        return $DB->execute($sql, array($id));
+    }
+
     
     /**
      * Gets the students criteria values from the database
@@ -1618,7 +1667,9 @@ class Criteria {
     {
         //TODO change when we talk about projects
         global $DB;
-        $sql = "SELECT usercriteria.*, value.*, usercriteria.id as usercritid
+        $sql = "SELECT usercriteria.*, value.shortvalue, value.value, value.specialval, value.bcgttypeid,
+            value.ranking, value.customvalue, value.customshortvalue, value.context, value.bcgttargetqualid, 
+            usercriteria.id as usercritid
              FROM {block_bcgt_user_criteria} AS usercriteria
         LEFT OUTER JOIN {block_bcgt_value} AS value ON value.id = usercriteria.bcgtvalueid 
         JOIN {block_bcgt_criteria} AS criteria ON criteria.id = usercriteria.bcgtcriteriaid

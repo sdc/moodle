@@ -17,6 +17,7 @@ class Level{
 	const level4ID = 4;
 	const level5ID = 5;
     const levelBID = 6;
+    const level12ID = 7;
 	
 	private $id;
 	private $level;
@@ -58,6 +59,12 @@ class Level{
 	{
 		return $this->level;
 	}
+    
+    public function get_level_number()
+    {
+        $lvl = preg_replace("/[^0-9]/", "", $this->level);
+        return $lvl;
+    }
 	
 	public function to_string()
 	{

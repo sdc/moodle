@@ -291,15 +291,16 @@ abstract class DashTab {
     
     public static function bcgt_tab_get_trackers_tab()
     {
-        global $USER, $CFG, $PAGE;
+        global $USER, $CFG, $PAGE, $DB;
         $jsModule = array(
             'name'     => 'block_bcgt',
             'fullpath' => '/blocks/bcgt/js/block_bcgt.js',
             'requires' => array('base', 'io', 'node', 'json', 'event')
         );
         $PAGE->requires->js_init_call('M.block_bcgt.inittrackerstab', null, true, $jsModule);
-        $retval = '';
+        $retval = '<div id="trackersDashContainer">';
         $retval .= '<h2 class="dashContentHeading">'.get_string('mytrackers', 'block_bcgt').'</h2>';
+        $retval .= '<p>'.get_string('mytrackersdesc', 'block_bcgt').'</p>';
         //If they have the capibility to add themselves to trackers
         //then show that link
         if(has_capability('block/bcgt:viewallgrids', context_system::instance()))
@@ -315,8 +316,33 @@ abstract class DashTab {
         {
             foreach($qualifications AS $qual)
             {
+                //is the qualification on a course?
+                //does the qualification haave any students?
+                $expand = true;
+                $expandClass = '';
+                $onCourse = $DB->get_records_sql('SELECT * FROM {block_bcgt_course_qual} WHERE bcgtqualificationid = ?', array($qual->id));
+                if(!$onCourse)
+                {
+                   $expand = false;
+                   $expandClass='no';
+                }
+
+                $class = '';
+                $hasStudents = $DB->get_records_sql('SELECT userqual.id FROM {block_bcgt_user_qual} userqual 
+                    JOIN {role} role ON role.id = userqual.roleid WHERE bcgtqualificationid = ? AND role.shortname = ?', 
+                        array($qual->id, 'student'));
+                if(!$hasStudents)
+                {
+                    $class = 'noStudents';
+                }
+                
                 //if have the ability, then allow to add students to this qual. 
-                $retval .= "<h3 class='simplequalreportheading' id='sqrh_$qual->id'><img src='$CFG->wwwroot/blocks/bcgt/pix/expandIcon.jpg'>".bcgt_get_qualification_display_name($qual, true, ' ')."</h3>";
+                $retval .= "<h3 class='simplequalreportheading$expandClass $class' id='sqrh_$qual->id'>";
+                if($expand)
+                {
+                    $retval .= "<img src='$CFG->wwwroot/blocks/bcgt/pix/expandIcon.jpg'>".bcgt_get_qualification_display_name($qual, true, ' ')."";
+                }
+                $retval .= '</h3>';
                 //ajax display call
                 //expand
                 //will get tabs and reporting. 
@@ -324,6 +350,7 @@ abstract class DashTab {
 
             }
         }
+        $retval .= '</div>';
         return $retval;
     }
     

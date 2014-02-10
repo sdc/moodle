@@ -98,7 +98,7 @@ if($grid == 'student')
         {
             //only do it if the value is changing for the criteria
             $calculated = true;
-            $qualAward = $qualification->calculate_predicted_grade();
+            $qualAward = $qualification->calculate_final_grade();
         }
         if(!$calculated)
         {

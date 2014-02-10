@@ -44,6 +44,13 @@ class AdminTab extends DashTab{
                         '.get_string('activitiesfas', 'block_bcgt').'</h2>';
                     $retval .= $this->get_activity_options($courseID);
                 $retval .= '</div>';
+                
+                $retval .= '<div class="bcgt_admin_box">';
+                    $retval .= '<h2 class="bcgt_dash_subtitle bcgt_admin_title">
+                        '.get_string('general', 'block_bcgt').'</h2>';
+                    $retval .= $this->get_general_options();
+                $retval .= '</div>';
+                
             $retval .= '</div>';
             $retval .= '<div class="bcgt_col_two bcgt_col">';
                 $retval .= '<div class="bcgt_admin_box">';
@@ -78,7 +85,7 @@ class AdminTab extends DashTab{
                 $retval .= '</div>'; 
                 $retval .= '<div class="bcgt_admin_box">';
                 $retval .= '<h2 class="bcgt_dash_subtitle bcgt_admin_title">
-                    '.get_string('import', 'block_bcgt').'</h2>';
+                    '.get_string('importexportdata', 'block_bcgt').'</h2>';
                 $retval .= $this->get_import_options($courseID);
                 $retval .= '</div>'; 
             $retval .= '</div>';
@@ -206,6 +213,75 @@ class AdminTab extends DashTab{
                 get_string('unittests', 'block_bcgt').'</a></li>';
         $retval .= '</ul>';
         return $retval;
+    }
+    
+    private function get_general_options()
+    {
+        global $CFG, $COURSE, $USER;
+        
+        $retval = '<ul class="bcgt_list bcgt_admin_list">';
+//            $retval .= '<li>'.get_string('manageactivitylinks', 'block_bcgt').'</li>';
+            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/general_settings.php"'. 
+                    'title="'.get_string('generalsettings', 'block_bcgt').'">'.
+                    get_string('generalsettings', 'block_bcgt').'</a></li>';
+        $retval .= '</ul>';
+        
+        
+        $currentContext = context_course::instance($COURSE->id);
+        //can the user view grids by the different methods?
+        //>>BEDCOLL TODO this should check if the users are associated with any quals
+        if (has_capability('block/bcgt:viewclassgrids', $currentContext)){
+                $retval .= '<ul class="list">';
+                $retval .= '<li>'.get_string('viewEditBy', 'block_bcgt').'<ul>';
+
+                $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=s&cID='.$COURSE->id.'">';   			
+                $retval .= get_string('byStudent', 'block_bcgt').'</a></li>';   			
+
+                $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=u&cID='.$COURSE->id.'">';   			
+                $retval .= get_string('byUnit', 'block_bcgt').'</a></li>'; 
+
+                $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=c&cID='.$COURSE->id.'">';   			
+                $retval .= get_string('byClass', 'block_bcgt').'</a></li>';
+                
+                if(get_config('bcgt','alevelusefa'))
+                {
+                    $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=a&cID='.$COURSE->id.'">';   			
+                    $retval .= get_string('byassessment', 'block_bcgt').'</a></li>';
+                }
+                
+                $retval .= '</ul>';
+        }
+        //>>BEDCOLL TODO this should be the user context
+        if (has_capability('block/bcgt:viewowngrid', $currentContext)){
+            if(does_user_have_tracking_sheets($USER->id))
+            {
+                $retval .= '<ul class="list">';
+                //TODO will check if the student actually has a grid!
+                $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/grids/my_grids.php?g=s&cID='.$COURSE->id.'">';   			
+                $retval .= get_string('mytrackers', 'block_bcgt').'</a></li>'; 
+                $retval .= '</ul>';
+            }
+        }
+        if ($COURSE->id != 1 && has_capability('block/bcgt:addqualtocurentcourse', $currentContext)){
+            $retval .= '<ul class="list">';
+            //TODO will check if the course has a qual already
+            $count = bcgt_count_quals_course($COURSE->id);
+            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/edit_course_qual.php?oCID='.$COURSE->id.'&cID='.$COURSE->id.'">';   			
+            $retval .= get_string('editcoursequals', 'block_bcgt').'</a> ['.$count.']</li>'; 
+            $retval .= '</ul>';
+        }
+        if($COURSE->id != 1 && has_capability('block/bcgt:manageactivitylinks', $currentContext))
+        {
+            $retval .= '<ul class="list">';
+            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/activities.php?cID='.$COURSE->id.'">';   			
+            $retval .= get_string('viewactivitylinks', 'block_bcgt').'</a></li>'; 
+            $retval .= '</ul>';
+        }
+        
+        
+        
+        return $retval;
+        
     }
     
     private function get_activity_options($courseID)
@@ -378,36 +454,35 @@ class AdminTab extends DashTab{
             $courseContext = context_course::instance($COURSE->id);
         }
         $retval = '<ul class="bcgt_list bcgt_admin_list">';
-        if(has_capability('block/bcgt:importpriorlearning', $courseContext))
+        if(has_capability('block/bcgt:importdata', $courseContext))
         {
             $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/import.php?cID='.$courseID.'&a=pl"'. 
-                    'title="'.get_string('importpriorlearninghelp', 'block_bcgt').'">'.
-                    get_string('importpriorlearning', 'block_bcgt').'</a></li>';
+                    'title="'.get_string('importhelp', 'block_bcgt').'">'.
+                    get_string('import', 'block_bcgt').'</a></li>';
         }
-        if(has_capability('block/bcgt:importtargetgrades', $courseContext))
+        if(has_capability('block/bcgt:exportdata', $courseContext))
         {
-            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/import.php?cID='.$courseID.'&a=tg"'. 
-                    'title="'.get_string('importargetgradeshelp', 'block_bcgt').'">'.
-                    get_string('importtargetgrades', 'block_bcgt').'</a></li>';
+            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/export.php?cID='.$courseID.'"'. 
+                    'title="'.get_string('exporthelp', 'block_bcgt').'">'.
+                    get_string('export', 'block_bcgt').'</a></li>';
         }
-        if(has_capability('block/bcgt:importqualweightings', $courseContext))
+        if(has_capability('block/bcgt:rundatacleanse', $courseContext))
         {
-            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/import.php?cID='.$courseID.'&a=w"'. 
-                    'title="'.get_string('importweightingshelp', 'block_bcgt').'">'.
-                    get_string('importweightings', 'block_bcgt').'</a></li>';
+            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/data_cleanse.php?cID='.$courseID.'"'. 
+                    'title="'.get_string('datacleansehelp', 'block_bcgt').'">'.
+                    get_string('datacleanse', 'block_bcgt').'</a></li>';
         }
-        if(has_capability('block/bcgt:importassess', $courseContext))
+        if(has_capability('block/bcgt:checkuseraccess', $courseContext))
         {
-            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/import.php?cID='.$courseID.'&a=fam"'. 
-                    'title="'.get_string('importassessmarkshelp', 'block_bcgt').'">'.
-                    get_string('importassessmarks', 'block_bcgt').'</a></li>';
+            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/user_access.php?cID='.$courseID.'"'. 
+                    'title="'.get_string('useraccesshelp', 'block_bcgt').'">'.
+                    get_string('useraccess', 'block_bcgt').'</a></li>';
+            
+            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/user_data.php?cID='.$courseID.'"'. 
+                    'title="'.get_string('userdatahelp', 'block_bcgt').'">'.
+                    get_string('userdatacheck', 'block_bcgt').'</a></li>';
+            
         }
-//        if(has_capability('block/bcgt:importquals', $courseContext))
-//        {
-//            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/import.php?cID='.$courseID.'&a=q"'. 
-//                    'title="'.get_string('importqualshelp', 'block_bcgt').'">'.
-//                    get_string('importquals', 'block_bcgt').'</a></li>';
-//        }
         $retval .= '</ul>';
         return $retval;
     }

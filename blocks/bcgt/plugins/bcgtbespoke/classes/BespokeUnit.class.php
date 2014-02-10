@@ -520,7 +520,7 @@ class BespokeUnit extends Unit {
                     $retval .= "<tr id='criterionRow_{$i}'>";
                     
                         $retval .= "<td><input type='hidden' name='criterionIDs[{$i}]' value='{$criterion->get_id()}' /><input type='text' placeholder='Name' name='criterionNames[{$i}]' value='{$criterion->get_name()}' class='critNameInput' id='critName_{$i}' /></td>";
-                        $retval .= "<td><textarea placeholder='Criteria Details' name='criterionDetails[{$i}]' id='criterionDetails{$i}' class='critDetailsTextArea'>".format_text($criterion->get_details(), FORMAT_PLAIN)."</textarea></td>";
+                        $retval .= "<td><textarea placeholder='Criteria Details' name='criterionDetails[{$i}]' id='criterionDetails{$i}' class='critDetailsTextArea'>".$criterion->get_details()."</textarea></td>";
                         $retval .= "<td><input title='Weighting' type='text' class='w40' name='criterionWeights[{$i}]' value='{$criterion->get_weighting()}' /></td>";
                         //$retval .= "<td class='align-l'><input type='radio' name='criterionGradings[{$i}]' value='PMD' {$chk['PMD']} /> Pass, Merit, Distinction<br><input type='radio' name='criterionGradings[{$i}]' value='PCD' {$chk['PCD']} /> Pass, Credit, Distinction<br><input type='radio' name='criterionGradings[{$i}]' value='P' {$chk['P']} /> Pass Only<br><input type='radio' name='criterionGradings[{$i}]' value='DATE' {$chk['DATE']} /> Date</td>";
                         $retval .= "<td>-</td>";

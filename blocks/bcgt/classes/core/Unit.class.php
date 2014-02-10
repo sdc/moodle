@@ -95,6 +95,7 @@ abstract class Unit {
                     $this->criteriaNames = $criterias->names;
                     $this->tasks = Unit::set_up_tasks($unitID);
                 }
+                $this->unitTypeID = $unit->bcgtunittypeid;
 			}			
 		}
 		else
@@ -115,7 +116,7 @@ abstract class Unit {
                 $this->rules = (isset($params->rules)) ? $params->rules : "";
                 $this->specificAwardType = (isset($params->specificAwardType)) ? $params->specificAwardType : "";
                 $this->uniqueID = (isset($params->uniqueID)) ? $params->uniqueID : "";
-                $this->weighting = (isset($params->weighting)) ? $params->weighting : "";
+                $this->weighting = (isset($params->weighting)) ? $params->weighting : 1;
                 if(isset($params->bcgttypeid))
                 {
                     $unitType = $params->bcgttypeid;
@@ -182,7 +183,6 @@ abstract class Unit {
                 }
 			}
 		}
-		
 		$unitTypeObj = Unit::retrieve_unit_type($unitID);
 		if($unitTypeObj)
 		{
@@ -241,6 +241,11 @@ abstract class Unit {
     public function get_date_updated()
     {
         return $this->dateUpdated;
+    }
+    
+    public function get_last_update_date()
+    {
+        
     }
 
     public function set_date_updated($date)
@@ -324,7 +329,8 @@ abstract class Unit {
 	}
     
     public function get_weighting(){
-        return $this->weighting;
+        // If it's null, as opposed to 0, return a default weighting of 1
+        return (!is_null($this->weighting) && $this->weighting !== "") ? $this->weighting : 1;
     }
 	
 	public function set_unit_type_ID($unitTypeID)
@@ -459,7 +465,7 @@ abstract class Unit {
         $output .= $this->get_name();
         
         if ($this->level){
-            $output .= " (L{$this->level->get_level()})";
+            $output .= " (L{$this->level->get_level_number()})";
         }
         
         return $output;
@@ -514,6 +520,7 @@ abstract class Unit {
                     $params = new stdClass();
                     $params->award = $unitAward->award;
                     $params->rank = $unitAward->ranking;
+                    $params->shortaward = $unitAward->shortaward;
                     
 					$award = new Award($unitAward->id, $params);
 					$this->userAward = $award;
@@ -531,7 +538,10 @@ abstract class Unit {
              
             // Get the comments on the student's unit as well
             $this->set_comments($this->retrieve_comments());
-            //TODO qual specific:              
+            //TODO qual specific:     
+            //
+            //TODO put a loadLevel param into this. 
+            //                  
 			//does this unit have specific values/grades/informaton set for this student?
 			//this may want to be put onto the qualification sepcific unit class
 			//as the id fields and info fields may eventually point
@@ -569,6 +579,11 @@ abstract class Unit {
 	public function get_quals_on($search = '', $userID = -1, $roleID = -1, $courseID = -1)
 	{
 		return UNIT::get_quals($this->id, $search, $userID, $roleID, $courseID);
+	}
+    
+    public function get_quals_on_roles($search = '', $userID = -1, $roles = array(), $courseID = -1)
+	{
+		return UNIT::get_quals_roles($this->id, $search, $userID, $roles, $courseID);
 	}
     
     public function get_attribute($name, $qualID=null, $userID=null)
@@ -622,6 +637,60 @@ abstract class Unit {
         
 		return $usedCriteriaNames;
 	}
+    
+    protected static function get_quals_roles($unitID, $search = '', $userID = -1, $roles = array(), $courseID = -1)
+    {
+        global $DB;
+		$sql = "SELECT qual.id AS id, type.type, level.trackinglevel, 
+            subtype.subtype, qual.name, family.family, qual.additionalname 
+            FROM {block_bcgt_qual_units} AS qualUnits 
+		JOIN {block_bcgt_qualification} AS qual ON qual.id = qualUnits.bcgtqualificationid 
+		JOIN {block_bcgt_target_qual} AS targetQual ON targetQual.id = qual.bcgttargetqualid 
+		JOIN {block_bcgt_type} AS type ON type.id = targetQual.bcgttypeid 
+		JOIN {block_bcgt_subtype} AS subtype ON subtype.id = targetQual.bcgtsubtypeid 
+		JOIN {block_bcgt_level} AS level ON level.id = targetQual.bcgtlevelid
+        JOIN {block_bcgt_type_family} AS family ON family.id = type.bcgttypefamilyid";
+        if($userID != -1 && count($roles) > 0)
+        {
+            $sql .= " JOIN {block_bcgt_user_qual} userqual ON userqual.bcgtqualificationid = qual.id 
+                JOIN {role} role ON role.id = userqual.roleid ";
+        }
+        if($courseID != -1)
+        {
+            $sql .= " JOIN {block_bcgt_course_qual} coursequal ON coursequal.bcgtqualificationid = qual.id";
+        }
+		$sql .= " WHERE qualUnits.bcgtunitid = ? ";
+        $params = array($unitID);
+        if($search != '')
+        {
+            $sql .= " AND qualname LIKE ?";
+            $params[] = '%'.$search.'%';
+        }
+        if($userID != -1 && count($roles > 0))
+        {
+            $sql .= ' AND (';
+            $count=0;
+            foreach($roles AS $role)
+            {
+                $count++;
+                $sql .= " role.shortname= ?";
+                if($count != count($roles))
+                {
+                    $sql .= ' OR';
+                }          
+                $params[] = $role;
+            }
+
+            $sql .= ') AND userqual.userid = ?';
+            $params[] = $userID;
+        }
+        if($courseID != -1)
+        {
+            $sql .= " AND coursequal.courseid = ?";
+            $params[] = $courseID;
+        }
+		return $DB->get_records_sql($sql, $params);
+    }
     
     protected static function get_quals($unitID, $search = '', $userID = -1, $roleID = -1, $courseID = -1)
     {
@@ -1175,11 +1244,13 @@ abstract class Unit {
 		{
 			foreach($originalCriteria AS $origCriteria)
 			{
-				if(!array_key_exists($origCriteria->id, $this->criteriaArrayCriteria))
+				if(($this->criterias && !array_key_exists($origCriteria->id, $this->criterias)) || (!$this->criterias))
 				{
                     //then do a history
 					if($this->insert_criteria_history($origCriteria->id))
 					{
+                        //TODO we need to DELETE ANY SUB CRITERIA!!!!!!!!
+                        
 						//delete the record. 
 						$DB->delete_records('block_bcgt_criteria', array('id'=>$origCriteria->id));
                         // Log
@@ -1511,7 +1582,6 @@ abstract class Unit {
                 
 		if($typeID != -1)
 		{   
-
             //we need to know the family of the type, and get the folder where all of the classes belong
             $unitClass = Unit::get_plugin_class_type($typeID);
             if($unitClass)
@@ -1804,6 +1874,17 @@ abstract class Unit {
 		return $DB->execute($sql, $params);
 	}
     
+    public static function insert_user_unit_history_by_id($id)
+    {
+        global $DB;
+		$sql = "INSERT INTO {block_bcgt_user_unit_his} 
+		(bcgtuserunitid, userid, bcgtqualificationid, bcgtunitid, bcgttypeawardid, 
+		comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset) 
+		SELECT * FROM {block_bcgt_user_unit} WHERE id = ?";
+        $params = array($id);
+		return $DB->execute($sql, $params);
+    }
+    
     /**
 	 * If the student is doing this unit then
 	 * it can return the db record.
@@ -1826,7 +1907,7 @@ abstract class Unit {
 	protected function retrieve_unit_award($qualID)
 	{
 		global $DB;
-		$sql = "SELECT award.id, award.award, award.ranking, unit.dateupdated 
+		$sql = "SELECT award.id, award.award, award.ranking, award.shortaward, unit.dateupdated 
             FROM {block_bcgt_user_unit} as unit
 		JOIN {block_bcgt_type_award} AS award ON award.id = unit.bcgttypeawardid
 		WHERE unit.bcgtqualificationid = ? AND unit.userid = ? AND 
@@ -1991,6 +2072,11 @@ abstract class Unit {
 	 */
 	abstract function get_edit_form_fields();
     
+    public function has_unique_id()
+    {
+        return true;
+    }
+    
     /**
 	 * Used in edit unit
 	 * Gets the criteria tablle that will go on edit_unit_form.php
@@ -2057,6 +2143,10 @@ abstract class Unit {
     
     public function get_processed_errors(){
         return (isset($this->processed_errors)) ? $this->processed_errors : false;
+    }
+    
+    public function print_grid($qualID){
+        echo "Coming soon";
     }
     
 }
