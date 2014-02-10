@@ -11,6 +11,7 @@
 class SubType {
 	
     const DEFAULTNUMBEROFYEARSNAME = 'DEFAULT_YEARS';
+    const DEFAULTNUMBEROFCREDITSNAME = 'DEFAULT_CREDITS';
 	private $id;
 	private $subType;
     private $shortSubType;

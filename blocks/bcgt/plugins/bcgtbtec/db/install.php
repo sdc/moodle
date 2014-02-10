@@ -55,42 +55,57 @@ function xmldb_bcgtbtec_install()
 //    $record = new stdClass();
 //    $record->id = 2;
 //    $record->type = 'BTEC';
-//    $record->bcgttypefamilyid = 2;
+//    $record->bcgttypefamilyid = 2
+//    $record->specificationdesc = 'BTEC Nationals From 2010';
 //    $DB->insert_record_raw('block_bcgt_type', $record, false, false, true);
     
     //THIS HAS BEEN CHANGED TO THE BELOW DUE TO AN ERROR IN moodle 2.2 core code. THE below should fix this.
-    $DB->execute("INSERT INTO {block_bcgt_type} (id,type,bcgttypefamilyid) 
-        VALUES (2,'BTEC',2)");
+    $DB->execute("INSERT INTO {block_bcgt_type} (id,type,bcgttypefamilyid, specificationdesc) 
+        VALUES (2,'BTEC',2, 'BTEC Nationals From 2010')");
 
 //    $record = new stdClass();
 //    $record->id = 3;
 //    $record->type = 'BTEC Higher';
 //    $record->bcgttypefamilyid = 2;
+//    $record->specificationdesc = 'BTEC Higher Nationals from 2010';
 //    $DB->insert_record_raw('block_bcgt_type', $record, false, false, true);
     
     //THIS HAS BEEN CHANGED TO THE BELOW DUE TO AN ERROR IN moodle 2.2 core code. THE below should fix this.
-    $DB->execute("INSERT INTO {block_bcgt_type} (id,type,bcgttypefamilyid) 
-        VALUES (3,'BTEC Higher',2)");
+    $DB->execute("INSERT INTO {block_bcgt_type} (id,type,bcgttypefamilyid, specificationdesc) 
+        VALUES (3,'BTEC Higher',2, 'BTEC Higher Nationals from 2010')");
 
 //    $record = new stdClass();
 //    $record->id = 4;
 //    $record->type = 'BTEC Foundation';
 //    $record->bcgttypefamilyid = 2;
+//    $record->specificationdesc = 'BTEC Foundation Diploma in Art and Design';
 //    $DB->insert_record_raw('block_bcgt_type', $record, false, false, true);
     
     //THIS HAS BEEN CHANGED TO THE BELOW DUE TO AN ERROR IN moodle 2.2 core code. THE below should fix this.
-    $DB->execute("INSERT INTO {block_bcgt_type} (id,type,bcgttypefamilyid) 
-        VALUES (4,'BTEC Foundation',2)");
+    $DB->execute("INSERT INTO {block_bcgt_type} (id,type,bcgttypefamilyid,specificationdesc) 
+        VALUES (4,'BTEC Foundation',2,'BTEC Foundation Diploma in Art and Design')");
 
 //    $record = new stdClass();
 //    $record->id = 5;
 //    $record->type = 'BTEC Lower';
 //    $record->bcgttypefamilyid = 2;
+//    $record->specificationdesc = 'BTEC Firsts 2010';
 //    $DB->insert_record_raw('block_bcgt_type', $record, false, false, true);
     
     //THIS HAS BEEN CHANGED TO THE BELOW DUE TO AN ERROR IN moodle 2.2 core code. THE below should fix this.
-    $DB->execute("INSERT INTO {block_bcgt_type} (id,type,bcgttypefamilyid) 
-        VALUES (5,'BTEC Lower',2)");
+    $DB->execute("INSERT INTO {block_bcgt_type} (id,type,bcgttypefamilyid,specificationdesc) 
+        VALUES (5,'BTEC Lower',2,'BTEC Firsts 2010')");
+    
+    //    $record = new stdClass();
+//    $record->id = 12;
+//    $record->type = 'BTEC Firsts 2013';
+//    $record->bcgttypefamilyid = 2;
+//    $record->specificationdesc = 'BTEC Firsts 2013';
+//    $DB->insert_record_raw('block_bcgt_type', $record, false, false, true);
+    
+    //THIS HAS BEEN CHANGED TO THE BELOW DUE TO AN ERROR IN moodle 2.2 core code. THE below should fix this.
+    $DB->execute("INSERT INTO {block_bcgt_type} (id,type,bcgttypefamilyid,specificationdesc) 
+        VALUES (12,'BTEC First 2013',2,'BTEC Firsts 2013')");
     
     // ---------------------- The Parent Type Family ---------------------------
     $record = new stdClass();
@@ -353,6 +368,17 @@ function xmldb_bcgtbtec_install()
     $record->bcgttypeid = 4;
     $DB->insert_record('block_bcgt_unit_type', $record);
     
+    //new unit type: for 
+    $stdObj = new stdClass();
+    $stdObj->type = 'Externally Assessed';
+    $stdObj->bcgttypeid = 12;
+    $DB->insert_record('block_bcgt_unit_type', $stdObj);
+
+    $stdObj = new stdClass();
+    $stdObj->type = 'Internally Assessed';
+    $stdObj->bcgttypeid = 12;
+    $DB->insert_record('block_bcgt_unit_type', $stdObj);
+    
     // ---------------------- The Type Awards ---------------------------
     $record = new stdClass();
     $record->award = 'Pass';
@@ -509,6 +535,75 @@ function xmldb_bcgtbtec_install()
     $record->points = 2.0;
     $DB->insert_record('block_bcgt_unit_points', $record);
     
+    //now the type awards and points for BTECFirsts2013::
+        //award, ranking, bcgttypeid, pointslower, pointsupper
+        $stdObj = new stdClass();
+        $stdObj->award = 'Unclassified';
+        $stdObj->ranking = 1;
+        $stdObj->bcgttypeid = 12;
+        $stdObj->shortaward = 'U';
+        $unclasAward = $DB->insert_record('block_bcgt_type_award', $stdObj);
+        
+        //now points
+        $stdObj = new stdClass();
+        $stdObj->bcgtlevelid = 7;
+        $stdObj->bcgttypeawardid = $unclasAward;
+        $stdObj->points = 0;
+        $DB->insert_record('block_bcgt_unit_points', $stdObj);
+        
+        $stdObj = new stdClass();
+        $stdObj->award = 'Level 1';
+        $stdObj->ranking = 2;
+        $stdObj->bcgttypeid = 12;
+        $stdObj->shortaward = 'L1';
+        $l1Award = $DB->insert_record('block_bcgt_type_award', $stdObj);
+        
+        $stdObj = new stdClass();
+        $stdObj->bcgtlevelid = 7;
+        $stdObj->bcgttypeawardid = $l1Award;
+        $stdObj->points = 2;
+        $DB->insert_record('block_bcgt_unit_points', $stdObj);
+        
+        $stdObj = new stdClass();
+        $stdObj->award = 'Level 2 Pass (P)';
+        $stdObj->ranking = 3;
+        $stdObj->bcgttypeid = 12;
+        $stdObj->shortaward = 'L2 P';
+        $passAward = $DB->insert_record('block_bcgt_type_award', $stdObj);
+        
+        $stdObj = new stdClass();
+        $stdObj->bcgtlevelid = 7;
+        $stdObj->bcgttypeawardid = $passAward;
+        $stdObj->points = 4;
+        $DB->insert_record('block_bcgt_unit_points', $stdObj);
+        
+        $stdObj = new stdClass();
+        $stdObj->award = 'Level 2 Merit (M)';
+        $stdObj->ranking = 4;
+        $stdObj->bcgttypeid = 12;
+        $stdObj->shortaward = 'L2 M';
+        $meritAward = $DB->insert_record('block_bcgt_type_award', $stdObj);
+        
+        $stdObj = new stdClass();
+        $stdObj->bcgtlevelid = 7;
+        $stdObj->bcgttypeawardid = $meritAward;
+        $stdObj->points = 6;
+        $DB->insert_record('block_bcgt_unit_points', $stdObj);
+        
+        $stdObj = new stdClass();
+        $stdObj->award = 'Level 2 Distinction (D)';
+        $stdObj->ranking = 5;
+        $stdObj->bcgttypeid = 12;
+        $stdObj->shortaward = 'L2 D';
+        $dissAward = $DB->insert_record('block_bcgt_type_award', $stdObj);
+        
+        $stdObj = new stdClass();
+        $stdObj->bcgtlevelid = 7;
+        $stdObj->bcgttypeawardid = $dissAward;
+        $stdObj->points = 8;
+        $DB->insert_record('block_bcgt_unit_points', $stdObj);
+    
+    
     // ---------------------- The Target Quals ---------------------------
     //Level 1 (1), BTEC Level 1 (5), Award (6)
     $record = new stdClass();
@@ -579,8 +674,6 @@ function xmldb_bcgtbtec_install()
     $record->name = BTECSubType::DEFAULTNUMBEROFCREDITSNAME;
     $record->value = 37;
     $DB->insert_record('block_bcgt_target_qual_att', $record); 
-    
-    
     
     //Level 2 (2), BTEC (2), Award (6)
     $record = new stdClass();
@@ -1538,7 +1631,68 @@ function xmldb_bcgtbtec_install()
     $record->value = 2;
     $DB->insert_record('block_bcgt_target_qual_att', $record);
     
+    /*1.BTECFirst2013,Level 1 & 2,Award default credits = 120 
+         * level = 7, type = 12. Award = 6*/
+        $record = new stdClass();
+        $record->bcgtlevelid = 7;
+        $record->bcgttypeid = 12;
+        $record->bcgtsubtypeid = 6;
+        $record->previoustargetqualid = -1;
+        $First2013l12Award = $DB->insert_record('block_bcgt_target_qual', $record);
     
+        $record = new stdClass();
+        $record->bcgttargetqualid = $l12Award;
+        $record->name = BTECSubType::DEFAULTNUMBEROFCREDITSNAME;
+        $record->value = 120;
+        $DB->insert_record('block_bcgt_target_qual_att', $record); 
+        
+        /*2.BTECFirst2013, Level 1 & 2, Certificate, default credits = 240
+         * level = 7, type = 12. Certificate = 5*/
+        $record = new stdClass();
+        $record->bcgtlevelid = 7;
+        $record->bcgttypeid = 12;
+        $record->bcgtsubtypeid = 5;
+        $record->previoustargetqualid = -1;
+        $First2013l12Cert = $DB->insert_record('block_bcgt_target_qual', $record);
+    
+        $record = new stdClass();
+        $record->bcgttargetqualid = $l12Cert;
+        $record->name = BTECSubType::DEFAULTNUMBEROFCREDITSNAME;
+        $record->value = 240;
+        $DB->insert_record('block_bcgt_target_qual_att', $record); 
+        
+        /*3.BTECFirs2013, Level 1 & 2, Extended Certificate, default credits = 360
+         * level = 7, type = 12. Extended Certificate = 11*/
+        $record = new stdClass();
+        $record->bcgtlevelid = 7;
+        $record->bcgttypeid = 12;
+        $record->bcgtsubtypeid = 11;
+        $record->previoustargetqualid = -1;
+        $First2013l12ExtCert = $DB->insert_record('block_bcgt_target_qual', $record);
+    
+        $record = new stdClass();
+        $record->bcgttargetqualid = $l12ExtCert;
+        $record->name = BTECSubType::DEFAULTNUMBEROFCREDITSNAME;
+        $record->value = 360;
+        $DB->insert_record('block_bcgt_target_qual_att', $record); 
+        //DEFAULT NUMBER OF CREDITS
+        
+        /*4.BTECFirst2013, Level 1 & 2, Diploma, default credits = 480
+            * level = 7, type = 12. Diploma = 3*/
+        $record = new stdClass();
+        $record->bcgtlevelid = 7;
+        $record->bcgttypeid = 12;
+        $record->bcgtsubtypeid = 3;
+        $record->previoustargetqualid = -1;
+        $First2013l12Dip = $DB->insert_record('block_bcgt_target_qual', $record);
+    
+        $record = new stdClass();
+        $record->bcgttargetqualid = $l12Dip;
+        $record->name = BTECSubType::DEFAULTNUMBEROFCREDITSNAME;
+        $record->value = 480;
+        $DB->insert_record('block_bcgt_target_qual_att', $record); 
+        //DEFAULT NUMBER OF CREDITS
+        
     //Defaults for the unit levels
     //
     $record = new stdClass();
@@ -1575,6 +1729,14 @@ function xmldb_bcgtbtec_install()
     $record->bcgttypefamilyid = 2;
     $record->value = 15;
     $DB->insert_record('block_bcgt_unit_type_att', $record);
+    
+    $record = new stdClass();
+    $record->bcgtlevelid = 7;
+    $record->name = BTECUNIT::DEFAULTUNITCREDITSNAME;
+    $record->bcgttypefamilyid = 2;
+    $record->value = 30;
+    $DB->insert_record('block_bcgt_unit_type_att', $record);
+    
     //
     
     // ---------------------- The Target Quals Grades ---------------------------
@@ -2620,6 +2782,739 @@ function xmldb_bcgtbtec_install()
     $record->unitsscoreupper = 500;
     $record->ranking = 3;
     $DB->insert_record('block_bcgt_target_breakdown', $record);
+    
+    //The breakdowns: for the BTEC FIRST 2013
+        //Award:
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'U';
+        $record->unitsscorelower = 0;
+        $record->unitsscoreupper = 24;
+        $record->ranking = 1;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'U/Level 1';
+        $record->unitscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 1.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 1/U';
+        $record->unitscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 1.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 1';
+        $record->unitsscorelower = 24;
+        $record->unitsscoreupper = 48;
+        $record->ranking = 2;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 1/Level 2 Pass';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 2.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 2 Pass/Level 1';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 2.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 2 Pass';
+        $record->unitsscorelower = 48;
+        $record->unitsscoreupper = 66;
+        $record->ranking = 3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 2 Pass/Level 2 Merit';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 3.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 2 Merit/Level 2 Pass';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 3.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 2 Merit';
+        $record->unitsscorelower = 66;
+        $record->unitsscoreupper = 84;
+        $record->ranking = 4;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 2 Merit/Level 2 Distinction';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 4.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 2 Distinction/Level 2 Merit';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 4.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 2 Distinction';
+        $record->unitsscorelower = 84;
+        $record->unitsscoreupper = 90;
+        $record->ranking = 5;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 2 Distinction/Level 2 Distinction *';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 5.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 2 Distinction */Level 2 Distinction';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 5.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Award;      
+        $record->targetgrade = 'Level 2 Distinction *';
+        $record->unitsscorelower = 90;
+        $record->unitsscoreupper = 200;
+        $record->ranking = 6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        //Certificate
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'U';
+        $record->unitsscorelower = 0;
+        $record->unitsscoreupper = 48;
+        $record->ranking = 1;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'U/Level 1';
+        $record->unitscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 1.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 1/U';
+        $record->unitscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 1.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 1';
+        $record->unitsscorelower = 48;
+        $record->unitsscoreupper = 96;
+        $record->ranking = 2;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 1/Level 2 PP';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 2.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 PP/Level 1';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 2.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 PP';
+        $record->unitsscorelower = 96;
+        $record->unitsscoreupper = 114;
+        $record->ranking = 3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 PP/Level 2 MP';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 3.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 MP/Level 2 PP';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 3.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 MP';
+        $record->unitsscorelower = 114;
+        $record->unitsscoreupper = 132;
+        $record->ranking = 4;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 MP/Level 2 MM';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 4.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 MM/Level 2 MP';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 4.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 MM';
+        $record->unitsscorelower = 132;
+        $record->unitsscoreupper = 150;
+        $record->ranking = 5;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 MM/Level 2 DM';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 5.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 DM/Level 2 MM';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 5.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 DM';
+        $record->unitsscorelower = 150;
+        $record->unitsscoreupper = 168;
+        $record->ranking = 6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 DM/Level 2 DD';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 6.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 DD/Level 2 DM';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 6.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 DD';
+        $record->unitsscorelower = 168;
+        $record->unitsscoreupper = 174;
+        $record->ranking = 7;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 DD/Level 2 D*D';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 7.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 D*D/Level 2 DD';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 7.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 D*D';
+        $record->unitsscorelower = 174;
+        $record->unitsscoreupper = 180;
+        $record->ranking = 8;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 D*D/Level 2 D*D*';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 8.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 D*D*/Level 2 D*D';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 8.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Cert;      
+        $record->targetgrade = 'Level 2 D*D*';
+        $record->unitsscorelower = 180;
+        $record->unitsscoreupper = 300;
+        $record->ranking = 9;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        //Ext Certificate
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'U';
+        $record->unitsscorelower = 0;
+        $record->unitsscoreupper = 48;
+        $record->ranking = 1;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'U/Level 1';
+        $record->unitscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 1.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 1/U';
+        $record->unitscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 1.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 1';
+        $record->unitsscorelower = 48;
+        $record->unitsscoreupper = 96;
+        $record->ranking = 2;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 1/Level 2 PP';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 2.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 PP/Level 1';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 2.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 PP';
+        $record->unitsscorelower = 96;
+        $record->unitsscoreupper = 114;
+        $record->ranking = 3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 PP/Level 2 MP';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 3.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 MP/Level 2 PP';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 3.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 MP';
+        $record->unitsscorelower = 114;
+        $record->unitsscoreupper = 132;
+        $record->ranking = 4;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 MP/Level 2 MM';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 4.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 MM/Level 2 MP';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 4.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 MM';
+        $record->unitsscorelower = 132;
+        $record->unitsscoreupper = 150;
+        $record->ranking = 5;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 MM/Level 2 DM';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 5.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 DM/Level 2 MM';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 5.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 DM';
+        $record->unitsscorelower = 150;
+        $record->unitsscoreupper = 168;
+        $record->ranking = 6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 DM/Level 2 DD';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 6.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 DD/Level 2 DM';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 6.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 DD';
+        $record->unitsscorelower = 168;
+        $record->unitsscoreupper = 174;
+        $record->ranking = 7;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 DD/Level 2 D*D';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 7.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 D*D/Level 2 DD';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 7.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 D*D';
+        $record->unitsscorelower = 174;
+        $record->unitsscoreupper = 180;
+        $record->ranking = 8;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 D*D/Level 2 D*D*';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 8.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 D*D*/Level 2 D*D';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 8.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12ExtCert;      
+        $record->targetgrade = 'Level 2 D*D*';
+        $record->unitsscorelower = 180;
+        $record->unitsscoreupper = 300;
+        $record->ranking = 9;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        //Diploma
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'U';
+        $record->unitsscorelower = 0;
+        $record->unitsscoreupper = 48;
+        $record->ranking = 1;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'U/Level 1';
+        $record->unitscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 1.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 1/U';
+        $record->unitscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 1.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 1';
+        $record->unitsscorelower = 48;
+        $record->unitsscoreupper = 96;
+        $record->ranking = 2;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 1/Level 2 PP';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 2.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 PP/Level 1';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 2.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 PP';
+        $record->unitsscorelower = 96;
+        $record->unitsscoreupper = 114;
+        $record->ranking = 3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 PP/Level 2 MP';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 3.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 MP/Level 2 PP';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 3.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 MP';
+        $record->unitsscorelower = 114;
+        $record->unitsscoreupper = 132;
+        $record->ranking = 4;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 MP/Level 2 MM';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 4.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 MM/Level 2 MP';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 4.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 MM';
+        $record->unitsscorelower = 132;
+        $record->unitsscoreupper = 150;
+        $record->ranking = 5;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 MM/Level 2 DM';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 5.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 DM/Level 2 MM';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 5.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 DM';
+        $record->unitsscorelower = 150;
+        $record->unitsscoreupper = 168;
+        $record->ranking = 6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 DM/Level 2 DD';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 6.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 DD/Level 2 DM';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 6.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 DD';
+        $record->unitsscorelower = 168;
+        $record->unitsscoreupper = 174;
+        $record->ranking = 7;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 DD/Level 2 D*D';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 7.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 D*D/Level 2 DD';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 7.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 D*D';
+        $record->unitsscorelower = 174;
+        $record->unitsscoreupper = 180;
+        $record->ranking = 8;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 D*D/Level 2 D*D*';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 8.3;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 D*D*/Level 2 D*D';
+        $record->unitsscorelower = -1;
+        $record->unitsscoreupper = -1;
+        $record->ranking = 8.6;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
+        
+        $record = new stdClass();
+        $record->bcgttargetqualid = $First2013l12Dip;      
+        $record->targetgrade = 'Level 2 D*D*';
+        $record->unitsscorelower = 180;
+        $record->unitsscoreupper = 300;
+        $record->ranking = 9;
+        $DB->insert_record('block_bcgt_target_breakdown', $record);
     
 //    //THE TAB
 //    $record = new stdClass();

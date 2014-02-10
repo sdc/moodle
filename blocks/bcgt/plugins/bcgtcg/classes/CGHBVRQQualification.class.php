@@ -76,7 +76,7 @@ class CGHBVRQQualification extends CGQualification {
     
     public function has_final_grade()
     {
-        return false;
+        return true;
     }
     
     public function insert_qualification()
@@ -188,7 +188,7 @@ JS;
         //the grid -> ajax
         $retval .= '<div id="cgStudentGrid">';
         
-        if($this->has_final_grade() && $studentView && !$editing)
+        if($this->has_final_grade() && $studentView)
 		{
             //>>BEDCOLL TODO this need to be taken from the qual object
             //as foundatonQual is different

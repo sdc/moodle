@@ -438,7 +438,28 @@ $capabilities = array(
             'student' => CAP_ALLOW
         ), 
     ),
-
+    
+    'block/bcgt:viewbothweightandnormaltargetgrade' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+        ), 
+    ),
+    
+    'block/bcgt:editstafftrackerlinks' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+        ), 
+    ),
+    
+    'block/bcgt:editredundanttrackeruserlinks' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+        ), 
+    ),
+    
     'block/bcgt:manageactivitylinks' => array(
         'captype' => 'view',
         'contextlevel' => CONTEXT_SYSTEM,
@@ -651,6 +672,26 @@ $capabilities = array(
         ), 
     ),
     
+    'block/bcgt:viewajaxrequestdata' => array(
+        'captype' => 'edit',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array( 
+        ), 
+    ),
+    
+    'block/bcgt:rundatacleanse' => array(
+        'captype' => 'edit',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array( 
+        ), 
+    ),
+    
+    'block/bcgt:checkuseraccess' => array(
+        'captype' => 'edit',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array( 
+        ), 
+    ),
     
     
     

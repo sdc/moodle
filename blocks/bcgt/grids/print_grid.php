@@ -24,6 +24,7 @@ else
 require_login();
 $PAGE->set_context($context);
 $qualID = optional_param('qID', -1, PARAM_INT);
+$unitID = optional_param('uID', -1, PARAM_INT);
 $studentID = optional_param('sID', -1, PARAM_INT);
 $forceLoad = optional_param('fload', true, PARAM_BOOL);
 $clearSession = optional_param('csess', true, PARAM_BOOL);
@@ -91,9 +92,32 @@ if(!$qualification)
     $loadParams->loadLevel = Qualification::LOADLEVELALL;
     $loadParams->loadAward = true;
     $qualification = Qualification::get_qualification_class_id($qualID, $loadParams);
-    $qualification->load_student_information($studentID);
+    $qualification->load_student_information($studentID, $loadParams);
 }
 
-$studentInd = $DB->get_record_sql('SELECT * FROM {user} WHERE id = ?', array($studentID));
+ if ($unitID > 0){
     
-$qualification->print_grid();
+    $unit = $qualification->get_single_unit($unitID);
+    if ($unit){
+        
+        $unit->print_grid($qualID);
+        
+    }
+    
+}
+elseif ($studentID > 0) 
+{
+    
+    $qualification->print_grid();
+    
+}
+else
+{
+    $qualification->print_class_grid();
+}
+
+echo "<script type='text/javascript'>
+window.document.close();
+window.focus();
+window.print();
+</script>";

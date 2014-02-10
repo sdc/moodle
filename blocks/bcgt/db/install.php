@@ -36,6 +36,10 @@ function xmldb_block_bcgt_install()
     $record->trackinglevel = 'Bespoke';
     $DB->insert_record('block_bcgt_level', $record);
     
+    $stdObj = new stdClass();
+    $stdObj->trackinglevel = 'Level 1 & 2';
+    $DB->insert_record('block_bcgt_level', $stdObj);
+    
 //    $record = new stdClass();
 //    $record->id = 1;
 //    $record->family = 'Bespoke';

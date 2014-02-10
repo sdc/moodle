@@ -299,6 +299,8 @@ class CGCriteria extends Criteria {
             $value = "N/A";
             $longValue = 'Not Attempted';
         }
+        
+        $this->comments = iconv('UTF-8', 'ASCII//TRANSLIT', $this->comments); 
                                 
         // Simple, Non-Editing
         if(!$advancedMode && !$editing)
