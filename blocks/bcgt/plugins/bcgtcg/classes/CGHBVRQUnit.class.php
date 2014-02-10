@@ -1172,9 +1172,7 @@ class CGHBVRQUnit extends CGUnit {
             {
                 
                 $sID = $criterion->get_student_ID();
-                if (is_null($sID)){
-                    $criterion->load_student_information($this->studentID, $this->qualID, $this->id);
-                }
+                $criterion->load_student_information($this->studentID, $this->qualID, $this->id);
                 
                 // Standard task
                 if(!$criterion->get_sub_criteria())
@@ -1444,7 +1442,7 @@ class CGHBVRQUnit extends CGUnit {
         $retval .= "<h2>Key</h2>";
         //Are we looking at a student or just the actual criteria for the grid.
         //if students then get the key that tells everyone what things stand for
-        $retval .= CGQualification::get_grid_key();
+        $retval .= CGHBVRQQualification::get_grid_key();
 		$retval .= "</div>";
         
         $retval .= "<br style='clear:both;' /><br>";

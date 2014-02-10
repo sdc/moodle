@@ -17,6 +17,7 @@ $studentID = required_param('sID', PARAM_INT);
 $loadParams = new stdClass();
 $loadParams->loadLevel = Qualification::LOADLEVELALL;
 $qualification = Qualification::get_qualification_class_id($qualID,$loadParams);
+$award = null;
 if($qualification)
 {
     $loadParams = new stdClass();
@@ -27,17 +28,17 @@ if($qualification)
     $award = $qualification->calculate_predicted_grade();
 }
 $minAward = 'N/A';
-if($award->minAward)
+if($award && $award->minAward)
 {
     $minAward = $award->minAward->get_award();
 }
 $maxAward = 'N/A';
-if($award->maxAward)
+if($award && $award->maxAward)
 {
     $maxAward = $award->maxAward->get_award();
 }
 $avgAward = 'N/A';
-if($award->averageAward)
+if($award && $award->averageAward)
 {
     $avgAward = $award->averageAward->get_award();
 }

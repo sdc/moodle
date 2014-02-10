@@ -521,11 +521,14 @@ class Reporting {
             $params[] = $courseID;
             $params[] = $courseID;
         }
-                
+                        
         $records = $DB->get_records_sql($sql, $params);
+        
+        $qualArray = array();
+        
         if($records)
         {
-            $qualArray = array();
+            
             foreach($records AS $record)
             {
                 $stdObj = new stdClass();
@@ -568,6 +571,7 @@ class Reporting {
                 $params->ranking = $record->granking;
                 $params->bcgttargetqualid = $record->bcgttargetqualid;
                 $stdObj->targetgrade = new TargetGrade($record->targetgradesid, $params);
+                $stdObj->grade = $stdObj->targetgrade->get_grade();
                 
                 $params = new stdClass();
                 $params->grade = $record->wgrade;
@@ -584,9 +588,29 @@ class Reporting {
                 
                 $qualArray[$record->bcgtqualificationid] = $stdObj;
             }
-            return $qualArray;
         }
-        return false;
+        
+        // Check elsewhere for target grades for quals who don't support auto calculations
+        $qualID = ($qualID > 0) ? $qualID : false;
+        $courseID = ($courseID > 0) ? $courseID : false;
+        
+        $grades = bcgt_get_target_grade($userID, $qualID, $courseID);
+        if ($grades)
+        {
+            foreach($grades as $grade)
+            {
+                if ($qualID){
+                    $qualArray[$qualID] = $grade;
+                } else {
+                    $qualArray[] = $grade;
+                }
+                
+            }
+        }
+
+        
+        return ($qualArray) ? $qualArray : false;
+        
     }
     
     //BY USER:

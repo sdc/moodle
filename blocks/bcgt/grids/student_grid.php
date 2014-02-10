@@ -90,7 +90,7 @@ $PAGE->set_heading(get_string('bcgtmydashboard', 'block_bcgt'));
 $PAGE->set_cacheable(true);
 $PAGE->set_pagelayout('login');
 $PAGE->add_body_class(get_string('bcgtmydashboard', 'block_bcgt'));
-$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),$CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php','title');
+$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),$CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php?tab=track','title');
 $jsModule = array(
     'name'     => 'block_bcgt',
     'fullpath' => '/blocks/bcgt/js/block_bcgt.js',
@@ -221,7 +221,9 @@ $out = $OUTPUT->header();
     $loadParams->loadLevel = Qualification::LOADLEVELALL;
     $loadParams->loadAward = true;
     $loadParams->loadTargets = true;
+    $loadParams->loadAddUnits = false;
     $qualification->load_student_information($studentID, $loadParams);
+    
     //at this point we load it up into the session
 
     $out .= $qualification->display_student_grid(false, true);

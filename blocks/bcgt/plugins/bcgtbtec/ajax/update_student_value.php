@@ -174,6 +174,11 @@ if($grid == 'student')
                         {
                             $changed = true;
                         }
+                        $newShortAward = $award->get_short_award();
+                        if($newShortAward && $newShortAward != '')
+                        {
+                            $newAward = $newShortAward;
+                        }
                     }
                 }
             }
