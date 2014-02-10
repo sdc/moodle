@@ -27,7 +27,18 @@
 $haslogo = (!empty($PAGE->theme->settings->logo));
 $hasboringlayout = (empty($PAGE->theme->settings->layout)) ? false : $PAGE->theme->settings->layout;
 $hasanalytics = (empty($PAGE->theme->settings->useanalytics)) ? false : $PAGE->theme->settings->useanalytics;
+$sideregionsmaxwidth = (!empty($PAGE->theme->settings->sideregionsmaxwidth));
 
+theme_essential_check_colours_switch();
+theme_essential_initialise_colourswitcher($PAGE);
+
+$bodyclasses = array();
+$bodyclasses[] = 'three-column';
+$bodyclasses[] = 'essential-colours-' . theme_essential_get_colours();
+if ($sideregionsmaxwidth) {
+    $bodyclasses[] = 'side-regions-with-max-width';
+}
+ 
 if (right_to_left()) {
     $regionbsid = 'region-bs-main-and-post';
 } else {
@@ -47,7 +58,7 @@ echo $OUTPUT->doctype() ?>
     <?php require_once(dirname(__FILE__).'/includes/iosicons.php'); ?>
 </head>
 
-<body <?php echo $OUTPUT->body_attributes(); ?>>
+<body <?php echo $OUTPUT->body_attributes($bodyclasses); ?>>
 
 <?php echo $OUTPUT->standard_top_of_body_html() ?>
 
@@ -105,8 +116,6 @@ echo $OUTPUT->doctype() ?>
     
     <!-- End Main Regions -->
 
-    <a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><p><?php print_string('backtotop', 'theme_essential'); ?></p></a>
-
 	<footer id="page-footer" class="container-fluid">
 		<?php require_once(dirname(__FILE__).'/includes/footer.php'); ?>
 	</footer>
@@ -140,6 +149,6 @@ jQuery(document).ready(function() {
     })
 });
 </script>
-
+<a href="#top" class="back-to-top" title="<?php print_string('backtotop', 'theme_essential'); ?>"><i class="fa fa-angle-up "></i></a>
 </body>
 </html>
