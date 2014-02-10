@@ -149,7 +149,7 @@ function draw_navbuttons() {
         $lastsection = false;
     }
 
-    $output .=  '<div id="navbuttons" style="float: right; width: 500px; right: 0; margin-top: 5px; text-align: right;">';
+    $output .=  '<div id="navbuttons" style="float: right; width: 400px; right: 0; margin-top: 5px;">';
     if ($settings->homebuttonshow) {
         $home = new stdClass;
         if ($settings->homebuttontype == BLOCK_NAVBUTTONS_HOME_COURSE) {
