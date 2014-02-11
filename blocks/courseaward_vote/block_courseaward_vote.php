@@ -60,7 +60,7 @@ class block_courseaward_vote extends block_base {
 
         require_once($CFG->dirroot.'/blocks/courseaward_vote/libvote.php');
 
-        if (has_capability('block/courseaward_vote:admin', get_context_instance(CONTEXT_COURSE, $COURSE->id))) {
+        if (has_capability('block/courseaward_vote:admin', context_course::instance($COURSE->id))) {
             // User has the 'admin' capability and can do pretty much anything.
             // Note that this is 'block/courseaward_vote:admin' and not 'moodle/site:doanything'.
 
@@ -82,7 +82,7 @@ class block_courseaward_vote extends block_base {
             // Show the stars in summary.
             $build .= get_votes_summary($COURSE->id, true);
 
-        } else if (has_capability('block/courseaward_vote:vote', get_context_instance(CONTEXT_COURSE, $COURSE->id))) {
+        } else if (has_capability('block/courseaward_vote:vote', context_course::instance($COURSE->id))) {
             // User has the 'vote' capability so can vote on the block.
 
             // Debugging.
