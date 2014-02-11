@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_login();
 
-require_capability('moodle/site:viewreports', get_context_instance(CONTEXT_SYSTEM));
+require_capability('moodle/site:viewreports', context_system::instance());
 
 admin_externalpage_setup('reportcourseawards', '', null, '', array('pagelayout'=>'report'));
 

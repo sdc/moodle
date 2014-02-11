@@ -28,7 +28,7 @@ require_once($CFG->libdir.'/adminlib.php');
 
 admin_externalpage_setup('reportcourseawards', '', null, '', array('pagelayout'=>'report'));
 
-require_capability('moodle/site:viewreports', get_context_instance(CONTEXT_SYSTEM));
+require_capability('moodle/site:viewreports', context_system::instance());
 
 // Define the location and name of the saved CSV file - do this in report.php too.
 define('FILE_CSV', $CFG->dataroot.'/temp/courseawards-report.csv');

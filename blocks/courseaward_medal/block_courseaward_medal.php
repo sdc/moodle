@@ -58,7 +58,7 @@ class block_courseaward_medal extends block_base {
                 date('jS F Y', get_medal_date($COURSE->id)).'</span></div>'."\n";
         }
 
-        if (has_capability('block/courseaward_medal:admin', get_context_instance(CONTEXT_COURSE, $COURSE->id))) {
+        if (has_capability('block/courseaward_medal:admin', context_course::instance($COURSE->id))) {
 
             // User has the 'admin' capability and can assign/remove medals.
             if (has_medal($COURSE->id)) {

@@ -32,7 +32,7 @@ require_login();
 
 admin_externalpage_setup('reportcourseawards', '', null, '', array('pagelayout'=>'report'));
 
-require_capability('moodle/site:viewreports', get_context_instance(CONTEXT_SYSTEM));
+require_capability('moodle/site:viewreports', context_system::instance());
 
 $qid = required_param('q', PARAM_ALPHA);
 
