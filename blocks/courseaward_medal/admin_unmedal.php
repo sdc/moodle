@@ -37,7 +37,7 @@ if (!$USER->id) {
     print_error(get_string('error-useridnotset', 'block_courseaward_medal'));
 }
 
-if (!has_capability('block/courseaward_medal:admin', get_context_instance(CONTEXT_COURSE, $COURSE->id))) {
+if (!has_capability('block/courseaward_medal:admin', context_course::instance($COURSE->id))) {
     print_error(get_string('error-notadmin', 'block_courseaward_medal'));
 }
 
