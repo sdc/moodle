@@ -58,8 +58,8 @@ function get_course_score_average($course) {
         $build .= number_format(($votes_avg/3)*100).get_string('scoreavg4', 'block_courseaward_vote');
 
     } else {
-        if (!has_capability('block/courseaward_vote:vote', get_context_instance(CONTEXT_COURSE, $COURSE->id))
-            || has_capability('block/courseaward_vote:admin', get_context_instance(CONTEXT_COURSE, $COURSE->id)) ) {
+        if (!has_capability('block/courseaward_vote:vote', context_course::instance($COURSE->id))
+            || has_capability('block/courseaward_vote:admin', context_course::instance($COURSE->id)) ) {
             $build = get_string('scoreavgaltnonstudent', 'block_courseaward_vote');
         } else {
             $build = get_string('scoreavgalt', 'block_courseaward_vote');
