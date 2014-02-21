@@ -195,6 +195,7 @@ if ($studentID > 0 && isset($_POST['transfer']) && ctype_digit($_POST['transferf
                     // Get unit name
                     $unit = $DB->get_record("block_bcgt_unit", array("id" => $userUnit->bcgtunitid));
                     echo "{$unit->name} [#{$id}] TRANSFERED SUCCESSFULLY!<br>";
+                    echo "<br>";
                     
                     
                 }
@@ -203,7 +204,7 @@ if ($studentID > 0 && isset($_POST['transfer']) && ctype_digit($_POST['transferf
         }
     }
     
-    
+    echo "<br><br><a href='{$CFG->wwwroot}/blocks/bcgt/forms/transfer_units.php'>[Transfer More Units]</a>";
     echo "<br><br><a href='{$CFG->wwwroot}/blocks/bcgt/forms/my_dashboard.php?tab=adm'>[Back to Dashboard]</a>";
     
     
