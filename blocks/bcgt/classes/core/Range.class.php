@@ -95,6 +95,10 @@ class Range {
         
     }
     
+    public function get_name(){
+        return $this->name;
+    }
+    
     public function is_valid(){
         return ($this->id !== false);
     }

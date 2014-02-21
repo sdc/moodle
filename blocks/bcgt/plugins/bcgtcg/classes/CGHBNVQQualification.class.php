@@ -951,4 +951,13 @@ JS;
     
     
     
+    public function has_printable_report(){
+        return false;
+    }
+    
+    public function print_grid(){
+        echo "Not yet available";
+    }
+    
+    
 }
