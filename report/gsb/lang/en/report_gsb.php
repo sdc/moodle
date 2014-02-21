@@ -24,10 +24,10 @@
  */
 
 
-$string['pluginname'] = 'GSB Medals';
+$string['pluginname'] = 'Medals';
 $string['gsb:viewmygsbreport'] = 'View the Gold, Silver, Bronze Course Medal';
-$string['gsbadmin'] = 'GSB Report';
-$string['gsbdepartment'] = 'Gold, Silver, Bronze Moderation Page';
+$string['gsbadmin'] = 'Medals Report';
+$string['gsbdepartment'] = 'Medals Moderation';
 $string['title'] = 'title';
 $string['subcategories'] = 'Include Sub Categories';
 $string['subcategoriesxp'] = 'Do you want to include sub categories when awarding medals?';
@@ -69,7 +69,7 @@ $string['configdefaultbronzefolderslogs'] = 'Minimum average activity for Folder
 $string['configbronzeheadings'] = 'Headings Criteria Type';
 $string['configbronzeheadingsxp'] = 'Define whether each section should have a defined header which isn\'t the default and should be excluded, mandatory or optional to this medal criteria.';
 $string['bronzeheadings']= 'Section Headings';
-$string['configdefaultbronzeheadings'] = 'Whether each section should have a heading for Bronze.';
+$string['configdefaultbronzeheadings'] = 'Minimum number of defined headings for Bronze.';
 
 $string['configbronzeurls'] = 'URLs Criteria Type';
 $string['configbronzeurlsxp'] = 'Define whether the minimum URLs count should be excluded, mandatory or optional to this medal criteria.';
@@ -253,7 +253,7 @@ $string['configdefaultsilverfolderslogs'] = 'Minimum average activity for Folder
 $string['configsilverheadings'] = 'Headings Criteria Type';
 $string['configsilverheadingsxp'] = 'Define whether each section should have a defined header which isn\'t the default and should be excluded, mandatory or optional to this medal criteria.';
 $string['silverheadings']= 'Section Headings';
-$string['configdefaultsilverheadings'] = 'Whether each section should have a heading for Silver.';
+$string['configdefaultsilverheadings'] = 'Minimum number of defined headings for Bronze.';
 
 $string['configsilverurls'] = 'URLs Criteria Type';
 $string['configsilverurlsxp'] = 'Define whether the minimum URLs count should be excluded, mandatory or optional to this medal criteria.';
@@ -437,7 +437,7 @@ $string['configdefaultgoldfolderslogs'] = 'Minimum average activity for Folders 
 $string['configgoldheadings'] = 'Headings Criteria Type';
 $string['configgoldheadingsxp'] = 'Define whether each section should have a defined header which isn\'t the default and should be excluded, mandatory or optional to this medal criteria.';
 $string['goldheadings']= 'Section Headings';
-$string['configdefaultgoldheadings'] = 'Whether each section should have a heading for Gold.';
+$string['configdefaultgoldheadings'] = 'Minimum number of defined headings for Bronze.';
 
 $string['configgoldurls'] = 'URLs Criteria Type';
 $string['configgoldurlsxp'] = 'Define whether the minimum URLs count should be excluded, mandatory or optional to this medal criteria.';
