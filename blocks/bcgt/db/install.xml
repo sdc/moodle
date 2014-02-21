@@ -870,7 +870,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="18" NOTNULL="true" SEQUENCE="true" NEXT="bcgttargetqualid"/>
         <FIELD NAME="bcgttargetqualid" TYPE="int" LENGTH="18" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="grade"/>
         <FIELD NAME="grade" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false" PREVIOUS="bcgttargetqualid" NEXT="ucaspoints"/>
-        <FIELD NAME="ucaspoints" TYPE="number" LENGTH="5" NOTNULL="true" SEQUENCE="false" DECIMALS="2" PREVIOUS="grade" NEXT="archived"/>
+        <FIELD NAME="ucaspoints" TYPE="number" LENGTH="5" NOTNULL="false" SEQUENCE="false" DECIMALS="2" PREVIOUS="grade" NEXT="archived"/>
         <FIELD NAME="archived" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="ucaspoints" NEXT="upperscore"/>
         <FIELD NAME="upperscore" TYPE="number" LENGTH="3" NOTNULL="false" SEQUENCE="false" DECIMALS="1" PREVIOUS="archived" NEXT="lowerscore"/>
         <FIELD NAME="lowerscore" TYPE="number" LENGTH="3" NOTNULL="false" SEQUENCE="false" DECIMALS="1" PREVIOUS="upperscore" NEXT="umspercentagelower"/>
