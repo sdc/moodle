@@ -112,6 +112,7 @@ class CGHBVRQUnit extends CGUnit {
             $taskDetails = $_POST['taskDetails'];
             $taskTargetDates = $_POST['taskTargetDates'];
             $taskOrders = $_POST['taskOrders'];
+            $taskTypes = $_POST['taskTypes'];
 
             // Task Criteria
             $criteriaIDs = $_POST['taskCritIDs'];
@@ -126,6 +127,11 @@ class CGHBVRQUnit extends CGUnit {
             // Observation/Criteria links
             $observationCriteriaPoints = $_POST['taskCriteriaObservationPoints'];
             
+            // Formatives
+            $formativeCriteriaIDs = @$_POST['formativeCriteriaIDs'];
+            $formativeCriteriaNames = @$_POST['formativeCriteriaNames'];
+            $formativeCriteriaDescs = @$_POST['formativeCriteriaDescs'];
+            
             // Make sure we have at least one name set, otherwise there's no point doing anything
             $tempNames = array_filter($taskNames, function($e){
                 $e = trim($e);
@@ -135,11 +141,12 @@ class CGHBVRQUnit extends CGUnit {
             if (empty($tempNames)){
                 return;
             }
-            
+                        
             // Since the script doesn't actually create the unit until after all this, any new units will
             // have their ranges "unitid" set to -1, since the unit doesn't exist yet to give it a real id
             // So now we have to create am array of range objects which will need checking once the unit is created
             $listOfObservationsToUpdate = array(); 
+            
             
             // Loop through the tasks DYNAMICID => ID
             foreach($taskIDs as $DID => $ID)
@@ -156,6 +163,7 @@ class CGHBVRQUnit extends CGUnit {
                     $params->name = $taskNames[$DID];
                     $params->details = $taskDetails[$DID];
                     $params->ordernum = $taskOrders[$DID];
+                    $params->type = (isset($taskTypes[$DID])) ? $taskTypes[$DID] : 'Summative';
                     $obj = new CGHBVRQCriteria(-1, $params, Qualification::LOADLEVELCRITERIA);
                     
                     // Target date
@@ -237,6 +245,31 @@ class CGHBVRQUnit extends CGUnit {
                         
                     }
                     
+                    
+                    
+                    // Any Formatives?
+                    if (isset($formativeCriteriaIDs[$DID])){
+                    
+                        // Loop
+                        foreach($formativeCriteriaIDs[$DID] as $FDID => $FID){
+                            
+                            // Create criteria object
+                            $params = new stdClass();
+                            $params->name = $formativeCriteriaNames[$DID][$FDID];
+                            $params->details = $formativeCriteriaDescs[$DID][$FDID];
+                            $params->ordernum = 0;
+                            $subObj = new CGHBVRQCriteria(-1, $params, Qualification::LOADLEVELCRITERIA);
+                            
+                            // Add sub criteria to overall criteria (task)
+                            $obj->add_sub_criteria($subObj);
+                            
+                        }
+                        
+                    }
+                    
+                    
+                    
+                    
                     $tmpCriteria[] = $obj;
                     
                 }
@@ -249,6 +282,7 @@ class CGHBVRQUnit extends CGUnit {
                     $params->name = $taskNames[$DID];
                     $params->details = $taskDetails[$DID];
                     $params->ordernum = $taskOrders[$DID];
+                    $params->type = (isset($taskTypes[$DID])) ? $taskTypes[$DID] : 'Summative';
                     $obj = new CGHBVRQCriteria($ID, $params, Qualification::LOADLEVELCRITERIA);
                     
                     // Clear sub criteria array so we can delete any we haven't submitted
@@ -362,7 +396,42 @@ class CGHBVRQUnit extends CGUnit {
                         }
                         
                     }
+                    
                                         
+                    // Any Formatives?
+                    if (isset($formativeCriteriaIDs[$DID])){
+                    
+                        // Loop
+                        foreach($formativeCriteriaIDs[$DID] as $FDID => $FID){
+                            
+                            // Create criteria object
+                            $params = new stdClass();
+                            $params->name = $formativeCriteriaNames[$DID][$FDID];
+                            $params->details = $formativeCriteriaDescs[$DID][$FDID];
+                            $params->ordernum = 0;
+                            $subObj = new CGHBVRQCriteria($FID, $params, Qualification::LOADLEVELCRITERIA);
+                                                        
+                            
+                            // If the sub criteria doesn't exist, add it, otherwise update it
+                            if (!$subObj->exists())
+                            {
+                                $obj->add_sub_criteria($subObj);
+                            }
+                            else
+                            {
+                                                                
+                                $sub = $obj->get_sub_criteria();
+                                $currentSubCriteria =& $sub;
+                                $currentSubCriteria[$FID] = $subObj;
+                                $obj->set_sub_criteria($currentSubCriteria);  
+                                
+                            }
+                            
+                            
+                        }
+                        
+                    }
+                    
                     $tmpCriteria[$ID] = $obj;
                     
                 }
@@ -372,7 +441,7 @@ class CGHBVRQUnit extends CGUnit {
             $this->listOfObservationsToUpdate = $listOfObservationsToUpdate;
         
         }
-        
+
         $this->criterias = $tmpCriteria;
                  
     }
@@ -518,7 +587,7 @@ class CGHBVRQUnit extends CGUnit {
         if ( ($this->id > 0) || ( $family > 0 && $pathway > 0 && $pathwayType > 0 ) )
         {
         
-            $retval .= "<script> var numOfTasks = 0; var dynamicNumOfTasks = 0; var overallNumCRCriteria = 0; var overallNumCRObservation = 0; var arrayOfCRCriteria = new Array(); var arrayOfCRObservation = new Array();</script>";
+            $retval .= "<script> var numOfTasks = 0; var dynamicNumOfTasks = 0; var overallNumCRCriteria = 0; var overallNumCRObservation = 0; var arrayOfCRCriteria = new Array(); var arrayOfCRObservation = new Array(); var numOfFormativeCriteria = 0;</script>";
 
             $retval .= "<a href='#' id='addNewHBVRQTask'>".get_string('addtask', 'block_bcgt')."</a><br><br>";
 
@@ -548,6 +617,7 @@ class CGHBVRQUnit extends CGUnit {
                 
         $retval .= "<tr>";
             $retval .= "<th>".get_string('name', 'block_bcgt')."</th>";
+            $retval .= "<th>".get_string('type', 'block_bcgt')."</th>";
             $retval .= "<th>".get_string('details', 'block_bcgt')."</th>";
             $retval .= "<th>".get_string('targetdate', 'block_bcgt')."</th>";
             $retval .= "<th>".get_string('order', 'block_bcgt')."</th>";
@@ -558,6 +628,7 @@ class CGHBVRQUnit extends CGUnit {
         $d = 0; # Dynamic number of tasks
         $c = 0; # Dynamic number of criteria
         $r = 0; # Dynamic number of observations (ranges)
+        $f = 0; # Dynamic number of formative sub criteria
         
         // Find criteria (tasks) and loop through them
         if ($this->criterias)
@@ -570,7 +641,9 @@ class CGHBVRQUnit extends CGUnit {
                 $retval .= '<tr class="taskRow_'.$d.'">';
                     $retval .= '<td>';
                     $retval .= '<script> arrayOfCRCriteria['.$d.'] = new Array();arrayOfCRObservation['.$d.'] = new Array(); numOfTasks++; dynamicNumOfTasks++; </script>';
-                    $retval .= '<input type="hidden" name="taskIDs['.$d.']" value="'.$criterion->get_id().'" /><input type="text" placeholder="Name" name="taskNames['.$d.']" value="'.bcgt_html($criterion->get_name()).'" class="critNameInput" id="taskName_'.$d.'" /></td>';
+                    $retval .= '<input type="hidden" name="taskIDs['.$d.']" value="'.$criterion->get_id().'" /><input type="text" placeholder="Name" name="taskNames['.$d.']" value="'.bcgt_html($criterion->get_name()).'" class="critNameInput" id="taskName_'.$d.'" />';
+                    $retval .= '</td>';
+                    $retval .= '<td><select onchange="changeCriterionTypeVRQ(this.value, '.$d.');return false;" name="taskTypes['.$d.']"><option value="Summative" '.( ($criterion->get_type() == 'Summative') ? 'selected' : '' ).'>'.get_string('summative', 'block_bcgt').'</option><option value="Formative" '.( ($criterion->get_type() == 'Formative') ? 'selected' : '' ).'>'.get_string('formative', 'block_bcgt').'</option></select></td>';
                     $retval .= '<td><textarea style="width:100%;" placeholder="Task Details" name="taskDetails['.$d.']" id="taskDetails'.$d.'" class="critDetailsTextArea">'.bcgt_html( $criterion->get_details() ).'</textarea></td>';
                     $retval .= '<td><input type="text" readonly="true" name="taskTargetDates['.$d.']" value="'.$criterion->get_target_date().'" class="bcgtDatePicker" /> </td>';
                     $retval .= '<td><input type="text" class="w40" name="taskOrders['.$d.']" value="'.$criterion->get_order().'" /></td>';
@@ -580,126 +653,169 @@ class CGHBVRQUnit extends CGUnit {
                 
                 // Range/Criteria row (observations)
                 $retval .= "<tr class='taskRow_{$d}'>";
+                    $retval .= '<td colspan="6">';
+
                 
-                    $retval .= '<td colspan="5">';
-                        $retval .= '<table id="Task_'.$d.'_ObservationsTable" class="criteriaObservationTable">';
+                    if ($criterion->get_type() == 'Formative')
+                    {
 
-                            $retval .= '<tr id="buttonRow_'.$d.'">';
-                                $retval .= '<td></td>';
-                                $retval .= '<td><img src="'.$CFG->wwwroot.'/blocks/bcgt/plugins/bcgtcg/pix/plus.png" title="Add new criteria" alt="Add new criteria" onclick="addNewHBVRQCriteria('.$d.');" /></td>';
-                                $retval .= '<td><img src="'.$CFG->wwwroot.'/blocks/bcgt/plugins/bcgtcg/pix/plus.png" title="Add new observation" alt="Add new observation" onclick="addNewHBVRQObservation('.$d.');" /></td>';
-                                
-                                // Find any observations (ranges) on this task and loop through to add delete links
-                                $ranges = $criterion->get_all_possible_ranges();
-                                $r = 0;
-                                if ($ranges)
-                                {
-                                    foreach($ranges as $range)
-                                    {
-                                        
-                                        $r++;
-                                        $retval .= '<td class="c noBorder Ob'.$r.'"><a href="#" onclick="deleteHBRVQObservation('.$d.', '.$r.');return false;"><img src="'.$CFG->wwwroot.'/blocks/bcgt/plugins/bcgtcg/pix/close.png" class="small" /></a></td>';
-                                        $retval .= '<script>overallNumCRObservation++;arrayOfCRObservation['.$d.'].push(overallNumCRObservation);</script>';
-                                        
-                                    }
-                                }
-                                
-                                
-                            $retval .= '</tr>';
-
-                            $retval .= '<tr id="observationRow_'.$d.'">';
-                                $retval .= '<td></td>';
-                                $retval .= '<td>Criteria</td>';
-                                $retval .= '<td>Observations</td>';
-                                
-                                // Find any observations (ranges) on this task and loop through to put their name in
-                                $ranges = $criterion->get_all_possible_ranges();
-                                $r = 0;
-                                if ($ranges)
-                                {
-                                    foreach($ranges as $range)
-                                    {
-                                        
-                                        $r++;
-                                        $retval .= '<td class="Ob'.$r.'"><input type="hidden" name="taskObservationIDs['.$d.']['.$r.']" value="'.$range->id.'" /><input type="text" name="taskObservationNames['.$d.']['.$r.']" value="'.$range->name.'" class="rangeInput hoverTitle" onkeyup="reloadHoverTitles();" /></td>';
-                                        
-                                    }
-                                }
-                                
-                                
-                            $retval .= '</tr>';
-
-                            $retval .= '<tr id="conversionChartRow_'.$d.'">';
-                                $retval .= '<td></td>';
-                                $retval .= '<td></td>';
-                                $retval .= '<td>Conversion Chart</td>';
-                                
-                                // Find any observations (ranges) on this task and loop through to put conversion chart in
-                                $ranges = $criterion->get_all_possible_ranges();
-                                $r = 0;
-                                if ($ranges)
-                                {
-                                    foreach($ranges as $range)
-                                    {
-                                        
-                                        $r++;
-                                        $retval .= '<td class="c Ob'.$r.'"><table class="smalltext all_c"><tr class="b"><td>Grade</td><td title="Minimum marks required for this grade">Marks</td></tr><tr><td>Pass</td><td><input id="observationCC_P_'.$r.'" type="text" class="tinyInput" name="taskObservationCC['.$d.']['.$r.'][P]" onblur="checkCCNum(this);" value="'.$range->chart['P'].'" /></td></tr><tr><td>Merit</td><td><input id="observationCC_M_'.$r.'" type="text" class="tinyInput" name="taskObservationCC['.$d.']['.$r.'][M]" onblur="checkCCNum(this);" value="'.$range->chart['M'].'" /></td></tr><tr><td>Distinction</td><td><input id="observationCC_D_'.$r.'" type="text" class="tinyInput" name="taskObservationCC['.$d.']['.$r.'][D]" onblur="checkCCNum(this);" value="'.$range->chart['D'].'" /></td></tr></table><small class="output" style="color:red;"></small><br><small>Target Date:</small><br><input type="text" name="taskObservationTargetDates['.$d.']['.$r.']" value="'.$range->get_target_date(true).'" class="bcgtDatePicker" /></td>';
-                                        
-                                    }
-                                }
-                                
-                                
+                        $retval .= '<table id="Task_'.$d.'_FormativeTable" class="criteriaObservationTable">';
+                        
+                            $retval .= '<tr>';
+                                $retval .= '<th><img src="'.$CFG->wwwroot.'/blocks/bcgt/plugins/bcgtcg/pix/plus.png" title="Add new formative criteria" alt="Add new formative criteria" onclick="addHBVRQFormativeCriteria('.$d.');" /></th>';
+                                $retval .= '<th>Name</th>';
+                                $retval .= '<th>Description</th>';
+                                $retval .= '<th></th>';
                             $retval .= '</tr>';
                             
-                            
-                            // Now the criteria (task sub criteria)
                             if ($criterion->get_sub_criteria())
                             {
                                 foreach($criterion->get_sub_criteria() as $subCriterion)
                                 {
-                                    
-                                    $c++;
-                                    $retval .= '<tr id="taskCriteriaRow_'.$d.'_'.$c.'">';
-                                        $retval .= '<td class="blank_cell_left small_cell"><a href="#" onclick="deleteHBVRQCriteria('.$d.', '.$c.');return false;"><img src="'.$CFG->wwwroot.'/blocks/bcgt/plugins/bcgtcg/pix/close.png" class="small" /></a></td>';
-                                        $retval .= '<td><input type="hidden" name="taskCritIDs['.$d.']['.$c.']" value="'.$subCriterion->get_id().'" /><input type="text" name="taskCritNames['.$d.']['.$c.']" value="'.$subCriterion->get_name().'" title="" class="observationCritInput hoverTitle" onkeyup="reloadHoverTitles();" /></td>';
-                                        $retval .= '<td> <script>overallNumCRCriteria++;arrayOfCRCriteria['.$d.'].push(overallNumCRCriteria);</script> </td>';
-                                        
-                                        // Loop through observations again to add in the points links between them
-                                        $ranges = $criterion->get_all_possible_ranges();
-                                        
-                                        $r = 0;
-                                        if ($ranges)
-                                        {
-                                            foreach($ranges as $range)
-                                            {
 
-                                                $r++;
-                                                $points = (array_key_exists($subCriterion->get_id(), $range->links)) ? $range->links[$subCriterion->get_id()] : 0;
-                                                $retval .= '<td class="C'.$c.' Ob'.$r.' c">';
-                                                    $retval .= '<select class="tinySelect" name="taskCriteriaObservationPoints['.$d.'][C'.$c.'|O'.$r.']" title="Please select the maximum number of points the student can achieve for this criteria on this range, between 0-'.self::MAX_POINTS_ON_OBSERVATION.'">';
-                                                        for($p = 0; $p <= self::MAX_POINTS_ON_OBSERVATION; $p++)
-                                                        {
-                                                            $selected = ($points == $p) ? "selected" : "";
-                                                            $retval .= '<option value="'.$p.'" '.$selected.'>'.$p.'</option>';
-                                                        }
-                                                    $retval .= '</select>';
-                                                $retval .= '</td>';
-                                                                                                        
-                                            }
-                                        }
-                                        
+                                    
+                                    $retval .= '<tr id="formativeCriteriaRow_'.$d.'_'.$f.'">';
+                                        $retval .= '<td></td>';
+                                        $retval .= '<td><input type="hidden" name="formativeCriteriaIDs['.$d.']['.$f.']" value="'.$subCriterion->get_id().'" /><input type="text" name="formativeCriteriaNames['.$d.']['.$f.']" placeholder="Name" value="'.$subCriterion->get_name().'" /></td>';
+                                        $retval .= '<td><input type="text" name="formativeCriteriaDescs['.$d.']['.$f.']" placeholder="Details" class="long" value="'.$subCriterion->get_details().'" /></td>';
+                                        $retval .= '<td><img src="'.$CFG->wwwroot.'/blocks/bcgt/plugins/bcgtcg/pix/redX.png" title="Remove formative criteria" alt="Remove formative criteria" onclick="removeHBVRQFormativeCriteria('.$d.', '.$f.');" /><script> numOfFormativeCriteria++; </script></td>';
+
                                     $retval .= '</tr>';
                                     
+                                    $f++;
+
                                 }
+
+
                             }
-
-
+                            
+                            
+                        
                         $retval .= '</table>';
-                        
-                        $retval .= "<script> $('.bcgtDatePicker').datepicker( { dateFormat: 'dd-mm-yy' } ); </script>";
-                        
-                    $retval .= '</td>';
+
+                    }
+                    else
+                    {
+
+                            $retval .= '<table id="Task_'.$d.'_ObservationsTable" class="criteriaObservationTable">';
+
+                                $retval .= '<tr id="buttonRow_'.$d.'">';
+                                    $retval .= '<td></td>';
+                                    $retval .= '<td><img src="'.$CFG->wwwroot.'/blocks/bcgt/plugins/bcgtcg/pix/plus.png" title="Add new criteria" alt="Add new criteria" onclick="addNewHBVRQCriteria('.$d.');" /></td>';
+                                    $retval .= '<td><img src="'.$CFG->wwwroot.'/blocks/bcgt/plugins/bcgtcg/pix/plus.png" title="Add new observation" alt="Add new observation" onclick="addNewHBVRQObservation('.$d.');" /></td>';
+
+                                    // Find any observations (ranges) on this task and loop through to add delete links
+                                    $ranges = $criterion->get_all_possible_ranges();
+                                    $r = 0;
+                                    if ($ranges)
+                                    {
+                                        foreach($ranges as $range)
+                                        {
+
+                                            $r++;
+                                            $retval .= '<td class="c noBorder Ob'.$r.'"><a href="#" onclick="deleteHBRVQObservation('.$d.', '.$r.');return false;"><img src="'.$CFG->wwwroot.'/blocks/bcgt/plugins/bcgtcg/pix/close.png" class="small" /></a></td>';
+                                            $retval .= '<script>overallNumCRObservation++;arrayOfCRObservation['.$d.'].push(overallNumCRObservation);</script>';
+
+                                        }
+                                    }
+
+
+                                $retval .= '</tr>';
+
+                                $retval .= '<tr id="observationRow_'.$d.'">';
+                                    $retval .= '<td></td>';
+                                    $retval .= '<td>Criteria</td>';
+                                    $retval .= '<td>Observations</td>';
+
+                                    // Find any observations (ranges) on this task and loop through to put their name in
+                                    $ranges = $criterion->get_all_possible_ranges();
+                                    $r = 0;
+                                    if ($ranges)
+                                    {
+                                        foreach($ranges as $range)
+                                        {
+
+                                            $r++;
+                                            $retval .= '<td class="Ob'.$r.'"><input type="hidden" name="taskObservationIDs['.$d.']['.$r.']" value="'.$range->id.'" /><input type="text" name="taskObservationNames['.$d.']['.$r.']" value="'.$range->name.'" class="rangeInput hoverTitle" onkeyup="reloadHoverTitles();" /></td>';
+
+                                        }
+                                    }
+
+
+                                $retval .= '</tr>';
+
+                                $retval .= '<tr id="conversionChartRow_'.$d.'">';
+                                    $retval .= '<td></td>';
+                                    $retval .= '<td></td>';
+                                    $retval .= '<td>Conversion Chart</td>';
+
+                                    // Find any observations (ranges) on this task and loop through to put conversion chart in
+                                    $ranges = $criterion->get_all_possible_ranges();
+                                    $r = 0;
+                                    if ($ranges)
+                                    {
+                                        foreach($ranges as $range)
+                                        {
+
+                                            $r++;
+                                            $retval .= '<td class="c Ob'.$r.'"><table class="smalltext all_c"><tr class="b"><td>Grade</td><td title="Minimum marks required for this grade">Marks</td></tr><tr><td>Pass</td><td><input id="observationCC_P_'.$r.'" type="text" class="tinyInput" name="taskObservationCC['.$d.']['.$r.'][P]" onblur="checkCCNum(this);" value="'.$range->chart['P'].'" /></td></tr><tr><td>Merit</td><td><input id="observationCC_M_'.$r.'" type="text" class="tinyInput" name="taskObservationCC['.$d.']['.$r.'][M]" onblur="checkCCNum(this);" value="'.$range->chart['M'].'" /></td></tr><tr><td>Distinction</td><td><input id="observationCC_D_'.$r.'" type="text" class="tinyInput" name="taskObservationCC['.$d.']['.$r.'][D]" onblur="checkCCNum(this);" value="'.$range->chart['D'].'" /></td></tr></table><small class="output" style="color:red;"></small><br><small>Target Date:</small><br><input type="text" name="taskObservationTargetDates['.$d.']['.$r.']" value="'.$range->get_target_date(true).'" class="bcgtDatePicker" /></td>';
+
+                                        }
+                                    }
+
+
+                                $retval .= '</tr>';
+
+
+                                // Now the criteria (task sub criteria)
+                                if ($criterion->get_sub_criteria())
+                                {
+                                    foreach($criterion->get_sub_criteria() as $subCriterion)
+                                    {
+
+                                        $c++;
+                                        $retval .= '<tr id="taskCriteriaRow_'.$d.'_'.$c.'">';
+                                            $retval .= '<td class="blank_cell_left small_cell"><a href="#" onclick="deleteHBVRQCriteria('.$d.', '.$c.');return false;"><img src="'.$CFG->wwwroot.'/blocks/bcgt/plugins/bcgtcg/pix/close.png" class="small" /></a></td>';
+                                            $retval .= '<td><input type="hidden" name="taskCritIDs['.$d.']['.$c.']" value="'.$subCriterion->get_id().'" /><input type="text" name="taskCritNames['.$d.']['.$c.']" value="'.$subCriterion->get_name().'" title="" class="observationCritInput hoverTitle" onkeyup="reloadHoverTitles();" /></td>';
+                                            $retval .= '<td> <script>overallNumCRCriteria++;arrayOfCRCriteria['.$d.'].push(overallNumCRCriteria);</script> </td>';
+
+                                            // Loop through observations again to add in the points links between them
+                                            $ranges = $criterion->get_all_possible_ranges();
+
+                                            $r = 0;
+                                            if ($ranges)
+                                            {
+                                                foreach($ranges as $range)
+                                                {
+
+                                                    $r++;
+                                                    $points = (array_key_exists($subCriterion->get_id(), $range->links)) ? $range->links[$subCriterion->get_id()] : 0;
+                                                    $retval .= '<td class="C'.$c.' Ob'.$r.' c">';
+                                                        $retval .= '<select class="tinySelect" name="taskCriteriaObservationPoints['.$d.'][C'.$c.'|O'.$r.']" title="Please select the maximum number of points the student can achieve for this criteria on this range, between 0-'.self::MAX_POINTS_ON_OBSERVATION.'">';
+                                                            for($p = 0; $p <= self::MAX_POINTS_ON_OBSERVATION; $p++)
+                                                            {
+                                                                $selected = ($points == $p) ? "selected" : "";
+                                                                $retval .= '<option value="'.$p.'" '.$selected.'>'.$p.'</option>';
+                                                            }
+                                                        $retval .= '</select>';
+                                                    $retval .= '</td>';
+
+                                                }
+                                            }
+
+                                        $retval .= '</tr>';
+
+                                    }
+                                }
+
+
+                            $retval .= '</table>';
+
+                            $retval .= "<script> $('.bcgtDatePicker').datepicker( { dateFormat: 'dd-mm-yy' } ); </script>";
+
+                    }
                 
+                    $retval .= '</td>';
                 $retval .= "</tr>";
                                 
             }
@@ -1020,7 +1136,7 @@ class CGHBVRQUnit extends CGUnit {
         $practicalPassed = 0;
         
         $awardArray = array();
-        
+                
         // Loop criteria on unit
         if($this->criterias)
         {
@@ -1084,7 +1200,7 @@ class CGHBVRQUnit extends CGUnit {
             }
             
         }
-            
+                    
         // If have passed everything
         if($tasksRequired == $tasksPassed && $practicalRequired == $practicalPassed)
         {
@@ -1119,7 +1235,7 @@ class CGHBVRQUnit extends CGUnit {
             $this->userAward = new Award(-1, 'N/S', 0);
             $this->update_unit_award($qualID);
         }
-        
+                
         return $this->userAward;         
                     
         
@@ -1140,7 +1256,7 @@ class CGHBVRQUnit extends CGUnit {
         {
             
             // We're only interseted if it's a standard task at the moment
-            if(!$criterion->get_sub_criteria())
+            if(!$criterion->get_sub_criteria() || $criterion->get_type() == 'Formative')
             {
                 // Increment cnt
                 $count++;
@@ -1153,7 +1269,7 @@ class CGHBVRQUnit extends CGUnit {
             
             
         }
-                
+                        
         $numCompleted = $this->are_criteria_completed($criteria);
 
         $percent = round(($numCompleted * 100) / $count);                
@@ -1175,32 +1291,39 @@ class CGHBVRQUnit extends CGUnit {
                 $criterion->load_student_information($this->studentID, $this->qualID, $this->id);
                 
                 // Standard task
-                if(!$criterion->get_sub_criteria())
+                if(!$criterion->get_sub_criteria() || $criterion->get_type() == 'Formative')
                 {
                    
                     $award = $criterion->get_student_value();
                     if($award)
                     {
-                        if($award->is_criteria_met() == "Yes") $numCompleted++;
+                        if($award->is_criteria_met_bool())
+                        {
+                            $numCompleted++;
+                        }
                     }
+                                        
                 }
                 else
                 {
+                    
                     // Has ranges & criteria
                     $ranges = $criterion->get_all_possible_ranges();
                     if(!$ranges) continue;
-                    
+
                     foreach($ranges as $range)
                     {
                         $range->load_student_information($this->studentID, $this->qualID);
                         if(!$range->gradeID) continue;
                         $value = new Value($range->gradeID);
                         if(!$value) continue;
-                        if($value->is_criteria_met() == "Yes") $numCompleted++;
+                        if($value->is_criteria_met_bool())
+                        {
+                            $numCompleted++;
+                        }
                     }
-                    
+                                                                
                 }
-                
                                                 
             }
             

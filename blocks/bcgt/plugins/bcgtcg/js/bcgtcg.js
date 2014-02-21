@@ -879,81 +879,142 @@ function applyTT()
     $('.tooltipContent').parents('td').addClass('criteriaComments');
     $('.tooltipContent').parents('td').attr('title', 'title');
     
-//    //Gets the Unit details
-    $('.uNToolTip').tooltip( {
-        content: function(){
+    //Gets the Unit details
+    $('.uNToolTip').each( function(){
+        
+        // Check is already bound
+        var aria = $(this).attr('aria-describedby');
+        
+        if (aria === undefined || (aria !== undefined && aria.search('ui-tooltip') < 0) ){
             
-            // Get rid of any open ones
-            $('.ui-tooltip').remove();
+            $(this).tooltip( {
+                content: function(){
+
+                    var uID = $(this).attr('unitID');
+                    var sID = $(this).attr('studentID');
+                    var html = $('div#unitTooltipContent_'+uID+'_'+sID).html();
+                    return html;
+                }
+            } );
             
-            var uID = $(this).attr('unitID');
-            var sID = $(this).attr('studentID');
-            var html = $('div#unitTooltipContent_'+uID+'_'+sID).html();
-            return html;
         }
+        
     } );
+    
      
     //    Gets the criteria comments
-    $('.stuValue').tooltip( {
-        content: function(){
+    $('.stuValue').each( function(){
+        
+        // Check is already bound
+        var aria = $(this).attr('aria-describedby');
+        
+        if (aria === undefined || (aria !== undefined && aria.search('ui-tooltip') < 0) ){
             
-            // Get rid of any open ones
-            $('.ui-tooltip').remove();
+            $(this).tooltip( {
+                content: function(){
+
+                    var cID = $(this).attr('criteriaID');
+                    var sID = $(this).attr('studentID');
+                    var html = $('div#criteriaTooltipContent_'+cID+'_'+sID).html();
+                    return html;
+                }
+            }  );
             
-            var cID = $(this).attr('criteriaID');
-            var sID = $(this).attr('studentID');
-            var html = $('div#criteriaTooltipContent_'+cID+'_'+sID).html();
-            return html;
         }
-    }  );
-    
-    $('.overallTask').tooltip( {
-        content: function(){
-            var cID = $(this).attr('criteriaID');
-            var sID = $(this).attr('studentID');
-            var html = $('div#overallTaskTooltipContent_'+cID+'_'+sID).html();
-            return html;
-        }
-    }  );
-    
-    $('.rangeValue').tooltip( {
-        content: function(){
-            
-            // Get rid of any open ones
-            $('.ui-tooltip').remove();
-            
-            var rID = $(this).attr('rangeID');
-            var uID = $(this).attr('unitID');
-            var sID = $(this).attr('studentID');
-            var html = $('div#rangeTooltipContent_'+rID+'_'+uID+'_'+sID).html();
-            return html;
-        }
-    }  );
-    
-    
-    $('.criteriaComments').tooltip( {
-        content: function(){
-            
-            // Get rid of any open ones
-            $('.ui-tooltip').remove();
-            
-            var tt = $(this).find('div.tooltipContent');
-            var html = $(tt).html();
-            return html;
-        }
-    }  );
-    
-    $('.signOffTD').tooltip( {
-        content: function(){
-            
-            // Get rid of any open ones
-            $('.ui-tooltip').remove();
-            
-            var tt = $(this).find('div.signoffTooltip');
-            var html = $(tt).html();
-            return html;
-        }
+        
     } );
+    
+    
+    $('.overallTask').each( function(){
+        
+        // Check is already bound
+        var aria = $(this).attr('aria-describedby');
+        
+        if (aria === undefined || (aria !== undefined && aria.search('ui-tooltip') < 0) ){
+            
+            $(this).tooltip( {
+                content: function(){
+                    var cID = $(this).attr('criteriaID');
+                    var sID = $(this).attr('studentID');
+                    var html = $('div#overallTaskTooltipContent_'+cID+'_'+sID).html();
+                    return html;
+                }
+            });
+            
+        }
+        
+    } );
+    
+    
+    
+    $('.rangeValue').each( function(){
+        
+        // Check is already bound
+        var aria = $(this).attr('aria-describedby');
+        
+        if (aria === undefined || (aria !== undefined && aria.search('ui-tooltip') < 0) ){
+            
+            $(this).tooltip( {
+                content: function(){
+
+                    var rID = $(this).attr('rangeID');
+                    var uID = $(this).attr('unitID');
+                    var sID = $(this).attr('studentID');
+                    var html = $('div#rangeTooltipContent_'+rID+'_'+uID+'_'+sID).html();
+                    return html;
+                }
+            }  );
+            
+        }
+        
+    } );
+    
+        
+    
+    $('.criteriaComments').each( function(){
+        
+        // Check is already bound
+        var aria = $(this).attr('aria-describedby');
+        
+        if (aria === undefined || (aria !== undefined && aria.search('ui-tooltip') < 0) ){
+            
+            $(this).tooltip( {
+                content: function(){
+
+                    var tt = $(this).find('div.tooltipContent');
+                    var html = $(tt).html();
+                    return html;
+
+                }
+            } );
+            
+        }
+        
+    } );
+    
+        
+    $('.signOffTD').each( function(){
+        
+        // Check is already bound
+        var aria = $(this).attr('aria-describedby');
+        
+        if (aria === undefined || (aria !== undefined && aria.search('ui-tooltip') < 0) ){
+            
+            $(this).tooltip( {
+                content: function(){
+
+                    var tt = $(this).find('div.signoffTooltip');
+                    var html = $(tt).html();
+                    return html;
+
+                }
+            } );
+            
+        }
+        
+    } );
+    
+    
     
 
     
@@ -1168,6 +1229,10 @@ function applyTT()
             var unitID = $(this).attr('unitID');
             var studentID = $(this).attr('studentID');
             var grid = $(this).attr('grid');
+            var setAchieved = false;
+            if ($(this).attr('setAchieved') !== undefined){
+                setAchieved = true;
+            }
             
             var params = {
                 qualID: qualID,
@@ -1176,7 +1241,8 @@ function applyTT()
                 unitID: unitID,
                 date: d,
                 mode: $('#grid').val(),
-                grid: grid
+                grid: grid,
+                setAchieved: setAchieved
             };    
             update('updateCriteriaAwardDate', params);    
 
@@ -1359,8 +1425,8 @@ function applyTT()
         
     });
     
-    
-    $('.updateRangeAward').on('change', function(){
+    $('.updateRangeAward').unbind('change');
+    $('.updateRangeAward').bind('change', function(){
         
         var qualID = $(this).attr('qualID');
         var unitID = $(this).attr('unitID');
@@ -1390,11 +1456,6 @@ function applyTT()
     
     $( "#genericPopup" ).draggable();
         
-    // If tablet
-//    if ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Touch|Tablet/i.test(navigator.userAgent) )
-//    {
-//        new webkit_draggable('genericPopup');
-//    }
     
     //$('#genericPopup').resizable();
     
@@ -2506,6 +2567,7 @@ function addNewHBVRQTask()
     
     newSection += '<tr class="taskRow_'+d+'">';
         newSection += '<td><input type="hidden" name="taskIDs['+d+']" value="-1" /><input type="text" placeholder="Name" name="taskNames['+d+']" value="T'+numOfTasks+'" class="critNameInput" id="taskName_'+d+'" /></td>';
+        newSection += '<td><select onchange="changeCriterionTypeVRQ(this.value, '+d+');return false;" name="taskTypes['+d+']"><option value="Summative">Summative</option><option value="Formative">Formative</option></select>';
         newSection += '<td><textarea style="width:100%;" placeholder="Task Details" name="taskDetails['+d+']" id="taskDetails'+d+'" class="critDetailsTextArea"></textarea></td>';
         newSection += '<td><input type="text" readonly="true" name="taskTargetDates['+d+']" class="bcgtDatePicker" /> </td>';
         newSection += '<td><input type="text" class="w40" name="taskOrders['+d+']" value="'+numOfTasks+'" /></td>';
@@ -2514,29 +2576,8 @@ function addNewHBVRQTask()
     
     // Observation row
     newSection += '<tr class="taskRow_'+d+'">';
-        newSection += '<td colspan="5">';
-            newSection += '<table id="Task_'+d+'_ObservationsTable" class="criteriaObservationTable">';
-            
-                newSection += '<tr id="buttonRow_'+d+'">';
-                    newSection += '<td></td>';
-                    newSection += '<td><img src="'+M.cfg.wwwroot+'/blocks/bcgt/plugins/bcgtcg/pix/plus.png" title="Add new criteria" alt="Add new criteria" onclick="addNewHBVRQCriteria('+d+');" /></td>';
-                    newSection += '<td><img src="'+M.cfg.wwwroot+'/blocks/bcgt/plugins/bcgtcg/pix/plus.png" title="Add new observation" alt="Add new observation" onclick="addNewHBVRQObservation('+d+');" /></td>';
-                newSection += '</tr>';
-                
-                newSection += '<tr id="observationRow_'+d+'">';
-                    newSection += '<td></td>';
-                    newSection += '<td>Criteria</td>';
-                    newSection += '<td>Observations</td>';
-                newSection += '</tr>';
-                
-                newSection += '<tr id="conversionChartRow_'+d+'">';
-                    newSection += '<td></td>';
-                    newSection += '<td></td>';
-                    newSection += '<td>Conversion Chart</td>';
-                newSection += '</tr>';
-                
-                
-            newSection += '</table>';
+        newSection += '<td colspan="6">';
+            newSection += loadHBVRQSummativeBox();
         newSection += '</td>';
     newSection += '</tr>';
     
@@ -2547,6 +2588,77 @@ function addNewHBVRQTask()
         dateFormat: "dd-mm-yy"
     } );
     
+}
+
+function loadHBVRQSummativeBox(d){
+    
+    var newSection = '';
+    newSection += '<table id="Task_'+d+'_ObservationsTable" class="criteriaObservationTable">';
+            
+        newSection += '<tr id="buttonRow_'+d+'">';
+            newSection += '<td></td>';
+            newSection += '<td><img src="'+M.cfg.wwwroot+'/blocks/bcgt/plugins/bcgtcg/pix/plus.png" title="Add new criteria" alt="Add new criteria" onclick="addNewHBVRQCriteria('+d+');" /></td>';
+            newSection += '<td><img src="'+M.cfg.wwwroot+'/blocks/bcgt/plugins/bcgtcg/pix/plus.png" title="Add new observation" alt="Add new observation" onclick="addNewHBVRQObservation('+d+');" /></td>';
+        newSection += '</tr>';
+
+        newSection += '<tr id="observationRow_'+d+'">';
+            newSection += '<td></td>';
+            newSection += '<td>Criteria</td>';
+            newSection += '<td>Observations</td>';
+        newSection += '</tr>';
+
+        newSection += '<tr id="conversionChartRow_'+d+'">';
+            newSection += '<td></td>';
+            newSection += '<td></td>';
+            newSection += '<td>Conversion Chart</td>';
+        newSection += '</tr>';
+
+    newSection += '</table>';
+    
+    return newSection;
+    
+}
+
+function loadHBVRQFormativeBox(d){
+    
+    var newSection = '';
+    
+    newSection += '<table id="Task_'+d+'_FormativeTable" class="criteriaObservationTable">';
+    
+        newSection += '<tr>';
+            newSection += '<th><img src="'+M.cfg.wwwroot+'/blocks/bcgt/plugins/bcgtcg/pix/plus.png" title="Add new formative criteria" alt="Add new formative criteria" onclick="addHBVRQFormativeCriteria('+d+');" /></th>';
+            newSection += '<th>Name</th>';
+            newSection += '<th>Description</th>';
+            newSection += '<th></th>';
+        newSection += '</tr>';
+                   
+    newSection += '</table>';
+    
+    return newSection;
+    
+}
+
+function addHBVRQFormativeCriteria(d){
+    
+    var n = numOfFormativeCriteria;
+    
+    var newSection = '';
+    
+    newSection += '<tr id="formativeCriteriaRow_'+d+'_'+n+'">';
+        newSection += '<td></td>';
+        newSection += '<td><input type="hidden" name="formativeCriteriaIDs['+d+']['+n+']" value="-1" /><input type="text" name="formativeCriteriaNames['+d+']['+n+']" placeholder="Name" /></td>';
+        newSection += '<td><input type="text" name="formativeCriteriaDescs['+d+']['+n+']" placeholder="Details" class="long" /></td>';
+        newSection += '<td><img src="'+M.cfg.wwwroot+'/blocks/bcgt/plugins/bcgtcg/pix/redX.png" title="Remove formative criteria" alt="Remove formative criteria" onclick="removeHBVRQFormativeCriteria('+d+', '+n+');" /></td>';
+    newSection += '</tr>';
+        
+    $('#Task_'+d+'_FormativeTable').append( newSection );
+    
+    numOfFormativeCriteria++;
+    
+}
+
+function removeHBVRQFormativeCriteria(d, n){
+    $('#formativeCriteriaRow_'+d+'_'+n).remove();
 }
 
 function addNewHBNVQSignOffSheet()
@@ -2969,4 +3081,18 @@ function fadeInOut(id)
 {
     $('#'+id).fadeIn('slow');
     setTimeout("$('#"+id+"').fadeOut('slow');", 3000);
+}
+
+function changeCriterionTypeVRQ(type, id){
+    
+    if (type == 'Formative'){
+        
+        $('.taskRow_'+id+':last td').html( loadHBVRQFormativeBox(id) );
+        
+    } else {
+        
+        $('.taskRow_'+id+':last td').html( loadHBVRQSummativeBox(id) );
+        
+    }
+    
 }

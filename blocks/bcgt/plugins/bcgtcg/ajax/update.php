@@ -162,7 +162,7 @@ function calculateUnitAward($unit, $params = array())
     global $params;
     
     echo "$('input, select').removeAttr('disabled');";
-            
+                
     if($unit->unit_has_award())
     {
         $award = $unit->calculate_unit_award($params->qualID);
@@ -268,17 +268,14 @@ switch($action)
         if (is_null($sID)){
             $unit->load_student_information($params->studentID, $params->qualID, $o);
         }
-                        
+                                
         // Update the award to achieved (if mode simple)
-        if($params->mode == "se"){
+        if($params->mode == "se" || isset($params->setAchieved)){
             
             $awardID = $qualification->get_criteria_met_value();
-                                    
+                                                
             $criteria->update_students_value($awardID);
             
-            // If unit has an award, try to calculate it
-            calculateUnitAward($unit);
-
             // If qual has a final award, try to calculate it
             #calculateQualAward($qualification);
             
@@ -291,7 +288,7 @@ switch($action)
         
         // Save Award
         $criteria->save_student($params->qualID);
-                
+                        
         
         // Update session
         if ($params->grid == 'student'){
@@ -299,6 +296,9 @@ switch($action)
         } elseif ($params->grid == 'unit'){
             update_session_unit($params->studentID, $params->unitID, $unit, $params->qualID);
         }
+        
+        // Calculate unit award
+        calculateUnitAward($unit);
                                                
         exit;
         

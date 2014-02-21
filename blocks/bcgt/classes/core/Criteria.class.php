@@ -1006,9 +1006,8 @@ class Criteria {
                         $output .= "<tr><td><b>{$subCriterion->name}</b><br>{$subCriterion->details}";
                             if ($userInfo)
                             {
-                                $output .= "<div class='c'>";
+                                $output .= "<br><br>";
                                 $output .= "{$userInfo->value}";
-                                $output .= "</div>";
                             }
                         $output .= "</td></tr>";
                     }
@@ -1341,6 +1340,7 @@ class Criteria {
     private function update_students_criteria($qualID, $studentCriteriaID)
     {
         global $DB;
+        
         $stdObj = new stdClass();
         if(isset($this->studentCriteriaID) && $this->studentCriteriaID != -1)
         {
@@ -1403,7 +1403,7 @@ class Criteria {
             $stdObj->bcgttargetgradesid = $this->targetgradeID;
         }
         $stdObj->flag = $this->studentFlag; 
-        
+                
         if(isset($stdObj->bcgtvalueid) && $stdObj->bcgtvalueid > 0)
         {
             logAction(LOG_MODULE_GRADETRACKER, LOG_ELEMENT_GRADETRACKER_CRITERIA, LOG_VALUE_GRADETRACKER_UPDATED_CRIT_AWARD, $this->studentID, $this->qualID, $this->unitID, null, $stdObj->bcgtvalueid);
