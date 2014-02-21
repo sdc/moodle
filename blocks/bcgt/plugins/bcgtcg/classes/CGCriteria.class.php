@@ -256,7 +256,7 @@ class CGCriteria extends Criteria {
         }
         
         $this->studentValue = $value;  
-        
+
         return false;
         
     }

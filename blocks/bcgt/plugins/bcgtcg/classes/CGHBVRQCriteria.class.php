@@ -230,7 +230,7 @@ class CGHBVRQCriteria extends CGCriteria {
         $output = "";
                         
         // Ifit has no children it's just a normal criteria what will have an award
-        if (!$this->has_children())
+        if (!$this->has_children() || $this->type == 'Formative')
         {        
         
             $valueObj = $this->get_student_value();
@@ -299,51 +299,44 @@ class CGHBVRQCriteria extends CGCriteria {
 
                 $class = '';
                 if ($this->studentFlag == 'L') $class .= ' wasLate ';
-
-                // First do the grading values
-                $output .= "<select name='cID_".$this->get_id()."' class='criteriaValueSelect {$class}' grid='{$grid}' criteriaid='{$this->get_id()}' unitid='{$unit->get_id()}' qualid='{$this->qualID}' studentid='{$user->id}'>";
-                $output .= "<option value='-1'></option>";
-
-                $grade = $this->get_achieved_value();                
-
-                if ($grade)
+                
+                if ($this->type == 'Formative')
                 {
-                    $chk = ($studentValueID == $grade->id) ? 'selected' : '';
-                    $output .= "<option value='{$grade->id}' {$chk}>{$grade->shortvalue} - {$grade->value}</option>";
+                    
+                    $img = ($studentCriteriaMet) ? "icon_OpenOutcomeComplete" : "icon_OpenOutcome";
+                    $output .= "<small><a href='#' onclick='loadSubCriteria({$this->id}, {$this->qualID}, {$unit->get_id()}, {$this->studentID}, \"{$grid}\");return false;'><img id='S{$this->studentID}_U{$unit->get_id()}_C{$this->id}_POPUPIMG' src='{$CFG->wwwroot}/blocks/bcgt/plugins/bcgtcg/pix/grid_symbols/core/{$img}.png' title='Open {$this->get_name()} Popup' alt='Open Popup' class='gridIcon'  /></a></small>";
+                    
                 }
-
-
-                // Now do the rest of the values, such as late, referred, etc...
-                $possibleValues = $this->get_non_met_values();
-                if ($possibleValues)
+                else
                 {
-                    foreach($possibleValues as $value)
+                
+                    // First do the grading values
+                    $output .= "<select name='cID_".$this->get_id()."' class='criteriaValueSelect {$class}' grid='{$grid}' criteriaid='{$this->get_id()}' unitid='{$unit->get_id()}' qualid='{$this->qualID}' studentid='{$user->id}'>";
+                    $output .= "<option value='-1'></option>";
+
+                    $grade = $this->get_achieved_value();                
+
+                    if ($grade)
                     {
-                        $chk = ($studentValueID == $value->id) ? 'selected' : '';
-                        $output .= "<option value='{$value->id}' {$chk}>{$value->shortvalue} - {$value->value}</option>";
+                        $chk = ($studentValueID == $grade->id) ? 'selected' : '';
+                        $output .= "<option value='{$grade->id}' {$chk}>{$grade->shortvalue} - {$grade->value}</option>";
                     }
+
+
+                    // Now do the rest of the values, such as late, referred, etc...
+                    $possibleValues = $this->get_non_met_values();
+                    if ($possibleValues)
+                    {
+                        foreach($possibleValues as $value)
+                        {
+                            $chk = ($studentValueID == $value->id) ? 'selected' : '';
+                            $output .= "<option value='{$value->id}' {$chk}>{$value->shortvalue} - {$value->value}</option>";
+                        }
+                    }
+
+                    $output .= "</select>";
+                
                 }
-
-                $output .= "</select>";
-
-//                $username = htmlentities( $user->username, ENT_QUOTES );
-//                $fullname = htmlentities( fullname($user), ENT_QUOTES );
-//                $unitname = htmlentities( $unit->get_name(), ENT_QUOTES);
-//                $critname = htmlentities($this->get_name(), ENT_QUOTES);  
-//
-//                $studentComments = $this->comments;
-//
-//                if(!is_null($studentComments) && $studentComments != '')
-//                { 
-//                    $output .= "<img id='C{$this->id}U{$unit->get_id()}S{$this->studentID}Q{$this->qualID}' criteriaid='{$this->id}' unitid='{$unit->get_id()}' studentid='{$this->studentID}' qualid='{$this->qualID}' username='{$username}' fullname='{$fullname}' unitname='{$unitname}' critname='{$critname}' grid='{$grid}' class='editComments' title='Click to Edit Comments' ".
-//                            "alt='Click to Edit Comments' src='$CFG->wwwroot/blocks/bcgt/plugins/bcgtcg/pix/grid_symbols/comments.jpg'>";
-//                    $output .= "<div class='tooltipContent'>".nl2br( htmlspecialchars($studentComments, ENT_QUOTES) )."</div>";
-//                }
-//                else
-//                {
-//                    $output .= "<img id='C{$this->id}U{$unit->get_id()}S{$this->studentID}Q{$this->qualID}' criteriaid='{$this->id}' unitid='{$unit->get_id()}' studentid='{$this->studentID}' qualid='{$this->qualID}' username='{$username}' fullname='{$fullname}' unitname='{$unitname}' critname='{$critname}' grid='{$grid}' class='addComments' title='Click to Add Comments' ".
-//                            "alt='Click to Add Comments' src='$CFG->wwwroot/blocks/bcgt/plugins/bcgtcg/pix/grid_symbols/plus.png'>";
-//                }
                 
                 
             }
@@ -351,9 +344,21 @@ class CGHBVRQCriteria extends CGCriteria {
             else
             {
 
-                // They want to just set a date it was achieved, so no chekcbox, just an input for date
-                $val = $this->get_award_date('d-m-Y');
-                $output .= "<input type='text' style='width:70px;' class='datePickerCriteria' name='cID_{$this->id}' studentID='{$user->id}' criteriaID='{$this->id}' qualID='{$this->qualID}' unitID='{$unit->get_id()}' grid='{$grid}' value='{$val}' title='Click to edit award date for {$this->get_name()}' /> ";
+                if ($this->type == 'Formative')
+                {
+                    
+                    $img = ($studentCriteriaMet) ? "icon_OpenOutcomeComplete" : "icon_OpenOutcome";
+                    $output .= "<small><a href='#' onclick='loadSubCriteria({$this->id}, {$this->qualID}, {$unit->get_id()}, {$this->studentID}, \"{$grid}\");return false;'><img id='S{$this->studentID}_U{$unit->get_id()}_C{$this->id}_POPUPIMG' src='{$CFG->wwwroot}/blocks/bcgt/plugins/bcgtcg/pix/grid_symbols/core/{$img}.png' title='Open {$this->get_name()} Popup' alt='Open Popup' class='gridIcon'  /></a></small>";
+                    
+                }
+                else
+                {
+                
+                    // They want to just set a date it was achieved, so no chekcbox, just an input for date
+                    $val = $this->get_award_date('d-m-Y');
+                    $output .= "<input type='text' style='width:70px;' class='datePickerCriteria' name='cID_{$this->id}' studentID='{$user->id}' criteriaID='{$this->id}' qualID='{$this->qualID}' unitID='{$unit->get_id()}' grid='{$grid}' value='{$val}' title='Click to edit award date for {$this->get_name()}' /> ";
+                
+                }
                                         
             }
             
@@ -375,13 +380,13 @@ class CGHBVRQCriteria extends CGCriteria {
         // It DOES have sub criteria, then it is a task with ranges which we need to display differently
         else
         {
-            
+                        
             $ranges = $this->get_all_possible_ranges();
             $rNum = 0;
-            
-            
+
+
             $tName = str_replace(" ", "_", htmlentities($this->name, ENT_QUOTES));
-            
+
             // Hidden overall task cell
             $tValue = $this->get_student_value();
             $img = $CFG->wwwroot . '/blocks/bcgt/plugins/bcgtcg/pix/grid_symbols/core/icon_NotAttempted.png';
@@ -449,9 +454,9 @@ class CGHBVRQCriteria extends CGCriteria {
 //            }
 //                
 
-            
-                        
-            
+
+
+
             foreach($ranges as $range)
             {
                 $rNum++;
@@ -551,7 +556,7 @@ class CGHBVRQCriteria extends CGCriteria {
 
                         $output .= "&nbsp;<select class='updateRangeAward' id='grid_S{$this->studentID}_R{$range->id}' qualID='{$this->qualID}' unitID='{$unit->get_id()}' rangeID='{$range->id}' studentID='{$this->studentID}' grid='{$grid}'>";
                         $output .= "<option value='-1'></option>";
-                                                
+
                             $grades = $this->get_met_values( CGHBVRQQualification::ID );                
                             if ($grades)
                             {
@@ -575,7 +580,7 @@ class CGHBVRQCriteria extends CGCriteria {
                                 }
                             }
 
-                        
+
                         $output .= "</select>";
 
                         // Set new award date for this criteria
@@ -589,8 +594,8 @@ class CGHBVRQCriteria extends CGCriteria {
                 }
 
             }
-            
-            
+
+
             if ($colspan > 1 && $rNum < $colspan)
             {
                 for ($i = $rNum; $i < $colspan; $i++)
@@ -598,7 +603,7 @@ class CGHBVRQCriteria extends CGCriteria {
                     $output .= "<td class='blank'></td>";
                 }
             }
-                        
+                                    
             
         }
         
@@ -703,6 +708,125 @@ class CGHBVRQCriteria extends CGCriteria {
             return $output;
         
     }
+    
+    
+   public function build_sub_criteria_table($grid, $noEdit = false)
+   {
+   
+      
+        $output = "";
+                
+        $output .= "<table id='rangePopupTable'>";
+        
+            $output .= "<tr class='lightpink'>";
+                $output .= "<th>Criteria</th><th>Details</th><th>Award Date</th>";
+            $output .= "</tr>";
+            
+            // Loop sub criteria
+            $subCriteria = $this->get_sub_criteria();
+            
+            if ($subCriteria)
+            {
+                
+                foreach($subCriteria as $criterion)
+                {
+                                                            
+                    $date = '';
+                    $awardDate = $criterion->get_award_date();
+                    if ($awardDate != '' && $awardDate > 0)
+                    {
+                        $date = $criterion->get_award_date('d-m-Y');
+                    }
+                                        
+                    $output .= "<tr>";
+                        $output .= "<td>{$criterion->get_name()}</td>";
+                        $output .= "<td>{$criterion->get_details()}</td>";
+                        $output .= "<td><input type='text' style='width:70px;' studentID='{$this->studentID}' qualID='{$this->qualID}' unitID='{$this->unitID}' criteriaID='{$criterion->get_id()}' grid='{$grid}' setAchieved='1' class='datePickerCriteria' value='{$date}' /></td>";
+                    $output .= "</tr>";
+                    
+                }
+                
+            }
+            
+                        
+            $output .= "<tr class='pink'>";
+            
+                $valueObj = $this->get_student_value();
+                $value = 'N/A';
+                $longValue = '';
+                $studentValueID = null;
+                if ($valueObj)
+                {
+                    $studentValueID = $valueObj->get_id();
+                    $value = $valueObj->get_short_value();
+                    $longValue = $valueObj->get_value();
+                }
+
+                $image = CGQualification::get_simple_grid_images($value, $longValue);
+                $img = ($image) ? $image->image : '';
+            
+                $output .= "<th>Value:</th><td colspan='2'>";
+                
+                if ($noEdit)
+                {
+                    $output .= "<img src='{$img}' />";
+                }
+                else
+                {
+                    // Select menu
+                    $output .= "<select name='cID_".$this->get_id()."' class='criteriaValueSelect' grid='{$grid}' criteriaid='{$this->get_id()}' unitid='{$this->unitID}' qualid='{$this->qualID}' studentid='{$this->studentID}' style='width:100px;'>";
+                    $output .= "<option value='-1'></option>";
+
+                    $grade = $this->get_achieved_value();                
+
+                    if ($grade)
+                    {
+                        $chk = ($studentValueID == $grade->id) ? 'selected' : '';
+                        $output .= "<option value='{$grade->id}' {$chk}>{$grade->shortvalue} - {$grade->value}</option>";
+                    }
+
+
+                    // Now do the rest of the values, such as late, referred, etc...
+                    $possibleValues = $this->get_non_met_values( $this->get_tracking_type() );
+                    if ($possibleValues)
+                    {
+                        foreach($possibleValues as $value)
+                        {
+                            $chk = ($studentValueID == $value->id) ? 'selected' : '';
+                            $output .= "<option value='{$value->id}' {$chk}>{$value->shortvalue} - {$value->value}</option>";
+                        }
+                    }
+
+                    $output .= "</select>";
+                    
+                }
+                
+                $output .= "</td>";
+            $output .= "</tr>";
+            $output .= "<tr class='pink'>";
+                $output .= "<th>Date:</th>";
+                $output .= "<td colspan='2'>";
+                    
+                if ($noEdit)
+                {
+                    $date = ($this->awardDate && $this->awardDate > 0) ? $this->get_award_date('d M Y', $this->awardDate) : 'N/A';
+                    $output .= $date;
+                }
+                else
+                {
+                    $date = ($this->awardDate && $this->awardDate > 0) ? $this->get_award_date('d-m-Y', $this->awardDate) : '';
+                        $output .= "<input style='width:70px;' studentID='{$this->studentID}' qualID='{$this->qualID}' unitID='{$this->unitID}' criteriaID='{$this->id}' grid='{$grid}' class='datePickerCriteria ' type='text' value='{$date}' />";
+                }
+                
+                $output .= "</td>";
+            $output .= "</tr>";
+        
+        
+        $output .= "</table>";
+        return $output;
+       
+   }
+    
     
     
     

@@ -63,8 +63,8 @@ class elbp_target_grades extends Plugin {
         global $DB;
         
         $return = true;
-        $pluginID = $this->createPlugin();
-        $return = $return && $pluginID;
+        $this->id = $this->createPlugin();
+        $return = $return && $this->id;
         
         
         // [Any extra tables are handled by the bcgt block itself]
@@ -73,6 +73,7 @@ class elbp_target_grades extends Plugin {
         
         // Reporting elements for bc_dashboard reporting wizard
         $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt_target_grades:aspgrades", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt_target_grades:percentwithaspgrades", "getstringcomponent" => "block_bcgt"));
         
         // Hooks
         
@@ -90,7 +91,7 @@ class elbp_target_grades extends Plugin {
         
         $return = true;
         $version = $this->version; # This is the current DB version we will be using to upgrade from     
-        
+
        
         if ($version < 2013102401)
         {
@@ -100,6 +101,14 @@ class elbp_target_grades extends Plugin {
             $this->updatePlugin();
             \mtrace("## Inserted plugin_report_element data for plugin: {$this->title}");
             
+        }
+        
+        if ($version < 2014012402)
+        {
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt_target_grades:percentwithaspgrades", "getstringcomponent" => "block_bcgt"));
+            $this->version = 2014012402;
+            $this->updatePlugin();
+            \mtrace("## Inserted plugin_report_element data for plugin: {$this->title}");
         }
     
     
@@ -182,69 +191,75 @@ class elbp_target_grades extends Plugin {
         
         // Some overal variables for counting
         $totalStudents = count($students);
+        $totalWithAspirational = 0;
         
         $aspGrades = '-';
                   
-        // We can't get any overalls here, so only bother once we're looking at indivudla students
-        if ($totalStudents == 1)
-        {
         
-            // Loop students and find all their targets
-            foreach($students as $student)
+        // Loop students and find all their targets
+        foreach($students as $student)
+        {
+
+            $this->loadStudent($student->id);
+
+            $quals = $this->getStudentsQualifications();
+            $courses = $this->getStudentsCoursesWithoutQualifications();
+
+
+            $a = array();
+            if ($quals)
             {
-
-                $this->loadStudent($student->id);
-
-                $quals = $this->getStudentsQualifications();
-                $courses = $this->getStudentsCoursesWithoutQualifications();
-                
-                
-                $a = array();
-                if ($quals)
+                foreach($quals as $qual)
                 {
-                    foreach($quals as $qual)
+
+                    $grade = $this->getAspirationalTargetGrade($qual->get_id());
+                    if (is_array($grade)) $grade = reset($grade);
+
+                    if ($grade && isset($grade->grade) && $grade->grade)
                     {
-                        
-                        $grade = $this->getAspirationalTargetGrade($qual->get_id());
-                        if (is_array($grade)) $grade = reset($grade);
-                       
-                        if ($grade && isset($grade->grade) && $grade->grade)
-                        {
-                            $a[] = $qual->get_display_name(false) . ' [' . $grade->grade . ']';
-                        }
-                        
+                        $a[] = $qual->get_display_name(false) . ' [' . $grade->grade . ']';
                     }
-                                        
+
                 }
-                
-                if ($courses)
-                {
-                    foreach($courses as $course)
-                    {
-                        
-                        $grade = $this->getAspirationalTargetGradeCourse($course->id);
-                        if (is_array($grade)) $grade = reset($grade);
-                        
-                        if ($grade && isset($grade->grade) && $grade->grade)
-                        {
-                            $a[] = $course->fullname . ' [' . $grade->grade . ']';
-                        }
-                        
-                    }
-                                        
-                }
-                
-                
-                $aspGrades = implode(",\n ", $a);
-                
 
             }
-        
+
+            if ($courses)
+            {
+                foreach($courses as $course)
+                {
+
+                    $grade = $this->getAspirationalTargetGradeCourse($course->id);
+                    if (is_array($grade)) $grade = reset($grade);
+
+                    if ($grade && isset($grade->grade) && $grade->grade)
+                    {
+                        $a[] = $course->fullname . ' [' . $grade->grade . ']';
+                    }
+
+                }
+
+            }
+
+
+            // We can't get any overalls here, so only bother once we're looking at individual students
+            if ($totalStudents == 1)
+            {
+                $aspGrades = implode(",\n ", $a);
+            }
+            
+            if (!empty($a))
+            {
+                $totalWithAspirational++;
+            }
+
+
         }
-                       
+                               
         
         // Totals
         $data['reports:bcgt_target_grades:aspgrades'] = $aspGrades;
+        $data['reports:bcgt_target_grades:percentwithaspgrades'] = ($totalWithAspirational) ? round( ($totalWithAspirational / $totalStudents) * 100, 2 ) : 0;
 
         
         $names = array();
