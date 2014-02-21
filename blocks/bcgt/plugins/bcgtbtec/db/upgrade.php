@@ -4288,6 +4288,15 @@ function xmldb_block_bcgtbtec_upgrade($oldversion = 0)
     
     if($oldversion < 2014021700)
     {
+	
+		// Changing nullability of field ucaspoints on table block_bcgt_target_grades to null
+        $table = new xmldb_table('block_bcgt_target_grades');
+        $field = new xmldb_field('ucaspoints', XMLDB_TYPE_NUMBER, '5, 2', null, null, null, null, 'grade');
+
+        // Launch change of nullability for field ucaspoints
+        $dbman->change_field_notnull($table, $field);
+		
+	
         //the Pass/ Fa
         //targetr grade
         //breakdown
@@ -4866,6 +4875,8 @@ function xmldb_block_bcgtbtec_upgrade($oldversion = 0)
             $DB->update_record('block_bcgt_target_breakdown', $record);
         }
     }
+	
+
     
     
 }
