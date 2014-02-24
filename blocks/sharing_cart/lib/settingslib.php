@@ -1,6 +1,8 @@
-<?php // $Id: settingslib.php 919 2013-03-07 02:08:18Z malu $
+<?php // $Id: settingslib.php 934 2013-03-26 00:50:29Z malu $
 
 defined('MOODLE_INTERNAL') || die;
+
+require_once __DIR__.'/../../../question/engine/bank.php';
 
 /**
  * Multiple checkboxes with icons for each label

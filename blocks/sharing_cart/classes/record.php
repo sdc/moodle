@@ -54,7 +54,7 @@ class record
 	{
 		$record = $GLOBALS['DB']->get_record(self::TABLE, array('id' => $id));
 		if (!$record)
-			throw new exception('record_id');
+			throw new exception('recordnotfound');
 		return new self($record);
 	}
 	
@@ -69,7 +69,7 @@ class record
 			$this->weight = self::WEIGHT_BOTTOM;
 		$this->id = $GLOBALS['DB']->insert_record(self::TABLE, $this);
 		if (!$this->id)
-			throw new exception('record');
+			throw new exception('unexpectederror');
 		self::renumber($this->userid);
 	}
 	
@@ -81,7 +81,7 @@ class record
 	public function update()
 	{
 		if (!$GLOBALS['DB']->update_record(self::TABLE, $this))
-			throw new exception('record');
+			throw new exception('unexpectederror');
 		self::renumber($this->userid);
 	}
 	
@@ -92,25 +92,22 @@ class record
 	 */
 	public function delete()
 	{
-		if (!$GLOBALS['DB']->delete_records(self::TABLE,
-			array('id' => $this->id)))
-		{
-			throw new exception('record');
-		}
+		$GLOBALS['DB']->delete_records(self::TABLE, array('id' => $this->id));
 		self::renumber($this->userid);
 	}
 	
 	/**
 	 *  Renumber all items sequentially
 	 *  
-	 *  @param int $user_id = $USER->id
-	 *  @throws exception
+	 * @global \moodle_database $DB
+	 * @global \stdClass $USER
+	 * @param int $userid = $USER->id
+	 * @throws exception
 	 */
-	public static function renumber($user_id = null)
+	public static function renumber($userid = null)
 	{
-		if ($items = $GLOBALS['DB']->get_records(self::TABLE,
-			array('userid' => $user_id ?: $GLOBALS['USER']->id)))
-		{
+		global $DB, $USER;
+		if ($items = $DB->get_records(self::TABLE, array('userid' => $userid ?: $USER->id))) {
 			$tree = array();
 			foreach ($items as $it) {
 				if (!isset($tree[$it->tree]))
@@ -127,11 +124,7 @@ class record
 					return strnatcasecmp($lhs->modtext, $rhs->modtext);
 				});
 				foreach ($items as $i => $it) {
-					if (!$GLOBALS['DB']->set_field(self::TABLE,
-						'weight', 1 + $i, array('id' => $it->id)))
-					{
-					    throw new exception('record');
-					}
+					$DB->set_field(self::TABLE, 'weight', 1 + $i, array('id' => $it->id));
 				}
 			}
 		}

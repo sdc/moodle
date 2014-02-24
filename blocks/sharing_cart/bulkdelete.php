@@ -3,7 +3,7 @@
  *  Sharing Cart - Bulk Delete Operation
  *  
  *  @author  VERSION2, Inc.
- *  @version $Id: bulkdelete.php 905 2012-12-05 05:36:52Z malu $
+ *  @version $Id: bulkdelete.php 942 2013-03-28 10:42:54Z malu $
  */
 
 require_once '../../config.php';
@@ -11,6 +11,14 @@ require_once '../../config.php';
 require_once __DIR__.'/classes/storage.php';
 require_once __DIR__.'/classes/record.php';
 require_once __DIR__.'/classes/renderer.php';
+
+if (false) {
+    $DB     = new mysqli_native_moodle_database;
+    $CFG    = new stdClass;
+    $USER   = new stdClass;
+    $PAGE   = new moodle_page;
+    $OUTPUT = new core_renderer;
+}
 
 $courseid = required_param('course', PARAM_INT);
 $returnurl = new moodle_url('/course/view.php', array('id' => $courseid));
@@ -29,7 +37,7 @@ if (is_array($delete_param)) try {
 	list ($sql, $params) = $DB->get_in_or_equal($delete_ids);
 	$records = $DB->get_records_select(sharing_cart\record::TABLE, "userid = $USER->id AND id $sql", $params);
 	if (!$records)
-		throw new sharing_cart\exception('record_id');
+		throw new sharing_cart\exception('recordnotfound');
 	
 	$storage = new sharing_cart\storage();
 	
@@ -45,27 +53,30 @@ if (is_array($delete_param)) try {
 	sharing_cart\record::renumber($USER->id);
 	
 	redirect($returnurl);
+} catch (sharing_cart\exception $ex) {
+	print_error($ex->errorcode, $ex->module, $returnurl, $ex->a);
 } catch (Exception $ex) {
 	if (!empty($CFG->debug) and $CFG->debug >= DEBUG_DEVELOPER) {
 		print_error('notlocalisederrormessage', 'error', '', $ex->__toString());
 	} else {
-		print_error('err:delete', 'block_sharing_cart', $returnurl);
+		print_error('unexpectederror', 'block_sharing_cart', $returnurl);
 	}
 }
 
 $orderby = 'tree,weight,modtext';
-if ($CFG->dbtype == 'mssql' || $CFG->dbtype == 'sqlsrv') {
-	// MS SQL Server does not support ordering by TEXT field.
+if ($DB->get_dbfamily() == 'mssql' || $DB->get_dbfamily() == 'oracle') {
+	// SQL Server and Oracle do not support ordering by TEXT field.
 	$orderby = 'tree,weight,CAST(modtext AS VARCHAR(255))';
 }
 $items = $DB->get_records(sharing_cart\record::TABLE, array('userid' => $USER->id), $orderby);
 
 $title = get_string('bulkdelete', 'block_sharing_cart');
 
+$PAGE->set_pagelayout('standard');
 $PAGE->set_url('/blocks/sharing_cart/bulkdelete.php', array('course' => $courseid));
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
-$PAGE->navbar->add($title, '');
+$PAGE->navbar->add(get_string('pluginname', 'block_sharing_cart'))->add($title, '');
 
 echo $OUTPUT->header();
 {
@@ -122,15 +133,15 @@ echo $OUTPUT->header();
 			}
 		//]]>
 		</script>
-		<form action="', new moodle_url('/blocks/sharing_cart/bulkdelete.php'), '"
+		<form action="', $PAGE->url->out_omit_querystring(), '"
 		 method="post" id="form" onsubmit="return confirm_delete_selected();">
 		<div style="display:none;">
-			<input type="hidden" name="course" value="', $courseid, '" />
+        	' . html_writer::input_hidden_params($PAGE->url) . '
 		</div>
 		<div><label style="cursor:default;">
 			<input type="checkbox" checked="checked" onclick="check_all(this);"
 			 style="height:16px; vertical-align:middle;" />
-			<span>', get_string('checkall'), '</span>
+			<span>', get_string('selectall'), '</span>
 		</label></div>';
 		
 		$i = 0;
