@@ -2,10 +2,22 @@
  *  Sharing Cart
  *  
  *  @author  VERSION2, Inc.
- *  @version $Id: module.js 908 2012-12-05 08:09:10Z malu $
+ *  @version $Id: module.js 938 2013-03-27 07:06:39Z malu $
  */
 YUI.add('block_sharing_cart', function (Y)
 {
+    if (!Array.prototype.map) {
+        // IE8 workaround
+        Array.prototype.map = function (callback, thisObject)
+        {
+            var length = this.length;
+            var result = new Array(length);
+            for (var i = 0; i < length; i++)
+                result[i] = callback.call(thisObject, this[i], i, this);
+            return result;
+        }
+    }
+
     M.block_sharing_cart = new function ()
     {
         /** @var {Object}  The icon configurations */
@@ -19,8 +31,8 @@ YUI.add('block_sharing_cart', function (Y)
             'delete'  : { css: 'editing_update' , pix: 't/delete'  },
             'restore' : { css: 'editing_restore', pix: 'i/restore' },
             // directories
-            'dir-open'   : { pix: 'i/open'   },
-            'dir-closed' : { pix: 'i/closed' }
+            'dir-open'   : { pix: 'f/folder-open'   },
+            'dir-closed' : { pix: 'f/folder' }
         };
         /** @var {Object}  The shortcut to the strings */
         var str = Y.merge(M.str.moodle, M.str.block_sharing_cart);
@@ -29,9 +41,11 @@ YUI.add('block_sharing_cart', function (Y)
         var $block = Y.Node.one('.block_sharing_cart');
 
         /** @var {Object}  The current course */
-        var course = {
-            id: $block.one('a.editing_edit').get('href').match(/\/course\/view\.php\?id=(\d+)/)[1]
-        };
+        var course = (function ()
+        {
+            var m = /\/course\/view\.php\?id=(\d+)/.exec(location.href);
+            return m ? { id: m[1] } : null;
+        })();
 
         /**
          *  Shows an error message with given Ajax error
@@ -197,7 +211,7 @@ YUI.add('block_sharing_cart', function (Y)
                         .addClass('move-' + id + '-to-' + to)
                         .set('title', str['movehere'])
                         .append(
-                            Y.Node.create('<img/>')
+                            Y.Node.create('<img class="movetarget"/>')
                                 .set('alt', str['movehere'])
                                 .set('src', M.util.image_url('movehere'))
                             );
@@ -260,9 +274,10 @@ YUI.add('block_sharing_cart', function (Y)
                 
                 var $item = $block.one('#block_sharing_cart-item-' + id);
                 
-                $clipboard = Y.Node.create('<div/>');
+                $clipboard = Y.Node.create('<div class="clipboard"/>');
                 var $cancel = create_command('cancel');
                 var $view = $item.one('div').cloneNode(true).setStyle('display', 'inline');
+                $view.set('className', $view.get('className').replace(/mod-indent-\d+/, ''));
                 $view.one('.commands').remove();
                 $cancel.on('click', this.hide, this);
                 $clipboard.append(str['clipboard'] + ":").append($view).append($cancel);
@@ -283,7 +298,7 @@ YUI.add('block_sharing_cart', function (Y)
                         .set('href', href)
                         .set('title', str['copyhere'])
                         .append(
-                            Y.Node.create('<img/>')
+                            Y.Node.create('<img class="movetarget"/>')
                                 .set('alt', str['copyhere'])
                                 .set('src', M.util.image_url('movehere'))
                             );
@@ -381,50 +396,55 @@ YUI.add('block_sharing_cart', function (Y)
             //var modtype = $activity.get('className').match(/modtype_(\w+)/)[1];
             var cmid = $activity.get('id').match(/(\d+)$/)[1];
             
-            Y.io(get_action_url('rest'), {
-                method: 'POST',
-                data: { 'action': 'is_userdata_copyable', 'cmid': cmid },
-                on: {
-                    success: function (tid, response)
+            (function (on_success)
+            {
+                Y.io(get_action_url('rest'), {
+                    method: 'POST',
+                    data: { 'action': 'is_userdata_copyable', 'cmid': cmid },
+                    on: {
+                        success: function (tid, response) { on_success(response); },
+                        failure: function (tid, response) { show_error(response); }
+                    }
+                });
+            })(function (response)
+            {
+                function embed_cmid(cmid)
+                {
+                    return '<!-- #cmid=' + cmid + ' -->';
+                }
+                function parse_cmid(question)
+                {
+                    return /#cmid=(\d+)/.exec(question)[1];
+                }
+                var copyable = response.responseText == '1';
+                if (copyable) {
+                    var $yesnocancel = new M.block_sharing_cart.yesnocancel({
+                        title: str['backup'],
+                        question: str['confirm_userdata'] + embed_cmid(cmid),
+                        yesLabel: str['yes'], noLabel: str['no'], cancelLabel: str['cancel']
+                    });
+                    $yesnocancel.on('complete-yes', function (e)
                     {
-                        function embed_cmid(cmid)
-                        {
-                            return '<!-- #cmid=' + cmid + ' -->';
-                        }
-                        function parse_cmid(question)
-                        {
-                            return /#cmid=(\d+)/.exec(question)[1];
-                        }
-                        var copyable = response.responseText == '1';
-                        if (copyable) {
-                            var $yesnocancel = new M.block_sharing_cart.yesnocancel({
-                                title: str['backup'],
-                                question: str['confirm_userdata'] + embed_cmid(cmid),
-                                yesLabel: str['yes'], noLabel: str['no'], cancelLabel: str['cancel']
-                            });
-                            $yesnocancel.on('complete-yes', function (e)
-                            {
-                                backup(parse_cmid(this.get('question')), true);
-                            });
-                            $yesnocancel.on('complete-no', function (e)
-                            {
-                                backup(parse_cmid(this.get('question')), false);
-                            });
-                        } else {
-                            //if (confirm(str['confirm_backup']))
-                            //    backup(cmid, false);
-                            var $okcancel = new M.core.confirm({
-                                title: str['backup'],
-                                question: str['confirm_backup'] + embed_cmid(cmid),
-                                yesLabel: str['ok'], noLabel: str['cancel']
-                            });
-                            $okcancel.on('complete-yes', function (e)
-                            {
-                                backup(parse_cmid(this.get('question')), false);
-                            });
-                        }
-                    },
-                    failure: function (tid, response) { show_error(response); }
+                        backup(parse_cmid(this.get('question')), true);
+                    });
+                    $yesnocancel.on('complete-no', function (e)
+                    {
+                        backup(parse_cmid(this.get('question')), false);
+                    });
+                    $yesnocancel.show();
+                } else {
+                    //if (confirm(str['confirm_backup']))
+                    //    backup(cmid, false);
+                    var $okcancel = new M.core.confirm({
+                        title: str['backup'],
+                        question: str['confirm_backup'] + embed_cmid(cmid),
+                        yesLabel: str['ok'], noLabel: str['cancel']
+                    });
+                    $okcancel.on('complete-yes', function (e)
+                    {
+                        backup(parse_cmid(this.get('question')), false);
+                    });
+                    $okcancel.show();
                 }
             });
         }
@@ -540,6 +560,7 @@ YUI.add('block_sharing_cart', function (Y)
                     failure: function (tid, response) { show_error(response); }
                 }
             });
+            e.stopPropagation();
         }
 
         /**
@@ -575,6 +596,10 @@ YUI.add('block_sharing_cart', function (Y)
          */
         this.init_tree = function ()
         {
+            var actions = [ 'movedir', 'move', 'delete' ];
+            if (course)
+                actions.push('restore');
+            
             // initialize items
             $block.all('li.activity').each(function ($item)
             {
@@ -594,7 +619,7 @@ YUI.add('block_sharing_cart', function (Y)
 //                drag.on('drag:end', this.drag_end, this);
                 
                 var $commands = $item.one('.commands');
-                Y.Array.each([ 'movedir', 'move', 'delete', 'restore' ], function (action)
+                Y.Array.each(actions, function (action)
                 {
                     var $command = create_command(action);
                     $command.on('click', this['on_' + action], this);

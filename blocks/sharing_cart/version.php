@@ -1,8 +1,9 @@
-<?php // $Id: version.php 914 2013-02-13 01:01:45Z malu $
+<?php
 
-defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2013021300;
+$plugin->version   = 2014021400;
 $plugin->requires  = 2012062501.00; // Moodle 2.3.1
 $plugin->component = 'block_sharing_cart';
-$plugin->release   = '2.4, release 1 patch 2';
+$plugin->release   = '2.6, release 1 patch 2';
+$plugin->maturity  = MATURITY_STABLE;
