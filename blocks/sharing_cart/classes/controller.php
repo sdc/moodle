@@ -33,16 +33,20 @@ class controller
 	/**
 	 *  Render an item tree
 	 *  
+	 *  @global \moodle_database $DB
+	 *  @global object $USER
 	 *  @param int $userid = $USER->id
 	 *  @return string HTML
 	 */
 	public function render_tree($userid = null)
 	{
+		global $DB, $USER;
+
 		require_once __DIR__.'/renderer.php';
 		
 		// build an item tree from flat records
-		$records = $GLOBALS['DB']->get_records(record::TABLE,
-			array('userid' => $userid ?: $GLOBALS['USER']->id)
+		$records = $DB->get_records(record::TABLE,
+			array('userid' => $userid ?: $USER->id)
 			);
 		$tree = array();
 		foreach ($records as $record) {
@@ -94,13 +98,19 @@ class controller
 	{
 		$cm = \get_coursemodule_from_id(null, $cmid, 0, false, MUST_EXIST);
 		$modtypes = \get_config('block_sharing_cart', 'userdata_copyable_modtypes');
+		$context = \context_module::instance($cm->id);
 		return in_array($cm->modname, explode(',', $modtypes))
-			&& \has_capability('moodle/backup:userinfo', \context_module::instance($cm->id));
+			&& \has_capability('moodle/backup:userinfo', $context)
+			&& \has_capability('moodle/backup:anonymise', $context)
+			&& \has_capability('moodle/restore:userinfo', $context);
 	}
 	
 	/**
 	 *  Backup a module into Sharing Cart
 	 *  
+	 *  @global object $CFG
+	 *  @global \moodle_database $DB
+	 *  @global object $USER
 	 *  @param int     $cmid
 	 *  @param boolean $userdata
 	 *  @throws \moodle_exception
@@ -117,6 +127,8 @@ class controller
 		\require_capability('moodle/backup:backupactivity', $context);
 		if ($userdata) {
 			\require_capability('moodle/backup:userinfo', $context);
+			\require_capability('moodle/backup:anonymise', $context);
+			\require_capability('moodle/restore:userinfo', $context);
 		}
 		self::validate_sesskey();
 		
@@ -141,7 +153,10 @@ class controller
 			'logs'             => false,
 			'grade_histories'  => false,
 			);
-		if (\has_capability('moodle/backup:userinfo', $context)) {
+		if (\has_capability('moodle/backup:userinfo', $context) &&
+			\has_capability('moodle/backup:anonymise', $context) &&
+			\has_capability('moodle/restore:userinfo', $context))
+		{
 			// set the userdata flags only if the operator has capability
 			$settings += array(
 				'users'     => $userdata,
@@ -193,6 +208,9 @@ class controller
 	/**
 	 *  Restore an item into a course section
 	 *  
+	 *  @global object $CFG
+	 *  @global \moodle_database $DB
+	 *  @global object $USER
 	 *  @param int $id
 	 *  @param int $courseid
 	 *  @param int $sectionnumber
@@ -216,7 +234,7 @@ class controller
 		// validate parameters and capabilities
 		$record = record::from_id($id);
 		if ($record->userid != $USER->id)
-			throw new exception('capability');
+			throw new exception('forbidden');
 		$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 		$section = $DB->get_record('course_sections',
 			array('course' => $course->id, 'section' => $sectionnumber), '*', MUST_EXIST);
@@ -227,18 +245,17 @@ class controller
 		
 		// prepare the temporary directory and generate a temporary name
 		$tempdir = self::get_tempdir();
-		$tempname = time() . mt_rand();
+		$tempname = \restore_controller::get_tempdir_name($course->id, $USER->id);
 		
 		// copy the backup archive into the temporary directory
-		$temppack = \restore_controller::get_tempdir_name($course->id, $USER->id);
 		$storage = new storage();
 		$file = $storage->get($record->filename);
-		$file->copy_content_to("$tempdir/$temppack");
-		$tempfiles[] = "$tempdir/$temppack";
+		$file->copy_content_to("$tempdir/$tempname.mbz");
+		$tempfiles[] = "$tempdir/$tempname.mbz";
 		
 		// extract the archive in the temporary directory
-		$packer = new \zip_packer();
-		$packer->extract_to_pathname("$tempdir/$temppack", "$tempdir/$tempname");
+		$packer = \get_file_packer('application/vnd.moodle.backup');
+		$packer->extract_to_pathname("$tempdir/$tempname.mbz", "$tempdir/$tempname");
 		$tempfiles[] = "$tempdir/$tempname";
 		
 		// restore a module from the extracted files
@@ -249,7 +266,7 @@ class controller
 			if ($task->setting_exists('overwrite_conf'))
 				$task->get_setting('overwrite_conf')->set_value(false);
 		}
-		if (get_config('block_sharing_cart', 'workaround_qtypes')) {
+		if (\get_config('block_sharing_cart', 'workaround_qtypes')) {
 			\restore_fix_missings_helper::fix_plan($controller->get_plan());
 		}
 		$controller->set_status(\backup::STATUS_AWAITING);
@@ -271,14 +288,17 @@ class controller
 	/**
 	 *  Move a shared item into a directory
 	 *  
+	 *  @global object $USER
 	 *  @param int $id
 	 *  @param string $path
 	 */
 	public function movedir($id, $path)
 	{
+		global $USER;
+
 		$record = record::from_id($id);
-		if ($record->userid != $GLOBALS['USER']->id)
-			throw new exception('capability');
+		if ($record->userid != $USER->id)
+			throw new exception('forbidden');
 		self::validate_sesskey();
 		
 		$components = array_filter(explode('/', $path), 'strlen');
@@ -293,14 +313,18 @@ class controller
 	/**
 	 *  Move a shared item to a position of another item
 	 *  
+	 *  @global \moodle_database $DB
+	 *  @global object $USER
 	 *  @param int $id  The record ID to move
 	 *  @param int $to  The record ID of the desired position or zero for move to bottom
 	 */
 	public function move($id, $to)
 	{
+		global $DB, $USER;
+
 		$record = record::from_id($id);
-		if ($record->userid != $GLOBALS['USER']->id)
-			throw new exception('capability');
+		if ($record->userid != $USER->id)
+			throw new exception('forbidden');
 		self::validate_sesskey();
 		
 		// get the weight of desired position
@@ -309,10 +333,10 @@ class controller
 			: record::WEIGHT_BOTTOM;
 		
 		// shift existing items under the desired position
-		$GLOBALS['DB']->execute(
+		$DB->execute(
 			'UPDATE {' . record::TABLE . '} SET weight = weight + 1
 			 WHERE userid = ? AND tree = ? AND weight >= ?',
-			array($GLOBALS['USER']->id, $record->tree, $record->weight)
+			array($USER->id, $record->tree, $record->weight)
 			);
 		
 		$record->update();
@@ -321,14 +345,17 @@ class controller
 	/**
 	 *  Delete a shared item by record ID
 	 *  
+	 *  @global object $USER
 	 *  @param int $id
 	 *  @throws \moodle_exception
 	 */
 	public function delete($id)
 	{
+		global $USER;
+
 		$record = record::from_id($id);
-		if ($record->userid != $GLOBALS['USER']->id)
-			throw new exception('capability');
+		if ($record->userid != $USER->id)
+			throw new exception('forbidden');
 		self::validate_sesskey();
 		
 		$storage = new storage();
@@ -340,14 +367,16 @@ class controller
 	/**
 	 *  Get the path to the temporary directory for backup
 	 *  
+	 *  @global object $CFG
 	 *  @return string
 	 *  @throws exception
 	 */
 	public static function get_tempdir()
 	{
-		$tempdir = $GLOBALS['CFG']->dataroot . '/temp/backup';
+		global $CFG;
+		$tempdir = $CFG->dataroot . '/temp/backup';
 		if (!\check_dir_exists($tempdir, true, true))
-			throw new exception('tempdir');
+			throw new exception('unexpectederror');
 		return $tempdir;
 	}
 	
@@ -365,19 +394,21 @@ class controller
 		} catch (\moodle_exception $ex) {
 			unset($ex);
 		}
-		throw new exception('invalid');
+		throw new exception('invalidoperation');
 	}
 	
 	/**
 	 *  Get the intro HTML of the course module
 	 *  
+	 *  @global \moodle_database $DB
 	 *  @param object $cm
 	 *  @return string
 	 */
 	public static function get_cm_intro($cm)
 	{
+		global $DB;
 		if (!property_exists($cm, 'extra')) {
-			$mod = $GLOBALS['DB']->get_record_sql(
+			$mod = $DB->get_record_sql(
 				'SELECT m.id, m.name, m.intro, m.introformat
 					FROM {'.$cm->modname.'} m, {course_modules} cm
 					WHERE m.id = cm.instance AND cm.id = :cmid',
@@ -391,6 +422,7 @@ class controller
 	/**
 	 *  Get the icon for the course module
 	 *  
+	 *  @global object $CFG
 	 *  @param object $cm
 	 *  @return string
 	 */
