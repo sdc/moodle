@@ -3,7 +3,7 @@
  *  Sharing Cart block
  *  
  *  @author  VERSION2, Inc.
- *  @version $Id: block_sharing_cart.php 914 2013-02-13 01:01:45Z malu $
+ *  @version $Id: block_sharing_cart.php 948 2013-03-28 12:14:34Z malu $
  */
 
 require_once __DIR__.'/classes/controller.php';
@@ -13,12 +13,19 @@ class block_sharing_cart extends block_base
 	public function init()
 	{
 		$this->title   = get_string('pluginname', __CLASS__);
-		$this->version = 2013021300;
+		$this->version = 2014021400;
 	}
 
 	public function applicable_formats()
 	{
-		return array('course' => true, 'course-category' => false);
+		return array(
+			'course'          => true,
+			'course-category' => false,
+			'mod'             => false,
+			'my'              => false,
+			'tag'             => false,
+			'admin'           => false,
+			);
 	}
 
 	public function instance_can_be_docked()
@@ -57,8 +64,14 @@ class block_sharing_cart extends block_base
 		
 		if (empty($CFG->enableajax)) {
 			$html = $this->get_content_noajax();
+		} else {
+			$noscript = html_writer::tag('noscript',
+				html_writer::tag('div', get_string('requirejs', __CLASS__), array('class' => 'error'))
+				);
+			$html = $noscript . $html;
 		}
 		
+		$this->page->requires->css('/blocks/sharing_cart/styles.css');
 		$this->page->requires->js('/blocks/sharing_cart/module.js');
 		$this->page->requires->yui_module('block_sharing_cart', 'M.block_sharing_cart.init', array(), null, true);
 		$this->page->requires->strings_for_js(
@@ -89,7 +102,7 @@ class block_sharing_cart extends block_base
 		
 		// link to bulkdelete
 		$alt = get_string('bulkdelete', __CLASS__);
-		$src = new moodle_url('/blocks/sharing_cart/pix/bulkdelete.gif');
+		$src = $OUTPUT->pix_url('bulkdelete', __CLASS__);
 		$url = new moodle_url('/blocks/sharing_cart/bulkdelete.php', array('course' => $this->page->course->id));
 		$bulkdelete = '<a class="icon editing_bulkdelete" title="' . $alt . '" href="' . $url . '">'
 		            . '<img src="' . $src . '" alt="' . $alt . '" />'
@@ -111,7 +124,7 @@ class block_sharing_cart extends block_base
 	{
 		global $OUTPUT;
 		
-		$html = '<div class="error">' . get_string('err:requireajax', __CLASS__) . '</div>';
+		$html = '<div class="error">' . get_string('requireajax', __CLASS__) . '</div>';
 		if (has_capability('moodle/site:config', context_system::instance())) {
 			$url = new moodle_url('/admin/settings.php?section=ajax');
 			$link = '<a href="' . $url . '">' . get_string('ajaxuse') . '</a>';

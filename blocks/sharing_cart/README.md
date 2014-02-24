@@ -1,7 +1,7 @@
 Sharing Cart
 ============
 
-version 2.4, release 1 patch 2 - 2013.02.13
+version 2.6, release 1 patch 2 - 2014.02.14
 
 The "master" branch is no longer compatible with Moodle 2.2 or earlier.
 
@@ -11,8 +11,34 @@ The "master" branch is no longer compatible with Moodle 2.2 or earlier.
 Change Log
 ----------
 
+* 2.6, release 1 patch 2
+  * Support experimental setting "Enable new backup format"
+* 2.6, release 1 patch 1
+  * Fixed issue: PHP's numeric string does not work properly
+  * Improved indentation of cart items
+* 2.6, release 1
+  * Rename version number
+* 2.4, release 1 patch 9
+  * Improved capability checking (issue #10)
+* 2.4, release 1 patch 8
+  * Support Moodle 2.6
+* 2.4, release 1 patch 7
+  * Removed block/sharing_cart:myaddinstance capability (issue #6)
+  * Reduced unused strings and moved help content into lang file (issue #7)
+* 2.4, release 1 patch 6
+  * Add block/sharing_cart:myaddinstance capability (issue #6)
+  * Used wrong string from core in bulkdelete.php (issue #8)
+* 2.4, release 1 patch 5
+  * Fixed Sharing cart causing file upload box to hang (issue #3 of old repository)
+* 2.4, release 1 patch 4
+  * Improve icon usage and themability for Moodle 2.4 (pull request #2)
+  * Add element's html code to clipboard div without indents (issue #5)
+  * Notify user that JavaScript is needed for Sharing Cart functionality (issue #3)
+* 2.4, release 1 patch 3
+  * IE8 JavaScript workaround (CONTRIB-4209)
+  * HTML visible on settings screen (issue #1)
 * 2.4, release 1 patch 2
-  * Limit applicable formats (issue #2)
+  * Limit applicable formats (issue #2 of old repository)
   * lib.php is no longer required
 * 2.4, release 1 patch 1
   * Set instance_can_be_docked to false
