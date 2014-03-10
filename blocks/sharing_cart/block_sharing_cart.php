@@ -13,7 +13,7 @@ class block_sharing_cart extends block_base
 	public function init()
 	{
 		$this->title   = get_string('pluginname', __CLASS__);
-		$this->version = 2014021400;
+		$this->version = 2014022400;
 	}
 
 	public function applicable_formats()
