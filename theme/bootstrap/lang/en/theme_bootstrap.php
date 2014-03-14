@@ -21,18 +21,20 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Bootstrap';
+$string['pluginname'] = 'Bootstrap 3';
 $string['region-side-post'] = 'Right';
 $string['region-side-pre'] = 'Left';
+$string['fluidwidth'] = 'Fluid width theme';
+$string['fluidwidth_desc'] = 'Enable this option to allow using your full screen';
 
 $string['choosereadme'] = '
-<div class="clearfix"><div class="theme_screenshot"><h2>Bootstrap</h2>
+<div class="clearfix"><div class="theme_screenshot"><h2>Bootstrap Base</h2>
 <img class=img-polaroid src="bootstrap/pix/screenshot.jpg" />
 <h3>Theme Credits</h3>
 <p>
-<h3>Moodle twitter Bootstrap theme</h3>
+<h3>Moodle Bootstrap 3 theme</h3>
 <p>
-This theme is based on the Bootstrap CSS framework, version 2.3
+This theme is based on the Bootstrap CSS framework, version 3.0
 </p>
 <p>
 <a href="http://getbootstrap.com">http://getbootstrap.com</a>
@@ -48,7 +50,7 @@ Feel free to modify / improve / share
 </p>
 <p>
 This theme has been created with the help of:
-Stuart Lamour, Mark Aberdour, Paul Hibbitts, Mary Evans
+Joby Harding, Gareth J Barnard.
 </p>
 <p>
 Authors: Bas Brands, David Scotson<br>
@@ -58,7 +60,7 @@ Website: <a href="http://www.basbrands.nl">www.basbrands.nl</a><br>
 
 <h3>Reporting bugs</h3>
 
-<p>You can report bugs on the <a href="https://github.com/bmbrands/theme_bootstrap/issues">github page</a> for this theme or 
+<p>You can report bugs on the <a href="https://github.com/bmbrands/theme_bootstrap/issues">github page</a> for this theme or
 on the Moodle tracker</p>
 
 <h3>More information</h3>
