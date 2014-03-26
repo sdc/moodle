@@ -87,12 +87,13 @@ foreach ($rs as $backuprow) {
 
     // Create the row and add it to the table
     $cells = array(
-        format_string($backuprow->fullname, true, array('context' => context_course::instance($backuprow->courseid))),
+        //format_string($backuprow->fullname, true, array('context' => context_course::instance($backuprow->courseid))),
+        '<a href="'.$CFG->wwwroot.'/course/view.php?id='.$backuprow->courseid.'">'.format_string($backuprow->fullname, true, array('context' => context_course::instance($backuprow->courseid))).'</a>',
         userdate($backuprow->laststarttime, $strftimedatetime),
         '-',
         userdate($backuprow->lastendtime, $strftimedatetime),
         $status,
-        userdate($backuprow->nextstarttime, $strftimedatetime)
+        userdate($backuprow->nextstarttime, get_string('strftimedatetime', 'langconfig'))
     );
     $table->data[] = new html_table_row($cells);
 }
