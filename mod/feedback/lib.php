@@ -2233,6 +2233,31 @@ function feedback_check_values($firstitem, $lastitem) {
         }
         $value = $itemobj->clean_input_value($value);
 
+
+        /**
+         * Added code from this page https://tracker.moodle.org/browse/MDL-31998 to fix
+         * the problem also mentioned on that page.
+         */
+        //ADD THIS: Check if depending is correct and discard required if isn't
+        if($item->dependitem > 0 AND $item->required == 1){
+            if (!isset($feedbackcompletedtmp->id)){
+                $feedbackcompletedtmp = feedback_get_current_completed($item->feedback, true);
+            }
+            $fb_compare_value = true;
+            if (isset($feedbackcompletedtmp->id)){
+                $fb_compare_value = feedback_compare_item_value($feedbackcompletedtmp->id,
+                    $item->dependitem,
+                    $item->dependvalue,
+                    true);
+            }
+            
+            if (!isset($feedbackcompletedtmp->id) OR !$fb_compare_value) {
+                $item->required = 0;
+            }
+        }
+        // END of added code.
+
+
         //check if the value is set
         if (is_null($value) AND $item->required == 1) {
             return false;
