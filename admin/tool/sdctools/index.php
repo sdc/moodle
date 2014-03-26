@@ -111,15 +111,37 @@ echo $OUTPUT->heading(get_string('moodledetailsheader', 'tool_sdctools'));
 
 echo '<ul>';
 echo '<li><strong>'.get_string('moodleversion', 'tool_sdctools').':</strong> '.$CFG->release.' ['.get_string('internal', 'tool_sdctools').': '.$CFG->version.']</li>';
-$usersactive = $DB->get_record_sql('SELECT COUNT(*) AS users FROM mdl_user WHERE deleted = 0;');
-$usersdeleted = $DB->get_record_sql('SELECT COUNT(*) AS users FROM mdl_user WHERE deleted = 1;');
+$usersactive    = $DB->get_record_sql('SELECT COUNT(*) AS users FROM mdl_user WHERE deleted = 0;');
+$usersdeleted   = $DB->get_record_sql('SELECT COUNT(*) AS users FROM mdl_user WHERE deleted = 1;');
+$userstotal     = $usersactive->users + $usersdeleted->users; 
 echo '<li><strong>'.get_string('usersactivedeletedtotal', 'tool_sdctools').':</strong> '.number_format($usersactive->users).
-    ' / '.number_format($usersdeleted->users).' / '.number_format($usersactive->users + $usersdeleted->users).'</li>';
+    ' / '.number_format($usersdeleted->users).' / '.number_format($userstotal).'</li>';
+
+// Courses.
 $coursesvisible = $DB->get_record_sql('SELECT COUNT(*) AS courses FROM mdl_course WHERE visible = 1;');
-$courseshidden = $DB->get_record_sql('SELECT COUNT(*) AS courses FROM mdl_course WHERE visible = 0;');
+$courseshidden  = $DB->get_record_sql('SELECT COUNT(*) AS courses FROM mdl_course WHERE visible = 0;');
+$coursestotal   = $coursesvisible->courses + $courseshidden->courses;
 echo '<li><strong>'.get_string('coursesvisiblehiddentotal', 'tool_sdctools').':</strong> '.number_format($coursesvisible->courses).
-    ' / '.number_format($courseshidden->courses).' / '.number_format($coursesvisible->courses + $courseshidden->courses).'</li>';
-// backups
+    ' / '.number_format($courseshidden->courses).' / '.number_format($coursestotal).'</li>';
+
+// Modules.
+$modulesvisible = $DB->get_record_sql('SELECT COUNT(*) AS modules FROM mdl_course_modules WHERE visible = 1;');
+$moduleshidden  = $DB->get_record_sql('SELECT COUNT(*) AS modules FROM mdl_course_modules WHERE visible = 0;');
+$modulestotal   = $modulesvisible->modules + $moduleshidden->modules;
+echo '<li><strong>'.get_string('modulesvisiblehiddentotalavg', 'tool_sdctools').':</strong> '.number_format($modulesvisible->modules).
+    ' / '.number_format($moduleshidden->modules).' / '.number_format($modulestotal).' / '.number_format($modulestotal/$coursestotal).'</li>';
+
+// Blocks.
+//$blocksvisible  = $DB->get_record_sql('SELECT COUNT(*) AS blocks FROM mdl_block_instances WHERE visible = 1;');
+//$blockshidden   = $DB->get_record_sql('SELECT COUNT(*) AS blocks FROM mdl_block_instances WHERE visible = 0;');
+//$blockstotal    = $modulesvisible->modules + $moduleshidden->modules;
+//echo '<li><strong>'.get_string('blocksvisiblehiddentotalavg', 'tool_sdctools').':</strong> '.number_format($blocksvisible->blocks).
+//    ' / '.number_format($blockshidden->blocks).' / '.number_format($blockstotal).' / '.number_format($blockstotal/$coursestotal).'</li>';
+$blocksvisible  = $DB->get_record_sql('SELECT COUNT(*) AS blocks FROM mdl_block_instances;');
+echo '<li><strong>'.get_string('blockstotalavg', 'tool_sdctools').':</strong> '.number_format($blocksvisible->blocks).
+    ' / '.number_format($blocksvisible->blocks/$coursestotal).'</li>';
+
+// Backups.
 $out = '';
 $backupstatus = $DB->get_record('config_plugins', array('plugin' => 'backup', 'name' => 'backup_auto_active'), 'value');
 if ($backupstatus->value == 0) {
