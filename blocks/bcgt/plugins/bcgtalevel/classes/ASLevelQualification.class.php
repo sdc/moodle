@@ -61,6 +61,11 @@ class ASLevelQualification extends ALevelQualification {
         return $this->insert_alevel_qualification(ASLevelQualification::ID, $insertUnits, $insertWeightings);
     }
     
+    public function get_alps_multiplier()
+    {
+        return 50;
+    }
+    
     /**
 	 * Gets the form fields that will go on edit_qualification_form.php
 	 * They are different for each qual type

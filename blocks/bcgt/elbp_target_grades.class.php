@@ -43,7 +43,7 @@ class elbp_target_grades extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Aspirational Grades",
                 "path" => '/blocks/bcgt/',
-                "version" => 2013101500
+                "version" => \ELBP\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -53,6 +53,11 @@ class elbp_target_grades extends Plugin {
 
     }
     
+    public function getConfigPath()
+    {
+        $path = $this->getPath() . 'config_'.$this->getName().'.php';
+        return $path;
+    }
     
      /**
      * Install the plugin
@@ -491,7 +496,11 @@ class elbp_target_grades extends Plugin {
     
     
     
-    
+    private function getQualPossibleGrades($qual){
+        
+        return \bcgt_get_qual_possible_grades($qual);
+        
+    }
     
     
     public function getDisplay($params = array()){
@@ -517,61 +526,7 @@ class elbp_target_grades extends Plugin {
                 if (is_array($qual->targetGrade)) $qual->targetGrade = reset($qual->targetGrade);
                                         
                 // Possible grades
-                if (isset($qual->bespoke) && $qual->bespoke)
-                {
-                    
-                    $awards = $qual->get_possible_awards();
-                    if ($awards)
-                    {
-                        $awardArray = array();
-                        foreach($awards as $award)
-                        {
-                            $awardArray[] = array("id" => $award->id, "grade" => $award->grade, "location" => "block_bcgt_bspk_q_grade_vals");
-                        }
-                        $qual->possibleGrades = $awardArray;
-                    }
-                    
-                }
-                else
-                {
-                    
-                    // Check breakdown first
-                    $breakdown = $DB->get_records("block_bcgt_target_breakdown", array("bcgttargetqualid" => $qual->get_target_qual_id()), "ranking DESC, unitsscoreupper DESC");
-                    if ($breakdown)
-                    {
-
-                        $courseGrades = array();
-                        foreach($breakdown as $b)
-                        {
-                            $courseGrades[] = array("id" => $b->id, "grade" => $b->targetgrade, "location" => "block_bcgt_target_breakdown");
-                        }
-
-                        $qual->possibleGrades = $courseGrades;
-
-                    }
-
-
-                    else
-                    {
-
-                        // If not, try target_grades
-                        $targetgrades = $DB->get_records("block_bcgt_target_grades", array("bcgttargetqualid" => $qual->get_target_qual_id()), "ranking DESC, upperscore DESC");
-                        if ($targetgrades)
-                        {
-
-                            $courseGrades = array();
-                            foreach($targetgrades as $b)
-                            {
-                                $courseGrades[] = array("id" => $b->id, "grade" => $b->grade, "location" => "block_bcgt_target_grades");
-                            }
-
-                            $qual->possibleGrades = $courseGrades;
-
-                        }
-
-                    }
-                    
-                }
+                $qual->possibleGrades = $this->getQualPossibleGrades($qual);
                                 
                 
             }
@@ -692,7 +647,7 @@ class elbp_target_grades extends Plugin {
                     }
                 }
                 
-                return ($array) ? implode(", ", $array) : '-';
+                return ($array) ? implode(", ", $array) : 'N/A';
                 
                 
             break;
@@ -721,7 +676,7 @@ class elbp_target_grades extends Plugin {
                     }
                 }
 
-                return ($array) ? implode(", ", $array) : '-';
+                return ($array) ? implode(", ", $array) : 'N/A';
                 
             break;
            
@@ -746,7 +701,7 @@ class elbp_target_grades extends Plugin {
             // Target grade
             $output .= "<tr>";
             
-                $output .= "<td>".get_string('targetgrades', 'block_bcgt')."</td>";
+                $output .= "<td>".get_string('mintargetgrades', 'block_bcgt')."</td>";
                 $output .= "<td>{$this->getUserGrades("target")}</td>";
             
             $output .= "</tr>";

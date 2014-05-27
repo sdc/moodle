@@ -87,7 +87,7 @@ if($originalCourseID != -1 && $originalCourseID != 1)
 {
     global $DB;
     $course = $DB->get_record_sql("SELECT * FROM {course} WHERE id = ?", array($originalCourseID));
-    $PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php','title');
+    $PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php?tab=track','title');
     $PAGE->navbar->add($course->shortname,$CFG->wwwroot.'/course/view.php?id='.$originalCourseID,'title');
     $PAGE->navbar->add(get_string('editcoursequal', 'block_bcgt'),null,'title');
 }

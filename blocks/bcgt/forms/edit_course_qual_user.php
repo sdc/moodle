@@ -36,7 +36,7 @@ $PAGE->set_title(get_string('edituserscoursequal', 'block_bcgt'));
 $PAGE->set_heading(get_string('edituserscoursequal', 'block_bcgt'));
 $PAGE->set_pagelayout('login');
 $PAGE->add_body_class(get_string('edituserscoursequals', 'block_bcgt'));
-$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php','title');
+$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php?tab=track','title');
 if($courseID != -1)
 {
     $course = $DB->get_record_sql("SELECT * FROM {course} WHERE id = ?", array($courseID));

@@ -29,6 +29,10 @@ $forceLoad = optional_param('fload', true, PARAM_BOOL);
 $clearSession = optional_param('csess', true, PARAM_BOOL);
 $order = optional_param('order', 'spec', PARAM_TEXT);
 
+// If the studentID is not ours, we need the viewstudentsgrids capability
+if ($studentID <> $USER->id && !has_capability('block/bcgt:viewstudentsgrids', $context)){
+    print_error('invalid access');
+}
 
 //TODO::::::
 //IF no qual id is passed down then load all quals for this student!!!!
@@ -102,7 +106,7 @@ $link2 = null;
 if(has_capability('block/bcgt:viewclassgrids', $context))
 {
     $link1 = $CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?&cID='.$courseID;
-	$link2 = $CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php?tab=track';
+    $link2 = $CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php?tab=track&cID='.$courseID;
 }
 $PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),$link2,'title');
 $PAGE->navbar->add(get_string('grids', 'block_bcgt'),$link1,'title');
@@ -148,7 +152,7 @@ $out = $OUTPUT->header();
             if($students)
             {                
                 $out .= '<div class="bcgtStudentChange">';
-                $out .= '<label for="studentChange">Change Student to : </label>';
+                $out .= '<label for="studentChange">Switch Student: </label>';
                 $out .= '<select id="studentChange" name="sID"><option value=""></option>';                
                 foreach($students AS $student)
                 {
@@ -172,7 +176,7 @@ $out = $OUTPUT->header();
         if($qualifications)
         {
             $out .= '<div class="bcgtQualChange">';
-            $out .= '<label for="qualChange">Change Qualification to : </label>';
+            $out .= '<label for="qualChange">Switch Qualification : </label>';
             $out .= '<select id="qualChange" name="qID"><option value=""></option>';
             foreach($qualifications AS $qual)
             {
@@ -201,11 +205,12 @@ $out = $OUTPUT->header();
     }
     $out .= '<input type="hidden" id="selects" name="selects" value="'.$dropDowns.'"/>'; 
     $out .= '<input type="hidden" id="user" name="user" value="'.$USER->id.'"/>';
+    $out .= '<input type="hidden" id="studentid" name="studentid" value="'.$studentID.'"/>';
     $out .= '<input type="hidden" name="gridType" value="student" />';
     
 
     // $out .= get_grid_menu($courseID);
-    $out .= get_grid_menu($studentID, $qualID);
+    $out .= get_grid_menu($studentID, -1, $qualID, $courseID);
     $out .= '</div>';
 
     $heading = get_string('trackinggrid','block_bcgt');
