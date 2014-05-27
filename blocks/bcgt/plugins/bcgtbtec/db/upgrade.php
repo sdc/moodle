@@ -4288,19 +4288,23 @@ function xmldb_block_bcgtbtec_upgrade($oldversion = 0)
     
     if($oldversion < 2014021700)
     {
-	
-		// Changing nullability of field ucaspoints on table block_bcgt_target_grades to null
+        //the Pass/ Fa
+        //targetr grade
+        //breakdown
+        //level 1
+        
+        
+        // Changing nullability of field ucaspoints on table block_bcgt_target_grades to null
         $table = new xmldb_table('block_bcgt_target_grades');
         $field = new xmldb_field('ucaspoints', XMLDB_TYPE_NUMBER, '5, 2', null, null, null, null, 'grade');
 
         // Launch change of nullability for field ucaspoints
         $dbman->change_field_notnull($table, $field);
-		
-	
-        //the Pass/ Fa
-        //targetr grade
-        //breakdown
-        //level 1
+        
+        
+        
+        
+        
         $sql = "SELECT distinct(targetqual.id), targetqual.* FROM {block_bcgt_target_qual} targetqual 
             JOIN {block_bcgt_type} type ON type.id = targetqual.bcgttypeid 
             JOIN {block_bcgt_type_family} fam ON fam.id = type.bcgttypefamilyid 
@@ -4875,8 +4879,19 @@ function xmldb_block_bcgtbtec_upgrade($oldversion = 0)
             $DB->update_record('block_bcgt_target_breakdown', $record);
         }
     }
-	
-
+    
+    //somehow some colleges have their data wrong. Lets reload after recreating the whole 
+    //process using a new csv import
+    if($oldversion < 2014030605)
+    {
+        global $CFG;
+        $breakdown = new Breakdown(-1, null);
+        $breakdown->import_csv($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbtec/data/BTECbreakdowns.csv');
+        
+        $targetGrade = new TargetGrade(-1, null);
+        $targetGrade->import_csv($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbtec/data/BTECgrades.csv');
+    }
+    
     
     
 }

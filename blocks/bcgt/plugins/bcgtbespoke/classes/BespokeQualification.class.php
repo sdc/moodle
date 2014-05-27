@@ -177,7 +177,7 @@ class BespokeQualification extends Qualification
      * @global type $DB
      * @return boolean
      */
-    protected function get_default_credits()
+    public function get_default_credits()
     {
         global $DB;
         $sql = "SELECT * FROM {block_bcgt_target_qual_att} 
@@ -232,6 +232,10 @@ class BespokeQualification extends Qualification
     
     public function get_display_type(){
         return $this->displaytype;
+    }
+    
+    public function get_grading(){
+        return $this->grading;
     }
     
     function get_credits()
@@ -331,10 +335,12 @@ class BespokeQualification extends Qualification
             $retval .= "<tr>";
             
                 $retval .= "<td>".get_string('usepercentcompleteonunits', 'block_bcgt')."</td>";
-                $retval .= "<td><input type='checkbox' name='setting_use_unit_percents' value='1' /></td>";
+                $chk = ($this->get_setting('setting_use_unit_percents') == 1) ? 'checked' : '';
+                $retval .= "<td><input type='checkbox' name='setting_use_unit_percents' value='1' {$chk} /></td>";
                 
-                $retval .= "<td></td>";
-                $retval .= "<td></td>";
+                $retval .= "<td>".get_string('ignoreautocalculation', 'block_bcgt')."</td>";
+                $chk = ($this->get_setting('setting_ignore_auto_calcs') == 1) ? 'checked' : '';
+                $retval .= "<td><input type='checkbox' name='setting_ignore_auto_calcs' value='1' {$chk} /></td>";
                 
             $retval .= "</tr>";
         
@@ -405,6 +411,7 @@ class BespokeQualification extends Qualification
         $this->grading = $grading;
         
         $this->settings['setting_use_unit_percents'] = (isset($_POST['setting_use_unit_percents']));
+        $this->settings['setting_ignore_auto_calcs'] = isset($_POST['setting_ignore_auto_calcs']);
         
         return true;
         
@@ -1590,18 +1597,17 @@ class BespokeQualification extends Qualification
             'requires' => array('base', 'io', 'node', 'json', 'event', 'button')
         );
                 
+        $freezeCols = 3;
+        if ($this->has_unit_percentages()){
+            $freezeCols++;
+        }
         
         if ($basicView){
             $output .= <<< JS
             <script type='text/javascript' src='{$CFG->wwwroot}/blocks/bcgt/plugins/bcgtbespoke/js/bcgtbespoke.js'></script>
-            <script>
-                $(document).ready( function(){
-                    M.mod_bcgtbespoke.initstudentgrid();
-                } );
-            </script>
 JS;
         } else {
-            $PAGE->requires->js_init_call('M.mod_bcgtbespoke.initstudentgrid', array($this->id, $this->studentID, $grid), true, $jsModule);
+            $PAGE->requires->js_init_call('M.mod_bcgtbespoke.initstudentgrid', array($this->id, $this->studentID, $grid, $freezeCols), true, $jsModule);
         }
         
         
@@ -1644,19 +1650,21 @@ JS;
         if ($this->grading)
         {
             $output .= '<table class="bespokeSummaryAwardGrades">';
-                $output .= $this->show_predicted_qual_award($this->predictedAward, $context);
-                $output .= $this->show_final_qual_award($this->studentAward, $context);
+                if ($this->use_auto_calculations())
+                {
+                    $output .= $this->show_predicted_qual_award($this->predictedAward, $context);
+                }
+                $output .= $this->show_final_qual_award($this->studentAward, $context, $editing);
             $output .= '</table>';
         }
-        
-        
+                
         
         $output .= "<div id='bespokeStudentGrid'>";
         
             $output .= "<table id='bespokeStudentGridTable'>";
                 $output .= "<thead>";
                 $output .= "<tr>";
-                    $output .= "<th></th>";
+                    $output .= "<th style='width:40px;min-width:40px;'></th>";
                     $output .= "<th class='unit_name'>".get_string('unit', 'block_bcgt')."</th>";
                     $output .= "<th>".get_string('award', 'block_bcgt')."</th>";
                     
@@ -1669,7 +1677,7 @@ JS;
                     {
                         foreach($criteriaNames as $name)
                         {
-                            $output .= "<th>{$name}</th>";
+                            $output .= "<th style='width:40px;min-width:40px;'>{$name}</th>";
                         }
                     }
                     
@@ -1710,13 +1718,15 @@ JS;
                             
                             
                             $output .= "<tr>";
+                            
+                                $class = (!empty($comments)) ? 'hasComments' : '';
 
-                                $output .= "<td>";
+                                $output .= "<td class='{$class}'>";
                                 
                                     $output .= "<div class='criteriaTDContent'>";
                                 
                                         if(has_capability('block/bcgt:editunit', $context)){
-                                            $output .= "<a href='{$CFG->wwwroot}/blocks/bcgt/grids/unit_grid.php?uID={$unit->get_id()}&qID={$this->id}' target='_blank' title='View Unit Grid'><img src='".$OUTPUT->pix_url('i/calendar', 'core')."' /></a><br>";
+                                            //$output .= "<a href='{$CFG->wwwroot}/blocks/bcgt/grids/unit_grid.php?uID={$unit->get_id()}&qID={$this->id}' target='_blank' title='View Unit Grid'><img src='".$OUTPUT->pix_url('i/calendar', 'core')."' /></a><br>";
                                             $output .= "<a href='{$CFG->wwwroot}/blocks/bcgt/forms/edit_unit.php?unitID={$unit->get_id()}' target='_blank' title='Edit Unit'><img src='".$OUTPUT->pix_url('t/editstring', 'core')."' /></a>";
                                         }
                                     
@@ -1732,24 +1742,28 @@ JS;
 
                                         if (!empty($comments))
                                         {
-                                            $output .= "<img id='{$cellID}' criteriaid='-1' unitid='{$unit->get_id()}' studentid='{$this->studentID}' qualid='{$this->id}' username='{$username}' fullname='{$fullname}' unitname='{$unitname}' critname='{$critname}' grid='student' class='editUnitComments' title='Click to Edit Comments'  src='{$CFG->wwwroot}/blocks/bcgt/plugins/bcgtbespoke/pix/comment_edit.png' alt='".get_string('editcomments', 'block_bcgt')."' />";
+                                            $output .= "<img id='{$cellID}' criteriaid='-1' unitid='{$unit->get_id()}' studentid='{$this->studentID}' qualid='{$this->id}' username='{$username}' fullname='{$fullname}' unitname='{$unitname}' critname='{$critname}' grid='student' class='editCommentsUnit' title='Click to Edit Comments'  src='{$CFG->wwwroot}/blocks/bcgt/plugins/bcgtbespoke/pix/comment_edit.png' alt='".get_string('editcomments', 'block_bcgt')."' />";
                                         }
                                         else
                                         {
-                                            $output .= "<img id='{$cellID}' criteriaid='-1' unitid='{$unit->get_id()}' studentid='{$this->studentID}' qualid='{$this->id}' username='{$username}' fullname='{$fullname}' unitname='{$unitname}' critname='{$critname}' grid='student' class='addUnitComments' title='Click to Add Comments'  src='{$CFG->wwwroot}/blocks/bcgt/plugins/bcgtbespoke/pix/comment_add.png' alt='".get_string('addcomment', 'block_bcgt')."' />";
+                                            $output .= "<img id='{$cellID}' criteriaid='-1' unitid='{$unit->get_id()}' studentid='{$this->studentID}' qualid='{$this->id}' username='{$username}' fullname='{$fullname}' unitname='{$unitname}' critname='{$critname}' grid='student' class='addCommentsUnit' title='Click to Add Comments'  src='{$CFG->wwwroot}/blocks/bcgt/plugins/bcgtbespoke/pix/comment_add.png' alt='".get_string('addcomment', 'block_bcgt')."' />";
                                         }
 
-                                        $output .= "<span class='tooltipContent' style='display:none !important;'>".bcgt_html($this->comments, true)."</span>";
+                                        //$output .= "<span class='tooltipContent' style='display:none !important;'>".bcgt_html($this->comments, true)."</span>";
+                                        $output .= "<div class='popUpDiv bcgt_unit_comments_dialog' id='dialog_S{$this->studentID}_U{$unit->get_id()}_Q{$this->id}' qualID='{$this->id}' unitID='{$unit->get_id()}' critID='-1' studentID='{$this->studentID}' grid='student' imgID='{$cellID}' title='Comments'>";
+                                            $output .= "<span class='commentUserSpan'>Comments for {$fullname} : {$username}</span><br>";
+                                            $output .= "<span class='commentUnitSpan'>{$unit->get_display_name()}</span><br>";
+                                            $output .= "<span class='commentCriteriaSpan'>N/A</span><br><br><br>";
+                                            $output .= "<textarea class='dialogCommentText' id='text_S{$this->studentID}_U{$unit->get_id()}_Q{$this->id}'>".bcgt_html($comments)."</textarea>";
+                                        $output .= "</div>";
 
                                     
                                     $output .= "</div>";
                                     
                                 $output .= "</td>";
                                 
-                                $class = (!empty($comments)) ? 'hasComments' : '';
-                                
                                 $output .= "<td class='unitName {$class}' title=''>";
-                                    $output .= $unit->get_name();
+                                    $output .= "<a href='{$CFG->wwwroot}/blocks/bcgt/grids/unit_grid.php?uID={$unit->get_id()}&qID={$this->id}' target='_blank' title='View Unit Grid'>".$unit->get_name()."</a>";
                                     $output .= "<div class='unitDetailsTooltip'>{$unit->build_tooltip_content($this)}</div>";
                                 $output .= "</td>";
                                 
@@ -1774,7 +1788,7 @@ JS;
                                         }
                                         else
                                         {
-                                            $output .= "<td></td>";
+                                            $output .= "<td class='val'></td>";
                                         }
                                         
                                     }
@@ -1796,18 +1810,34 @@ JS;
                 
                 $output .= "</tbody>";
                 
+                $output .= "<tfoot></tfoot>";
+                
             $output .= "</table>";
         
         
         $output .= "</div>";
         
+        $output .= "<br>";
+        
         if ($this->grading)
         {
+            $output .= "<br>";
             $output .= '<table class="bespokeSummaryAwardGrades">';
-                $output .= $this->show_predicted_qual_award($this->predictedAward, $context);
-                $output .= $this->show_final_qual_award($this->studentAward, $context);
+                if ($this->use_auto_calculations())
+                {
+                    $output .= $this->show_predicted_qual_award($this->predictedAward, $context);
+                }
+                $output .= $this->show_final_qual_award($this->studentAward, $context, $editing);
             $output .= '</table>';
         }
+        
+        
+        if ($basicView){
+            $output .= " <script>$(document).ready( function(){
+                M.mod_bcgtbespoke.initstudentgrid(null, '{$this->id}', '{$this->studentID}', '{$grid}', '{$freezeCols}');
+            } ); </script> ";
+        }
+        
         
         
         return $output;
@@ -2063,24 +2093,69 @@ JS;
     }
     
     
-    protected function show_final_qual_award($studentAward, $context)
+    protected function show_final_qual_award($studentAward, $context, $editing = false)
     {
+        
+        global $DB;
         
         $retval = "";
         $retval .= "<tr class='award_row'>";
         $type = get_string('predictedfinalaward','block_bcgt');
         $award = 'N/A';
+        
+        $awards = $DB->get_records("block_bcgt_bspk_q_grade_vals", array("qualgradingid" => $this->grading), "rangelower ASC");
+
+        
         if($studentAward)
         {
             $award = $studentAward->get_award();
             $retval .= "<td><span class='qualAwardType'>$type</span></td>";
-            $retval .= "<td><span class='qualAward finalAward_S{$this->studentID}_Q{$this->id}'>".$award."</span></td>";
+            
+            if ($editing && !$this->use_auto_calculations())
+            {
+                $retval .= "<td><span class='qualAward finalAward_S{$this->studentID}_Q{$this->id}'>";
+                $retval .= "<select class='qualAwardSelect' qualID='{$this->id}' studentID='{$this->studentID}'>";
+                    $retval .= "<option value='-1'></option>";
+                    if ($awards)
+                    {
+                        foreach($awards as $award)
+                        {
+                            $chk = ($studentAward->get_id() == $award->id) ? 'selected' : '';
+                            $retval .= "<option value='{$award->id}' {$chk} >{$award->grade}</option>";
+                        }
+                    }
+                $retval .= "</select>";
+                $retval .= "</span></td>";
+            }
+            else
+            {
+                $retval .= "<td><span class='qualAward finalAward_S{$this->studentID}_Q{$this->id}'>".$award."</span></td>";
+            }
+            
             $retval .= "<td><small>".get_string('predictedfinalawardhelp', 'block_bcgt')."</small></td>";
         }   
         else
         {
             $retval .= "<td><span class='qualAwardType'>$type</span></td>";
-            $retval .= "<td><span class='qualAward finalAward_S{$this->studentID}_Q{$this->id}'>$award</span></td>";
+            if ($editing && !$this->use_auto_calculations())
+            {
+                $retval .= "<td><span class='qualAward finalAward_S{$this->studentID}_Q{$this->id}'>";
+                $retval .= "<select class='qualAwardSelect' qualID='{$this->id}' studentID='{$this->studentID}'>";
+                    $retval .= "<option value='-1'></option>";
+                    if ($awards)
+                    {
+                        foreach($awards as $award)
+                        {
+                            $retval .= "<option value='{$award->id}'>{$award->grade}</option>";
+                        }
+                    }
+                $retval .= "</select>";
+                $retval .= "</span></td>";
+            }
+            else
+            {
+                $retval .= "<td><span class='qualAward finalAward_S{$this->studentID}_Q{$this->id}'>".$award."</span></td>";
+            }            
             $retval .= "<td><small>".get_string('predictedfinalawardhelp', 'block_bcgt')."</small></td>";
         }
         $retval .= "</tr>";
@@ -2124,12 +2199,28 @@ JS;
         return $DB->get_records("block_bcgt_bspk_q_grade_vals", array("qualgradingid" => $this->grading));
     }
     
+    public function use_auto_calculations()
+    {
+        
+        if (!isset($this->settings['setting_ignore_auto_calcs']) || $this->settings['setting_ignore_auto_calcs'] <> 1)
+        {
+            return true;
+        }
+        
+    }
+    
     public function check_grading_structures_compatability()
     {
         
         global $DB;
         
         $errors = array();
+        
+        if (!$this->use_auto_calculations())
+        {
+            return $errors;
+        }
+        
         
         if ($this->grading > 0)
         {
@@ -2517,8 +2608,619 @@ JS;
     }
     
     
+    
+    
+    public function export_student_grid()
+    {
+                
+        global $CFG, $DB, $USER;
+        
+        require_once $CFG->dirroot . '/blocks/bcgt/classes/sorters/UnitSorter.class.php';
+        require_once $CFG->dirroot . '/blocks/bcgt/classes/sorters/CriteriaSorter.class.php';
+
+        $student = $this->student;
+        
+        $objPHPExcel = new \PHPExcel();
+        $objPHPExcel->getProperties()
+                     ->setCreator(fullname($USER))
+                     ->setLastModifiedBy(fullname($USER))
+                     ->setTitle($this->get_display_name() . " - " . fullname($student))
+                     ->setSubject($this->get_display_name() . " - " . fullname($student))
+                     ->setDescription($this->get_display_name() . " - " . fullname($student) . " - generated by Moodle Grade Tracker");
+
+        $sheetIndex = 0;
+        
+        // Remove default sheet
+        $objPHPExcel->removeSheetByIndex(0);
+        
+        // Style for blank cells - criteria not on that unit
+        $blankCellStyle = array(
+            'fill' => array(
+                'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                'color' => array('rgb' => 'E0E0E0')
+            )
+        );
+        
+        
+        $lockCells = array(); // At some point, if i can get it to work
+        
+                
+        // Have a worksheet for each unit
+        $units = $this->get_units();
+                
+        $criteria = $this->get_used_criteria_names();
+        require_once($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbespoke/classes/BespokeCriteriaSorter.class.php');
+        $criteriaSorter = new BespokeCriteriaSorter();
+		usort($criteria, array($criteriaSorter, "ComparisonSimple"));
+        
+        // Set current sheet
+        $objPHPExcel->createSheet($sheetIndex);
+        $objPHPExcel->setActiveSheetIndex($sheetIndex);
+        $objPHPExcel->getActiveSheet()->setTitle("Grades");
+
+        $rowNum = 1;
+
+        // Headers
+        $objPHPExcel->getActiveSheet()->setCellValue("A{$rowNum}", "Unit ID");
+        $objPHPExcel->getActiveSheet()->setCellValue("B{$rowNum}", "Unit Name");
+
+        $letter = 'C';
+        
+        if ($criteria)
+        {
+            foreach($criteria as $criterion)
+            {
+                $objPHPExcel->getActiveSheet()->setCellValueExplicit("{$letter}{$rowNum}", $criterion, PHPExcel_Cell_DataType::TYPE_STRING);
+                $letter++;
+            }
+        }
+
+        $rowNum++;
+
+        if ($units)
+        {
+
+            foreach($units as $unit)
+            {
+
+                $objPHPExcel->getActiveSheet()->setCellValue("A{$rowNum}", $unit->get_id());
+                $objPHPExcel->getActiveSheet()->setCellValue("B{$rowNum}", $unit->get_name());
+                $letter = 'C';
+
+                if ($unit->is_student_doing())
+                {
+                
+                    // Loop criteria
+                    if ($criteria)
+                    {
+                        foreach($criteria as $criterion)
+                        {
+
+                            $studentCriterion = $unit->get_single_criteria(-1, $criterion);
+                            if ($studentCriterion)
+                            {
+                                
+                                
+                                // Get possible values
+                                $possibleValues = $studentCriterion->get_possible_values();
+                                
+                                $possibleValuesArray[-1] = 'N/A';
+                                
+                                if ($possibleValues){
+                                    foreach($possibleValues as $val){
+                                        $possibleValuesArray[$val->id] = $val->shortgrade;
+                                    }
+                                }
+                                
+                                $shortValue = 'N/A';
+                                $studentValueObj = $studentCriterion->get_student_value();	
+                                if ($studentValueObj){
+                                    $shortValue = $studentValueObj->get_short_value();
+                                }
+                                $objPHPExcel->getActiveSheet()->setCellValue("{$letter}{$rowNum}", $shortValue);
+
+                                // Apply drop-down list
+                                $objValidation = $objPHPExcel->getActiveSheet()->getCell("{$letter}{$rowNum}")->getDataValidation();
+                                $objValidation->setType( PHPExcel_Cell_DataValidation::TYPE_LIST );
+                                $objValidation->setErrorStyle( PHPExcel_Cell_DataValidation::STYLE_INFORMATION );
+                                $objValidation->setAllowBlank(false);
+                                $objValidation->setShowInputMessage(true);
+                                $objValidation->setShowErrorMessage(true);
+                                $objValidation->setShowDropDown(true);
+                                $objValidation->setErrorTitle('input error');
+                                $objValidation->setError('Value is not in list');
+                                $objValidation->setPromptTitle('Choose a value');
+                                $objValidation->setPrompt('Please choose a criteria value from the list');
+                                $objValidation->setFormula1('"'.implode(",", $possibleValuesArray).'"');
+                                
+                            }
+                            else
+                            {
+                                $objPHPExcel->getActiveSheet()->setCellValue("{$letter}{$rowNum}", "");
+                                $objPHPExcel->getActiveSheet()->getStyle("{$letter}{$rowNum}")->applyFromArray($blankCellStyle);
+                            }                           
+
+                            $letter++;
+
+                        }
+                    }
+
+                    $rowNum++;
+                
+                }
+
+            }
+            
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+            
+
+        }
+
+        // Freeze rows and cols (everything to the left of D and above 2)
+        $objPHPExcel->getActiveSheet()->freezePane('C2');
+        
+        
+        
+        // Comments worksheet
+        
+        $sheetIndex = 1;
+        
+        // Set current sheet
+        $objPHPExcel->createSheet($sheetIndex);
+        $objPHPExcel->setActiveSheetIndex($sheetIndex);
+        $objPHPExcel->getActiveSheet()->setTitle("Comments");
+
+        $rowNum = 1;
+
+        // Headers
+        $objPHPExcel->getActiveSheet()->setCellValue("A{$rowNum}", "Unit ID");
+        $objPHPExcel->getActiveSheet()->setCellValue("B{$rowNum}", "Unit Name");
+
+        $letter = 'C';
+        
+        if ($criteria)
+        {
+            foreach($criteria as $criterion)
+            {
+                $objPHPExcel->getActiveSheet()->setCellValue("{$letter}{$rowNum}", $criterion);
+                $letter++;
+            }
+        }
+
+        $rowNum++;
+
+        if ($units)
+        {
+
+            foreach($units as $unit)
+            {
+
+                $objPHPExcel->getActiveSheet()->setCellValue("A{$rowNum}", $unit->get_id());
+                $objPHPExcel->getActiveSheet()->setCellValue("B{$rowNum}", $unit->get_name());
+                $letter = 'C';
+
+                if ($unit->is_student_doing())
+                {
+                
+                    // Loop criteria
+                    if ($criteria)
+                    {
+                        foreach($criteria as $criterion)
+                        {
+
+                            $studentCriterion = $unit->get_single_criteria(-1, $criterion);
+                            if ($studentCriterion)
+                            {
+                                $comments = $studentCriterion->get_comments();
+                                $objPHPExcel->getActiveSheet()->setCellValue("{$letter}{$rowNum}", $comments);
+                            }
+                            else
+                            {
+                                $objPHPExcel->getActiveSheet()->setCellValue("{$letter}{$rowNum}", "");
+                            }                           
+
+                            $letter++;
+
+                        }
+                    }
+
+                    $rowNum++;
+                
+                }
+
+            }
+            
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+            
+
+        }
+
+        // Freeze rows and cols (everything to the left of D and above 2)
+        $objPHPExcel->getActiveSheet()->freezePane('C2');
+        
+        
+        
+        
+        
+        
+        
+        
+                
+        $objPHPExcel->setActiveSheetIndex(0);
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        
+        ob_clean();
+        $objWriter->save('php://output');
+        exit;                
+        
+    }
+    
+    
+    
+    
+    
+    public function import_student_grid($file, $confirm = false){
+        
+        global $CFG, $DB, $USER;
+                
+        $now = time();
+                
+        $output = "";
+        
+        if ($confirm)
+        {
+            
+            $output .= "loading file {$file['tmp_name']} ...<br>";
+            
+            try {
+                
+                $inputFileType = PHPExcel_IOFactory::identify($file['tmp_name']);
+                $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+                $objPHPExcel = $objReader->load($file['tmp_name']);
+                
+            } catch(Exception $e){
+                
+                print_error($e->getMessage());
+                return false;
+                
+            }
+            
+            $cnt = 0;
+            
+            $output .= "file loaded successfully ...<br>";
+            $output .= "student ({$this->student->username}) " . fullname($this->student) . " loaded successfully ...<br>";
+            
+            $objPHPExcel->setActiveSheetIndex(0);
+            $objWorksheet = $objPHPExcel->getActiveSheet();
+            
+            $output .= " loaded worksheet - " . $objWorksheet->getTitle() . " ...<br>";
+            
+            $commentsWorkSheet = $objPHPExcel->getSheet(1);
+            
+            $output .= " loaded worksheet - " . $commentsWorkSheet->getTitle() . " ...<br>";
+            
+            $lastCol = $objWorksheet->getHighestColumn();
+            $lastCol++;
+            $lastRow = $objWorksheet->getHighestRow();
+                        
+            
+            // Loop through rows to get students
+            for ($row = 2; $row <= $lastRow; $row++)
+            {
+
+                $output .= "processing row {$row} ...<br>";
+                
+                $studentUnit = false;
+
+                // Loop columns
+                $rowClass = ( ($row % 2) == 0 ) ? 'even' : 'odd';
+
+                for ($col = 'A'; $col != $lastCol; $col++){
+
+                    $cellValue = $objWorksheet->getCell($col . $row)->getCalculatedValue();
+
+                    if ($col == 'A'){
+                        $unitID = $cellValue;
+                        $studentUnit = $this->units[$unitID];
+                        $output .= "loaded unit " . $studentUnit->get_name() . " ...<br>";
+                        continue; // Don't want to print the id out
+                    }
+
+
+                    if ($col != 'A' && $col != 'B'){
+
+                        $value = $cellValue;
+
+                        // Get studentCriteria to see if it has been updated since we downloaded the sheet
+                        $criteriaName = $objWorksheet->getCell($col . "1")->getCalculatedValue();
+                        $studentCriterion = $studentUnit->get_single_criteria(-1, $criteriaName);
+
+                        $unitCriteria = $studentUnit->get_single_criteria(-1, $criteriaName);
+
+                        // If the unit doesn't have the criteria, don't bother doing anything
+                        if ($unitCriteria)
+                        {
+                        
+                            $txtValue = $value;
+                            if ($txtValue == ''){
+                                $txtValue = 'N/A';
+                            }
+                            $output .= "attempting to set value for criterion {$criteriaName} to {$txtValue} ... ";
+
+                            if ($studentCriterion)
+                            {
+
+                                // Get possible values
+                                $possibleValues = $studentCriterion->get_possible_values(); 
+
+                                $possibleValuesArray[-1] = 'N/A';
+                                
+                                if ($possibleValues){
+                                    foreach($possibleValues as $val){
+                                        $possibleValuesArray[$val->id] = $val->shortgrade;
+                                    }
+                                }                                
+                                
+                                
+                                
+                                // Set new value
+                                if (array_search($value, $possibleValuesArray) !== false)
+                                {
+
+                                    $valueID = array_search($value, $possibleValuesArray);
+                                    $studentCriterion->set_user($USER->id);
+                                    $studentCriterion->set_date();
+                                    $studentCriterion->update_students_value($valueID);
+                                    
+                                    // Comments
+                                    $commentsCellValue = (string)$commentsWorkSheet->getCell($col . $row)->getCalculatedValue();
+                                    $commentsCellValue = trim($commentsCellValue);
+                                    $studentCriterion->add_comments($commentsCellValue);
+                                    
+                                    $studentCriterion->save_student($this->id, false);
+                                    $output .= "success - criterion updated ...<br>";
+                                    $cnt++;
+
+                                }
+                                else
+                                {
+                                    $output .= "error - {$value} is an invalid value for this criterion ...<br>";
+                                }
+
+                            } 
+                            else
+                            {
+                                $output .= "error - student criteria could not be loaded ...<br>";
+                            }
+                        
+                        }
+
+                    }
+
+                }
+
+            }
+            
+            $output .= "end of worksheet ...<br>";
+            $output .= "end of process - {$cnt} criteria values updated<br>";
+            
+            
+        }
+        else
+        {
+            
+            try {
+                
+                $inputFileType = PHPExcel_IOFactory::identify($file['tmp_name']);
+                $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+                $objPHPExcel = $objReader->load($file['tmp_name']);
+                
+            } catch(Exception $e){
+                
+                print_error($e->getMessage());
+                return false;
+                
+            }
+            
+            // Save the tmp file to Moodledata so we can still use it when we click confirm
+            $saveFile = bcgt_save_file($file['tmp_name'], $this->id . '_' . $this->studentID . '_' . $now . '.xlsx', "import_student_grids");
+            if (!$saveFile){
+                print_error('Could not save uploaded file. Either the save location does not exist, or is not writable. (moodledata - bcgt/import_student_grids)');
+            }    
+                     
+            $unix = $objPHPExcel->getProperties()->getCreated();
+                        
+            $objPHPExcel->setActiveSheetIndex(0);
+            $objWorksheet = $objPHPExcel->getActiveSheet();
+            
+            $lastCol = $objWorksheet->getHighestColumn();
+            $lastCol++;
+            $lastRow = $objWorksheet->getHighestRow();
+            
+            $commentWorkSheet = $objPHPExcel->getSheet(1);
+            
+            // See if anything has been updated in the DB since we downloaded the file
+            $updates = $DB->get_records_select("block_bcgt_user_criteria", "bcgtqualificationid = ? AND userid = ? AND ( dateset > ? OR dateupdated > ? ) ", array($this->id, $this->studentID, $unix, $unix));
+
+            if ($updates)
+            {
+                
+                $output .= "<div class='importwarning'>";
+                    $output .= "<b>".get_string('warning').":</b><br><br>";
+                    $output .= "<p>".get_string('importwarning', 'block_bcgt')."</p>";
+                    foreach($updates as $update)
+                    {
+                        $critRecord = $DB->get_record("block_bcgt_criteria", array("id" => $update->bcgtcriteriaid));
+                        
+                        if (isset($this->units[$critRecord->bcgtunitid])){
+                            
+                            $unit = $this->units[$critRecord->bcgtunitid];
+                            $value = $DB->get_record("block_bcgt_bspk_c_grade_vals", array("id" => $update->bcgtvalueid));
+                            if ($update->dateupdated > $update->dateset){
+                                $updateTime = $update->dateupdated;
+                                $updateUser = $DB->get_record("user", array("id" => $update->updatedbyuserid));
+                            } else {
+                                $updateTime = $update->dateset;
+                                $updateUser = $DB->get_record("user", array("id" => $update->setbyuserid));
+                            }
+                                                       
+                            $output .= $unit->get_name() . " (" . $critRecord->name . ") was updated to: " . $value->grade . ", at: " . date('d-m-Y, H:i', $updateTime) . ", by: ".fullname($updateUser)." ({$updateUser->username})<br>";
+                        }
+                        
+                    }
+                    
+                $output .= "</div>";
+                $output .= "<br><br>";
+                
+            }
+                        
+            // Key
+            $output .= "<h3>Key</h3>";
+            $output .= "<table class='importgridtable'>";
+                $output .= "<tr>";
+                    $output .= "<td class='updatedsince crit'>&nbsp;</td>";
+                    $output .= "<td>The criterion has been updated in Gradetracker since you downloaded the spreadsheet</td>";
+                $output .= "</tr>";
+                    
+                $output .= "<tr>";
+                    $output .= "<td class='updatedinsheet crit'>&nbsp;</td>";
+                    $output .= "<td>The criterion value in your spreadsheet is different to the one in Gradetracker. (You presumably updated it in the spreadsheet).</td>";
+                $output .= "</tr>";
+                
+                $output .= "<tr>";
+                    $output .= "<td class='updatedinsheet updatedsince crit'>&nbsp;</td>";
+                    $output .= "<td>Both of the above</td>";
+                $output .= "</tr>";
+                
+            $output .= "</table>";
+            
+            $output .= "<br><br>";
+            
+            $output .= "Below you will find all the data in the spreadsheet you have just uploaded.<br><br>";
+            
+            $output .= "<h2 class='c'>({$this->student->username}) ".fullname($this->student)."</h2>";
+            
+            $output .= "<div class='importgriddiv'>";
+            $output .= "<table class='importgridtable'>";
+            
+                $output .= "<tr>";
+                
+                    $output .= "<th>".get_string('unit', 'block_bcgt')."</th>";
+                    
+                    for ($col = 'C'; $col != $lastCol; $col++){
+
+                        $cellValue = $objWorksheet->getCell($col . "1")->getCalculatedValue();
+                        $output .= "<th>{$cellValue}</th>";
+
+                    }
+                    
+                $output .= "</tr>";
+                
+                // Loop through rows to get students
+                for ($row = 2; $row <= $lastRow; $row++)
+                {
+
+                    $studentUnit = false;
+                    
+                    // Loop columns
+                    $rowClass = ( ($row % 2) == 0 ) ? 'even' : 'odd';
+
+                    $output .= "<tr class='{$rowClass}'>";
+
+                        for ($col = 'A'; $col != $lastCol; $col++){
+                            
+                            $critClass = '';
+                            $currentValue = 'N/A';                                        
+                            $cellValue = $objWorksheet->getCell($col . $row)->getCalculatedValue();
+
+                            if ($col == 'A'){
+                                $unitID = $cellValue;
+                                $studentUnit = $this->units[$unitID];
+                                continue; // Don't want to print the id out
+                            }
+                            
+                            
+                            if ($col != 'A' && $col != 'B'){
+
+                                $value = (string)$cellValue;
+                                
+                                $critClass .= 'crit ';
+
+                                // Get studentCriteria to see if it has been updated since we downloaded the sheet
+                                $criteriaName = $objWorksheet->getCell($col . "1")->getCalculatedValue();
+                                $studentCriterion = $studentUnit->get_single_criteria(-1, $criteriaName);
+
+                                if ($studentCriterion)
+                                {
+                                
+                                    $critDateSet = $studentCriterion->get_date_set_unix();
+                                    $critDateUpdated = $studentCriterion->get_date_updated_unix();
+
+                                    $studentValueObj = $studentCriterion->get_student_value();	
+                                    if ($studentValueObj)
+                                    {
+                                        $currentValue = $studentValueObj->get_short_value();
+                                    }
+                                    
+                                    if ($currentValue != $value && !( $currentValue == 'N/A' && $value == '' )){
+                                        $critClass .= 'updatedinsheet ';
+                                    }
+                                                                        
+                                    if ($critDateSet > $unix || $critDateUpdated > $unix)
+                                    {
+                                        $critClass .= 'updatedsince ';
+                                    }
+                                    
+                                    $comment = $commentWorkSheet->getCell($col . $row)->getCalculatedValue();
+
+                                    $output .= "<td title='{$comment}' class='{$critClass}' currentValue='{$currentValue}'><small>{$cellValue}</small></td>";
+                                
+                                } 
+                                else
+                                {
+                                    $output .= "<td></td>";
+                                }
+
+                            }
+                            else
+                            {
+                                $output .= "<td>{$cellValue}</td>";
+                            }
+
+
+                        }
+
+                    $output .= "</tr>";
+
+                }
+                
+                
+            
+            $output .= "</table>";
+            $output .= "</div>";
+            
+            $output .= "<form action='' method='post' class='c'>";
+                $output .= "<input type='hidden' name='qualID' value='{$this->id}' />";
+                $output .= "<input type='hidden' name='studentID' value='{$this->studentID}' />";
+                $output .= "<input type='hidden' name='now' value='{$now}' />";
+                $output .= "<input type='submit' class='btn' name='submit_confirm' value='".get_string('confirm')."' />";
+                $output .= str_repeat("&nbsp;", 8);
+                $output .= "<input type='button' class='btn' onclick='window.location.href=\"{$CFG->wwwroot}/blocks/bcgt/grids/student_grid.php?sID={$this->studentID}&qID={$this->id}\";' value='".get_string('cancel')."' />";
+
+            $output .= "</form>";
+            
+ 
+            
+        }
+        
+        
+        return $output;
+        
+    }
+    
+    
+    
+    
+    
+    
 }
-
-
-
-?>

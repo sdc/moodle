@@ -55,46 +55,51 @@ class block_bcgt extends block_base {
         if (has_capability('block/bcgt:viewclassgrids', $currentContext)){
             $viewALL = (has_capability('block/bcgt:viewallgrids', context_system::instance()));
             $qualFamilies = bcgt_get_users_qual_families($COURSE->id, $viewALL, true);
-            
-            
-			$this->content->text .= '<ul class="list">';
-			$this->content->text .= '<li>'.get_string('viewEditBy', 'block_bcgt').'<ul>';
+                $this->content->text .= '<ul class="list">';
+                $this->content->text .= '<li>'.get_string('viewEditBy', 'block_bcgt').'<ul>';
 
-			$this->content->text .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=s&cID='.$COURSE->id.'&il=true">';   			
-			$this->content->text .= get_string('byStudent', 'block_bcgt').'</a></li>';   			
+                $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=s&cID='.$COURSE->id.'&il=true">';   			
+                $this->content->text .= get_string('byStudent', 'block_bcgt').'</a></li>';   			
 
-			if($COURSE->id == 1 || ($COURSE->id != 1 && count($qualFamilies)) > 0)
-			{
                 //do they have the ability to view by unit?
                 //are the families that they can see in the view by families constant?
-                if(count(array_intersect(explode('|',BCGT_UNIT_VIEW_FAMILIES), $qualFamilies)) > 0)
+                if($COURSE->id == 1 || ($COURSE->id != 1 && count($qualFamilies)) > 0)
                 {
-                    $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=u&cID='.$COURSE->id.'&il=true">';   			
-                    $this->content->text .= get_string('byUnit', 'block_bcgt').'</a></li>'; 
-                }
-                
-                if(count(array_intersect(explode('|',BCGT_CLASS_VIEW_FAMILIES), $qualFamilies)) > 0)
-                {
-                    $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=c&cID='.$COURSE->id.'&il=true">';   			
-                    $this->content->text .= get_string('byClassGroup', 'block_bcgt').'</a></li>';
-                }
+                    if(count(array_intersect(explode('|',BCGT_UNIT_VIEW_FAMILIES), $qualFamilies)) > 0)
+                    {
+                        $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=u&cID='.$COURSE->id.'&il=true&sCID='.$COURSE->id.'">';   			
+                        $this->content->text .= get_string('byUnit', 'block_bcgt').'</a></li>'; 
+                    }
 
-                if(get_config('bcgt','usefa') && 
-                        count(array_intersect(explode('|',BCGT_FA_VIEW_FAMILIES), $qualFamilies)) > 0)
-                {
-                    $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=fa&cID='.$COURSE->id.'">';   			
-                    $this->content->text .= get_string('byformalassessment', 'block_bcgt').'</a></li>';
+                    if(count(array_intersect(explode('|',BCGT_CLASS_VIEW_FAMILIES), $qualFamilies)) > 0)
+                    {
+                        $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=c&cID='.$COURSE->id.'&il=true&sCID='.$COURSE->id.'">';   			
+                        $this->content->text .= get_string('byClassGroup', 'block_bcgt').'</a></li>';
+                    }
+
+                    if(get_config('bcgt','usefa') && 
+                            count(array_intersect(explode('|',BCGT_FA_VIEW_FAMILIES), $qualFamilies)) > 0)
+                    {
+                        $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=fa&cID='.$COURSE->id.'&sCID='.$COURSE->id.'">';   			
+                        $this->content->text .= get_string('byformalassessment', 'block_bcgt').'</a></li>';
+                    }
+
+                    if(count(array_intersect(explode('|',BCGT_ACTIVITYT_VIEW_FAMILIES), $qualFamilies)) > 0)
+                    {
+                        $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=a&cID='.$COURSE->id.'&sCID='.$COURSE->id.'">';   			
+                        $this->content->text .= get_string('bygradebook', 'block_bcgt').'</a></li>';
+                    }
                 }
                 
-                if(count(array_intersect(explode('|',BCGT_ACTIVITYT_VIEW_FAMILIES), $qualFamilies)) > 0)
-                {
-                    $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/grid_select.php?g=a&cID='.$COURSE->id.'">';   			
-                    $this->content->text .= get_string('bygradebook', 'block_bcgt').'</a></li>';
-                }
-			}
                 
-			$this->content->text .= '</ul>';
+                $this->content->text .= '</ul>';
         }
+        
+        if($COURSE->id != SITEID && has_capability('block/bcgt:viewassessmenttracker', $currentContext)) {
+            $this->content->text .= '<ul class="list"><li><a href="'.$CFG->wwwroot.'/blocks/bcgt/grids/assessment_tracker.php?courseID='.$COURSE->id.'" target="_blank">'.get_string('assessmenttracker','block_bcgt').'</a></li></ul>';
+        }
+        
+        
         require_once($CFG->dirroot.'/blocks/bcgt/lib.php');
         //>>BEDCOLL TODO this should be the user context
         if (has_capability('block/bcgt:viewowngrid', $currentContext)){
@@ -115,7 +120,9 @@ class block_bcgt extends block_base {
             $this->content->text .= get_string('editcoursequals', 'block_bcgt').'</a> ['.$count.']</li>'; 
             $this->content->text .= '</ul>';
         }
-        if($COURSE->id != 1 && has_capability('block/bcgt:manageactivitylinks', $currentContext))
+        //what are the qual familes on this course?
+        if($COURSE->id != 1 && has_capability('block/bcgt:manageactivitylinks', $currentContext)
+                && (count(array_intersect(explode('|',BCGT_ACTIVITYT_VIEW_FAMILIES), $qualFamilies)) > 0))
         {
             $this->content->text .= '<ul class="list">';
             $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/activities.php?cID='.$COURSE->id.'">';   			

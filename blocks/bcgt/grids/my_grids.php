@@ -41,8 +41,8 @@ $PAGE->set_title(get_string('mytrackingsheet', 'block_bcgt'));
 $PAGE->set_heading(get_string('mytrackingsheet', 'block_bcgt'));
 $PAGE->set_pagelayout('login');
 $PAGE->add_body_class(get_string('gridselect', 'block_bcgt'));
-$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'','title');
-$PAGE->navbar->add(get_string('mytrackingsheet', 'block_bcgt'),'','title');
+$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php','title');
+$PAGE->navbar->add(get_string('mytrackingsheet', 'block_bcgt'),null,'title');
 
 $jsModule = array(
     'name'     => 'block_bcgt',

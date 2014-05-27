@@ -48,6 +48,395 @@ M.block_bcgt.init = function(Y) {
     }
 };
 
+M.block_bcgt.initalpstab = function(Y) {
+   //get the family alps:
+    var alpsFamilyOverall= Y.all('.famOverall');
+    if(alpsFamilyOverall)
+    {
+        //get the project id
+        //get the qualid
+        //get the userid
+        alpsFamilyOverall.each(function(cell){
+            var fam = cell.getAttribute('fam');
+            var div = Y.one('#famOverall_'+fam);
+            var type = 'family';
+            var subtype = 'all';
+            if(div)
+            {
+                div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+            }
+            var data = {
+                method: 'POST',
+                data: {
+                    'fam' : fam,
+                    'type' : type,
+                    'subtype' : subtype
+                },
+                dataType: 'json',
+                on: {
+                    success: display_alps_report
+                }
+            }
+            var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+            var request = Y.io(url, data);
+        });
+    }
+    
+    var alpsFamilyFAG= Y.all('.famFAOverallG');
+    if(alpsFamilyFAG)
+    {
+        //get the project id
+        //get the qualid
+        //get the userid
+        alpsFamilyFAG.each(function(cell){
+            var fam = cell.getAttribute('fam');
+            var assID = cell.getAttribute('faid');
+            var div = Y.one('#famFAG_'+fam+'_'+assID);
+            var type = 'family';
+            var subtype = 'fag';
+            if(div)
+            {
+                div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+            }
+            var data = {
+                method: 'POST',
+                data: {
+                    'fam' : fam,
+                    'assID' : assID,
+                    'type' : type,
+                    'subtype' : subtype
+                },
+                dataType: 'json',
+                on: {
+                    success: display_alps_report
+                }
+            }
+            var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+            var request = Y.io(url, data);
+        });
+    }
+    
+    var alpsFamilyFAC= Y.all('.famFAOverallC');
+    if(alpsFamilyFAC)
+    {
+        //get the project id
+        //get the qualid
+        //get the userid
+        alpsFamilyFAC.each(function(cell){
+            var fam = cell.getAttribute('fam');
+            var assID = cell.getAttribute('faid');
+            var div = Y.one('#famFAC_'+fam+'_'+assID);
+            var type = 'family';
+            var subtype = 'fac';
+            if(div)
+            {
+                div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+            }
+            var data = {
+                method: 'POST',
+                data: {
+                    'fam' : fam,
+                    'assID' : assID,
+                    'type' : type,
+                    'subtype' : subtype
+                },
+                dataType: 'json',
+                on: {
+                    success: display_alps_report
+                }
+            }
+            var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+            var request = Y.io(url, data);
+        });
+    }
+    
+    var alpsFamTypeAll= Y.all('.famType');
+    if(alpsFamTypeAll)
+    {
+        //get the project id
+        //get the qualid
+        //get the userid
+        alpsFamTypeAll.each(function(cell){
+            var fam = cell.getAttribute('fam');
+            var typeID = cell.getAttribute('type');
+            var div = Y.one('#famType_'+typeID);
+            var type = 'famType';
+            var subtype = 'all';
+            if(div)
+            {
+                div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+            }
+            var data = {
+                method: 'POST',
+                data: {
+                    'fam' : fam,
+                    'type' : type,
+                    'subtype' : subtype,
+                    'typeID' : typeID
+                },
+                dataType: 'json',
+                on: {
+                    success: display_alps_report
+                }
+            }
+            var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+            var request = Y.io(url, data);
+        });
+    }
+    
+    var alpsFamilyTypeFAC= Y.all('.famFATypeC');
+    if(alpsFamilyTypeFAC)
+    {
+        //get the project id
+        //get the qualid
+        //get the userid
+        alpsFamilyTypeFAC.each(function(cell){
+            var fam = cell.getAttribute('fam');
+            var assID = cell.getAttribute('faid');
+            var typeID = cell.getAttribute('type');
+            var div = Y.one('#famTFAC_'+typeID+'_'+assID);
+            var type = 'famType';
+            var subtype = 'fac';
+            if(div)
+            {
+                div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+            }
+            var data = {
+                method: 'POST',
+                data: {
+                    'fam' : fam,
+                    'assID' : assID,
+                    'type' : type,
+                    'subtype' : subtype,
+                    'typeID' : typeID
+                },
+                dataType: 'json',
+                on: {
+                    success: display_alps_report
+                }
+            }
+            var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+            var request = Y.io(url, data);
+        });
+    }
+    
+    var alpsFamilyTypeFAG= Y.all('.famFATypeG');
+    if(alpsFamilyTypeFAG)
+    {
+        //get the project id
+        //get the qualid
+        //get the userid
+        alpsFamilyTypeFAG.each(function(cell){
+            var fam = cell.getAttribute('fam');
+            var assID = cell.getAttribute('faid');
+            var typeID = cell.getAttribute('type');
+            var div = Y.one('#famTFAG_'+typeID+'_'+assID);
+            var type = 'famType';
+            var subtype = 'fag';
+            if(div)
+            {
+                div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+            }
+            var data = {
+                method: 'POST',
+                data: {
+                    'fam' : fam,
+                    'assID' : assID,
+                    'type' : type,
+                    'subtype' : subtype,
+                    'typeID' : typeID
+                },
+                dataType: 'json',
+                on: {
+                    success: display_alps_report
+                }
+            }
+            var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+            var request = Y.io(url, data);
+        });
+    }
+    
+    apply_alps_reporting_tt();
+}
+
+function apply_alps_reporting_tt()
+{
+    var expand = Y.all('.expand');
+    if(expand)
+    {
+        //get the project id
+        //get the qualid
+        //get the userid
+        expand.each(function(cell){
+            cell.on('click', function(event){
+                var type = cell.getAttribute('type');
+                var eID = cell.getAttribute('eID');
+                var e2ID = cell.getAttribute('e2ID');
+                var div = Y.one('#expand');
+                if(div)
+                {
+                    div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+                }
+                var data = {
+                    method: 'POST',
+                    data: {
+                        'type' : type,
+                        'eID' : eID,
+                        'e2ID' : e2ID
+                    },
+                    dataType: 'json',
+                    on: {
+                        success: expand_report
+                    }
+                }
+                var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/expand_report.php";
+                var request = Y.io(url, data); 
+            });
+        });
+    }
+}
+
+function expand_report(id, o)
+{
+    var data = o.responseText; // Response data.
+    var json = Y.JSON.parse(o.responseText);
+    var display = json.display;
+    var type = json.type;
+    var eID = json.eID;
+    var e2ID = json.e2ID;
+    $('#tE_'+type+'_'+eID+'_'+e2ID).after(display);
+    Y.one('#expand').set('innerHTML', '');
+    
+    apply_alps_colour_coding();
+    apply_alps_reporting_tt();
+}
+
+function display_alps_report(id, o)
+{
+    var data = o.responseText; // Response data.
+    var json = Y.JSON.parse(o.responseText);
+    if(json.display != null)
+    {
+        var qualID = json.qualid;
+        var userID = json.userid;
+        var assID = json.assid;
+        var display = json.display;
+        var type = json.type;
+        var subtype = json.subtype;
+        var courseID = json.courseid;
+        var fam = json.fam;
+        var typeID = json.typeid;
+        switch(type)
+        {
+            case "student":
+                switch(subtype)
+                {
+                    case"ceta":
+                        set_div_content('#alpsceta_'+qualID+'_'+userID,display);
+                        set_div_content('#alpsceta_'+qualID+'_'+userID+'_2',display);
+                        break;
+                    case"fa":
+                        set_div_content('#alpsfa_'+qualID+'_'+userID,display);
+                        break;
+                    case"all":
+                        set_div_content('#alpsall_'+qualID+'_'+userID,display);
+                        break;
+                    case"projectg":
+                        set_div_content('#faGradeAlps_'+assID+'_'+qualID,display);
+                        break;
+                    case"projectc":
+                        set_div_content('#faCetaAlps_'+assID+'_'+qualID,display);
+                        break;
+                    case"gbook":
+                        set_div_content('#gbalps_'+assID+'_'+courseID,display);
+                        break;
+                }
+                break;
+            case "class":
+                switch(subtype)
+                {
+                    case"projectg":
+                        set_div_content('#faGradeAlps_'+assID+'_'+qualID,display);
+                        break;
+                    case"projectc":
+                        set_div_content('#faCetaAlps_'+assID+'_'+qualID,display);
+                        break;
+                    case"all":
+                        set_div_content('#alpsclass_'+qualID,display);
+                        break;
+                    case"gbook":
+                        set_div_content('#gbalps_'+assID+'_'+courseID,display);
+                        break;
+                }
+            case "family":
+                switch(subtype)
+                {
+                    case"all":
+                        set_div_content('#famOverall_'+fam, display);
+                        break;
+                    case"fag":
+                        set_div_content('#famFAG_'+fam+'_'+assID, display);
+                        break;
+                    case"fac":
+                        set_div_content('#famFAC_'+fam+'_'+assID, display);
+                        break;
+                }
+            case "famType":
+                switch(subtype)
+                {
+                    case"all":
+                        set_div_content('#famType_'+typeID, display);
+                        break;
+                    case"fag":
+                        set_div_content('#famTFAG_'+typeID+'_'+assID, display);
+                        break;
+                    case"fac":
+                        set_div_content('#famTFAC_'+typeID+'_'+assID, display);
+                        break;
+                }
+        }
+    }
+    
+    //now we are going to reapply the colour coding:
+
+    
+    apply_alps_colour_coding();
+}
+
+function apply_alps_colour_coding()
+{
+    $("span.alpstemp1").closest("td").css("background-color", "#9E1616");
+    $("span.alpstemp2").closest("td").css("background-color", "#B14545");
+    $("span.alpstemp3").closest("td").css("background-color", "#C87D7D");
+    $("span.alpstemp4").closest("td").css("background-color", "#999999");
+    $("span.alpstemp5").closest("td").css("background-color", "#000000");
+    $("span.alpstemp6").closest("td").css("background-color", "#999999");
+    $("span.alpstemp7").closest("td").css("background-color", "#8080E6");
+    $("span.alpstemp8").closest("td").css("background-color", "#0000CC");
+    $("span.alpstemp9").closest("td").css("background-color", "#00008F");
+    
+    $("span.alpstemp1").closest("th").css("background-color", "#9E1616");
+    $("span.alpstemp2").closest("th").css("background-color", "#B14545");
+    $("span.alpstemp3").closest("th").css("background-color", "#C87D7D");
+    $("span.alpstemp4").closest("th").css("background-color", "#999999");
+    $("span.alpstemp5").closest("th").css("background-color", "#000000");
+    $("span.alpstemp6").closest("th").css("background-color", "#999999");
+    $("span.alpstemp7").closest("th").css("background-color", "#8080E6");
+    $("span.alpstemp8").closest("th").css("background-color", "#0000CC");
+    $("span.alpstemp9").closest("th").css("background-color", "#00008F");
+}
+
+function set_div_content(divID, content)
+{
+    var div = Y.one(divID);
+    if(div)
+    {
+        //clear the loading gif first
+        div.set('innerHTML', '');
+        div.set('innerHTML', content);
+    }
+}
+
 M.block_bcgt.inittrackerstab = function(Y) {
     
     var buttons = Y.all('.simplequalreportheading');
@@ -60,6 +449,7 @@ M.block_bcgt.inittrackerstab = function(Y) {
                 var qualID = quals[1];
                 var type = quals[2];
                 var div = Y.one('#sqrc_'+qualID+'_'+type);
+                var cID = $('#cID').val();
                 if(div)
                 {
                     div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
@@ -70,7 +460,8 @@ M.block_bcgt.inittrackerstab = function(Y) {
                     data: {
                         'qID' : qualID,
                         'grID' : -1,
-                        'type' : type
+                        'type' : type,
+                        'cID' : cID
                     },
                     dataType: 'json',
                     on: {
@@ -105,6 +496,7 @@ M.block_bcgt.initgroupstab = function(Y)
                 var groupings = grouping.split("_");
                 var groupingID = groupings[1];
                 var type = groupings[2];
+                var courseID = $('#cID').val();
                 var div = Y.one('#sqrc_'+groupingID+'_'+type);
                 if(div)
                 {
@@ -116,7 +508,8 @@ M.block_bcgt.initgroupstab = function(Y)
                     data: {
                         'grID' : groupingID,
                         'qID' : -1,
-                        'type' : type
+                        'type' : type,
+                        'cID' : courseID
                     },
                     dataType: 'json',
                     on: {
@@ -195,6 +588,7 @@ function applyReportingTT()
     if(tabs)
     {
         tabs.each( function(tab){
+            tab.detach('click');
             tab.on('click', function(event){
                 var id = tab.getAttribute('id');
                 //loading symbol!
@@ -205,15 +599,17 @@ function applyReportingTT()
                 }
                 var qualID = tab.getAttribute('qual');
                 var groupID = tab.getAttribute('group');
-                var tabType = tab.getAttribute('tab');
-                var type = tab.getAttribute('type');
+                var actualTab = tab.getAttribute('tab');
+                var tabType = tab.getAttribute('tabtype');
+                var courseID = tab.getAttribute('course');
                 var data = {
                     method: 'POST',
                     data: {
                         'qID' : qualID,
-                        'tab' : tabType,
+                        'tab' : actualTab,
                         'grID' : groupID,
-                        'type' : type
+                        'type' : tabType,
+                        'cID' : courseID
                     },
                     dataType: 'json',
                     on: {
@@ -231,9 +627,10 @@ function applyReportingTT()
     if(close)
     {
         close.each( function(close){
+            close.detach('click');
             close.on('click', function(event){
                 var id = close.getAttribute('id');
-                var type = close.getAttribute('type');
+                var type = close.getAttribute('tabtype');
                 var div = Y.one('#sqrc_'+id+'_'+type);
                 if(div)
                 {
@@ -247,20 +644,23 @@ function applyReportingTT()
     if(edits)
     {
         edits.each(function(edit){
+            edit.detach('click');
             edit.on('click', function(event){
                 event.preventDefault();
                 var qualID = edit.getAttribute('qual');
                 var groupID = edit.getAttribute('group');
-                var tabType = edit.getAttribute('tab');
+                var actualTab = edit.getAttribute('tab');
                 var type = edit.getAttribute('tabtype');
+                var courseID = edit.getAttribute('course');
                 var data = {
                     method: 'POST',
                     data: {
                         'qID' : qualID,
-                        'tab' : tabType,
+                        'tab' : actualTab,
                         'grID' : groupID,
                         'edit' : true,
-                        'type' : type
+                        'type' : type,
+                        'cID' : courseID
                     },
                     dataType: 'json',
                     on: {
@@ -277,20 +677,23 @@ function applyReportingTT()
     if(views)
     {
         views.each(function(view){
+            view.detach('click');
             view.on('click', function(event){
                 event.preventDefault();
                 var qualID = view.getAttribute('qual');
                 var groupID = view.getAttribute('group');
-                var tabType = view.getAttribute('tab');
+                var actualTab = view.getAttribute('tab');
                 var type = view.getAttribute('tabtype');
+                var courseID = view.getAttribute('course');
                 var data = {
                     method: 'POST',
                     data: {
                         'qID' : qualID,
-                        'tab' : tabType,
+                        'tab' : actualTab,
                         'grID' : groupID,
                         'edit' : false,
-                        'type' : type
+                        'type' : type,
+                        'cID' : courseID
                     },
                     dataType: 'json',
                     on: {
@@ -308,6 +711,7 @@ function applyReportingTT()
     if(edittargets)
     {
         edittargets.each( function(edittarget){
+            edittarget.detach('click');
             edittarget.on('change', function(event){
                 var qualID = edittarget.getAttribute('qual');
                 var groupID = edittarget.getAttribute('group');
@@ -349,10 +753,36 @@ function applyReportingTT()
         });
     }
     
+    $('.update_asp_grade').on('change', function(){
+        
+        var studentID = $(this).attr('studentid');
+        var qualID = $(this).attr('qualid');
+        var value = $(this).val();
+        
+        var params = { 
+            studentID: studentID,
+            qualID: qualID,
+            aspirationalgrade: value,
+            ignoreTarget: true
+        };
+        
+        var data = { action: 'save', params: params };
+        
+        $.post(M.cfg.wwwroot + '/blocks/bcgt/ajax/elbp_target_grades/ajax.php', data, function(d){
+            $('#edit_asp_select_'+studentID+'_'+qualID).parent().effect( "highlight", {color: '#ccff66'}, 3000 );
+        });
+        
+    });
+    
+    
+    
+    
+    
     var editasps = Y.all('.editasp');
     if(editasps)
     {
         editasps.each( function(editasp){
+            editasp.detach('click');
             editasp.on('change', function(event){
                 var qualID = editasp.getAttribute('qual');
                 var groupID = editasp.getAttribute('group');
@@ -399,6 +829,7 @@ function applyReportingTT()
     if(unitFilters)
     {
         unitFilters.each( function(unitFilter){
+            unitFilter.detach('click');
             unitFilter.on('change', function(event){
                 var qualID = unitFilter.getAttribute('qual');
                 var groupID = unitFilter.getAttribute('group');
@@ -413,8 +844,9 @@ function applyReportingTT()
                 var ufilter = Y.one("#uf_"+idUse).get("options").item(index).getAttribute('value');
                 var index = Y.one("#tf_"+idUse).get('selectedIndex');
                 var tfilter = Y.one("#tf_"+idUse).get("options").item(index).getAttribute('value');
-                var tabType = unitFilter.getAttribute('tab');
+                var actualTab = unitFilter.getAttribute('tab');
                 var type = unitFilter.getAttribute('tabtype');
+                var courseID = unitFilter.getAttribute('course');
                 var data = {
                     method: 'POST',
                     data: {
@@ -422,9 +854,10 @@ function applyReportingTT()
                         'grID' : groupID,
                         'ufilter' : ufilter,
                         'tfilter' : tfilter,
-                        'tab' : tabType,
+                        'tab' : actualTab,
                         'edit' : editing,
-                        'type' : type
+                        'type' : type,
+                        'cID' : courseID
                     },
                     dataType: 'json',
                     on: {
@@ -458,6 +891,7 @@ function applyReportingTT()
                 var tfilter = Y.one("#tf_"+idUse).get("options").item(index).getAttribute('value');
                 var tabType = targetFilter.getAttribute('tab');
                 var type = targetFilter.getAttribute('tabtype');
+                var courseID = targetFilter.getAttribute('course');
                 var data = {
                     method: 'POST',
                     data: {
@@ -467,7 +901,8 @@ function applyReportingTT()
                         'tfilter' : tfilter,
                         'tab' : tabType,
                         'edit' : editing,
-                        'type' : type
+                        'type' : type,
+                        'cID' : courseID
                     },
                     dataType: 'json',
                     on: {
@@ -485,6 +920,7 @@ function applyReportingTT()
     if(sortheads)
     {
         sortheads.each( function(sorthead){
+            sorthead.detach('click');
             sorthead.on('click', function(event){
                 event.preventDefault();
                 var qualID = sorthead.getAttribute('qual');
@@ -505,6 +941,7 @@ function applyReportingTT()
                 var thisSort = sorthead.getAttribute('sortname');
                 var currentSort = currentSort + ',' + thisSort;
                 var type = sorthead.getAttribute('tabtype');
+                var courseID = sorthead.getAttribute('course');
                 var data = {
                     method: 'POST',
                     data: {
@@ -515,7 +952,8 @@ function applyReportingTT()
                         'tab' : tabType,
                         'edit' : editing,
                         'sort' : currentSort,
-                        'type' : type
+                        'type' : type,
+                        'cID' : courseID
                     },
                     dataType: 'json',
                     on: {
@@ -533,6 +971,7 @@ function applyReportingTT()
     if(usortheads)
     {
         usortheads.each( function(sorthead){
+            sorthead.detach('click');
             sorthead.on('click', function(event){
                 event.preventDefault();
                 var qualID = sorthead.getAttribute('qual');
@@ -542,6 +981,7 @@ function applyReportingTT()
                 var thisSort = sorthead.getAttribute('sortname');
                 var currentSort = currentSort + ',' + thisSort;
                 var type = sorthead.getAttribute('tabtype');
+                var courseID = sorthead.getAttribute('course');
                 var data = {
                     method: 'POST',
                     data: {
@@ -549,7 +989,8 @@ function applyReportingTT()
                         'grID' : groupID,
                         'tab' : tabType,
                         'sort' : currentSort,
-                        'type' : type
+                        'type' : type,
+                        'cID' : courseID
                     },
                     dataType: 'json',
                     on: {
@@ -1574,7 +2015,14 @@ M.block_bcgt.initgridgroupunit = function(Y) {
     var unit = Y.one('#unitChange');
     if (unit != null){
         unit.on('change', function(e) {
-            Y.one('#unitGridForm').submit();
+            Y.one('#unitGroupGridForm').submit();
+        });
+    }
+    
+    var qual = Y.one('#qualChange');
+    if (qual != null){
+        qual.on('change', function(e) {
+            Y.one('#unitGroupGridForm').submit();
         });
     }
 }
@@ -1585,6 +2033,7 @@ M.block_bcgt.initmygrid = function(Y) {
 
 M.block_bcgt.initgridclass = function(Y) {
     var qual = Y.one('#qualChange');
+    var g = $('#grid').val();
     if (qual != null){
         qual.on('change', function(e) {
             Y.one('#classGridForm').submit();
@@ -1686,3 +2135,143 @@ M.block_bcgt.inittransferunits = function(Y){
     
 }
 
+M.block_bcgt.initassessmenttracker = function(Y, studentID, courseID, qualID){
+                    
+    $(document).ready( function(){
+                
+        // Filter the results and draw the calendar again
+        $('#filter_calendar').unbind('click');
+        $('#filter_calendar').bind('click', function(){
+                        
+            // Filters
+            var year = $('#yearfield').val();
+            // Only get the courseID from the form if it's there, otherwise use the one in the url
+            if ($('#coursefield').length > 0){
+                courseID = $('#coursefield').val();
+            }
+            var modLinks = $('input[name="critact"]:checked').val();
+            var modTypes = $('#modulesfield').val();
+            
+            $('#assessment_tracker_content').html( '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" />' );
+            
+            var params = {
+                studentID: studentID,
+                courseID: courseID,
+                qualID: qualID,
+                year: year,
+                modLinks: modLinks,
+                modTypes: modTypes
+            };
+            
+             $.post(M.cfg.wwwroot + '/blocks/bcgt/ajax/load_assessment_tracker.php', params, function(data){
+                
+                $('#assessment_tracker_content').html(data);
+                draw_assessment_tracker(studentID);
+                
+            });
+            
+            
+        });
+        
+        
+        
+        
+        
+        
+        
+        
+        // Redraw on window resize
+        var doResize;
+        $(window).resize( function(){
+            clearTimeout(doResize);
+            $('#loading2').show();
+            doResize = setTimeout( function(){
+                draw_assessment_tracker(studentID);
+            }, 100 );
+        } );
+        
+        
+        // draw the calendar
+        draw_assessment_tracker(studentID);
+        
+        
+    } );
+    
+}
+
+function bind_mod_items(studentID){
+    
+    // Click on a mod_item
+    $('.mod_item').unbind('click');
+    $('.mod_item').bind('click', function(){
+
+        var mod = $(this).attr('moduleType');
+        var id = $(this).attr('moduleID');
+
+        $('#assessment_tracker_info').hide();
+        $('#loading').show();
+
+        var showVals = $('input[name="showvalues"]:checked').val();
+
+        var params = { id: id, mod: mod, studentID: studentID, showVals: showVals };
+
+        $.post(M.cfg.wwwroot + '/blocks/bcgt/ajax/load_mod_info.php', params, function(data){
+
+            var json = Y.JSON.parse(data);
+
+            $('#assessment_tracker_info_title').text( json.title );
+            $('#assessment_tracker_info_content').html( json.content );
+            $('#loading').hide();
+            $('#assessment_tracker_info').show();
+
+        });
+
+    });
+    
+    $('.mod_item').addClass('hand');
+  
+}
+
+function draw_assessment_tracker(studentID){
+        
+    if( $('#tinytbl-1').length > 0 ){
+        $('#assessment_tracker_table').tinytbl('destroy');
+    }
+    
+    $('#assessment_tracker_info').hide();
+        
+    var height = '800px';
+    if ($('#elbp_assessment_calendar_content').length > 0){
+        height = '600px';
+    }
+    
+    // Apply tinytbl
+    $('#assessment_tracker_table').tinytbl({
+        'body': {
+            'useclass': null,
+            'autofocus': false
+        },
+        'head': {
+            'useclass': null
+        },
+        'cols': {
+            'frozen': 1
+        },
+        'rows': {
+            'frozen': 1
+        },
+        'rtl':0,
+        'width': 'auto',
+        'height': ''+height+''
+    });
+
+    // Apply width fix
+    $('#tinytbl-1').width( $('#tinytbl-1').width() + 2 );
+    
+    // Apply pointer css to mod items
+    bind_mod_items(studentID);
+
+    // Hide the loading gif
+    $('#loading2').hide();
+    
+}

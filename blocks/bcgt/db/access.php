@@ -81,6 +81,16 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         ),
     ),
+    
+    'block/bcgt:printclassgrids' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW
+        ),
+    ),
+
 
     'block/bcgt:viewcoursestab' => array(
         'captype' => 'view',
@@ -163,6 +173,15 @@ $capabilities = array(
     ),
     
     'block/bcgt:viewmessagestab' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'student' => CAP_PREVENT 
+        ),
+    ),
+    
+    'block/bcgt:viewrepsystab' => array(
         'captype' => 'view',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
@@ -708,6 +727,115 @@ $capabilities = array(
             
         ), 
     ),
+  
+    'block/bcgt:viewrepsystab' => array(
+        'captype' => 'edit',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array( 
+            
+        ), 
+    ),
+        
+    'block/bcgt:seealpsreportsstudent' => array(
+        'captype' => 'edit',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array( 
+            
+        ), 
+    ),     
     
+    'block/bcgt:seealpsreportsquals' => array(
+        'captype' => 'edit',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array( 
+            
+        ), 
+    ),    
+    
+    'block/bcgt:seealpsreportsassessment' => array(
+         'captype' => 'edit',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array( 
+            
+        ), 
+    ),   
+    
+    'block/bcgt:seeucaspoints' => array(
+         'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array( 
+            
+        ), 
+    ),
+
+
+    'block/bcgt:viewlogs' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    
+    'block/bcgt:editqualweightings' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+        ),
+    ),
+    
+    'block/bcgt:importexportgrids' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    
+    'block/bcgt:importexportstudentgrids' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    
+    'block/bcgt:importexportunitgrids' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    
+    'block/bcgt:viewstudentsgrids' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'student' => CAP_PREVENT
+        ),
+    ),
+    
+    'block/bcgt:viewunitgrid' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'student' => CAP_PREVENT
+        ),
+    ),
+    
+    'block/bcgt:viewassessmenttracker' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'student' => CAP_ALLOW
+        ),
+    )
     
 );

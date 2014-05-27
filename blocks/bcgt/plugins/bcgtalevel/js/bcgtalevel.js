@@ -281,6 +281,188 @@ M.mod_bcgtalevel.initstudentgrid = function(Y, qualID, studentID, grid) {
         };
         
         draw_ALEVEL_student_table(studentID, grid);
+        
+        process_alps_ceta();
+        
+        var alpsfa = Y.all('.alpsfa');
+        if(alpsfa)
+        {
+            alpsfa.each(function(cell){
+                var qualID = cell.getAttribute('qual');
+                var studentID = cell.getAttribute('user');
+                var type = 'student';
+                var subtype = 'fa';
+                
+                var div = Y.one('#alpsfa_'+qualID+'_'+studentID);
+                if(div)
+                {
+                    div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+                }
+                var data = {
+                    method: 'POST',
+                    data: {
+                        'qID' : qualID,
+                        'sID' : studentID,
+                        'type' : type,
+                        'subtype' : subtype,
+                        'score': true
+                    },
+                    dataType: 'json',
+                    on: {
+                        success: display_alps_report
+                    }
+                }
+                var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+                var request = Y.io(url, data);
+            });
+        }
+        
+        var alpsall = Y.all('.alpsall');
+        if(alpsall)
+        {
+            alpsall.each(function(cell){
+                var qualID = cell.getAttribute('qual');
+                var studentID = cell.getAttribute('user');
+                var type = 'student';
+                var subtype = 'all';
+                
+                var div = Y.one('#alpsall_'+qualID+'_'+studentID);
+                if(div)
+                {
+                    div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+                }
+                var data = {
+                    method: 'POST',
+                    data: {
+                        'qID' : qualID,
+                        'sID' : studentID,
+                        'type' : type,
+                        'subtype' : subtype,
+                        'score': true
+                    },
+                    dataType: 'json',
+                    on: {
+                        success: display_alps_report
+                    }
+                }
+                var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+                var request = Y.io(url, data);
+            });
+        } 
+        
+        var alpsfagrade = Y.all('.faGradeAlps');
+        if(alpsfagrade)
+        {
+            //get the project id
+            //get the qualid
+            //get the userid
+            var userID = $('#studentid').val();
+            alpsfagrade.each(function(cell){
+                var qualID = cell.getAttribute('qual');
+                var projectid = cell.getAttribute('project');
+                var div = Y.one('#faGradeAlps_'+projectid+'_'+qualID);
+                var type = 'student';
+                var subtype = 'projectg';
+                if(div)
+                {
+                    div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+                }
+                var data = {
+                    method: 'POST',
+                    data: {
+                        'qID' : qualID,
+                        'sID' : userID,
+                        'assID' : projectid,
+                        'type' : type,
+                        'subtype' : subtype,
+                        'score': true
+                    },
+                    dataType: 'json',
+                    on: {
+                        success: display_alps_report
+                    }
+                }
+                var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+                var request = Y.io(url, data);
+            });
+        }
+        
+        var alpsfaceta = Y.all('.faCetaAlps');
+        if(alpsfaceta)
+        {
+            //get the project id
+            //get the qualid
+            //get the userid
+            var userID = $('#studentid').val();
+            alpsfagrade.each(function(cell){
+                var qualID = cell.getAttribute('qual');
+                var projectid = cell.getAttribute('project');
+                var div = Y.one('#faCetaAlps_'+projectid+'_'+qualID);
+                var type = 'student';
+                var subtype = 'projectc';
+                if(div)
+                {
+                    div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+                }
+                var data = {
+                    method: 'POST',
+                    data: {
+                        'qID' : qualID,
+                        'sID' : userID,
+                        'assID' : projectid,
+                        'type' : type,
+                        'subtype' : subtype,
+                        'score': true
+                    },
+                    dataType: 'json',
+                    on: {
+                        success: display_alps_report
+                    }
+                }
+                var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+                var request = Y.io(url, data);
+            });
+        }
+        
+        var alpsGradeBook= Y.all('.gradeBookAlps');
+        if(alpsGradeBook)
+        {
+            //get the project id
+            //get the qualid
+            //get the userid
+            var userID = $('#studentid').val();
+            alpsGradeBook.each(function(cell){
+                var qualID = cell.getAttribute('qual');
+                var courseID = cell.getAttribute('courseid');
+                var gradebookid = cell.getAttribute('gid');
+                var div = Y.one('#gbalps_'+gradebookid+'_'+courseID);
+                var type = 'student';
+                var subtype = 'gbook';
+                if(div)
+                {
+                    div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+                }
+                var data = {
+                    method: 'POST',
+                    data: {
+                        'qID' : qualID,
+                        'sID' : userID,
+                        'assID' : gradebookid,
+                        'type' : type,
+                        'subtype' : subtype,
+                        'courseid' : courseID,
+                        'score': true
+                    },
+                    dataType: 'json',
+                    on: {
+                        success: display_alps_report
+                    }
+                }
+                var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+                var request = Y.io(url, data);
+            });
+        }
+        
     } );
     
     var viewsimple = Y.one('#viewsimple');
@@ -298,6 +480,138 @@ M.mod_bcgtalevel.initstudentgrid = function(Y, qualID, studentID, grid) {
         self.location='student_grid.php?qID='+qualID+'&sID='+studentID+'&g=se';
 //        redraw_ALEVEL_student_table(qualID, studentID, 'se');
     });
+}
+
+function process_alps_ceta()
+{
+    //get the alps
+    var alpsceta = Y.all('.alpsceta');
+    if(alpsceta)
+    {
+        alpsceta.each(function(cell){
+            var qualID = cell.getAttribute('qual');
+            var studentID = cell.getAttribute('user');
+            var type = 'student';
+            var subtype = 'ceta';
+            var div = Y.one('#alpsceta_'+qualID+'_'+studentID);
+            if(div)
+            {
+                div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+            }
+            var div2 = Y.one('#alpsceta_'+qualID+'_'+studentID+'_2');
+            if(div2)
+            {
+                div2.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+            }
+            var data = {
+                method: 'POST',
+                data: {
+                    'qID' : qualID,
+                    'sID' : studentID,
+                    'type' : type,
+                    'subtype' : subtype,
+                    'score': true
+                },
+                dataType: 'json',
+                on: {
+                    success: display_alps_report
+                }
+            }
+            var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+            var request = Y.io(url, data);
+        });
+    }
+}
+
+function display_alps_report(id, o)
+{
+    var data = o.responseText; // Response data.
+    var json = Y.JSON.parse(o.responseText);
+    if(json.display != null)
+    {
+        var qualID = json.qualid;
+        var userID = json.userid;
+        var assID = json.assid;
+        var display = json.display;
+        var type = json.type;
+        var subtype = json.subtype;
+        var courseID = json.courseid;
+        switch(type)
+        {
+            case "student":
+                switch(subtype)
+                {
+                    case"ceta":
+                        set_div_content('#alpsceta_'+qualID+'_'+userID,display);
+                        set_div_content('#alpsceta_'+qualID+'_'+userID+'_2',display);
+                        break;
+                    case"fa":
+                        set_div_content('#alpsfa_'+qualID+'_'+userID,display);
+                        break;
+                    case"all":
+                        set_div_content('#alpsall_'+qualID+'_'+userID,display);
+                        break;
+                    case"projectg":
+                        set_div_content('#faGradeAlps_'+assID+'_'+qualID,display);
+                        break;
+                    case"projectc":
+                        set_div_content('#faCetaAlps_'+assID+'_'+qualID,display);
+                        break;
+                    case"gbook":
+                        set_div_content('#gbalps_'+assID+'_'+courseID,display);
+                        break;
+                }
+                break;
+            case "class":
+                switch(subtype)
+                {
+                    case"projectg":
+                        set_div_content('#faGradeAlps_'+assID+'_'+qualID,display);
+                        break;
+                    case"projectc":
+                        set_div_content('#faCetaAlps_'+assID+'_'+qualID,display);
+                        break;
+                    case"all":
+                        set_div_content('#alpsclass_'+qualID,display);
+                        break;
+                    case"gbook":
+                        set_div_content('#gbalps_'+assID+'_'+courseID,display);
+                        break;
+                }
+        }
+    }
+    
+    //now we are going to reapply the colour coding:
+    $("span.alpstemp1").closest("td").css("background-color", "#9E1616");
+    $("span.alpstemp2").closest("td").css("background-color", "#B14545");
+    $("span.alpstemp3").closest("td").css("background-color", "#C87D7D");
+    $("span.alpstemp4").closest("td").css("background-color", "#999999");
+    $("span.alpstemp5").closest("td").css("background-color", "#000000");
+    $("span.alpstemp6").closest("td").css("background-color", "#999999");
+    $("span.alpstemp7").closest("td").css("background-color", "#8080E6");
+    $("span.alpstemp8").closest("td").css("background-color", "#0000CC");
+    $("span.alpstemp9").closest("td").css("background-color", "#00008F");
+    
+    $("span.alpstemp1").closest("th").css("background-color", "#9E1616");
+    $("span.alpstemp2").closest("th").css("background-color", "#B14545");
+    $("span.alpstemp3").closest("th").css("background-color", "#C87D7D");
+    $("span.alpstemp4").closest("th").css("background-color", "#999999");
+    $("span.alpstemp5").closest("th").css("background-color", "#000000");
+    $("span.alpstemp6").closest("th").css("background-color", "#999999");
+    $("span.alpstemp7").closest("th").css("background-color", "#8080E6");
+    $("span.alpstemp8").closest("th").css("background-color", "#0000CC");
+    $("span.alpstemp9").closest("th").css("background-color", "#00008F");
+}
+
+function set_div_content(divID, content)
+{
+    var div = Y.one(divID);
+    if(div)
+    {
+        //clear the loading gif first
+        div.set('innerHTML', '');
+        div.set('innerHTML', content);
+    }
 }
 
 var draw_ALEVEL_student_table = function(studentID, grid) { 
@@ -538,6 +852,162 @@ M.mod_bcgtalevel.initclassgrid = function(Y, qualID) {
         e.preventDefault();
         Y.one('#grid').set('value', 'se');
         self.location='class_grid.php?qID='+qualID+'&g=se';
+    });
+    
+    $(document).ready(function() {
+       process_alps_ceta();
+       
+       var alpsfagrade = Y.all('.faGradeAlps');
+        if(alpsfagrade)
+        {
+            //get the project id
+            //get the qualid
+            //get the userid
+            alpsfagrade.each(function(cell){
+                var qualID = cell.getAttribute('qual');
+                var projectid = cell.getAttribute('project');
+                var groupID = $('#grID').val();
+                var div = Y.one('#faGradeAlps_'+projectid+'_'+qualID);
+                var type = 'class';
+                var subtype = 'projectg';
+                if(div)
+                {
+                    div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+                }
+                var data = {
+                    method: 'POST',
+                    data: {
+                        'qID' : qualID,
+                        'sID' : -1,
+                        'assID' : projectid,
+                        'type' : type,
+                        'subtype' : subtype,
+                        'grID' : groupID,
+                        'score': true
+                    },
+                    dataType: 'json',
+                    on: {
+                        success: display_alps_report
+                    }
+                }
+                var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+                var request = Y.io(url, data);
+            });
+        }
+        
+        var alpsfaceta = Y.all('.faCetaAlps');
+        if(alpsfaceta)
+        {
+            //get the project id
+            //get the qualid
+            //get the userid
+            alpsfagrade.each(function(cell){
+                var qualID = cell.getAttribute('qual');
+                var projectid = cell.getAttribute('project');
+                var groupID = $('#grID').val();
+                var div = Y.one('#faCetaAlps_'+projectid+'_'+qualID);
+                var type = 'class';
+                var subtype = 'projectc';
+                if(div)
+                {
+                    div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+                }
+                var data = {
+                    method: 'POST',
+                    data: {
+                        'qID' : qualID,
+                        'sID' : -1,
+                        'assID' : projectid,
+                        'type' : type,
+                        'subtype' : subtype,
+                        'grID' : groupID,
+                        'score': true
+                    },
+                    dataType: 'json',
+                    on: {
+                        success: display_alps_report
+                    }
+                }
+                var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+                var request = Y.io(url, data);
+            });
+        }
+        
+        var alpsclass = Y.all('.alpsclass');
+        if(alpsclass)
+        {
+            //get the project id
+            //get the qualid
+            //get the userid
+            alpsclass.each(function(cell){
+                var qualID = cell.getAttribute('qual');
+                var groupID = $('#grID').val();
+                var div = Y.one('#alpsclass_'+qualID);
+                var type = 'class';
+                var subtype = 'all';
+                if(div)
+                {
+                    div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+                }
+                var data = {
+                    method: 'POST',
+                    data: {
+                        'qID' : qualID,
+                        'sID' : -1,
+                        'assID' : -1,
+                        'type' : type,
+                        'subtype' : subtype,
+                        'grID' : groupID,
+                        'score': true
+                    },
+                    dataType: 'json',
+                    on: {
+                        success: display_alps_report
+                    }
+                }
+                var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+                var request = Y.io(url, data);
+            });
+        }
+        
+        var alpsGradeBook= Y.all('.gradeBookAlps');
+        if(alpsGradeBook)
+        {
+            //get the project id
+            //get the qualid
+            //get the userid
+            var userID = $('#studentid').val();
+            alpsGradeBook.each(function(cell){
+                var qualID = cell.getAttribute('qual');
+                var courseID = cell.getAttribute('courseid');
+                var gradebookid = cell.getAttribute('gid');
+                var div = Y.one('#gbalps_'+gradebookid+'_'+courseID);
+                var type = 'class';
+                var subtype = 'gbook';
+                if(div)
+                {
+                    div.set('innerHTML', '<img src="'+M.cfg.wwwroot+'/blocks/bcgt/pix/ajax-loader.gif" alt="" />');
+                }
+                var data = {
+                    method: 'POST',
+                    data: {
+                        'qID' : qualID,
+                        'sID' : userID,
+                        'assID' : gradebookid,
+                        'type' : type,
+                        'subtype' : subtype,
+                        'courseid' : courseID,
+                        'score': true
+                    },
+                    dataType: 'json',
+                    on: {
+                        success: display_alps_report
+                    }
+                }
+                var url = M.cfg.wwwroot+"/blocks/bcgt/ajax/get_alps_report.php";
+                var request = Y.io(url, data);
+            });
+        }
     });
     
     apply_student_grid_TT(-1);

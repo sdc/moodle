@@ -27,6 +27,8 @@ abstract class DashTab {
     const DASHTAB11 = 'feed';
     const DASHTAB12 = 'mess';
     const DASHTAB13 = 'grouping';
+    const DASHTAB14 = 'reporting'; // Why are you doing it like this?
+    const DASHTAB15 = 'alps'; // Why are you doing it like this?
     
     function DashTab ()
     {
@@ -49,6 +51,9 @@ abstract class DashTab {
             case(DashTab::DASHTAB10):
             case(DashTab::DASHTAB11):
             case(DashTab::DASHTAB12):
+            case(DashTab::DASHTAB13):
+            case(DashTab::DASHTAB14):
+            case(DashTab::DASHTAB15):
                 return get_string('dashtab'.$tab, 'block_bcgt');
                 break;
             default:
@@ -120,6 +125,15 @@ abstract class DashTab {
 //        {
 //            $retval .= DashTab::bcgt_core_get_core_dash_tab(DashTab::DASHTAB12, $tab, 'middle');
 //        }
+        if(has_capability('block/bcgt:viewrepsystab', $courseContext))
+        {
+            $retval .= DashTab::bcgt_core_get_core_dash_tab(DashTab::DASHTAB14, $tab, 'middle');
+        }
+        if(get_config('bcgt', 'calcultealpstempreports') && get_config('bcgt', 'usefa') && 
+                has_capability('block/bcgt:seealpsreportsquals', $courseContext))
+        {
+            $retval .= DashTab::bcgt_core_get_core_dash_tab(DashTab::DASHTAB15, $tab, 'first');
+        }
         return $retval;
     }
     
@@ -231,6 +245,12 @@ abstract class DashTab {
                 break;
             case(DashTab::DASHTAB13):
                 return DashTab::bcgt_tab_get_group_tab();
+                break;
+            case(DashTab::DASHTAB14):
+                return DashTab::bcgt_tab_get_reporting_tab();
+                break;
+            case(DashTab::DASHTAB15):
+                return DashTab::bcgt_tab_get_alps_tab();
                 break;
             default:
                 return DashTab::bcgt_tab_get_plugin_tab($tabName);
@@ -780,6 +800,132 @@ abstract class DashTab {
         $retval = '';
         $retval .= '<h2 class="dashContentHeading">'.get_string('myassignments', 'block_bcgt').'</h2>';
         return $retval;
+    }
+    
+    public static function bcgt_tab_get_alps_tab()
+    {
+        global $USER, $CFG, $PAGE, $DB;        
+        $jsModule = array(
+            'name'     => 'block_bcgt',
+            'fullpath' => '/blocks/bcgt/js/block_bcgt.js',
+            'requires' => array('base', 'io', 'node', 'json', 'event')
+        );
+        $PAGE->requires->js_init_call('M.block_bcgt.initalpstab', null, true, $jsModule);
+        //get all of the formal assessments possible:
+        $project = new Project();
+        $projects = $project->get_all_projects($centrallyManaged = null);
+        if($projects)
+        {
+            require_once($CFG->dirroot.'/blocks/bcgt/classes/sorters/ProjectsSorter.class.php');
+            $projectSorter = new ProjectsSorter();
+            usort($projects, array($projectSorter, "CompareByDateCurrent"));
+        }
+        
+        $retval = '';
+        $retval .= '<div id="expand"></div>';
+        $retval .= '<table align="center">';
+        $retval .= '<thead>';
+        $retval .= '<tr>';
+        $retval .= '<th rowspan="3">'.get_string('qualfamily','block_bcgt').'</th><th rowspan="3">'.
+                get_string('latestceta','block_bcgt').'</th><th colspan="'.(count($projects) * 2).'">'.get_string('formalassessments','block_bcgt').'</th>';
+        $retval .= '</tr>';
+        $subHeader = '';
+        $subSubHeader = '';
+        foreach($projects AS $project)
+        {
+            $subHeader .= '<th colspan="2">'.$project->get_name().'</th>';
+            $subSubHeader .= '<th>'.get_string('grade','block_bcgt').'</th>';
+            $subSubHeader .= '<th>'.get_string('ceta','block_bcgt').'</th>';
+        }
+        $retval .= '<tr>';
+        $retval .= $subHeader;
+        $retval .= '</tr>';
+        $retval .= '<tr>';
+        $retval .= $subSubHeader;
+        $retval .= '</tr>';
+        $retval .= '</thead>';
+        $retval .= '<tbody>';
+        $families = get_config('bcgt','alpsweightedfamilies');
+        if($families)
+        {
+            foreach(explode(',',$families) AS $family)
+            {
+                $retval .= '<tr>';
+                $retval .= '<td>'.$family.'</td>';
+                $retval .= '<td><span class="alpstemp famOverall" id="famOverall_'.$family.'" fam="'.$family.'"></span></td>';
+                //get the overall alps temp ceta for the family:
+                foreach($projects AS $project)
+                {
+                    $retval .= '<td><span class="alpstemp famFAOverallG" fam="'.$family.'" id="famFAG_'.$family.'_'.$project->get_id().'" faID="'.$project->get_id().'"></span></td>';
+                    $retval .= '<td><span class="alpstemp famFAOverallC" fam="'.$family.'" id="famFAC_'.$family.'_'.$project->get_id().'" faID="'.$project->get_id().'"></span></td>';
+                }
+                $retval .= '<td></td>';
+                $retval .= '</tr>';
+                $levelString = QualWeighting::BCGT_WEIGHTINGS_LEVELS;
+                $levels = explode(',',$levelString);
+                $familyTypes = bcgt_get_qual_types($family, true, $levels);
+                if($familyTypes)
+                {
+                    foreach($familyTypes AS $type)
+                    {
+                        $retval .= '<tr id="tE_type_'.$type->id.'_-1" class="expand" type="type" e2ID="-1" eID="'.$type->id.'">';
+                        $retval .= '<td class="subRow1"><span>'.$type->type.'</span></td>';
+                        $retval .= '<td><span class="alpstemp famType" id="famType_'.$type->id.'" type="'.$type->id.'" fam="'.$family.'"></span></td>';
+                        foreach($projects AS $project)
+                        {
+                            $retval .= '<td><span class="alpstemp famFATypeG" fam="'.$family.'" type="'.$type->id.'" id="famTFAG_'.$type->id.'_'.$project->get_id().'" faID="'.$project->get_id().'"></span></td>';
+                            $retval .= '<td><span class="alpstemp famFATypeC" fam="'.$family.'" type="'.$type->id.'" id="famTFAC_'.$type->id.'_'.$project->get_id().'" faID="'.$project->get_id().'"></span></td>';
+                        }
+                        $retval .= '<td></td>';
+                        $retval .= '</tr>';
+                    }
+                }
+
+            } 
+        }
+        $retval .= '</tbody>';
+        $retval .= '</table>';
+        return $retval;
+    }
+    
+    public static function bcgt_tab_get_reporting_tab()
+    {
+        
+        global $CFG;
+        
+        require_once $CFG->dirroot . '/blocks/bcgt/classes/core/ReportingSystem.class.php';
+        
+        $action = optional_param('action', false, PARAM_TEXT);
+        $id = optional_param('id', false, PARAM_INT);
+        
+        $retval = '';
+        $retval .= '<h2 class="c">'.get_string('dashtabreporting', 'block_bcgt').'</h2>';
+        
+        $retval .= '<p class="c"><a href="my_dashboard.php?tab=reporting&action=create">Create Report</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="my_dashboard.php?tab=reporting&action=view">View Saved Reports</a></p>';
+        $retval .= '<br><br><br>';
+                
+        if ($action == 'create')
+        {
+            $retval .= ReportingSystem::display_create_form();
+        }
+        elseif ($action == 'view')
+        {
+            if ($id)
+            {
+                $retval .= ReportingSystem::display_view_report($id);
+            }
+            else
+            {
+                $retval .= ReportingSystem::display_view_reports();
+            }
+        }
+        else
+        {
+            $retval .= 'Please choose an action';
+        }
+        
+        return $retval;
+        
     }
     
     

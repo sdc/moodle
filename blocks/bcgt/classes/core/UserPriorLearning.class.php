@@ -587,10 +587,26 @@ class UserPriorLearning {
         $records = $DB->get_records_sql($sql, array($userID));
         if($records)
         {
-            //then we do have prior learning.
-            //do we have an avg score?
-            $targetGradeOut = '<span style="color:grey">'.
+            //then we do have prior learning
+            //do we have gcses?
+            $sql = "SELECT distinct(q.id), q.* FROM {block_bcgt_user_prlearn} up 
+                JOIN {block_bcgt_prior_qual_grades} g ON g.id = up.bcgtpriorqualgradesid 
+                JOIN {block_bcgt_prior_qual} q ON q.id = g.bcgtpriorqualid 
+                WHERE userid = ? AND (q.name = ? OR q.name = ? OR q.name = ?)";
+            $records = $DB->get_records_sql($sql, array($userID, 'GCSE', 'GCSE Short Course', 'GCSE Double Award'));
+            if($records)
+            {
+                //so we have an average gcse score from it 
+                //we must not be able to calculate one
+                $targetGradeOut = '<span style="color:grey">'.
+                    get_string('reportnotg', 'block_bcgt').'</span>';
+            }
+            else
+            {
+                //do we have an avg score?
+                $targetGradeOut = '<span style="color:grey">'.
                     get_string('reportnogcse', 'block_bcgt').'</span>';
+            }
         }
         else
         {
