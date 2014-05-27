@@ -32,8 +32,8 @@ $PAGE->set_url('/blocks/bcgt/forms/general_settings.php', array());
 $PAGE->set_title(get_string('generalsettings', 'block_bcgt'));
 $PAGE->set_heading(get_string('generalsettings', 'block_bcgt'));
 $PAGE->set_pagelayout('login');
-$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php','title');
-$PAGE->navbar->add(get_string('myDashboard', 'block_bcgt'),'my_dashboard.php?tab=dash','title');
+$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php?tab=track','title');
+//$PAGE->navbar->add(get_string('myDashboard', 'block_bcgt'),'my_dashboard.php?tab=dash','title');
 $PAGE->navbar->add(get_string('dashtabadm', 'block_bcgt'),'my_dashboard.php?tab=adm','title');
 $PAGE->navbar->add(get_string('generalsettings', 'block_bcgt'));
 

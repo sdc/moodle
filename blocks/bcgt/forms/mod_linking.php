@@ -25,8 +25,10 @@ if(isset($_POST['save']))
     }
     $stdObject->modtablename = isset($_POST['modtablename'])? $_POST['modtablename'] : '';
     $stdObject->modtablecoursefname = isset($_POST['modtablecoursefname'])? $_POST['modtablecoursefname'] : '';
+    $stdObject->modtablestartdatefname = isset($_POST['modtablestartdatefname'])? $_POST['modtablestartdatefname'] : '';
     $stdObject->modtableduedatefname = isset($_POST['modtableduedatefname'])? $_POST['modtableduedatefname'] : '';
-    $stdObject->modsubmssiontable = isset($_POST['modsubmssiontable'])? $_POST['modsubmssiontable'] : '';
+    $stdObject->modsubmissiontable = isset($_POST['modsubmissiontable'])? $_POST['modsubmissiontable'] : '';
+    $stdObject->modtitlefname = isset($_POST['modtitlefname'])? $_POST['modtitlefname'] : '';
     $stdObject->submissionuserfname = isset($_POST['submissionuserfname'])? $_POST['submissionuserfname'] : '';
     $stdObject->submissiondatefname = isset($_POST['submissiondatefname'])? $_POST['submissiondatefname'] : '';
     $stdObject->submissionmodidfname = isset($_POST['submissionmodidfname'])? $_POST['submissionmodidfname'] : '';
@@ -62,7 +64,7 @@ $PAGE->set_title(get_string('managemodlinking', 'block_bcgt'));
 $PAGE->set_heading(get_string('managemodlinking', 'block_bcgt'));
 $PAGE->set_pagelayout('login');
 $PAGE->add_body_class(get_string('managemodlinking', 'block_bcgt'));
-$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php','title');
+$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php?tab=track','title');
 $PAGE->navbar->add(get_string('managemodlinking', 'block_bcgt'),'','title');
 
 $jsModule = array(
@@ -97,12 +99,17 @@ if($action == 'new' || $action == 'edit')
             .get_string('mod', 'block_bcgt').': </label></div>';
         $out .= '<div class="inputRight"><select id="modname" name="modname">';
         $out .= '<option value="">'.get_string('pleaseselect', 'block_bcgt').'</option>';
-        $possibleMods = get_non_used_mods();
-        if($possibleMods)
+        $usedMods = get_used_mod_names();
+        
+        // We can only support the following:
+        $possibleModNames = array('assign', 'assignment', 'turnitintool', 'quiz');
+        foreach($possibleModNames as $modName)
         {
-            foreach($possibleMods as $mod) {
+            $mod = $DB->get_record("modules", array("name" => $modName));
+            if($mod && !in_array($modName, $usedMods))
+            {
                 $out .= "<option value='".$mod->id."'>".$mod->name."</option>";
-            }	
+            }
         }
         $out .= "</select></div></div>";
     }
@@ -121,6 +128,15 @@ if($action == 'new' || $action == 'edit')
             'value="'.(isset($module->modtablecoursefname)? $module->modtablecoursefname : '').'"/>';
     $out .= '</div></div>';
     
+    
+    $out .= '<div class="inputContainer"><div class="inputLeft">';
+    $out .= '<label for="modtablestartdatefname"><span class="required">*</span>'
+        .get_string('mlstartdatefieldname', 'block_bcgt').': </label></div>';
+    $out .= '<div class="inputRight"><input type="text" name="modtablestartdatefname"'.
+            'value="'.(isset($module->modtablestartdatefname)? $module->modtablestartdatefname : '').'"/>';
+    $out .= '</div></div>';
+    
+    
     $out .= '<div class="inputContainer"><div class="inputLeft">';
     $out .= '<label for="modtableduedatefname"><span class="required">*</span>'
         .get_string('mlduedatefieldname', 'block_bcgt').': </label></div>';
@@ -129,10 +145,17 @@ if($action == 'new' || $action == 'edit')
     $out .= '</div></div>';
     
     $out .= '<div class="inputContainer"><div class="inputLeft">';
+    $out .= '<label for="modtitlefname">'
+        .get_string('modtitlefname', 'block_bcgt').': </label></div>';
+    $out .= '<div class="inputRight"><input type="text" name="modtitlefname"'.
+            'value="'.(isset($module->modtitlefname)? $module->modtitlefname : '').'"/>';
+    $out .= '</div></div>';
+    
+    $out .= '<div class="inputContainer"><div class="inputLeft">';
     $out .= '<label for="modsubmssiontable">'
         .get_string('mlmodsubmissiontable', 'block_bcgt').': </label></div>';
-    $out .= '<div class="inputRight"><input type="text" name="modsubmssiontable"'.
-            'value="'.(isset($module->modsubmssiontable)? $module->modsubmssiontable : '').'"/>';
+    $out .= '<div class="inputRight"><input type="text" name="modsubmissiontable"'.
+            'value="'.(isset($module->modsubmissiontable)? $module->modsubmissiontable : '').'"/>';
     $out .= '</div></div>';
     
     $out .= '<div class="inputContainer"><div class="inputLeft">';
@@ -172,12 +195,15 @@ elseif($action == 'view')
     $modules = get_mod_linking();
     if($modules)
     {
+        $out .= "<div style='width:100%;overflow-x:scroll;'>";
         $out .= '<table class="bcgt_table" align="center">';
         $out .= '<tr>';
         $out .= '<th>'.get_string('mod', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('mlmodtable', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('mlcoursefieldname', 'block_bcgt').'</th>';
+        $out .= '<th>'.get_string('mlstartdatefieldname', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('mlduedatefieldname', 'block_bcgt').'</th>';
+        $out .= '<th>'.get_string('modtitlefname', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('mlmodsubmissiontable', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('mlsubmissionuserfield', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('mlsubmissiondatefield', 'block_bcgt').'</th>';
@@ -199,8 +225,10 @@ elseif($action == 'view')
             $out .= '<td>'.$mod->modname.'</td>';
             $out .= '<td>'.$mod->modtablename.'</td>';
             $out .= '<td>'.$mod->modtablecoursefname.'</td>';
+            $out .= '<td>'.$mod->modtablestartdatefname.'</td>';
             $out .= '<td>'.$mod->modtableduedatefname.'</td>';
-            $out .= '<td>'.$mod->modsubmssiontable.'</td>';
+            $out .= '<td>'.$mod->modtitlefname.'</td>';
+            $out .= '<td>'.$mod->modsubmissiontable.'</td>';
             $out .= '<td>'.$mod->submissionuserfname.'</td>';
             $out .= '<td>'.$mod->submissiondatefname.'</td>';
             $out .= '<td>'.$mod->submissionmodidfname.'</td>';
@@ -210,6 +238,7 @@ elseif($action == 'view')
             $out .= '</tr>';
         }
         $out .= '</table>';
+        $out .= "</div>";
     }
     else
     {

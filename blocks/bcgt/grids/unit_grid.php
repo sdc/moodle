@@ -24,6 +24,11 @@ else
     $context = context_course::instance($COURSE->id);
 }
 require_login();
+
+if(!has_capability('block/bcgt:viewunitgrid', $context)){
+    print_error('invalid access');
+}
+
 $PAGE->set_context($context);
 $qualID = optional_param('qID', -1, PARAM_INT);
 $unitID = optional_param('uID', -1, PARAM_INT);
@@ -40,6 +45,7 @@ if(!$clearSession)
 }
 else
 {
+    unset($_SESSION['session_unit']);
     $sessionUnits = array();
 }
 
@@ -51,6 +57,9 @@ $unitObject = new stdClass();
 //The object has an array of quals loaded, for each qual (id), the students
 //units loaded.
 //does the unit already exist?
+
+// Session Units empty at this point
+// So won't go in here
 if(array_key_exists($unitID, $sessionUnits))
 {
     $unitObject = $sessionUnits[$unitID];
@@ -71,12 +80,20 @@ if(array_key_exists($unitID, $sessionUnits))
 }
 else
 {
+    // Goes here
     $unitObject->sessionStartTime = time();
     $qualArray = array();
     $qualArray[$qualID] = array();
+    
+    // Added as fix for session problem
+    $qualArray[$qualID] = get_users_on_unit_qual($unitID, $qualID, $courseID, $groupingID);
+    
     $unitObject->qualArray = $qualArray;
     $unitObject->unit = null;
     $sessionUnits[$unitID] = $unitObject;
+    // Now has an array element for this unit
+       // Which has a qual array, with key of this qualID, but nothing else in it
+        // Also has a "unit" element, which is null
 }
 
 $url = '/blocks/bcgt/forms/unit_grid.php';
@@ -85,7 +102,7 @@ $PAGE->set_title(get_string('bcgtmydashboard', 'block_bcgt'));
 $PAGE->set_heading(get_string('bcgtmydashboard', 'block_bcgt'));
 $PAGE->set_pagelayout('login');
 $PAGE->add_body_class(get_string('bcgtmydashboard', 'block_bcgt'));
-$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),$CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php?tab=track','title');
+$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),$CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php?tab=track&cID='.$courseID,'title');
 $jsModule = array(
     'name'     => 'block_bcgt',
     'fullpath' => '/blocks/bcgt/js/block_bcgt.js',
@@ -135,6 +152,7 @@ $out = $OUTPUT->header();
             $out .= '<div class="bcgtQualChange">';
             $out .= '<label for="qualChange">Change Qualification to : </label>';
             $out .= '<select id="qualChange" name="qID"><option value="-1"></option>';
+            $qualFound = false;
             if($quals)
             {
                 foreach($quals AS $qual)
@@ -142,13 +160,14 @@ $out = $OUTPUT->header();
                     $selected = '';
                     if($qualID == $qual->id)
                     {
+                        $qualFound = true;
                         $selected = "selected";
                     }
                     $out .= '<option '.$selected.' value="'.$qual->id.'">'.
                     bcgt_get_qualification_display_name($qual, ' ').'</option>';
                 }
             }
-            else
+            if(!$quals || !$qualFound)
             {
                 //its not been able to find any so just put the current one on so
                 //it doesnt error.
@@ -158,7 +177,7 @@ $out = $OUTPUT->header();
             }
             $out .= '</select>';
             $out .= '</div>'; //bcgtQualChange
-        }
+        } 
         $out .= '<div class="bcgtUnitChange">';
         $out .= '<label for="unitChange">Change Unit to : </label>';
         $out .= '<select id="unitChange" name="uID"><option value="-1"></option>';
@@ -196,7 +215,7 @@ $out = $OUTPUT->header();
     $out .= '<input type="hidden" id="selects" name="selects" value="'.$dropDowns.'"/>'; 
     $out .= '<input type="hidden" id="user" name="user" value="'.$USER->id.'"/>';
     
-    $out .= get_grid_menu(null, $unitID, $qualID);
+    $out .= get_grid_menu(null, $unitID, $qualID, $courseID);
     $out .= '</div>';
     
     $heading = get_string('trackinggrid','block_bcgt');
@@ -219,7 +238,7 @@ $out = $OUTPUT->header();
     $out .= html_writer::start_tag('div', array('class'=>'bcgt_grid_outer', 
     'id'=>'unitGridOuter'));
     //at this point we load it up into the session
-    $out .= $unit->display_unit_grid();
+    $out .= $unit->display_unit_grid($qualID);
     
     $unitObject = $sessionUnits[$unitID];
     $unitObject->unit = $unit;

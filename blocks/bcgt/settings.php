@@ -127,11 +127,47 @@ $settings->add(new admin_setting_configcheckbox(
 //        ));
 
 $settings->add(new admin_setting_configcheckbox(
-        'bcgt/alevelallowalpsweighting',
-        get_string('labelalevelallowalpsweighting', 'block_bcgt'),
-        get_string('descalevelallowalpsweighting', 'block_bcgt'),
+        'bcgt/allowalpsweighting',
+        get_string('labelallowalpsweighting', 'block_bcgt'),
+        get_string('descallowalpsweighting', 'block_bcgt'),
         '0'
         ));
+
+$settings->add(new admin_setting_configcheckbox(
+        'bcgt/weightedtargetgradesuseconstant',
+        get_string('labelweightedtargetuseconstant', 'block_bcgt'),
+        get_string('descweightedtargetuseconstant', 'block_bcgt'),
+        '0'
+        ));
+
+$settings->add(new admin_setting_configselect(
+            'bcgt/weightedtargetgradesclosestgrade',
+            get_string('labelweightedtargetgradesclosestgrade', 'block_bcgt'),
+            get_string('descweightedtargetgradesclosestgrade', 'block_bcgt'),
+            'DOWN',
+            array(
+                'UP'  => get_string('up', 'block_bcgt'),
+                'DOWN' => get_string('down', 'block_bcgt'),
+            )
+        ));
+
+
+$settings->add(new admin_setting_configtext(
+        'bcgt/alpsweightedfamilies',
+        get_string('labelalpsweightedfamilies', 'block_bcgt'),
+        get_string('descalpsweightedfamilies', 'block_bcgt'),
+        'ALevel,BTEC'
+        ));
+
+$settings->add(new admin_setting_configtext(
+        'bcgt/alpsweightedfamiliestargets',
+        get_string('labelalpsweightedfamiliestargets', 'block_bcgt'),
+        get_string('descalpsweightedfamiliestargets', 'block_bcgt'),
+        'ALevel,BTEC'
+        ));
+
+
+
 
 $settings->add(new admin_setting_configtext(
         'bcgt/weightedtargetmethod',
@@ -141,10 +177,17 @@ $settings->add(new admin_setting_configtext(
         ));
 
 $settings->add(new admin_setting_configtext(
-        'bcgt/aleveldefaultalpsperc',
-        get_string('labelaleveldefaultalpspercentage', 'block_bcgt'),
-        get_string('descaleveldefaultalpspercentage', 'block_bcgt'),
+        'bcgt/defaultalpsperc',
+        get_string('labeldefaultalpspercentage', 'block_bcgt'),
+        get_string('descdefaultalpspercentage', 'block_bcgt'),
         '75'
+        ));
+
+$settings->add(new admin_setting_configcheckbox(
+        'bcgt/calcultealpstempreports',
+        get_string('labelcalcultealpstempreports', 'block_bcgt'),
+        get_string('desccalcultealpstempreports', 'block_bcgt'),
+        '0'
         ));
 
 //BTECS
@@ -220,13 +263,13 @@ $settings->add(new admin_setting_configcheckbox(
         '0'
         ));
 
+
 $settings->add(new admin_setting_configcheckbox(
-        'bcgt/useassignmentbtecautoupdate',
+'bcgt/useassignmentbtecautoupdate',
         get_string('labelassignmentbtecautoupdate', 'block_bcgt'),
         get_string('descassignmentbtecautoupdate', 'block_bcgt'),
         '0'
         ));
-
 //$settings->add(new admin_setting_configcheckbox(
 //        'bcgt/assignmentcheckajax',
 //        get_string('labelassignmentcheckajax', 'block_bcgt'),
@@ -305,3 +348,42 @@ $settings->add(new admin_setting_configtext(
         get_string('tutorroleshortname:desc', 'block_bcgt'),
         ''
 ));
+
+
+$cats = get_categories();
+$catArray = array();
+foreach($cats as $cat)
+{
+    $catArray[$cat->id] = $cat->name;
+}
+
+// Choose which course categories to use in Reporting
+$settings->add( new admin_setting_configmultiselect(
+        'bcgt/reportingcats', 
+        get_string('reportingcats', 'block_bcgt'), 
+        get_string('reportingcats:desc', 'block_bcgt'), 
+        null, 
+        $catArray) );
+
+
+$settings->add(new admin_setting_configcheckbox(
+        'bcgt/reportingftptfilter',
+        get_string('reportingftptfilter', 'block_bcgt'),
+        get_string('reportingftptfilterdesc', 'block_bcgt'),
+        '0'
+        )); 
+
+$settings->add(new admin_setting_configcheckbox(
+        'bcgt/showucaspoints',
+        get_string('showucaspoints', 'block_bcgt'),
+        get_string('showucaspointsdesc', 'block_bcgt'),
+        '0'
+        )); 
+
+
+$settings->add(new admin_setting_configcheckbox(
+        'bcgt/usemassupdate',
+        get_string('usemassupdate', 'block_bcgt'),
+        get_string('usemassupdatedesc', 'block_bcgt'),
+        '0'
+        )); 

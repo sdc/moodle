@@ -461,10 +461,10 @@ abstract class Unit {
     {
         
         $output = "";
-        $output .= $this->get_uniqueID() . " ";
+        //$output .= $this->get_uniqueID() . " ";
         $output .= $this->get_name();
         
-        if ($this->level){
+        if ($this->level && $this->level->get_id() > 0){
             $output .= " (L{$this->level->get_level_number()})";
         }
         
@@ -624,7 +624,7 @@ abstract class Unit {
 	 * Gets the used criteria names from this unit. 
 	 * @return multitype:
 	 */
-	protected function get_used_criteria_names()
+	public function get_used_criteria_names()
 	{
         global $CFG;
         
@@ -640,6 +640,14 @@ abstract class Unit {
         
 		return $usedCriteriaNames;
 	}
+    
+    public function get_unit_award_points($bcgtTypeAwardID, $bcgtLevelID)
+    {
+        global $DB;
+		$sql = "SELECT * FROM {block_bcgt_unit_points} 
+            WHERE bcgtlevelid = ? AND bcgttypeawardid = ?";
+		return $DB->get_record_sql($sql, array($bcgtLevelID, $bcgtTypeAwardID));
+    }
     
     protected static function get_quals_roles($unitID, $search = '', $userID = -1, $roles = array(), $courseID = -1)
     {
@@ -658,7 +666,7 @@ abstract class Unit {
             $sql .= " JOIN {block_bcgt_user_qual} userqual ON userqual.bcgtqualificationid = qual.id 
                 JOIN {role} role ON role.id = userqual.roleid ";
         }
-        if($courseID != -1)
+        if($courseID != -1 && $courseID != SITEID)
         {
             $sql .= " JOIN {block_bcgt_course_qual} coursequal ON coursequal.bcgtqualificationid = qual.id";
         }
@@ -687,7 +695,7 @@ abstract class Unit {
             $sql .= ') AND userqual.userid = ?';
             $params[] = $userID;
         }
-        if($courseID != -1)
+        if($courseID != -1 && $courseID != SITEID)
         {
             $sql .= " AND coursequal.courseid = ?";
             $params[] = $courseID;
@@ -711,7 +719,7 @@ abstract class Unit {
         {
             $sql .= " JOIN {block_bcgt_user_qual} userqual ON userqual.bcgtqualificationid = qual.id";
         }
-        if($courseID != -1)
+        if($courseID != -1 && $courseID != SITEID)
         {
             $sql .= " JOIN {block_bcgt_course_qual} coursequal ON coursequal.bcgtqualificationid = qual.id";
         }
@@ -728,7 +736,7 @@ abstract class Unit {
             $params[] = $roleID;
             $params[] = $userID;
         }
-        if($courseID != -1)
+        if($courseID != -1 && $courseID != SITEID)
         {
             $sql .= " AND coursequal.courseid = ?";
             $params[] = $courseID;
@@ -900,6 +908,9 @@ abstract class Unit {
 		$studentsUnitRecord = $this->student_doing_unit($qualID);
 		if($studentsUnitRecord)
 		{
+            
+            $this->insert_students_unit_history($qualID, $studentsUnitRecord->id);
+            
 			$id = $studentsUnitRecord->id;
 			$stdObj = new stdClass();
 			$stdObj->id = $id;
@@ -1123,7 +1134,7 @@ abstract class Unit {
         // Find all ranges on sheet and see if there is a value for each of them
         foreach($sheet->ranges as $range)
         {
-            $check = $DB->get_records("block_bcgt_user_soff_sht_rgs", array("userid" => $this->studentID, "bcgtqualificationid" => $this->qualID, "bcgtsignoffsheetid" => $sheet->id, "bcgtsignoffrangeid" => $range->id, "value" => 1));
+            $check = $DB->get_records_select("block_bcgt_user_soff_sht_rgs", "userid = ? AND bcgtqualificationid = ? AND bcgtsignoffsheetid = ? AND bcgtsignoffrangeid = ? AND value = ? AND observationnum > ?", array($this->studentID, $this->qualID, $sheet->id, $range->id, 1, 0));
             if(!$check) return false;
         }
 

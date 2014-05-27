@@ -29,6 +29,8 @@ class Criteria {
     protected $comments;
     protected $dateSet;
     protected $dateUpdated;
+    protected $dateSetUnix;
+    protected $dateUpdatedUnix;
     protected $setByUserID;
     protected $updateByUserID;
     protected $rules;
@@ -154,15 +156,18 @@ class Criteria {
         $this->awardDate = $date;
     }
     
+    // This is an awful way to do this
     public function set_date()
     {
         if($this->dateSet && $this->dateSet != 1 && $this->dateSet != 0)
         {
             $this->dateUpdated = date('d M Y H:m:s');
+            $this->dateUpdatedUnix = time();
         }
         else
         {
             $this->dateSet = date('d M Y H:m:s');
+            $this->dateSetUnix = time();
         }
     }
     
@@ -299,7 +304,9 @@ class Criteria {
     public function load_comments()
     {
         global $DB;
-        $record = $DB->get_record("block_bcgt_user_criteria", array("userid" => $this->studentID, "bcgtcriteriaid" => $this->id, "bcgtqualificationid" => $this->qualID), "id, comments");
+
+        $records = $DB->get_records("block_bcgt_user_criteria", array("userid" => $this->studentID, "bcgtcriteriaid" => $this->id, "bcgtqualificationid" => $this->qualID), "id, comments");
+        $record = end($records);
         if ($record){
             $this->comments = $record->comments;
         }
@@ -420,9 +427,19 @@ class Criteria {
         return $this->dateUpdated;
     }
     
+    public function get_date_updated_unix()
+    {
+        return $this->dateUpdatedUnix;
+    }
+    
     public function get_date_set()
     {
         return $this->dateSet;
+    }
+    
+    public function get_date_set_unix()
+    {
+        return $this->dateSetUnix;
     }
     
     public function get_award_date($format = false)
@@ -473,6 +490,9 @@ class Criteria {
     
     public function get_display_name()
     {
+        if ($this->displayname == '' || is_null($this->displayname)){
+            return $this->name;
+        }
         return $this->displayname;
     }
     
@@ -644,10 +664,12 @@ class Criteria {
             $this->studentCriteriaID = $studentCriteria->usercritid;
             if($studentCriteria->dateset)
             {
+                $this->dateSetUnix = $studentCriteria->dateset;
                 $this->dateSet = date('d M Y', $studentCriteria->dateset);    
             }
             if($studentCriteria->dateupdated)
             {
+                $this->dateUpdatedUnix = $studentCriteria->dateupdated;
                 $this->dateUpdated = date('d M Y', $studentCriteria->dateupdated);
             }
             $this->setByUserID = $studentCriteria->setbyuserid;
@@ -930,8 +952,7 @@ class Criteria {
             usercrit.comments AS criteriacomments, value.value AS value, value.customvalue AS customvalue,
             user.firstname AS firstname,
             user.lastname AS lastname, 
-            user.username AS username,
-            usercrit.dateupdated AS dateupdated, usercrit.updatedbyuserid, usercrit.setbyuserid, 
+            user.username AS username,usercrit.dateupdated AS dateupdated, usercrit.updatedbyuserid, usercrit.setbyuserid, 
             usercrit.dateset AS dateset, usercreated.firstname AS createdfirstname,
             usercreated.lastname AS createdlastname FROM {block_bcgt_criteria} crit 
             LEFT OUTER JOIN {block_bcgt_user_criteria} usercrit ON usercrit.bcgtcriteriaid = crit.id 
@@ -941,14 +962,17 @@ class Criteria {
             LEFT OUTER JOIN {user} user ON user.id = usercrit.updatedbyuserid
             LEFT OUTER JOIN {user} usercreated ON usercreated.id = usercrit.setbyuserid 
             WHERE crit.id = ?";// AND usercrit.userid = ? "; crit.bcgtqualificationid = ? 
+            //
+            //var_dump($sql);
+            //
         //, $studentID $qualID, 
         $details = $DB->get_record_sql($sql, array($studentID, $qualID, $criteriaID));
         if($details)
         {
-            $student = $DB->get_record("user", array("id" => $studentID), "id, firstname, lastname, username");
+            $student = $DB->get_record("user", array("id" => $studentID));
             $output = '';
             $output .= "<div id='stuValU".$details->unitid."C".$details->criterianame."' class='cTT'>";
-            $output .= "<small>".fullname($student)." ({$student->username})</small>";
+            $output .= "<div class='c'><small>".fullname($student)." ({$student->username})</small></div>";
             $output .= "<div class='c'><b>{$details->unitname}</b> <br /> {$details->criterianame} <br><br></div>";
             $output .= "<table class='criteriaPopupDetailsTable'>";
                 $output .= "<tr><th>Description</th></tr>";
@@ -970,14 +994,17 @@ class Criteria {
             {
                 $detailsValue = $details->customvalue;
             }
+            
+            if ($detailsValue == '') $detailsValue = 'N/A';
+            
             $valueBit = "{$valueType}: {$detailsValue}<br>";
 
             if(!is_null($details->dateupdated)) $date = date('d/m/Y',$details->dateupdated);
             elseif(!is_null($details->dateset)) $date = date('d/m/Y',$details->dateset);
             else $date = 'N/A';
             
-            if(!is_null($details->updatedbyuserid)) $user = $details->firstname.$details->lastname;
-            elseif(!is_null($details->setbyuserid)) $user = $details->createdfirstname.$details->createdlastname;
+            if(!is_null($details->updatedbyuserid)) $user = $details->firstname. ' ' .$details->lastname;
+            elseif(!is_null($details->setbyuserid)) $user = $details->createdfirstname. ' ' .$details->createdlastname;
             else $user = 'N/A';
 
             $valueBit .= "Date Set: {$date}<br>By: {$user}<br>";
@@ -1003,9 +1030,10 @@ class Criteria {
                                                         INNER JOIN {block_bcgt_value} v ON v.id = uc.bcgtvalueid
                                                         WHERE uc.bcgtcriteriaid = ? AND uc.userid = ?", array($subCriterion->id, $studentID));
                             
-                        $output .= "<tr><td><b>{$subCriterion->name}</b><br>{$subCriterion->details}";
+                        $output .= "<tr><td><b>{$subCriterion->name}</b> - {$subCriterion->details}<br>";
                             if ($userInfo)
                             {
+                                $output .= $userInfo->userdefinedvalue;
                                 $output .= "<br><br>";
                                 $output .= "{$userInfo->value}";
                             }
@@ -1015,6 +1043,7 @@ class Criteria {
                 
             }
             
+            $output .= "</div>";
             
             return $output;
         }
@@ -1210,9 +1239,8 @@ class Criteria {
     {
         $value = new Value($valueID);
         $this->studentValue = $value;        
-        // Log
-        logAction(LOG_MODULE_GRADETRACKER, LOG_ELEMENT_GRADETRACKER_CRITERIA, LOG_VALUE_GRADETRACKER_UPDATED_CRIT_AWARD, $this->studentID, $this->qualID, $this->unitID, null, $this->id, $valueID);
 
+        
         //if this criteria has subcriteria then update all of those too. 
         if($this->subCriteriaArray && $updateSub)
         {
@@ -1341,6 +1369,8 @@ class Criteria {
     {
         global $DB;
         
+        $this->insert_user_criteria_history_by_id($studentCriteriaID);
+        
         $stdObj = new stdClass();
         if(isset($this->studentCriteriaID) && $this->studentCriteriaID != -1)
         {
@@ -1361,11 +1391,15 @@ class Criteria {
         if($this->comments)
         {
             $this->comments = iconv('UTF-8', 'ASCII//TRANSLIT', $this->comments); 
-            $stdObj->comments = addslashes(trim($this->comments));
+            $stdObj->comments = trim($this->comments);
         }
         if($this->dateSet)
         {
-            $stdObj->dateset = strtotime($this->dateSet); 
+            if (isset($this->dateSetUnix) && $this->dateSetUnix > 0){
+                $stdObj->dateset = $this->dateSetUnix;
+            } else {
+                $stdObj->dateset = strtotime($this->dateSet); 
+            }
         }
                         
         if (isset($this->awardDate))
@@ -1376,7 +1410,11 @@ class Criteria {
                 
         if($this->dateUpdated)
         {
-            $stdObj->dateupdated = strtotime($this->dateUpdated);
+            if (isset($this->dateUpdatedUnix) && $this->dateUpdatedUnix > 0){
+                $stdObj->dateupdated = $this->dateUpdatedUnix;
+            } else {
+                $stdObj->dateupdated = strtotime($this->dateUpdated); 
+            }
         }
                 
         if($this->setByUserID)
@@ -1389,7 +1427,7 @@ class Criteria {
         }
         if(strlen($this->userDefinedValue))
         {
-                $stdObj->userdefinedvalue = addslashes(trim($this->userDefinedValue));
+                $stdObj->userdefinedvalue = trim($this->userDefinedValue);
         }
         else
         {
@@ -1403,10 +1441,10 @@ class Criteria {
             $stdObj->bcgttargetgradesid = $this->targetgradeID;
         }
         $stdObj->flag = $this->studentFlag; 
-                
+                                
         if(isset($stdObj->bcgtvalueid) && $stdObj->bcgtvalueid > 0)
         {
-            logAction(LOG_MODULE_GRADETRACKER, LOG_ELEMENT_GRADETRACKER_CRITERIA, LOG_VALUE_GRADETRACKER_UPDATED_CRIT_AWARD, $this->studentID, $this->qualID, $this->unitID, null, $stdObj->bcgtvalueid);
+            logAction(LOG_MODULE_GRADETRACKER, LOG_ELEMENT_GRADETRACKER_CRITERIA, LOG_VALUE_GRADETRACKER_UPDATED_CRIT_AWARD, $this->studentID, $this->qualID, $this->unitID, null, $this->id, $stdObj->bcgtvalueid);
         }
         
         return $DB->update_record('block_bcgt_user_criteria', $stdObj); 
@@ -1435,7 +1473,7 @@ class Criteria {
         {
             $this->dateSet = date('d M Y H:m:s');
         }
-        $now = strtotime($this->dateSet);
+        $now = time();
         $stdObj->dateset = $now;
         $stdObj->dateupdated = $now;
         if(!$this->setByUserID)
@@ -1445,7 +1483,7 @@ class Criteria {
         $stdObj->setbyuserid = $this->setByUserID;
         if(strlen($this->userDefinedValue))
         {
-                $stdObj->userdefinedvalue = addslashes(trim($this->userDefinedValue));
+                $stdObj->userdefinedvalue = trim($this->userDefinedValue);
         }
         else
         {
@@ -1473,7 +1511,7 @@ class Criteria {
         
         if(isset($stdObj->bcgtvalueid) && $stdObj->bcgtvalueid > 0)
         {
-            logAction(LOG_MODULE_GRADETRACKER, LOG_ELEMENT_GRADETRACKER_CRITERIA, LOG_VALUE_GRADETRACKER_UPDATED_CRIT_AWARD, $this->studentID, $this->qualID, $this->unitID, null, $stdObj->bcgtvalueid);
+            logAction(LOG_MODULE_GRADETRACKER, LOG_ELEMENT_GRADETRACKER_CRITERIA, LOG_VALUE_GRADETRACKER_UPDATED_CRIT_AWARD, $this->studentID, $this->qualID, $this->unitID, null, $this->id, $stdObj->bcgtvalueid);
         }
         
         return $this->studentCriteriaID;
@@ -1682,7 +1720,8 @@ class Criteria {
             $sql .= " AND criteria.bcgtunitid = ?";
             $params[] = $unitID;
         }
-        return $DB->get_record_sql($sql, $params);
+        $records = $DB->get_records_sql($sql, $params);
+        return end($records);
     }
     
     private function get_students_grade($studentID, $qualID, $unitID = -1)
@@ -1732,7 +1771,8 @@ class Criteria {
         $sql = "SELECT * FROM {block_bcgt_user_criteria}
         WHERE bcgtqualificationid = ? AND bcgtcriteriaid = ? AND userid = ?";
         $params = array($qualID, $this->id, $this->studentID);
-        return $DB->get_record_sql($sql, $params);
+        $records = $DB->get_records_sql($sql, $params);
+        return end($records);
     }
     
     /**
@@ -1762,9 +1802,6 @@ class Criteria {
     {
         $value = new Value($valueID);
         $this->studentValue = $value;
-
-        logAction(LOG_MODULE_GRADETRACKER, LOG_ELEMENT_GRADETRACKER_CRITERIA, LOG_VALUE_GRADETRACKER_UPDATED_CRIT_AWARD_AUTO, $this->studentID, $this->qualID, $this->unitID, null, $this->id, $valueID);
-
         return true;
     }
     

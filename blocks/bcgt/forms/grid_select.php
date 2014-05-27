@@ -16,6 +16,7 @@ require_once($CFG->dirroot.'/user/profile/lib.php');
 
 //this is the course we are coming from. 
 $cID = optional_param('cID', -1, PARAM_INT);
+$sCID = optional_param('sCID', -1, PARAM_INT);
 if($cID != -1)
 {
     $context = context_course::instance($cID);
@@ -101,7 +102,7 @@ switch($grid)
    case 'c':
        $string = 'gridselectclass';
        $tabFocusC = 'focus';
-       $qualExcludes = array('CG', 'Bespoke');
+       $qualExcludes = array('Bespoke');
        break;
    case 'fa':
        $string = 'gridselectfassessment';
@@ -144,7 +145,7 @@ $PAGE->set_title(get_string($string, 'block_bcgt'));
 $PAGE->set_heading(get_string($string, 'block_bcgt'));
 $PAGE->set_pagelayout('login');
 $PAGE->add_body_class(get_string('gridselect', 'block_bcgt'));
-$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),$CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php?tab=track','title');
+$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),$CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php?tab=track&cID='.$courseID,'title');
 if($cID != -1 && $cID != 1)
 {
     global $DB;
@@ -381,7 +382,7 @@ elseif($grid == 'a')
 {
     $searchString = 'searchgradebook';
     //drop down of all activities. 
-    $userQualRole = $DB->get_record_select('role', 'shortname = ?', array('teacher'));
+    $userQualRole = $DB->get_record_select('role', 'shortname = ?', array('editingteacher'));
     $activities = bcgt_get_users_activities($USER->id, $userQualRole->id, $qualID, $courseID);
     if($activities)
     {
