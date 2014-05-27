@@ -1719,16 +1719,8 @@ class CGHBVRQUnit extends CGUnit {
                 
                 
                 // Next columns are the default ones like picture, name, etc...
-                $cols = $this->build_unit_grid_students_details($student, $qualID, array(), $context);
-                if ($cols)
-                {
-                    foreach($cols as $col)
-                    {
-                        $retval .= "<td>{$col}</td>";
-                    }
-                }
-                
-                                
+                $retval .= $this->build_unit_grid_students_details($student, $qualID, array(), $context);
+                                                
                 // Unit award
                 $award = 'N/S';
 				$rank = 'nr';

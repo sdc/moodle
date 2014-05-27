@@ -13,13 +13,15 @@ require_login();
 $context = context_course::instance($COURSE->id);
 $PAGE->set_context($context);
 
-$grid = $_POST['grid']; # Student or Unit grid
-$method = $_POST['method']; # Check or Select
-$qualID = $_POST['qualID'];
-$unitID = $_POST['unitID'];
-$criteriaID = $_POST['criteriaID'];
-$studentID = $_POST['studentID'];
-$value = $_POST['value'];
+$params = $_POST['params'];
+
+$grid = $params['grid']; # Student or Unit grid
+$method = $params['method']; # Check or Select
+$qualID = $params['qualID'];
+$unitID = $params['unitID'];
+$criteriaID = $params['criteriaID'];
+$studentID = $params['studentID'];
+$value = $params['value'];
 
 $retval = new stdClass();
 
@@ -113,7 +115,7 @@ if ($grid == 'student')
 
             $criteria->update_students_value($value);
             $criteria->save_student($qualID, false); # Save straight away so we can check the parent and loop through all children's awards         
-
+            
 
         }
         
@@ -291,10 +293,15 @@ elseif($grid == 'unit')
             if(array_key_exists($studentID, $studentArray))
             {
                 $studentObject = $studentArray[$studentID];
-                $studentUnit = $studentObject->unit;
-                if($studentUnit)
+                
+                // Added isset as fix for session problem
+                if (isset($studentObject->unit))
                 {
-                    $studentUnitFound = true;
+                    $studentUnit = $studentObject->unit;
+                    if($studentUnit)
+                    {
+                        $studentUnitFound = true;
+                    }
                 }
             }
         } 
@@ -414,6 +421,10 @@ elseif($grid == 'unit')
             if($qualification)
             {
                 $qualification->load_student_information($studentID, $loadParams);
+            }
+            
+            if (!$qualification){
+                exit;
             }
             
             

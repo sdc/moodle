@@ -1505,6 +1505,26 @@ class Group {
         return $DB->get_records($sql, $params);
     }
     
+    public function get_groups_on_qual($qualID)
+    {
+        global $DB;
+        $sql = "SELECT distinct(g.id), g.* FROM {groupings} g 
+            JOIN {block_bcgt_course_qual} coursequal ON coursequal.courseid = g.courseid 
+            JOIN {groupings_groups} gg ON gg.groupingid = g.id
+            JOIN {groups_members} members ON members.groupid = gg.groupid
+            JOIN {block_bcgt_user_qual} userqual ON userqual.userid = members.userid 
+            AND userqual.bcgtqualificationid = coursequal.bcgtqualificationid 
+            WHERE coursequal.bcgtqualificationid = ? 
+            ORDER BY g.name ASC";
+        return $DB->get_records_sql($sql, array($qualID)
+                );
+    }
+    
+    public function get_users_not_in_groups_qual($qualID)
+    {
+        
+    }
+    
     /**
      * Gets the users in a group
      * If Qualid is set, it only gets the users that are on this qual

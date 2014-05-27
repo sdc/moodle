@@ -185,9 +185,6 @@ JS;
         
         $retval .= "<br style='clear:both;' />";
         
-        //the grid -> ajax
-        $retval .= '<div id="cgStudentGrid">';
-        
         if($this->has_final_grade() && $studentView)
 		{
             //>>BEDCOLL TODO this need to be taken from the qual object
@@ -198,6 +195,9 @@ JS;
             
         }
         
+        //the grid -> ajax
+        $retval .= '<div id="cgStudentGrid">';
+                
         $retval .= "<div id='studentGridDiv' class='studentGridDiv ".
         $grid."StudentGrid tableDiv'><br><br><br><table align='center' class='student_grid".
                 $grid."FixedTables CGHB' id='CGStudentGrid'>";
@@ -228,11 +228,10 @@ JS;
         $retval .= "</tbody>";
         $retval .= "</table>";
         
-        // Qual Comment
-        if ($this->comments == '') $this->comments = 'N/A';
-        $retval .= "<div id='qualComment'><br><fieldset><legend><h2>Qualification Comments</h2></legend><br>".nl2br( htmlentities($this->comments, ENT_QUOTES) )."</fieldset></div>";
+        $retval .= "</div>";
+        $retval .= '</div>';
         
-        if($this->has_final_grade() && $studentView && !$editing)
+        if($this->has_final_grade() && $studentView)
 		{
             //>>BEDCOLL TODO this need to be taken from the qual object
             //as foundatonQual is different
@@ -242,10 +241,12 @@ JS;
             
         }
         
+        // Qual Comment
+        if ($this->comments == '') $this->comments = 'N/A';
+        $retval .= "<div id='qualComment'><br><fieldset><legend><h2>Qualification Comments</h2></legend><br>".nl2br( htmlentities($this->comments, ENT_QUOTES) )."</fieldset></div>";
+        
         $retval .= $this->get_required_settings();
         
-        $retval .= "</div>";
-        $retval .= '</div>';
         $retval .= '</div>';
         
         if ($strippedView){
@@ -313,7 +314,7 @@ JS;
             $tName = str_replace(" ", "_", htmlentities($criteriaName, ENT_QUOTES));
             
             if ($max > 1){
-                $output .= "<th class='toggleTD_{$tName}' colspan='{$max}' defaultcolspan='{$max}'><a class='taskName' href='#' onclick='toggleOverallTasks(\"{$tName}\");return false;'>{$criteriaName}</a></th>";
+                $output .= "<th class='toggleTD_{$tName}' colspan='{$max}' defaultcolspan='{$max}'>{$criteriaName}</th>";
             } else {
                 $output .= "<th colspan='{$max}' defaultcolspan='{$max}'>{$criteriaName}</th>";
             }
@@ -534,7 +535,7 @@ JS;
                 
                 $retval .= "<td>";
                                 
-				$retval .= "<span id='uID_".$unit->get_id()."' title='title' class='uNToolTip unitName".$unit->get_id()."' studentID='{$this->studentID}' unitID='{$unit->get_id()}'>".$link."</span>";
+				$retval .= "<span id='uID_".$unit->get_id()."' class='uNToolTip unitName".$unit->get_id()."' studentID='{$this->studentID}' unitID='{$unit->get_id()}'>".$link."</span>";
                 $retval .= "<span style='color:grey;font-size:85%;'><br />(".$unit->get_credits()." Credits)</span>";	
 				
                 //if has capibility
@@ -543,6 +544,9 @@ JS;
                     $retval .= "<a class='editing_update editUnit' href='{$CFG->wwwroot}/blocks/bcgt/forms/edit_unit.php?unitID=".$unit->get_id()."' title = 'Update Unit'>
 					<img class='iconsmall editUnit' alt='Update Unit' src='".$OUTPUT->pix_url("t/edit", "core")."'/></a>";
 				}
+                
+                $retval .= " <img src='".$CFG->wwwroot."/blocks/bcgt/pix/info.png' height='12' width='12' class='uNToolTipInfo hand' unitID='{$unit->get_id()}' /><div class='unitInfoContent' title='{$unit->get_display_name()}'>{$unit->build_unit_details_table()}</div>";
+
                 
                 $retval .= "<div id='unitTooltipContent_{$unit->get_id()}_{$this->studentID}' style='display:none;'>".$unit->build_unit_details_table()."</div>";
                 
@@ -587,9 +591,10 @@ JS;
 							//if its the student view then lets print
 							//out the students unformation
                             $studentCriteria = $unit->get_single_criteria(-1, $criteriaName);
-                                                        
+                            
 							if($studentCriteria)
 							{	
+                                
 								$retval .= $studentCriteria->get_grid_td_($editing, $advancedMode, $unit, $user, $this, 'student', $colspan);
 
 //								
@@ -597,12 +602,13 @@ JS;
 							else //not student criteria (i.e. the criteria doesnt exist on that unit)
 							{         
                                 //retval needs to be an array of the columns
+                                $tName = str_replace(" ", "_", htmlentities($criteriaName, ENT_QUOTES));
 								$retval .= "<td class='blank'></td>";
                                 if ($colspan > 1)
                                 {
                                     for ($i = 1; $i < $colspan; $i++)
                                     {
-                                        $retval .= "<td class='blank'></td>";
+                                        $retval .= "<td class='blank taskClass_{$tName}'></td>";
                                     }
                                 }
                                 

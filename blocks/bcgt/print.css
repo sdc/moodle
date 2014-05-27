@@ -197,3 +197,36 @@ tr.award_row td:nth-child(3)
 {
     display: none;
 }
+
+#printGridTable sub.ucas
+{
+    font-size: 0.8em;
+    color: grey;
+    padding-left: 8px;
+}
+
+#printGridTable sub.alpsscore {
+    font-size: 0.8em;
+    padding-left: 8px;
+}
+
+#coefficientSummary {
+    padding:5px;
+    width: 75%;
+    margin:auto;
+}
+
+#coefficientSummary th, #coefficientSummary td{
+    border:lightgrey solid 1px;
+}
+
+.criteriaContent
+{
+    display: none;
+}
+
+#unitCommentTH
+{
+    width: 1px !important;
+    min-width: 1px !important;
+}

@@ -16,6 +16,7 @@ require_once($CFG->dirroot.'/blocks/bcgt/classes/core/Unit.class.php');
 set_time_limit(0);
 $courseID = optional_param('cID', -1, PARAM_INT);
 $sCourseID = optional_param('scID', -1, PARAM_INT);
+$qualID = optional_param('qID',-1, PARAM_INT);
 if($courseID != -1)
 {
     $context = context_course::instance($courseID);
@@ -25,6 +26,11 @@ else
     $context = context_course::instance($COURSE->id);
 }
 require_login();
+
+if(!has_capability('block/bcgt:viewunitgrid', $context)){
+    print_error('invalid access');
+}
+
 $PAGE->set_context($context);
 
 $unitID = optional_param('uID', -1, PARAM_INT);
@@ -66,7 +72,7 @@ $PAGE->set_title(get_string('bcgtmydashboard', 'block_bcgt'));
 $PAGE->set_heading(get_string('bcgtmydashboard', 'block_bcgt'));
 $PAGE->set_pagelayout('login');
 $PAGE->add_body_class(get_string('bcgtmydashboard', 'block_bcgt'));
-$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),$CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php?tab=track','title');
+$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),$CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php?tab=track&cID='.$courseID,'title');
 $jsModule = array(
     'name'     => 'block_bcgt',
     'fullpath' => '/blocks/bcgt/js/block_bcgt.js',
@@ -98,16 +104,57 @@ $out = $OUTPUT->header();
     $out .= '<input type="hidden" name="grID" id="grID" value="'.$groupingID.'"/>';
     $out .= '<input type="hidden" name="scID" id="scID" value="'.$sCourseID.'"/>';
     //need to put down what qual the user is on for this unit
-    
-    
-    
-    
     // Menu
     $out .= '<div class="bcgtGridMenu">';
     if(has_capability('block/bcgt:viewclassgrids', $context))
     {
         $dropDowns = "yes";
         //Drop down of other students
+        //qual change:
+        if(has_capability('block/bcgt:viewallgrids', context_system::instance()))
+        {
+            $quals = $unit->get_quals_on('',-1,-1,$courseID);
+        }
+        else
+        {
+            $quals = $unit->get_quals_on_roles('', $USER->id, array('teacher', 'editingteacher'),$courseID);
+        }
+        $out .= '<div class="bcgtQualChange">';
+        $out .= '<label for="qualChange">'.get_string('changequal','block_bcgt').' : </label>';
+        $out .= '<select id="qualChange" name="qID"><option value="-1">'.get_string('showall','block_bcgt').'</option>';
+        $qualFound = false;
+        if($quals)
+        {
+            foreach($quals AS $qual)
+            {
+                $selected = '';
+                if($qualID == $qual->id)
+                {
+                    $qualFound = true;
+                    $selected = "selected";
+                }
+                elseif(count($quals) == 1)
+                {
+                    $qualFound = true;
+                    $selected = "selected";
+                    $qualID = $qual->id;
+                }
+                $out .= '<option '.$selected.' value="'.$qual->id.'">'.
+                bcgt_get_qualification_display_name($qual, ' ').'</option>';
+            }
+        }
+        if((!$quals || !$qualFound) && $qualID != -1)
+        {
+            //its not been able to find any so just put the current one on so
+            //it doesnt error.
+            $qualification = Qualification::get_qualification_class_id($qualID);
+            $out .= '<option selected value="'.$qualID.'">'.
+                $qualification->get_display_name().'</option>';
+        }
+        $out .= '</select>';
+        $out .= '</div>'; //bcgtQualChange
+        
+        
         $out .= '<div class="bcgtUnitChange">';
         $out .= '<label for="unitChange">Change Unit to : </label>';
         $out .= '<select id="unitChange" name="uID"><option value="-1"></option>';
@@ -115,6 +162,7 @@ $out = $OUTPUT->header();
         
         $teacherRole = $DB->get_record_select('role', 'shortname = ?', array('teacher'));
         $units = bcgt_get_users_units($USER->id, $teacherRole->id, '');
+        $unitFound = false;
         if($units)
         {
             foreach($units AS $qualUnit)
@@ -122,13 +170,14 @@ $out = $OUTPUT->header();
                 $selected = '';
                 if($unitID == $qualUnit->id)
                 {
+                    $unitFound = true;
                     $selected = "selected";
                 }
                 $out .= '<option '.$selected.' value="'.$qualUnit->id.'">'.
                         $qualUnit->uniqueid.' '.$qualUnit->name.'</option>';
             }
         }
-        else
+        if(!$units || !$unitFound)
         {
             $unit = Unit::get_unit_class_id($unitID, $loadParams);
             $out .= '<option selected value="'.$unit->get_id().'">'.
@@ -145,7 +194,7 @@ $out = $OUTPUT->header();
     $out .= '<input type="hidden" id="selects" name="selects" value="'.$dropDowns.'"/>'; 
     $out .= '<input type="hidden" id="user" name="user" value="'.$USER->id.'"/>';
     
-//    $out .= get_grid_menu(null, $unitID);
+    $out .= get_grid_menu(null, $unitID, $qualID, $courseID);
     $out .= '</div>';
     
     $heading = get_string('trackinggrid','block_bcgt');
@@ -156,7 +205,15 @@ $out = $OUTPUT->header();
     $out .= html_writer::start_tag('div', array('class'=>'bcgt_grid_outer', 
     'id'=>'unitGridOuter'));
     //at this point we load it up into the session
-    $out .= $unit->display_unit_grid();
+    $unitGrid = $unit->display_unit_grid();
+    if(!$unitGrid)
+    {
+        $out .= '<p>'.get_string('notenoughinfofilter', 'block_bcgt').'</p>';
+    }
+    else
+    {
+        $out .= $unitGrid;
+    }
     
     $unitObject = $sessionUnits[$unitID];
     $unitObject->unit = $unit;

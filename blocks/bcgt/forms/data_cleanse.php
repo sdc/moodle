@@ -37,7 +37,7 @@ $PAGE->set_title(get_string('datacleanse', 'block_bcgt'));
 $PAGE->set_heading(get_string('datacleanse', 'block_bcgt'));
 $PAGE->set_pagelayout('login');
 $PAGE->add_body_class(get_string('datacleanse', 'block_bcgt'));
-$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php','title');
+$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php?tab=track','title');
 $PAGE->navbar->add(get_string('admin', 'block_bcgt'),'my_dashboard.php?tab=adm','title');
 $PAGE->navbar->add(get_string('datacleanse', 'block_bcgt'),'','title');
 
@@ -58,7 +58,7 @@ $out .= html_writer::start_tag('div', array('class'=>'bcgt_data_cleanse_controls
     'id'=>'dataCleanseContainer'));
 $out .= $data->get_description();
 
-$out .= '<form name="" id="importform" method="POST" action="#" enctype="multipart/form-data">';
+$out .= '<form name="" id="importform" method="POST" action="data_cleanse.php?a='.$a.'" enctype="multipart/form-data">';
 $out .= $data->display_data_check();
 if($a != '')
 {

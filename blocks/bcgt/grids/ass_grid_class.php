@@ -36,6 +36,11 @@ else
     $context = context_course::instance($COURSE->id);
 }
 require_login();
+
+if(!has_capability('block/bcgt:manageactivitylinks', $context)){
+    print_error('invalid access');
+}
+
 $PAGE->set_context($context);
 $qualID = optional_param('qID', -1, PARAM_INT);
 

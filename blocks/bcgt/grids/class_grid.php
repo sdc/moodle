@@ -24,6 +24,11 @@ else
 }
 require_login();
 $PAGE->set_context($context);
+
+if(!has_capability('block/bcgt:viewclassgrids', $context)){
+    print_error('invalid access');
+}
+
 $qualID = optional_param('qID', -1, PARAM_INT);
 $studentID = optional_param('sID', -1, PARAM_INT);
 $unitID = optional_param('uID', -1, PARAM_INT);
@@ -31,6 +36,7 @@ $groupingID = optional_param('grID', -1, PARAM_INT);
 //this is the course we are searching upon
 $sCourseID = optional_param('scID', -1, PARAM_INT);
 $clearSession = optional_param('csess', true, PARAM_BOOL);
+$grid = optional_param('g', 'c', PARAM_TEXT);
 $qualification = null;
 if(!$clearSession)
 {
@@ -77,20 +83,21 @@ if(has_capability('block/bcgt:viewclassgrids', $context))
 $PAGE->navbar->add(get_string('grids', 'block_bcgt'),$link1,'title');
 $PAGE->requires->js_init_call('M.block_bcgt.initgridclass', null, true, $jsModule);
 require_once($CFG->dirroot.'/blocks/bcgt/lib.php');
-load_javascript();
 $out = $OUTPUT->header();
     $out .= '<form id="classGridForm" method="POST" name="classGridForm" action="class_grid.php?">';			
     $out .= '<input type="hidden" id="cID" name="cID" value="'.$courseID.'"/>';
     $out .= '<input type="hidden" id="grID" name="grID" value="'.$groupingID.'"/>';
     $out .= '<input type="hidden" id="scID" name="scID" value="'.$sCourseID.'"/>';
+    $out .= "<input type='hidden' id='grid' name='g' value='{$grid}' />";
     // Menu
     $out .= '<div class="bcgtGridMenu">';
     $out .= '';
     if(has_capability('block/bcgt:viewclassgrids', $context))
     {
+        $qualFound = false;
         $dropDowns = "yes";
         //Drop down of other quals
-        $familiesExcluded = array('CG', 'Bespoke');
+        $familiesExcluded = array('Bespoke');
         if(has_capability('block/bcgt:viewallgrids', context_system::instance()))
         {
             $qualifications = search_qualification(-1, -1, -1, '', 
@@ -111,6 +118,7 @@ $out = $OUTPUT->header();
                 if($qualID == $qual->id)
                 {
                     $selected = "selected";
+                    $qualFound = true;
                 }
                 $out .= '<option '.$selected.' value="'.$qual->id.'">'.
                         bcgt_get_qualification_display_name($qual).'</option>';
@@ -118,7 +126,7 @@ $out = $OUTPUT->header();
             $out .= '</select>';
             $out .= '</div>'; //bcgtQualChange
         }
-        else
+        if(!$qualifications || !$qualFound)
         {
             $dropDowns = "no";
             $out .= '<input type="hidden" id="qID" name="qID" value="'.$qualID.'"/>';

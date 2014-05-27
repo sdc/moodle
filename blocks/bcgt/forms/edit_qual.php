@@ -155,7 +155,7 @@ if(isset($_POST['save']))
 	}
 	if(isset($_POST['save']))
 	{
-        redirect($CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php?tab=adm');
+        redirect($CFG->wwwroot.'/blocks/bcgt/forms/my_dashboard.php?tab=adm&cID='.$courseID);
 //        but what about things like ALEVELS (they dont have units)
 //        what about other scenarios such as we have just added this to a course?
 //        we need a way of redirecting successfully
@@ -203,8 +203,8 @@ $PAGE->set_title(get_string($string, 'block_bcgt'));
 $PAGE->set_heading(get_string($string, 'block_bcgt'));
 $PAGE->set_pagelayout('login');
 $PAGE->add_body_class($string);
-$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php','title');
-$PAGE->navbar->add(get_string('myDashboard', 'block_bcgt'),'my_dashboard.php?tab=dash','title');
+$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php?tab=track','title');
+//$PAGE->navbar->add(get_string('myDashboard', 'block_bcgt'),'my_dashboard.php?tab=dash','title');
 $PAGE->navbar->add(get_string('dashtabadm', 'block_bcgt'),'my_dashboard.php?tab=adm','title');
 $PAGE->navbar->add(get_string($string, 'block_bcgt'));
 $jsModule = array(

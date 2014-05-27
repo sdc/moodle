@@ -49,7 +49,7 @@ $PAGE->set_title(get_string('viewactivitylinks', 'block_bcgt'));
 $PAGE->set_heading(get_string('viewactivitylinks', 'block_bcgt'));
 $PAGE->set_pagelayout('login');
 $PAGE->add_body_class(get_string('activity', 'block_bcgt'));
-$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php','title');
+$PAGE->navbar->add(get_string('pluginname', 'block_bcgt'),'my_dashboard.php?tab=track','title');
 $PAGE->navbar->add(get_string('viewactivitylinks', 'block_bcgt'),'','title');
 
 $jsModule = array(
