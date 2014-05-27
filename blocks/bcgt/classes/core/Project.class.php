@@ -386,6 +386,11 @@ class Project {
         return ($this->date ? date('d-m-Y', $this->date):'');
     }
     
+    function get_Due_Date_TimeStamp()
+    {
+        return (isset($this->date) ? $this->date : '');
+    }
+    
     function get_id()
     {
         return $this->id;
@@ -938,6 +943,7 @@ class Project {
         $stdClass = new stdClass();
         $stdClass->bcgtprojectid = $this->id;
         $stdClass->bcgtqualificationid = $qualID;
+        $stdClass->coursemoduleid = -1;
         $stdClass->bcgtunitid = -1;
         $stdClass->bcgtcriteriaid = -1;
         $stdClass->createdby = $USER->id;
@@ -1100,7 +1106,7 @@ class Project {
     {
         $valueID = -1;
         $targetGradeID = -1;
-        //there is a value and a ceta (targetgrade)
+        //there is a value and a ceta (targetgrade)       
         if(isset($_POST['sID_'.$this->studentID.'_qID_'.$qualID.'_pID_'.$this->id.'_v']))
         {
             $saveValue = true;
@@ -1122,7 +1128,7 @@ class Project {
         //now need to update or insert. 
         if($saveValue || $saveTarget)
         {
-            $this->save_user_values($this->id, true);
+            $this->save_user_values($qualID, true);
         }
     }
 
@@ -1214,27 +1220,57 @@ class Project {
      * @param type $link
      * @return \stdClass
      */
-    public function get_project_heading($projectID, $link)
+    public function get_project_heading($projectID, $link, $qualID = -1, $alps = null)
     {
         //where are we coming back to though? The link needs to show where we are coming back to
+        
+        //TODO check if using CETA!!!!
         
         $retval = '';
         $class = '';
         $subHead = '';
+        $alpsHead = '';
         if($this->is_project_current())
         {
             $class = 'current';
         }
         if($projectID != -1)
         {
+            //we are looking at one project therefeore we are showing comments.
             $retval .= '<th colspan="3" class="'.$class.'">'.
                     $this->get_name().' - <a href="'.
                     $link.'">'.get_string('viewallassessments', 'block_bcgt').'</a></th>';
+            $alpsHead .= '<th><span class="faGradeAlps alpstemp" project="'.$this->get_id().'" qual="'.$qualID.'" id="faGradeAlps_'.$this->get_id().'_'.$qualID.'">';
+            if($alps)
+            {
+                $alpsHead .= $alps->grade;
+            }
+            $alpsHead .= '</span></th>';
+            $alpsHead .= '<th><span class="faCetaAlps alpstemp" project="'.$this->get_id().'" qual="'.$qualID.'" id="faCetaAlps_'.$this->get_id().'_'.$qualID.'">';
+            if($alps)
+            {
+                $alpsHead .= $alps->ceta;
+            }
+            $alpsHead .= '</span></th>';
+            //one for the comments
+            $retval .= '<th></th>';
         }
         else
         {
             $retval .= '<th colspan="2" class="'.$class.'"><a href="'.$link.'&pID='.$this->get_id().
                     '">'.$this->get_name().'</a><br /><span class="projdate">'.$this->get_date().'</span></th>';
+            $alpsHead .= '<th><span class="faGradeAlps alpstemp" project="'.$this->get_id().'" qual="'.$qualID.'" id="faGradeAlps_'.$this->get_id().'_'.$qualID.'">';
+            if($alps)
+            {
+                $alpsHead .= $alps->grade;
+            }
+            $alpsHead .= '</span></th>';
+            $alpsHead .= '<th><span class="faCetaAlps alpstemp" project="'.$this->get_id().'" qual="'.$qualID.'" id="faCetaAlps_'.$this->get_id().'_'.$qualID.'">';
+            if($alps)
+            {
+                $alpsHead .= $alps->ceta;
+            }
+            $retval .= '</span></th>';
         }
         $subHead .= '<th class="'.$class.'">'.get_string('grade')
                 .'</th><th class="'.$class.'">'.get_string('ceta', 'block_bcgt').'</th>';
@@ -1247,6 +1283,7 @@ class Project {
         $stdObj = new stdClass();
         $stdObj->retval = $retval;
         $stdObj->subHead = $subHead;
+        $stdObj->alspHead = $alpsHead;
         
         return $stdObj;
     }
@@ -1760,7 +1797,7 @@ class Project {
     {
         $retval = '';
         //has the course got quals that can be associated with assignments?
-        $families = get_course_qual_families($courseID, array('BTEC'));
+        $families = get_course_qual_families($courseID, array('BTEC', 'CG'));
         if($families)
         {
             foreach($families AS $family)
@@ -1769,6 +1806,7 @@ class Project {
                 if($qualificationClass)
                 {
                     $retval .= $qualificationClass::get_mod_tracker_options($couseModuleID, $courseID);
+                    $retval .= "<br><br>";
                 }
             }
         }
@@ -1789,7 +1827,7 @@ class Project {
     public static function process_bcgt_mod_tracker_options($couseModuleID, $courseID)
     {
         //this needs to get all of the ones saved. 
-        $families = get_course_qual_families($courseID, array('BTEC'));
+        $families = get_course_qual_families($courseID, array('BTEC', 'CG'));
         if($families)
         {
             foreach($families AS $family)

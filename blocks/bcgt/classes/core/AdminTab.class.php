@@ -512,6 +512,12 @@ class AdminTab extends DashTab{
                     'title="'.get_string('edittargetgradesettingshelp', 'block_bcgt').'">'.
                     get_string('edittargetgradesettings', 'block_bcgt').'</a></li>';
         }
+        if(has_capability('block/bcgt:editqualweightings', $courseContext) && get_config('bcgt','allowalpsweighting'))
+        {
+            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/qual_weightings.php?cID='.$courseID.'"'. 
+                    'title="'.get_string('qualificationweightingsettingshelp', 'block_bcgt').'">'.
+                    get_string('qualificationweightingsettings', 'block_bcgt').'</a></li>';
+        }
 //        if(has_capability('block/bcgt:editpriorqualsettings', $courseContext))
 //        {
 //            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/edit_prior_learning_settings.php?cID='.$courseID.'"'. 

@@ -499,56 +499,96 @@ class UserCourseTarget {
         $newAverageGcseScore = 'N/A';
         $weightedBreakdown = null;
         $weightedTargetGrade = null;
-        $weighting = new QualWeighting(-1, null);
-        $coefficient = $weighting->get_coefficient_for_qual($qual->id);
-        if($coefficient)
+        
+        //are we allows to calculate a weighted target grade for this qual?
+        //what is the family:
+        if(isset($qual->family))
         {
-            //get_config: 
-            $weightedTargetGradeMethod = get_config('bcgt','weightedtargetmethod');
-            switch($weightedTargetGradeMethod)
+            $qualFamily = $qual->family;
+        }
+        else
+        {
+            $qualFamily = bcgt_get_family_for_qual($qual->id);
+        }
+        $coefficient = null;
+        $weighting = new QualWeighting(-1, null);
+        $calculatingWeightings = $weighting->can_family_have_weighted_target_grades($qualFamily);
+        if($calculatingWeightings)
+        {
+            $coefficient = $weighting->get_coefficient_for_qual($qual->id);
+            if($coefficient)
             {
-                case 1:
-                    //multiply the average gcse score by the coeeficient
-                    $newAverageGcseScore = $averageGCSEScore*$coefficient;
-                    $weightedBreakdown = new Breakdown(-1, null);
-                    $weightedBreakdown->get_breakdown_average_score($qual->bcgttargetqualid, $newAverageGcseScore);   
+                //get_config: 
+                $weightedTargetGradeMethod = get_config('bcgt','weightedtargetmethod');
+                switch($weightedTargetGradeMethod)
+                {
+                    //after speaking with PAUL:
+                    
+                    //we shall:Do weighting multiplication
+                    //get new ucaspoints
+                    //Add contstant : get from the global settings
+                    //Get NEXT grade UP
 
-                    $weightedTargetGrade = new TargetGrade(-1, null);
-                    $weightedTargetGrade->get_target_grade_average_score($qual->bcgttargetqualid, $newAverageGcseScore);
-                    break;
-                case 2:
-                    //multiply the target grade ucas points by the coefficient
-                    //are we just calculating the weighted target grade? if so we need to go and get the
-                    //students target grade from the database
-                    if($justCalculateWeightedTargets && $userID != -1)
-                    {
-                        $usersTargetGrades = $this->retrieve_users_target_grades($userID, $qual->id);
-                        if($usersTargetGrades)
-                        {
-                            $targetGrade = $usersTargetGrades[$qual->id]->targetgrade;
-                            $breakdown = $usersTargetGrades[$qual->id]->breakdown;
-                        }
-                    }
-                    if($targetGrade)
-                    {
-                        $targetGradeUcasPoints = $targetGrade->get_ucas_points();
-                        $newUcasPointsTarget = $targetGradeUcasPoints * $coefficient;
-                        $weightedTargetGrade = new TargetGrade(-1, null);
-                        $weightedTargetGrade->get_target_grade_ucas_points($qual->bcgttargetqualid, $newUcasPointsTarget);
-                    }
-                    if($breakdown)
-                    {
-                        $breakdownUcasPoints = $breakdown->get_ucas_points();
-                        $newUcasPointsBreakdown = $breakdownUcasPoints * $coefficient;
+                    case 1:
+                        //multiply the average gcse score by the coeeficient
+                        $newAverageGcseScore = $averageGCSEScore*$coefficient;
                         $weightedBreakdown = new Breakdown(-1, null);
-                        $weightedBreakdown->get_breakdown_ucas_points($qual->bcgttargetqualid, $newUcasPointsBreakdown); 
-                    }
-                    break;
-                default:
-                    //do nothing
-                    break;
-            }
+                        $weightedBreakdown->get_breakdown_average_score($qual->bcgttargetqualid, $newAverageGcseScore);   
 
+                        $weightedTargetGrade = new TargetGrade(-1, null);
+                        $weightedTargetGrade->get_target_grade_average_score($qual->bcgttargetqualid, $newAverageGcseScore);
+                        break;
+                    case 2:
+                        //multiply the target grade ucas points by the coefficient
+                        //are we just calculating the weighted target grade? if so we need to go and get the
+                        //students target grade from the database
+                        if($justCalculateWeightedTargets && $userID != -1)
+                        {
+                            $usersTargetGrades = $this->retrieve_users_target_grades($userID, $qual->id);
+                            if($usersTargetGrades)
+                            {
+                                $targetGrade = $usersTargetGrades[$qual->id]->targetgrade;
+                                $breakdown = $usersTargetGrades[$qual->id]->breakdown;
+                            }
+                        }
+                        //are we artificially inflating by adding a constant?
+                        $useConstant = get_config('bcgt','weightedtargetgradesuseconstant');
+                        $weightedMethod = get_config('bcgt','weightedtargetgradesclosestgrade');//will be UP or DOWN
+                        $qualWeighting = new QualWeighting();
+                        $constant = $qualWeighting->get_constant($qual->bcgttargetqualid);
+                        if($targetGrade)
+                        {
+                            $targetGradeUcasPoints = $targetGrade->get_ucas_points();
+                            $newUcasPointsTarget = $targetGradeUcasPoints * $coefficient;
+                            if($useConstant)
+                            {
+                                //$constant = get_config('bcgt','weightedtargetgradeconstant');
+                                //hard code to 1.65 for now
+                                
+                                //this wants to be half the ucas points difference in grades, for this qual.
+                                $newUcasPointsTarget = $newUcasPointsTarget + $constant;
+                            } 
+                            $weightedTargetGrade = new TargetGrade(-1, null);
+                            $weightedTargetGrade->get_target_grade_ucas_points($qual->bcgttargetqualid, $newUcasPointsTarget, $weightedMethod);
+                        }
+                        if($breakdown)
+                        {
+                            $breakdownUcasPoints = $breakdown->get_ucas_points();
+                            $newUcasPointsBreakdown = $breakdownUcasPoints * $coefficient;
+                            if($useConstant)
+                            {                                
+                                $newUcasPointsBreakdown = $newUcasPointsBreakdown + $constant;
+                            }
+                            $weightedBreakdown = new Breakdown(-1, null);
+                            $weightedBreakdown->get_breakdown_ucas_points($qual->bcgttargetqualid, $newUcasPointsBreakdown, $weightedMethod); 
+                        }
+                        break;
+                    default:
+                        //do nothing
+                        break;
+                }
+
+            }
         }
         //find the targetpercentage
         //find the coefficient
@@ -584,6 +624,11 @@ class UserCourseTarget {
         $stdObj->id = $qual->id;
         $qualsArray[$qual->id] = $stdObj;
         $this->usersTargetGrades = $qualsArray;
+    }
+    
+    protected function get_ucas_grade_difference()
+    {
+        
     }
     
     public function save_user_target_grades()    

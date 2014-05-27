@@ -42,7 +42,7 @@ class elbp_bcgt extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Grade Tracker",
                 "path" => '/blocks/bcgt/',
-                "version" => 2013090500
+                "version" => \ELBP\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -50,6 +50,12 @@ class elbp_bcgt extends Plugin {
             parent::__construct( strip_namespace(get_class($this)) );
         }
 
+    }
+    
+    public function getConfigPath()
+    {
+        $path = $this->getPath() . 'config_'.$this->getName().'.php';
+        return $path;
     }
     
     
@@ -81,9 +87,20 @@ class elbp_bcgt extends Plugin {
         $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentabovecredits", "getstringcomponent" => "block_bcgt"));
         $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentbelowcredits", "getstringcomponent" => "block_bcgt"));
         $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:qualcredits", "getstringcomponent" => "block_bcgt"));
-        
-        
-        // Hooks
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numcorrectcredits", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numabovecredits", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numbelowcredits", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:targetprogress", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numbehindtarget", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numontarget", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numabovetarget", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numwithtargetpredicted", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentbehindtarget", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentontarget", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentabovetarget", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numquals", "getstringcomponent" => "block_bcgt"));
+        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numqualscorrectcredits", "getstringcomponent" => "block_bcgt"));        
+// Hooks
         $DB->insert_record("lbp_hooks", array("pluginid" => $this->id, "name" => "Units"));
         $DB->insert_record("lbp_hooks", array("pluginid" => $this->id, "name" => "Target Grade"));
         
@@ -190,6 +207,50 @@ class elbp_bcgt extends Plugin {
             \mtrace("## Inserted plugin_report_element data for plugin: {$this->title}"); 
             
         }
+        
+        
+        if ($version < 2014022000)
+        {
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numcorrectcredits", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numabovecredits", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numbelowcredits", "getstringcomponent" => "block_bcgt"));
+            $this->version = 2014022000;
+            $this->updatePlugin();
+            \mtrace("## Inserted plugin_report_element data for plugin: {$this->title}"); 
+        }
+        
+        if ($version < 2014022001)
+        {
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:targetprogress", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numbehindtarget", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numontarget", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numabovetarget", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentbehindtarget", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentontarget", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:percentabovetarget", "getstringcomponent" => "block_bcgt"));
+            $this->version = 2014022001;
+            $this->updatePlugin();
+            \mtrace("## Inserted plugin_report_element data for plugin: {$this->title}"); 
+        }
+        
+        if ($version < 2014022100)
+        {
+            
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numwithtargetpredicted", "getstringcomponent" => "block_bcgt"));
+            $this->version = 2014022100;
+            $this->updatePlugin();
+            \mtrace("## Inserted plugin_report_element data for plugin: {$this->title}"); 
+            
+        }
+        
+        if ($version < 2014022102)
+        {
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numquals", "getstringcomponent" => "block_bcgt"));
+            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:bcgt:numqualscorrectcredits", "getstringcomponent" => "block_bcgt"));
+            $this->version = 2014022102;
+            $this->updatePlugin();
+            \mtrace("## Inserted plugin_report_element data for plugin: {$this->title}");
+        }
 
         return $result;
         
@@ -288,7 +349,15 @@ class elbp_bcgt extends Plugin {
         $totalBelowCredits = 0;
         $creditsOnQual = '-';
         
-        $totalQuals = 0;
+        $totalAheadOfTarget = 0;
+        $totalBehindTarget = 0;
+        $totalOnTarget = 0;
+        
+        $totalWithTargetAndPredicted = 0;
+        $targetProgress = '-';
+        
+        
+        $qualArray = array();
         
         $PL = new \UserPriorLearning();
         $R = new \Reporting();
@@ -309,7 +378,6 @@ class elbp_bcgt extends Plugin {
             if ($cnt > 0)
             {
                 $totalWithQual++;
-                $totalQuals += $cnt;
             }
             
             
@@ -331,6 +399,109 @@ class elbp_bcgt extends Plugin {
             if ($userCredits == $userExpectedCredits) $totalCorrectCredits++;
             elseif ($userCredits < $userExpectedCredits) $totalBelowCredits++;
             elseif ($userCredits > $userExpectedCredits) $totalAboveCredits++;
+            
+            
+            
+            // Ahead/Behind/On target            
+            $loadParams = new \stdClass();
+            $loadParams->loadLevel = \Qualification::LOADLEVELMIN;
+            $loadParams->loadAward = true;
+            
+            $studTargetProgress = array();
+            
+            // Count number of quals they haev which have a target grade & predicted grade
+            if ($quals)
+            {
+                
+                foreach($quals as $qual)
+                {
+                    
+                    $qualArray[$qual->id] = $qual->id;       
+                    
+                    $targetRanking = false;
+                    $predictedRanking = false;
+                    
+                    $qualObj = \Qualification::get_qualification_class_id($qual->id, $loadParams);
+                    $qualObj->load_student_information($student->id, $loadParams);
+                                        
+                    // get the target grade for this qual
+                    $userCourseTarget = new \UserCourseTarget();
+                    $targetGrade = $userCourseTarget->retrieve_users_target_grades($student->id, $qual->id);
+                    if($targetGrade)
+                    {
+                        $targetGradeObj = $targetGrade[$qual->id];
+                        if($targetGradeObj && isset($targetGradeObj->breakdown))
+                        {
+                            $breakdown = $targetGradeObj->breakdown;
+                            if($breakdown)
+                            {
+                                $targetRanking = $breakdown->get_ranking();
+                            }
+                        }
+                    }
+                    
+                    // get the predicted grade for this qual
+                    $getPredicted = $DB->get_record_sql("SELECT b.*
+                                                         FROM {block_bcgt_user_award} a
+                                                         INNER JOIN {block_bcgt_target_breakdown} b ON b.id = a.bcgtbreakdownid
+                                                         WHERE a.userid = ? AND a.bcgtqualificationid = ? AND a.type = 'Predicted'", array($student->id, $qual->id));
+                    if ($getPredicted)
+                    {
+                        $predictedRanking = $getPredicted->ranking;
+                    }
+                    
+                    if ($targetRanking && $predictedRanking){
+                        $studTargetProgress[$qual->id] = array(
+                            'target_ranking' => $targetRanking,
+                            'predicted_ranking' => $predictedRanking
+                        );
+                        
+                    }
+                    
+                }
+                
+            }
+            
+            $cntQualsProgress = count($studTargetProgress);
+            
+            if ($cntQualsProgress > 0){
+                $totalWithTargetAndPredicted++;
+            }
+            
+            
+            if ($studTargetProgress)
+            {
+                
+                $progressScore = 0;
+                
+                foreach($studTargetProgress as $array)
+                {
+                    
+                    // We divide by the number of quals, so that one student only ever counts as 1 point, regardless
+                    // of how many quals they are on and how many target progress differences they have
+                    if ($array['predicted_ranking'] > $array['target_ranking']){
+                        $totalAheadOfTarget += (1 / $cntQualsProgress);
+                        $progressScore += 3;
+                    }
+                    elseif ($array['target_ranking'] == $array['predicted_ranking']) {
+                        $totalOnTarget += (1 / $cntQualsProgress);
+                        $progressScore += 2;
+                    }
+                    elseif ($array['target_ranking'] > $array['predicted_ranking']) {
+                        $totalBehindTarget += (1 / $cntQualsProgress);
+                        $progressScore += 1;
+                    }
+                    
+                                            
+                }
+                
+                // Sort so highest is top
+                $progressAvg = $progressScore / $cntQualsProgress;
+                                
+                
+            }                    
+                
+            
             
             
                         
@@ -429,6 +600,16 @@ class elbp_bcgt extends Plugin {
                 
                 $creditsOnQual = implode(",\n ", $c);
                 
+                if (isset($progressAvg)){
+                    if ($progressAvg >= 2.5){
+                        $targetProgress = 'AHEAD';
+                    } elseif($progressAvg >= 1.5){
+                        $targetProgress = 'ON';
+                    } else {
+                        $targetProgress = 'BEHIND';
+                    }
+                }
+                
                 
             }
                         
@@ -449,7 +630,20 @@ class elbp_bcgt extends Plugin {
         $data['reports:bcgt:percentcorrectcredits'] = round(($totalCorrectCredits / $totalStudents) * 100, 1);
         $data['reports:bcgt:percentabovecredits'] = round(($totalAboveCredits / $totalStudents) * 100, 1);
         $data['reports:bcgt:percentbelowcredits'] = round(($totalBelowCredits / $totalStudents) * 100, 1);
+        $data['reports:bcgt:numcorrectcredits'] = $totalCorrectCredits;
+        $data['reports:bcgt:numabovecredits'] = $totalAboveCredits;
+        $data['reports:bcgt:numbelowcredits'] = $totalBelowCredits;
         $data['reports:bcgt:qualcredits'] = $creditsOnQual;
+        $data['reports:bcgt:numontarget'] = $totalOnTarget;
+        $data['reports:bcgt:numbehindtarget'] = $totalBehindTarget;
+        $data['reports:bcgt:numabovetarget'] = $totalAheadOfTarget;
+        $data['reports:bcgt:numwithtargetpredicted'] = $totalWithTargetAndPredicted;
+        $data['reports:bcgt:targetprogress'] = $targetProgress;
+        $data['reports:bcgt:numquals'] = count($qualArray);
+        $data['reports:bcgt:numqualscorrectcredits'] = count($qualCorrectCreditsArray); // ?
+        
+        // Percentages
+        // [not at the moment]
 
         $names = array();
         $els = array();
@@ -507,7 +701,7 @@ class elbp_bcgt extends Plugin {
                         
         if ($simple) return $array;
         
-        else return ($array) ? implode(", ", $array) : '-';
+        else return ($array) ? implode(", ", $array) : 'N/A';
         
     }
     
@@ -527,7 +721,7 @@ class elbp_bcgt extends Plugin {
             // Target grade
             $output .= "<tr>";
             
-                $output .= "<td>".get_string('targetgrades', 'block_bcgt')."</td>";
+                $output .= "<td>".get_string('mintargetgrades', 'block_bcgt')."</td>";
                 $output .= "<td>{$this->getUserTargetGrades()}</td>";
             
             $output .= "</tr>";
@@ -558,6 +752,7 @@ class elbp_bcgt extends Plugin {
             $loadParams->loadLevel = \Qualification::LOADLEVELALL;
             $loadParams->loadAward = true;
             $loadParams->loadTargets = true;
+            $loadParams->loadAddUnits = false;
             $qualification->load_student_information($this->student->id, $loadParams);
             
         }
@@ -568,6 +763,7 @@ class elbp_bcgt extends Plugin {
             'fullpath' => '/blocks/bcgt/js/block_bcgt.js',
             'requires' => array('base', 'io', 'node', 'json', 'event', 'button')
         );
+        
         $PAGE->requires->js_init_call('M.block_bcgt.initgridstu', null, true, $jsModule);
 
         $TPL->set("qualification", $qualification, true);

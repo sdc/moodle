@@ -253,7 +253,8 @@ class CGHBVRQCriteria extends CGCriteria {
                 $longValue = 'Not Attempted';
             }
 
-            $output .= "<td>";
+            $c = ($editing) ? 'Edit' : 'NonEdit';
+            $output .= "<td class='criteriaValue{$c}'>";
 
             // Simple, Non-Editing
             if(!$advancedMode && !$editing)
@@ -268,12 +269,12 @@ class CGHBVRQCriteria extends CGCriteria {
 
                 $output .= "<span id='stCID_".$this->get_id()."_UID_".
                         $unit->get_id()."_SID_".$this->studentID."_QID_".
-                        $this->qualID."' class='stuValue $class' title='t' criteriaID='{$this->id}' studentID='{$this->studentID}'><img src='".
+                        $this->qualID."' class='stuValue $class' criteriaID='{$this->id}' studentID='{$this->studentID}'><img src='".
                         $image."'/><br><small>".$this->get_award_date('d M Y')."</small></span>";
 
-                if (!is_null($this->comments) && $this->comments != ''){
-                    $output .= "<div class='tooltipContent'>".nl2br( htmlentities($this->comments, ENT_QUOTES) )."</div>";
-                }
+//                if (!is_null($this->comments) && $this->comments != ''){
+//                    $output .= "<div class='tooltipContent'>".nl2br( htmlentities($this->comments, ENT_QUOTES) )."</div>";
+//                }
 
 
             }
@@ -286,11 +287,11 @@ class CGHBVRQCriteria extends CGCriteria {
 
                  $output .= "<span id='stCID_".$this->get_id()."_UID_".
                         $unit->get_id()."_SID_".$this->studentID."_QID_".
-                        $this->qualID."' class='stuValue stuValue{$value} {$class}' title='omg' criteriaID='{$this->id}' studentID='{$this->studentID}'>{$value}<br><small>{$this->get_award_date('d M Y')}</small></span>";
+                        $this->qualID."' class='stuValue stuValue{$value} {$class}' criteriaID='{$this->id}' studentID='{$this->studentID}'>{$value}<br><small>{$this->get_award_date('d M Y')}</small></span>";
 
-                 if (!is_null($this->comments) && $this->comments != ''){
-                     $output .= "<div class='tooltipContent'>".nl2br( htmlentities($this->comments, ENT_QUOTES) )."</div>";
-                 }
+//                 if (!is_null($this->comments) && $this->comments != ''){
+//                     $output .= "<div class='tooltipContent'>".nl2br( htmlentities($this->comments, ENT_QUOTES) )."</div>";
+//                 }
 
             }
             // Advanced, editing
@@ -362,15 +363,17 @@ class CGHBVRQCriteria extends CGCriteria {
                                         
             }
             
-            $output .= "<div id='criteriaTooltipContent_{$this->id}_{$this->studentID}' style='display:none;'>".$this->build_criteria_tooltip($this->id, $this->qualID, $this->studentID)."</div>";
+            $output .= "<div id='criteriaTooltipContent_{$this->id}_{$this->studentID}' style='display:none;' class='criteriaContent'>".$this->build_criteria_tooltip($this->id, $this->qualID, $this->studentID)."</div>";
             
             $output .= "</td>";
+            
+            $tName = str_replace(" ", "_", htmlentities($this->name, ENT_QUOTES));
             
             if ($colspan > 1)
             {
                 for ($i = 1; $i < $colspan; $i++)
                 {
-                    $output .= "<td class='blank'></td>";
+                    $output .= "<td class='blank taskClass_{$tName}'></td>";
                 }
             }
             
@@ -404,12 +407,12 @@ class CGHBVRQCriteria extends CGCriteria {
 
             // Simple Non
             if(!$advancedMode && !$editing){
-                $output .= "<td class='taskHidden_{$tName} overallTask overallTaskStuValue' title='t' criteriaID='{$this->id}' studentID='{$this->studentID}' style='display:none;'><img class='gridIcon' src='{$img}' /><br><small>{$date}</small> ".$this->build_overall_task_tooltip()."</td>";
+                $output .= "<td class='taskHidden_{$tName} overallTask overallTaskStuValue criteriaValueNonEdit' criteriaID='{$this->id}' studentID='{$this->studentID}' style='display:none;'><img class='gridIcon' src='{$img}' /><br><small>{$date}</small> ".$this->build_overall_task_tooltip()."</td>";
             }
 
             // Advanced Non
             elseif($advancedMode && !$editing){
-                $output .= "<td class='taskHidden_{$tName} overallTask overallTaskStuValue' title='t' criteriaID='{$this->id}' studentID='{$this->studentID}' style='display:none;'>{$val}<br><small>{$date}</small> ".$this->build_overall_task_tooltip()."</td>";
+                $output .= "<td class='taskHidden_{$tName} overallTask overallTaskStuValue criteriaValueNonEdit' criteriaID='{$this->id}' studentID='{$this->studentID}' style='display:none;'>{$val}<br><small>{$date}</small> ".$this->build_overall_task_tooltip()."</td>";
             }
 
             // Simple Edit or Advanced Edit
@@ -497,7 +500,7 @@ class CGHBVRQCriteria extends CGCriteria {
                     $img = "<img src='".$imageObj->image."' class='".$imageObj->class." gridIcon' /><br><small>" . $awardDate . "</small>";
 
 
-                    $output .= "<td {$style} class='taskClass_{$tName}'><span class='rangeValue' title='' rangeID='{$range->id}' unitID='{$this->unitID}' studentID='{$this->studentID}'>{$img}</span>";
+                    $output .= "<td {$style} class='taskClass_{$tName} criteriaValueNonEdit'><span class='rangeValue' title='' rangeID='{$range->id}' unitID='{$this->unitID}' studentID='{$this->studentID}'>{$img}</span>";
                     if (!$printTable) $output .= $this->build_criteria_value_popup($this->unitID, $range);
                     $output .= "</td>";
 
@@ -515,7 +518,7 @@ class CGHBVRQCriteria extends CGCriteria {
                     // Award Date
                     $awardDate = (isset($range->awardDate) && $range->awardDate > 0 && $studentCriteriaMet == 'Yes') ? '<div class="hiddenDate"><small>'.date('d M Y', $range->awardDate) .'</small></div>' : '';
 
-                    $output .= "<td class='{$cellClass} taskClass_{$tName}'><span class='rangeValue' title='' rangeID='{$range->id}' unitID='{$this->unitID}' studentID='{$this->studentID}' style='font-weight:bold;'>{$value}<br>{$awardDate}</span>";
+                    $output .= "<td class='{$cellClass} taskClass_{$tName} criteriaValueNonEdit'><span class='rangeValue' title='' rangeID='{$range->id}' unitID='{$this->unitID}' studentID='{$this->studentID}' style='font-weight:bold;'>{$value}<br>{$awardDate}</span>";
                     if (!$printTable) $output .= $this->build_criteria_value_popup($this->unitID, $range);
                     $output .= "</td>";
 
@@ -600,7 +603,7 @@ class CGHBVRQCriteria extends CGCriteria {
             {
                 for ($i = $rNum; $i < $colspan; $i++)
                 {
-                    $output .= "<td class='blank'></td>";
+                    $output .= "<td class='blank taskClass_{$tName}'></td>";
                 }
             }
                                     
@@ -626,7 +629,7 @@ class CGHBVRQCriteria extends CGCriteria {
      */
     public function build_overall_task_tooltip()
     {
-        $output = "<div id='overallTaskTooltipContent_{$this->id}_{$this->studentID}' style='display:none;'>";
+        $output = "<div id='overallTaskTooltipContent_{$this->id}_{$this->studentID}' style='display:none;' class='criteriaContent'>";
         
         $unitName = get_unit_name_by_id($this->unitID);
         $output .= "<p class='c'><b>{$unitName}</b></p>";
@@ -655,7 +658,7 @@ class CGHBVRQCriteria extends CGCriteria {
                 
         
             $rangeID = (!is_null($range)) ? $range->id : 0;
-            $output = "<div id='rangeTooltipContent_{$rangeID}_{$unitID}_{$this->studentID}' style='display:none;'>";
+            $output = "<div id='rangeTooltipContent_{$rangeID}_{$unitID}_{$this->studentID}' class='criteriaContent' style='display:none;'>";
         
             // Normal task with no sub criteira/ranges
             if(is_null($range))
@@ -719,7 +722,7 @@ class CGHBVRQCriteria extends CGCriteria {
         $output .= "<table id='rangePopupTable'>";
         
             $output .= "<tr class='lightpink'>";
-                $output .= "<th>Criteria</th><th>Details</th><th>Award Date</th>";
+                $output .= "<th>Criteria</th><th>Description</th><th>Details</th><th>Award Date</th><th></th>";
             $output .= "</tr>";
             
             // Loop sub criteria
@@ -737,11 +740,16 @@ class CGHBVRQCriteria extends CGCriteria {
                     {
                         $date = $criterion->get_award_date('d-m-Y');
                     }
+                                       
+                    $details = $criterion->get_user_defined_value();
+                    $details = preg_replace("/(\n|\r)/", " ", $details);
                                         
                     $output .= "<tr>";
                         $output .= "<td>{$criterion->get_name()}</td>";
                         $output .= "<td>{$criterion->get_details()}</td>";
+                        $output .= "<td><textarea studentID='{$this->studentID}' id='details_studentID_{$this->studentID}_qualID_{$this->qualID}_critID_{$criterion->get_id()}'>{$details}</textarea></td>";
                         $output .= "<td><input type='text' style='width:70px;' studentID='{$this->studentID}' qualID='{$this->qualID}' unitID='{$this->unitID}' criteriaID='{$criterion->get_id()}' grid='{$grid}' setAchieved='1' class='datePickerCriteria' value='{$date}' /></td>";
+                        $output .= "<td><input type='button' value='Save' onclick='saveHBVRQFormative({$this->studentID}, {$this->qualID}, {$this->unitID}, {$criterion->get_id()});return false;' /></td>";
                     $output .= "</tr>";
                     
                 }
@@ -765,7 +773,7 @@ class CGHBVRQCriteria extends CGCriteria {
                 $image = CGQualification::get_simple_grid_images($value, $longValue);
                 $img = ($image) ? $image->image : '';
             
-                $output .= "<th>Value:</th><td colspan='2'>";
+                $output .= "<th>Value:</th><td colspan='4'>";
                 
                 if ($noEdit)
                 {
@@ -805,7 +813,7 @@ class CGHBVRQCriteria extends CGCriteria {
             $output .= "</tr>";
             $output .= "<tr class='pink'>";
                 $output .= "<th>Date:</th>";
-                $output .= "<td colspan='2'>";
+                $output .= "<td colspan='4'>";
                     
                 if ($noEdit)
                 {
@@ -823,6 +831,7 @@ class CGHBVRQCriteria extends CGCriteria {
         
         
         $output .= "</table>";
+        
         return $output;
        
    }
