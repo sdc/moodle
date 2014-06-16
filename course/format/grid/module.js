@@ -340,7 +340,7 @@ M.format_grid.shadebox.initialize_shadebox = function() {
     content.style.top = '50px';
     content.style.left = '5%';
     //content.style.marginLeft = '-400px';
-    content.style.zIndex = '9000001';
+    content.style.zIndex = '1';
 };
 
 /**
