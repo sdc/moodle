@@ -20,7 +20,8 @@
  * @package    course/format
  * @subpackage grid
  * @copyright  &copy; 2012 G J Barnard in respect to modifications of standard topics format.
- * @author     G J Barnard - gjbarnard at gmail dot com and {@link http://moodle.org/user/profile.php?id=442195}
+ * @author     G J Barnard - gjbarnard at gmail dot com, {@link http://about.me/gjbarnard} and
+ *                           {@link http://moodle.org/user/profile.php?id=442195}
  * @author     Based on code originally written by Paul Krix and Julian Ridden.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -114,9 +115,8 @@ function xmldb_format_grid_upgrade($oldversion = 0) {
     }
 
     // Automatic 'Purge all caches'....
-    if ($oldversion < 2013121800) {
+    if ($oldversion < 2114052000) {
         purge_all_caches();
-        upgrade_plugin_savepoint(true, '2013121800', 'format', 'grid');
     }
 
     return true;

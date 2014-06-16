@@ -4,11 +4,11 @@ A topics based format that uses a grid of user selectable images to pop up a lig
 
 Required version of Moodle
 ==========================
-This version works with Moodle version 2013111800.00 release 2.6 (Build: 20131118) and above within the 2.6 branch until the
+This version works with Moodle version 2014051200.00 release 2.7 (Build: 20140512) and above within the 2.7 branch until the
 next release.
 
 Please ensure that your hardware and software complies with 'Requirements' in 'Installing Moodle' on
-'docs.moodle.org/26/en/Installing_Moodle' / 'docs.moodle.org/dev/Moodle_2.6_release_notes'.
+'docs.moodle.org/27/en/Installing_Moodle' / 'docs.moodle.org/dev/Moodle_2.7_release_notes'.
 
 Free Software
 =============
@@ -123,9 +123,9 @@ All 'Grid format' does is integrate with the course page and control it's layout
 with the format is in fact to do with a theme or core component.  Please be confident that it is an issue with 'Grid format'
 but if in doubt, ask.
 
-We operate a policy that we will fix all genuine issues for free (this only applies to the code as supplied from the sources listed
+I operate a policy that I will fix all genuine issues for free (this only applies to the code as supplied from the sources listed
 in 'Free Software' above.  Any changes / improvements you make are not covered and invalidate this policy for all of the code).
-Improvements are at our discretion.  We are happy to make bespoke customisations / improvements for a negotiated fee.  We will
+Improvements are at our discretion.  I am happy to make bespoke customisations / improvements for a negotiated fee.  I will
 endeavour to respond to all requests for support as quickly as possible, if you require a faster service then offering payment for
 the service will expedite the response.
 
@@ -195,12 +195,7 @@ File information
 
 Languages
 ---------
-The grid/lang folder contains the language files for the format, such as:
-
-* grid/lang/en/format_grid.php
-* grid/lang/ru/format_grid.php
-* grid/lang/es/format_grid.php
-* grid/lang/fr/format_grid.php
+The grid/lang folder contains the language files for the format.
 
 Note that existing formats store their language strings in the main
 moodle.php, which you can also do, but this separate file is recommended
@@ -233,8 +228,7 @@ Roadmap
 3. CONTRIB-3240 - Gridview course format more accessible.
 4. Use of crowd funding facility to support development.
 5. Continued maintenance of issues: https://tracker.moodle.org/browse/CONTRIB/component/11231.
-6. Add in grid format specific capabilities to change things.
-7. Ongoing structured walk through and refactoring.
+6. Ongoing structured walk through and refactoring.
 
 Known Issues
 =============
@@ -242,11 +236,37 @@ Known Issues
 
 History
 =============
-16th January 2014 Version 2.6.1.5
+3rd June 2014 - Version 2.7.1.1
+  1.  Slight change to CSS for Bootstrap V3.
+
+20th May 2014 Version 2.7.1 - Stable.
+  1.  Stable release for M2.7.
+
+27th April 2014 Version 2.7.0.1 - BETA
+  1.  First beta version for Moodle 2.7beta.
+
+23rd April 2014 Version 2.6.1.6
+Change by G J Barnard
+  1.  Fixed CONTRIB-5001 - Cannot use the same image in the section summary as well as the grid.
+  2.  Note: Julian has departed from Moodle work so I have taken over full responsibility for the format.
+
+28th March 2014 Version 2.6.1.5
 Change by G J Barnard
   1.  Fix to RTL CSS thanks to Nadav Kavalerchik - https://github.com/gjb2048/moodle-courseformat_grid/pull/3 being:
-      Right align "New Activity" image in RTL mode.
+      Right align "New activity" notification image in RTL mode.
   2.  Fixed missing strings in 'en' language file for 'One section per page' mode.
+  3.  Fixed number format on ordered lists as reported on https://moodle.org/mod/forum/discuss.php?d=252497.
+  4.  Changed current selected image container to #ffc540 from #00cc00.  As the latter was too 'in your face'.
+  5.  Added a new setting so that you can choose if you want to display the "New activity" notification image.  The default is yes.
+  6.  Removed colour and font size attribute of icon text from styles.css.
+  7.  Removed redundant icons.
+  8.  Fixed box-sizing method for Bootstrap V3 in styles.css.
+  9.  Slightly shrunk grid icon outside to make better use of available space.
+ 10.  Changed current section colour in the grid to use a box-shadow instead of a background to avoid confusion with
+      the current selected section.  This is a compromised as the latter is there for accessibility reasons and hence
+      rationally should stand out more.  This change will not be back-ported as it's not IE8 compatible,
+      http://caniuse.com/#search=box-shadow and hence requires a version of Moodle that does not mandate it.
+ 11.  Fixed CONTRIB-4861 - Glossary pop-ups do not display correctly.
 
 18th December 2013 Version 2.6.1.4
 Change by G J Barnard
@@ -499,7 +519,6 @@ Change by G J Barnard
 Change by G J Barnard
   1. First alpha release for Moodle 2.4
 
-Authors
--------
-J Ridden - Moodle profile: https://moodle.org/user/profile.php?id=39680 - Web: http://www.moodleman.net
+Author
+------
 G J Barnard - Moodle profile: moodle.org/user/profile.php?id=442195 - Web profile: about.me/gjbarnard
