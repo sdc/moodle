@@ -26,6 +26,8 @@ $string['column'] = "Column";
 $string['confirmdeletereport'] = "Are you sure you want to delete this report?";
 $string['noreportsavailable'] = "No reports available";
 $string['downloadreport'] = "Download report";
+$string['reportlimit'] = "Report row limit";
+$string['reportlimitinfo'] = "Limit the number of rows that are displayed in the report table (Default is 5000 rows. Better to have some limit, so users will not over load the DB engine)";
 
 $string['configurable_reports:addinstance'] = 'Add a new configurable reports block';
 $string['configurable_reports:manageownreports'] = "Manage own reports";
@@ -438,3 +440,6 @@ $string['displayreportslist'] = 'Display the reports list in the block body';
 $string['usercompletion'] = 'User course completion status';
 $string['usercompletionsummary'] = 'Course completion status';
 
+$string['finalgradeincurrentcourse'] = 'Final grade in current course';
+$string['legacylognotenabled'] = 'Legacy logs must be enabled.
+ Go to Site administration / Plugins / Logging Enable the Legacy log and inside the log settings check Log legacy data';

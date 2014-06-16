@@ -22,35 +22,32 @@
   * @date: 2009
   */
 
-class plugin_base {
+if (!defined('MOODLE_INTERNAL')) {
+    die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
+}
 
-    public $fullname = '';
-    public $type = '';
-    public $report = null;
-    public $form = false;
-    public $cache = array();
-    public $unique = false;
-    public $reporttypes = array();
+require_once($CFG->libdir.'/formslib.php');
 
-    public function __construct($report) {
-        global $DB, $CFG, $remotedb;
+class finalgradeincurrentcourse_form extends moodleform {
+    function definition() {
+        global $DB, $USER, $CFG;
 
-        if (is_numeric($report)) {
-            $this->report = $DB->get_record('block_configurable_reports', array('id' => $report));
-        } else {
-            $this->report = $report;
-        }
-        $this->init();
+        $mform =& $this->_form;
+
+		    $this->_customdata['compclass']->add_form_elements($mform,$this);
+
+        // buttons
+        $this->add_action_buttons(true, get_string('add'));
+
     }
 
-    public function summary($data) {
-        return '';
-    }
+	function validation($data, $files){
+		$errors = parent::validation($data, $files);
 
-    // Should be override.
-    public function init() {
-        return '';
-    }
+		$errors = $this->_customdata['compclass']->validate_form_elements($data,$errors);
+
+		return $errors;
+	}
 
 }
 
