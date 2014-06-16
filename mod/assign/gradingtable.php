@@ -752,7 +752,14 @@ class assign_grading_table extends table_sql implements renderable {
      */
     public function col_select(stdClass $row) {
         $selectcol = '<label class="accesshide" for="selectuser_' . $row->userid . '">';
-        $selectcol .= get_string('selectuser', 'assign', fullname($row));
+        $name = '';
+        if ($this->assignment->is_blind_marking()) {
+            $name = get_string('hiddenuser', 'assign') .
+                    $this->assignment->get_uniqueid_for_user($row->userid);
+        } else {
+            $name = fullname($row);
+        }
+        $selectcol .= get_string('selectuser', 'assign', $name);
         $selectcol .= '</label>';
         $selectcol .= '<input type="checkbox"
                               id="selectuser_' . $row->userid . '"
@@ -905,20 +912,21 @@ class assign_grading_table extends table_sql implements renderable {
 
         $instance = $this->assignment->get_instance();
 
+        $due = $instance->duedate;
+        if ($row->extensionduedate) {
+            $due = $row->extensionduedate;
+        }
+
         if ($this->assignment->is_any_submission_plugin_enabled()) {
 
             $o .= $this->output->container(get_string('submissionstatus_' . $row->status, 'assign'),
                                            array('class'=>'submissionstatus' .$row->status));
-            if ($instance->duedate &&
-                    $row->timesubmitted > $instance->duedate) {
-                if (!$row->extensionduedate ||
-                        $row->timesubmitted > $row->extensionduedate) {
-                    $usertime = format_time($row->timesubmitted - $instance->duedate);
-                    $latemessage = get_string('submittedlateshort',
-                                              'assign',
-                                              $usertime);
-                    $o .= $this->output->container($latemessage, 'latesubmission');
-                }
+            if ($due && $row->timesubmitted > $due) {
+                $usertime = format_time($row->timesubmitted - $due);
+                $latemessage = get_string('submittedlateshort',
+                                          'assign',
+                                          $usertime);
+                $o .= $this->output->container($latemessage, 'latesubmission');
             }
             if ($row->locked) {
                 $lockedstr = get_string('submissionslockedshort', 'assign');
@@ -934,10 +942,6 @@ class assign_grading_table extends table_sql implements renderable {
 
             if (!$row->timesubmitted) {
                 $now = time();
-                $due = $instance->duedate;
-                if ($row->extensionduedate) {
-                    $due = $row->extensionduedate;
-                }
                 if ($due && ($now > $due)) {
                     $overduestr = get_string('overdue', 'assign', format_time($now - $due));
                     $o .= $this->output->container($overduestr, 'overduesubmission');
