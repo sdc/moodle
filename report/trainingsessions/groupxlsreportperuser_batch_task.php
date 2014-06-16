@@ -10,8 +10,10 @@
 */
 
 	include '../../../config.php';
+	ob_start();
     include_once $CFG->dirroot.'/blocks/use_stats/locallib.php';
     include_once $CFG->dirroot.'/course/report/trainingsessions/locallib.php';
+    include_once $CFG->dirroot.'/course/report/trainingsessions/xlsrenderers.php';
     require_once($CFG->libdir.'/excellib.class.php');
 
     $id = required_param('id', PARAM_INT) ; // the course id
@@ -31,10 +33,10 @@
 
     ini_set('memory_limit', '512M');
 
-    if (!$course = $DB->get_record('course', array('id' => $id))){
+    if (!$course = get_record('course', 'id', $id)){
     	die ('Invalid course ID');
     }
-    $context = context_course::instance($course->id);
+    $context = get_context_instance(CONTEXT_COURSE, $course->id);
 
     $coursestructure = reports_get_course_structure($course->id, $items);
 
@@ -46,10 +48,11 @@
         if ($startday == -1 || $fromstart){
             $from = $course->startdate;
         } else {
-            if ($startmonth != -1 && $startyear != -1)
+            if ($startmonth != -1 && $startyear != -1){
                 $from = mktime(0, 0, 8, $startmonth, $startday, $startyear);
-            else 
+            } else { 
                 print_error('Bad start date');
+            }
         }
     }
 
@@ -66,9 +69,13 @@
     
 // compute target group
 
-	$group = $DB->get_record('groups', array('id' => $groupid));
+	if ($groupid){
+		$group = get_record('groups', 'id', $groupid);
+    	$targetusers = groups_get_members($groupid);
+	} else {
+    	$targetusers = get_users_by_capability($context, 'moodle/course:view', 'u.id, firstname, lastname, email, institution, idnumber', 'lastname');
+	}
 
-    $targetusers = groups_get_members($groupid);
 
 	// filters teachers out
     foreach($targetusers as $uid => $user){
