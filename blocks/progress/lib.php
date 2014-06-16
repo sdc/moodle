@@ -86,7 +86,8 @@ function block_progress_monitorable_modules() {
                                     WHERE i.itemmodule = 'assign'
                                       AND i.iteminstance = :eventid
                                       AND i.id = g.itemid
-                                      AND g.userid = :userid"
+                                      AND g.userid = :userid
+                                      AND g.finalgrade IS NOT NULL"
             ),
             'defaultAction' => 'submitted'
         ),
@@ -113,44 +114,72 @@ function block_progress_monitorable_modules() {
                                     WHERE i.itemmodule = 'assignment'
                                       AND i.iteminstance = :eventid
                                       AND i.id = g.itemid
-                                      AND g.userid = :userid"
+                                      AND g.userid = :userid
+                                      AND g.finalgrade IS NOT NULL"
             ),
             'defaultAction' => 'submitted'
         ),
         'bigbluebuttonbn' => array(
             'defaultTime' => 'timedue',
             'actions' => array(
-                'viewed'       => "SELECT id
-                                     FROM {log}
-                                    WHERE course = :courseid
-                                      AND module = 'bigbluebuttonbn'
-                                      AND action = 'view'
-                                      AND cmid = :cmid
-                                      AND userid = :userid"
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'bigbluebuttonbn'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_bigbluebuttonbn'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
             ),
             'defaultAction' => 'viewed'
         ),
         'recordingsbn' => array(
             'actions' => array(
-                'viewed'       => "SELECT id
-                                     FROM {log}
-                                    WHERE course = :courseid
-                                      AND module = 'recordingsbn'
-                                      AND action = 'view'
-                                      AND cmid = :cmid
-                                      AND userid = :userid"
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'recordingsbn'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_recordingsbn'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
             ),
             'defaultAction' => 'viewed'
         ),
         'book' => array(
             'actions' => array(
-                'viewed'       => "SELECT id
-                                     FROM {log}
-                                    WHERE course = :courseid
-                                      AND module = 'book'
-                                      AND action = 'view'
-                                      AND cmid = :cmid
-                                      AND userid = :userid"
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'book'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_book'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
             ),
             'defaultAction' => 'viewed'
         ),
@@ -185,13 +214,22 @@ function block_progress_monitorable_modules() {
         'data' => array(
             'defaultTime' => 'timeviewto',
             'actions' => array(
-                'viewed'       => "SELECT id
-                                     FROM {log}
-                                    WHERE course = :courseid
-                                      AND module = 'data'
-                                      AND action = 'view'
-                                      AND cmid = :cmid
-                                      AND userid = :userid"
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'data'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_data'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
             ),
             'defaultAction' => 'viewed'
         ),
@@ -207,37 +245,64 @@ function block_progress_monitorable_modules() {
         ),
         'resource' => array(  // AKA file.
             'actions' => array(
-                'viewed'       => "SELECT id
-                                     FROM {log}
-                                    WHERE course = :courseid
-                                      AND module = 'resource'
-                                      AND action = 'view'
-                                      AND cmid = :cmid
-                                      AND userid = :userid"
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'resource'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_resource'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
             ),
             'defaultAction' => 'viewed'
         ),
         'flashcardtrainer' => array(
             'actions' => array(
-                'viewed'       => "SELECT id
-                                     FROM {log}
-                                    WHERE course = :courseid
-                                      AND module = 'flashcardtrainer'
-                                      AND action = 'view'
-                                      AND cmid = :cmid
-                                      AND userid = :userid"
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'flashcardtrainer'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_flashcardtrainer'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
             ),
             'defaultAction' => 'viewed'
         ),
         'folder' => array(
             'actions' => array(
-                'viewed'       => "SELECT id
-                                     FROM {log}
-                                    WHERE course = :courseid
-                                      AND module = 'folder'
-                                      AND action = 'view'
-                                      AND cmid = :cmid
-                                      AND userid = :userid"
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'folder'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_folder'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
             ),
             'defaultAction' => 'viewed'
         ),
@@ -256,13 +321,22 @@ function block_progress_monitorable_modules() {
         ),
         'glossary' => array(
             'actions' => array(
-                'viewed'       => "SELECT id
-                                     FROM {log}
-                                    WHERE course = :courseid
-                                      AND module = 'glossary'
-                                      AND action = 'view'
-                                      AND cmid = :cmid
-                                      AND userid = :userid"
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'glossary'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_glossary'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
             ),
             'defaultAction' => 'viewed'
         ),
@@ -296,13 +370,22 @@ function block_progress_monitorable_modules() {
         ),
         'imscp' => array(
             'actions' => array(
-                'viewed'       => "SELECT id
-                                     FROM {log}
-                                    WHERE course = :courseid
-                                      AND module = 'imscp'
-                                      AND action = 'view'
-                                      AND cmid = :cmid
-                                      AND userid = :userid"
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'imscp'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_imscp'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
             ),
             'defaultAction' => 'viewed'
         ),
@@ -339,13 +422,22 @@ function block_progress_monitorable_modules() {
         ),
         'page' => array(
             'actions' => array(
-                'viewed'       => "SELECT id
-                                     FROM {log}
-                                    WHERE course = :courseid
-                                      AND module = 'page'
-                                      AND action = 'view'
-                                      AND cmid = :cmid
-                                      AND userid = :userid"
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'page'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_page'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
             ),
             'defaultAction' => 'viewed'
         ),
@@ -388,7 +480,8 @@ function block_progress_monitorable_modules() {
                                     WHERE i.itemmodule = 'quiz'
                                       AND i.iteminstance = :eventid
                                       AND i.id = g.itemid
-                                      AND g.userid = :userid"
+                                      AND g.userid = :userid
+                                      AND g.finalgrade IS NOT NULL"
             ),
             'defaultAction' => 'finished'
         ),
@@ -426,25 +519,43 @@ function block_progress_monitorable_modules() {
         ),
         'url' => array(
             'actions' => array(
-                'viewed'       => "SELECT id
-                                     FROM {log}
-                                    WHERE course = :courseid
-                                      AND module = 'url'
-                                      AND action = 'view'
-                                      AND cmid = :cmid
-                                      AND userid = :userid"
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'url'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_url'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
             ),
             'defaultAction' => 'viewed'
         ),
         'wiki' => array(
             'actions' => array(
-                'viewed'       => "SELECT id
-                                     FROM {log}
-                                    WHERE course = :courseid
-                                      AND module = 'wiki'
-                                      AND action = 'view'
-                                      AND cmid = :cmid
-                                      AND userid = :userid"
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'wiki'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_wiki'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
             ),
             'defaultAction' => 'viewed'
         ),
@@ -560,13 +671,13 @@ function block_progress_event_information($config, $modules) {
                 $coursemodule = get_coursemodule_from_instance($module, $record->id, $COURSE->id);
 
                 // Check if the module is visible, and if so, keep a record for it.
-                if ($coursemodule->visible == 1) {
+                if ($coursemodule->visible) {
                     $event = array(
                         'expected' => $expected,
                         'type'     => $module,
                         'id'       => $record->id,
                         'name'     => format_string($record->name),
-                        'cmid'     => $coursemodule->id,
+                        'cm'       => $coursemodule,
                     );
                     if (isset($config->orderby) && $config->orderby == 'orderbycourse') {
                         $event['section'] = $sections[$coursemodule->section]->section;
@@ -612,15 +723,37 @@ function block_progress_compare_events($a, $b) {
 /**
  * Checked if a user has attempted/viewed/etc. an activity/resource
  *
- * @param array    $modules The modules used in the course
- * @param stdClass $config  The blocks configuration settings
- * @param array    $events  The possible events that can occur for modules
- * @param int      $userid  The user's id
+ * @param array    $modules  The modules used in the course
+ * @param stdClass $config   The blocks configuration settings
+ * @param array    $events   The possible events that can occur for modules
+ * @param int      $userid   The user's id
+ * @param int      $instance The instance of the block
  * @return array   an describing the user's attempts based on module+instance identifiers
  */
 function block_progress_attempts($modules, $config, $events, $userid, $instance) {
     global $COURSE, $DB;
     $attempts = array();
+    $modernlogging = false;
+    $cachingused = false;
+
+    // Get readers for 2.7 onwards.
+    if (function_exists('get_log_manager')) {
+        $modernlogging = true;
+        $logmanager = get_log_manager();
+        $readers = $logmanager->get_readers();
+        $numreaders = count($readers);
+    }
+
+    // Get cache store if caching is working 2.4 onwards.
+    if (class_exists('cache')) {
+        $cachingused = true;
+        $cachedlogs = cache::make('block_progress', 'cachedlogs');
+        $cachedlogviews = $cachedlogs->get($userid);
+        if (empty($cachedlogviews)) {
+            $cachedlogviews = array();
+        }
+        $cachedlogsupdated = false;
+    }
 
     foreach ($events as $event) {
         $module = $modules[$event['type']];
@@ -628,45 +761,85 @@ function block_progress_attempts($modules, $config, $events, $userid, $instance)
         $parameters = array('courseid' => $COURSE->id, 'courseid1' => $COURSE->id,
                             'userid' => $userid, 'userid1' => $userid,
                             'eventid' => $event['id'], 'eventid1' => $event['id'],
-                            'cmid' => $event['cmid'], 'cmid1' => $event['cmid'],
+                            'cmid' => $event['cm']->id, 'cmid1' => $event['cm']->id,
                       );
 
-        // Check for passing grades as unattempted, passed or failed
-        if (isset($config->{'action_'.$uniqueid}) &&
-                 $config->{'action_'.$uniqueid} == 'passed'
-        ) {
-            $query =  $module['actions'][$config->{'action_'.$uniqueid}];
+        // Check for passing grades as unattempted, passed or failed.
+        if (isset($config->{'action_'.$uniqueid}) && $config->{'action_'.$uniqueid} == 'passed') {
+            $query = $module['actions'][$config->{'action_'.$uniqueid}];
             $graderesult = $DB->get_record_sql($query, $parameters);
-            if (!$graderesult) {
+            if ($graderesult === false || $graderesult->finalgrade === null) {
                 $attempts[$uniqueid] = false;
             } else {
                 $attempts[$uniqueid] = $graderesult->finalgrade >= $graderesult->gradepass ? true : 'failed';
             }
+        }
+
+        // Checked view actions in the log table/store/cache.
+        else if (isset($config->{'action_'.$uniqueid}) && $config->{'action_'.$uniqueid} == 'viewed') {
+            $attempts[$uniqueid] = false;
+
+            // Check if the value is cached.
+            if ($cachingused && array_key_exists($uniqueid, $cachedlogviews) && $cachedlogviews[$uniqueid]) {
+                $attempts[$uniqueid] = true;
+            }
+
+            // Check in the logs.
+            else {
+                if ($modernlogging) {
+                    foreach ($readers as $logstore => $reader) {
+                        if ($reader instanceof logstore_legacy\log\store) {
+                            $query = $module['actions']['viewed']['logstore_legacy'];
+                        }
+                        else if ($reader instanceof \core\log\sql_internal_reader) {
+                            $logtable = '{'.$reader->get_internal_log_table_name().'}';
+                            $query = preg_replace('/\{log\}/', $logtable, $module['actions']['viewed']['sql_internal_reader']);
+                        }
+                        $attempts[$uniqueid] = $DB->record_exists_sql($query, $parameters) ? true : false;
+                        if ($attempts[$uniqueid]) {
+                            $cachedlogviews[$uniqueid] = true;
+                            $cachedlogsupdated = true;
+                            break;
+                        }
+                    }
+                } else {
+                    $query = $module['actions']['viewed']['logstore_legacy'];
+                    $attempts[$uniqueid] = $DB->record_exists_sql($query, $parameters) ? true : false;
+                    if ($cachingused && $attempts[$uniqueid]) {
+                        $cachedlogviews[$uniqueid] = true;
+                        $cachedlogsupdated = true;
+                    }
+                }
+            }
         } else {
 
-          // If activity completion is used, check completions table.
-          if (isset($config->{'action_'.$uniqueid}) &&
-              $config->{'action_'.$uniqueid} == 'activity_completion'
-          ) {
-              $query = 'SELECT id
-                          FROM {course_modules_completion}
-                         WHERE userid = :userid
-                           AND coursemoduleid = :cmid
-                           AND completionstate = 1';
-          }
+            // If activity completion is used, check completions table.
+            if (isset($config->{'action_'.$uniqueid}) && $config->{'action_'.$uniqueid} == 'activity_completion') {
+                $query = 'SELECT id
+                            FROM {course_modules_completion}
+                           WHERE userid = :userid
+                             AND coursemoduleid = :cmid
+                             AND completionstate = 1';
+            }
 
-          // Determine the set action and develop a query.
-          else {
-              $action = isset($config->{'action_'.$uniqueid})?
-                        $config->{'action_'.$uniqueid}:
-                        $module['defaultAction'];
-              $query =  $module['actions'][$action];
-          }
+            // Determine the set action and develop a query.
+            else {
+                $action = isset($config->{'action_'.$uniqueid})?
+                          $config->{'action_'.$uniqueid}:
+                          $module['defaultAction'];
+                $query = $module['actions'][$action];
+            }
 
-           // Check if the user has attempted the module.
-          $attempts[$uniqueid] = $DB->record_exists_sql($query, $parameters) ? true : false;
+             // Check if the user has attempted the module.
+            $attempts[$uniqueid] = $DB->record_exists_sql($query, $parameters) ? true : false;
         }
     }
+
+    // Update log cache if new values were added.
+    if ($cachingused && $cachedlogsupdated) {
+        $cachedlogs->set($userid, $cachedlogviews);
+    }
+
     return $attempts;
 }
 
@@ -683,8 +856,7 @@ function block_progress_attempts($modules, $config, $events, $userid, $instance)
  * @return string  Progress Bar HTML content
  */
 function block_progress_bar($modules, $config, $events, $userid, $instance, $attempts, $simple = false) {
-    global $OUTPUT, $CFG;
-
+    global $OUTPUT, $CFG, $COURSE;
     $now = time();
     $numevents = count($events);
     $dateformat = get_string('date_format', 'block_progress');
@@ -750,11 +922,11 @@ function block_progress_bar($modules, $config, $events, $userid, $instance, $att
             'id' => '',
             'width' => $width.'%',
             'onclick' => 'document.location=\''.$CFG->wwwroot.'/mod/'.$event['type'].
-                '/view.php?id='.$event['cmid'].'\';',
+                '/view.php?id='.$event['cm']->id.'\';',
             'onmouseover' => 'M.block_progress.showInfo('.
                 '\''.$event['type'].'\', '.
                 '\''.addslashes(get_string($event['type'], 'block_progress')).'\', '.
-                '\''.$event['cmid'].'\', '.
+                '\''.$event['cm']->id.'\', '.
                 '\''.addslashes($event['name']).'\', '.
                 '\''.addslashes(get_string($action, 'block_progress')).'\', '.
                 '\''.addslashes(userdate($event['expected'], $dateformat, $CFG->timezone)).'\', '.'\''.$instance.'\', '.
@@ -763,20 +935,20 @@ function block_progress_bar($modules, $config, $events, $userid, $instance, $att
                 ');',
              'style' => 'background-color:');
         if ($attempted === true) {
-            $celloptions['style'] .= get_string('attempted_colour', 'block_progress').';';
+            $celloptions['style'] .= get_config('block_progress', 'attempted_colour').';';
             $cellcontent = $OUTPUT->pix_icon(
                                isset($config->progressBarIcons) && $config->progressBarIcons == 1 ?
                                'tick' : 'blank', '', 'block_progress');
         }
         else if (((!isset($config->orderby) || $config->orderby == 'orderbytime') && $event['expected'] < $now) ||
                  ($attempted === 'failed')) {
-            $celloptions['style'] .= get_string('notAttempted_colour', 'block_progress').';';
+            $celloptions['style'] .= get_config('block_progress', 'notattempted_colour').';';
             $cellcontent = $OUTPUT->pix_icon(
                                isset($config->progressBarIcons) && $config->progressBarIcons == 1 ?
                                'cross':'blank', '', 'block_progress');
         }
         else {
-            $celloptions['style'] .= get_string('futureNotAttempted_colour', 'block_progress').';';
+            $celloptions['style'] .= get_config('block_progress', 'futurenotattempted_colour').';';
             $cellcontent = $OUTPUT->pix_icon('blank', '', 'block_progress');
         }
         if ($counter == 1) {
@@ -826,7 +998,7 @@ function block_progress_percentage($events, $attempts) {
 
     $progressvalue = $attemptcount == 0 ? 0 : $attemptcount / count($events);
 
-    return (int)($progressvalue * 100);
+    return (int)round($progressvalue * 100);
 }
 
 /**
@@ -839,7 +1011,7 @@ function block_progress_course_sections() {
 
     $sections = $DB->get_records('course_sections', array('course' => $COURSE->id), 'section', 'id,section,name,sequence');
     foreach ($sections as $section) {
-        if($section->sequence != '') {
+        if ($section->sequence != '') {
             $section->sequence = explode(',', $section->sequence);
         }
         else {
@@ -848,4 +1020,37 @@ function block_progress_course_sections() {
     }
 
     return $sections;
+}
+
+/**
+ * Filters events that a user cannot see due to grouping constraints
+ *
+ * @param array  $events The possible events that can occur for modules
+ * @param array  $userid The user's id
+ * @return array The array with restricted events removed
+ */
+function block_progress_filter_groupings($events, $userid) {
+    global $CFG;
+    $filteredevents = array();
+
+    // Check if the events are empty or none are selected.
+    if ($events === 0) {
+        return 0;
+    }
+    if ($events === null) {
+        return null;
+    }
+
+    // Check if groupings are enabled.
+    if (!isset($CFG->enablegroupmembersonly) || !$CFG->enablegroupmembersonly) {
+        return $events;
+    }
+
+    // Remove events that should be hidden due to grouping restrictions.
+    foreach ($events as $key => $event) {
+        if (groups_course_module_visible($event['cm'], $userid)) {
+            $filteredevents[] = $event;
+        }
+    }
+    return $filteredevents;
 }

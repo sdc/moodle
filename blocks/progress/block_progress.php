@@ -45,6 +45,15 @@ class block_progress extends block_base {
     }
 
     /**
+     *  we have global config/settings data
+     *
+     * @return bool
+     */
+    public function has_config() {
+        return true;
+    }
+
+    /**
      * Controls the block title based on instance configuration
      *
      * @return bool
@@ -105,6 +114,7 @@ class block_progress extends block_base {
 
         // Check if activities/resources have been selected in config.
         $events = block_progress_event_information($this->config, $modules);
+        $events = block_progress_filter_groupings($events, $USER->id);
         if ($events === null || $events === 0) {
             if (has_capability('moodle/block:edit', $this->context)) {
                 $this->content->text .= get_string('no_events_message', 'block_progress');

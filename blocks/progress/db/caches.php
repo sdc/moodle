@@ -14,9 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
- * Progress Bar block version details
+ * Progress Bar cache setup
  *
  * @package    contrib
  * @subpackage block_progress
@@ -24,7 +23,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version  = 2014050900;
-$plugin->requires = 2010121000;
-$plugin->maturity = 200;
-$plugin->release  = 'Version for Moodle 2.0 onwards';
+defined('MOODLE_INTERNAL') or die("Direct access to this location is not allowed.");
+
+$definitions = array(
+
+    // Used to store results of queries about views from the logs.
+    'cachedlogs' => array(
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+        'staticacceleration' => true,
+        'invalidationevents' => array(
+            'changesincourse',
+        )
+    ),
+);
