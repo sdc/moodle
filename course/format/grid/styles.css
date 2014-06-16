@@ -50,7 +50,7 @@
 
 /* Change of logic such that topics are hidden by default and then shown to prevent 'flash' whilst JavaScript kicks in. */
 body.jsenabled li.grid_section.hide_section {
-    display: none !important; /* Important to override bootstrap/moodle/undo.less. */
+    display: none;
 }
 
 div#gridmiddle-column > ul {
