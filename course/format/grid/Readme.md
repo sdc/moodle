@@ -4,11 +4,11 @@ A topics based format that uses a grid of user selectable images to pop up a lig
 
 Required version of Moodle
 ==========================
-This version works with Moodle version 2014051200.00 release 2.7 (Build: 20140512) and above within the 2.7 branch until the
+This version works with Moodle version 2013111800.00 release 2.6 (Build: 20131118) and above within the 2.6 branch until the
 next release.
 
 Please ensure that your hardware and software complies with 'Requirements' in 'Installing Moodle' on
-'docs.moodle.org/27/en/Installing_Moodle' / 'docs.moodle.org/dev/Moodle_2.7_release_notes'.
+'docs.moodle.org/26/en/Installing_Moodle' / 'docs.moodle.org/dev/Moodle_2.6_release_notes'.
 
 Free Software
 =============
@@ -195,7 +195,12 @@ File information
 
 Languages
 ---------
-The grid/lang folder contains the language files for the format.
+The grid/lang folder contains the language files for the format, such as:
+
+* grid/lang/en/format_grid.php
+* grid/lang/ru/format_grid.php
+* grid/lang/es/format_grid.php
+* grid/lang/fr/format_grid.php
 
 Note that existing formats store their language strings in the main
 moodle.php, which you can also do, but this separate file is recommended
@@ -236,14 +241,9 @@ Known Issues
 
 History
 =============
-3rd June 2014 - Version 2.7.1.1
-  1.  Slight change to CSS for Bootstrap V3.
-
-20th May 2014 Version 2.7.1 - Stable.
-  1.  Stable release for M2.7.
-
-27th April 2014 Version 2.7.0.1 - BETA
-  1.  First beta version for Moodle 2.7beta.
+12th June 2014 Version 2.6.1.7
+Change by G J Barnard
+  1.  Fixed CONTRIB-5106 - thanks to Hanna Edelman for this.
 
 23rd April 2014 Version 2.6.1.6
 Change by G J Barnard
