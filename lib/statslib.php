@@ -1649,7 +1649,7 @@ function stats_temp_table_create() {
     $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
     $table->add_field('userid', XMLDB_TYPE_INTEGER, 10, null, XMLDB_NOTNULL, null, '0');
     $table->add_field('course', XMLDB_TYPE_INTEGER, 10, null, XMLDB_NOTNULL, null, '0');
-    $table->add_field('action', XMLDB_TYPE_CHAR, 40, null, XMLDB_NOTNULL, null, null);
+    $table->add_field('action', XMLDB_TYPE_CHAR, 60, null, XMLDB_NOTNULL, null, null);
     $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
     $table->add_index('action', XMLDB_INDEX_NOTUNIQUE, array('action'));
     $table->add_index('course', XMLDB_INDEX_NOTUNIQUE, array('course'));
