@@ -54,7 +54,7 @@ echo $OUTPUT->header();
 
 echo $OUTPUT->heading(get_string('pageheader', 'tool_sdctools'));
 
-echo sdctools_tableofcontents();
+echo sdctools_tableofcontents('index');
 
 
 /* Some server details. */
@@ -91,11 +91,21 @@ if (is_readable('/proc/uptime') && $uptime = @file('/proc/uptime')) {
     echo '<li><strong>'.get_string('serveruptime', 'tool_sdctools').':</strong> '.$out.'</li>';
 }
 
+echo '<li><strong>php.ini:</strong><ul>';
+
 $maxsize = ini_get('post_max_size');
 $maxfilesize = ini_get('upload_max_filesize');
 $sameornot = ($maxsize == $maxfilesize) ? ' (Same)' : ' (<span class="error">Different!</span>)' ;
-echo '<li><strong>php.ini - post_max_size:</strong> '.$maxsize.'</li>';
-echo '<li><strong>php.ini - upload_max_filesize:</strong> '.$maxfilesize.$sameornot.'</li>';
+echo '<li><strong>post_max_size:</strong> '.$maxsize.'</li>';
+echo '<li><strong>upload_max_filesize:</strong> '.$maxfilesize.$sameornot.'</li>';
+
+$maxinput     = ini_get('max_input_time');
+$maxexec      = ini_get('max_execution_time');
+$sameornot = ($maxinput == $maxexec) ? ' (Same)' : ' (<span class="error">Different!</span>)' ;
+echo '<li><strong>max_input_time:</strong> '.$maxinput.'</li>';
+echo '<li><strong>max_execution_time:</strong> '.$maxexec.$sameornot.'</li>';
+
+echo '</ul></li>';
 
 echo '</ul>';
 echo '<p>'.html_writer::link(new moodle_url($securewwwroot.'/admin/phpinfo.php',

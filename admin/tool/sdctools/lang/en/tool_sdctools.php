@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $CFG;
+
 $string['pluginname']       = 'SDC Tools';
 $string['pageheader']       = 'South Devon College Admin Tools';
 
@@ -31,6 +33,7 @@ $string['emailchecks']            = 'Email Checks';
 $string['userchecks']             = 'User Checks';
 $string['coursereports']          = 'Course Reports';
 $string['coursereportspictures']  = 'with pictures';
+$string['backuptoggle']           = 'Course backup toggles';
 $string['second']                 = 'second';
 $string['module']                 = 'Module';
 
@@ -162,3 +165,19 @@ $string['recentlogsheader']     = 'Recent logs';
 $string['recentlogsstrapline']  = 'Some of the most recent log entries. This will change frequently as this logs every action performed in Moodle by anyone.';
 $string['norecentlogs']         = '<strong>Result:</strong> There are no users in the logs table: hopefully there has been a mistake but this would be quite bad if true...';
 $string['recentlogs']           = '<strong>Result:</strong> The following are the {$a} most recent log entries:';
+
+// Backup toggle strings.
+$string['backupsoffheader']     = 'Courses with backups turned off';
+$string['backupsoffstrapline']  = 'Backups aren\'t actually turned off, but are scheduled so far in the future (23 years) that they will never realistically run. (On the <a href="'.$CFG->wwwroot.'/report/backups/index.php">backup report page</a> you will still see the course backup scheduled, but for 2037.)';
+$string['nobackupsoff']         = 'There are no courses with backups turned off.';
+$string['backupsoff']           = 'The following {$a} courses have backups turned off:';
+
+$string['backupsonheader']      = 'Courses with backups scheduled normally';
+$string['backupsonstrapline']   = 'The following courses have normally scheduled course backups (according to your <a href="'.$CFG->wwwroot.'/admin/settings.php?section=automated">automatic course backup settings</a>).';
+$string['nobackupson']          = 'There are no courses with backups turned on. This may be because automated course backups are off, or they are on but cron has not yet run.';
+$string['backupson']            = 'The following {$a} courses have backups turned off:';
+
+$string['turnoffheader']        = 'Turn backups off';
+$string['turnonheader']         = 'Turn backups back on';
+$string['turnoff']              = 'Turn off';
+$string['turnon']               = 'Turn on';

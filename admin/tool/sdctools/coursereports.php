@@ -45,7 +45,11 @@ echo $OUTPUT->header();
 
 echo $OUTPUT->heading(get_string('pageheader', 'tool_sdctools'));
 
-echo sdctools_tableofcontents();
+if ($pictures) {
+    echo sdctools_tableofcontents('coursereports_pictures');
+} else {
+    echo sdctools_tableofcontents('coursereports');
+}
 
 /* If we have a course ID, print a nice report about that course. */
 if ($cid) {
@@ -136,6 +140,18 @@ if ($cid) {
         }
         $courseformat = $DB->get_record('course_format_options', array('courseid' => $cid, 'name' => 'numsections'), 'value');
         echo '  <dd><b>'.get_string('sections').':</b> '.$courseformat->value.'</dd>';
+
+
+
+
+$modinfo = get_fast_modinfo($course);
+//$coursesections = $modinfo->get_cms($modinfo);
+$coursesections = $modinfo->get_instances($modinfo);
+echo '<pre>'; print_object($coursesections); echo '</pre>';
+
+
+
+
         $mods = unserialize($course->modinfo);
         $cmods = count($mods);
         $modulebreakdown = array();
