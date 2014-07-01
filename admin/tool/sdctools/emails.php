@@ -47,7 +47,7 @@ echo $OUTPUT->header();
 
 echo $OUTPUT->heading(get_string('pageheader', 'tool_sdctools'));
 
-echo sdctools_tableofcontents();
+echo sdctools_tableofcontents('emails');
 
 
 // Users without email addresses.

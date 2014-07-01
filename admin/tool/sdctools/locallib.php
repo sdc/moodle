@@ -24,20 +24,55 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+// Define the variable for the 'off' state. 'Off' is defined as "Sat, 21 Mar 2037 01:35:21 GMT".
+define('BACKUPOFF_TIME', 2121212121);
+
 /**
  * Draw a common table of contents.
  */
-function sdctools_tableofcontents() {
+function sdctools_tableofcontents($highlight = false) {
     global $OUTPUT;
 
     $out = '';
 
     $out .= '<ul>';
-    $out .= '<li>'.html_writer::link(new moodle_url('index.php'), get_string('pluginname', 'tool_sdctools')).'</li>';
-    $out .= '<li>'.html_writer::link(new moodle_url('emails.php'), get_string('emailchecks', 'tool_sdctools')).'</li>';
-    $out .= '<li>'.html_writer::link(new moodle_url('users.php'), get_string('userchecks', 'tool_sdctools')).'</li>';
-    $out .= '<li>'.html_writer::link(new moodle_url('coursereports.php'), get_string('coursereports', 'tool_sdctools'));
-    $out .= ' ('.html_writer::link(new moodle_url('coursereports.php', array('pictures' => 1)), get_string('coursereportspictures', 'tool_sdctools')).')</li>';
+
+    if ($highlight == strtolower('index')) {
+        $out .= '<li><strong>'.html_writer::link(new moodle_url('index.php'), get_string('pluginname', 'tool_sdctools')).'</strong></li>';
+    } else {
+        $out .= '<li>'.html_writer::link(new moodle_url('index.php'), get_string('pluginname', 'tool_sdctools')).'</li>';
+    }
+
+
+    if ($highlight == strtolower('emails')) {
+        $out .= '<li><strong>'.html_writer::link(new moodle_url('emails.php'), get_string('emailchecks', 'tool_sdctools')).'</strong></li>';
+    } else {
+        $out .= '<li>'.html_writer::link(new moodle_url('emails.php'), get_string('emailchecks', 'tool_sdctools')).'</li>';
+    }
+
+    if ($highlight == strtolower('users')) {
+        $out .= '<li><strong>'.html_writer::link(new moodle_url('users.php'), get_string('userchecks', 'tool_sdctools')).'</strong></li>';
+    } else {
+        $out .= '<li>'.html_writer::link(new moodle_url('users.php'), get_string('userchecks', 'tool_sdctools')).'</li>';
+    }
+
+    if ($highlight == strtolower('coursereports')) {
+        $out .= '<li><strong>'.html_writer::link(new moodle_url('coursereports.php'), get_string('coursereports', 'tool_sdctools')).'</strong>';
+    } else {
+        $out .= '<li>'.html_writer::link(new moodle_url('coursereports.php'), get_string('coursereports', 'tool_sdctools'));
+    }
+
+    if ($highlight == strtolower('coursereports_pictures')) {
+        $out .= ' (<strong>'.html_writer::link(new moodle_url('coursereports.php', array('pictures' => 1)), get_string('coursereportspictures', 'tool_sdctools')).'</strong>)</li>';
+    } else {
+        $out .= ' ('.html_writer::link(new moodle_url('coursereports.php', array('pictures' => 1)), get_string('coursereportspictures', 'tool_sdctools')).')</li>';
+    }
+
+    if ($highlight == strtolower('backuptoggle')) {
+        $out .= '<li><strong>'.html_writer::link(new moodle_url('backuptoggle.php'), get_string('backuptoggle', 'tool_sdctools')).'</strong></li>';
+    } else {
+        $out .= '<li>'.html_writer::link(new moodle_url('backuptoggle.php'), get_string('backuptoggle', 'tool_sdctools')).'</li>';
+    }
     $out .= '<ul>';
 
     return $out;
