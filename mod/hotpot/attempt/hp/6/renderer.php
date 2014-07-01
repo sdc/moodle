@@ -1300,6 +1300,9 @@ class mod_hotpot_attempt_hp_6_renderer extends mod_hotpot_attempt_hp_renderer {
                     ."		if (tagname=='EMBED' || tagname=='OBJECT') {\n"
                     ."			return false;\n"
                     ."		}\n"
+                    ."		if (tagname=='AUDIO' || tagname=='VIDEO') {\n"
+                    ."			return false;\n"
+                    ."		}\n"
                     ."	}\n"
                 ;
                 $substr = substr_replace($substr, $insert, $pos+1, 0);
@@ -3086,7 +3089,15 @@ class mod_hotpot_attempt_hp_6_renderer extends mod_hotpot_attempt_hp_renderer {
     function hotpot_keypad_char_value($char)  {
 
         $char = hotpot_textlib('entities_to_utf8', $char);
-        $ord = ord($char);
+        if (class_exists('core_text')) {
+            // Moodle >= 2.6
+            $ord = hotpot_textlib('utf8ord', $char);
+        } else {
+            // Moodle <= 2.5
+            $ord = hotpot_textlib('convert', $char, 'UTF-8', 'UCS-4BE');
+            $ord = unpack('N', $ord);
+            $ord = reset($ord); // get first char
+        }
 
         // lowercase letters (plain or accented)
         if (($ord>=97 && $ord<=122) || ($ord>=224 && $ord<=255)) {
