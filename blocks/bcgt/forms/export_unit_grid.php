@@ -10,6 +10,7 @@ require_login();
 $qualID = required_param('qualID', PARAM_INT);
 $unitID = required_param('unitID', PARAM_INT);
 $courseID = optional_param('courseID', SITEID, PARAM_INT);
+if ($courseID < 1) $courseID = SITEID;
 
 $context = context_course::instance($courseID);
 

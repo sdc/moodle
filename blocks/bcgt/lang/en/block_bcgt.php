@@ -195,14 +195,17 @@ $string['alevelassdetails'] = 'Assessment Details';
 $string['alevelasslink'] = 'Assessment Link';
 $string['all'] = 'All';
 $string['alldesc'] = 'All will allow';
+$string['alevelqualsettings'] = 'Alevel Grade Settings';
 $string['allqualifications'] = 'All Qualifications';
 $string['alevelcoefficient'] = 'Coeeficient/Score';
 $string['alevelweightings'] = 'Alps Weightings';
 $string['aleveltargetcoefficient'] = 'Target Weighting';
 $string['alpscoefficients'] = 'Alps Coefficients';
+$string['alpsmultiplier'] = 'Alps Multiplier';
 $string['any'] = 'Any';
 $string['areyousuredeletequals'] = 'Are you sure you want to delete these qualifications?';
 $string['areyousuredeleteunits'] = 'Are you sure you want to delete these units?';
+$string['assweeks'] = 'Modules/Weeks';
 $string['assessmenttracker'] = 'Assessment Tracker';
 $string['assignment'] = 'Assignment';
 $string['aspirational'] = 'Aspirational';
@@ -245,6 +248,7 @@ $string['bcgt:calculatetargetgrades'] = 'Ability to calculate target grades';
 $string['bcgt:calculatepredictedgrades'] = 'Ability to calculate predicted grades en-mass';
 $string['bcgt:calculateaveragegcsescore'] = 'Ability to calculate average gcse scores';
 $string['bcgt:checkuseraccess'] = 'Ability to check what access a specific user has in terms of Grade Tracker';
+$string['bcgt:confirmreadcomments'] = 'Confirm you have read the unit comments';
 $string['bcgt:downloadstudentgrid'] = 'Download a student grid';
 $string['bcgt:downloadunitgrid'] = 'Download a unit grid';
 $string['bcgt:deleteunit'] = 'Ability to delete a unit';
@@ -387,12 +391,14 @@ $string['byunit'] = 'By Unit';
 $string['byunitdesc'] = 'By Unit will allow';
 
 //C
+$string['calendar'] = 'Calendar';
 $string['calculate'] = 'Calculate';
 $string['calculateall'] = 'Calculate All';
 $string['calculatesel'] = 'Calculate Selected';
 $string['calcavgscore'] = 'Calculate Average GCSE Score';
 $string['refreshpredgrade'] = 'Refresh Predicted Grade';
 $string['calctargetgrade'] = 'Calculate Target Grade';
+$string['calcasptargetgrade'] = 'Calculate Aspirational Target Grade';
 $string['calculateaveragegcsescoreshelp'] = 'Calculate Average GCSE Scores using Prior Learning that has already been inputted into the system';
 $string['calculateaveragegcsescores'] = 'Calculate Average GCSE Scores';
 $string['calculatetargetgradeshelp'] = 'Calculate Target Grades using Average GCSE Scores that has already been inputted into the system';
@@ -512,6 +518,7 @@ $string['deletequalshelp'] = 'Delete a Qualification from the system';
 $string['deleteunitshelp'] = 'Delete a Unit from the system';
 $string['details'] = 'Details';
 $string['direct'] = 'Direct';
+$string['displayoptions'] = 'Display Options';
 $string['disabledoptiondescgridselect'] = 'Disabled Quals -> Qualification is not on a Moodle Courses';#
 $string['down'] = 'DOWN';
 $string['duedate'] = 'Due Date';
@@ -581,6 +588,8 @@ $string['editstudentqualhelp'] = 'Link a student to a Qualification so they can 
 $string['editstudentqual'] = 'Students: Link Qualifications with Students';
 $string['editstudentunitsqualhelp'] = 'Pick a Qualification and select, for all students 
     on that Qualification all of thei units.';
+
+$string['editgrades'] = 'Edit Grades';
 $string['editunits'] = 'Edit Units';
 $string['editquals'] = 'Edit Quals';
 $string['editqualunitssimple'] = 'Edit Qualification Units';
@@ -600,6 +609,7 @@ $string['error:cannotdeunitstructure'] = 'Unit Grading Structure cannot be delet
 $string['error:pathway'] = 'Unit Pathway must be set';
 $string['error:pathwaytype'] = 'Unit Pathway type must be set';
 $string['email'] = 'Email';
+$string['enabled'] = 'Enabled'; 
 $string['enrolment']= 'Enrolment';
 $string['edit'] = 'Edit';
 $string['edittargetgrades'] = 'Edit Target Grades';
@@ -613,8 +623,8 @@ $string['examplefile'] = 'Example File';
 $string['exportfromthissystem'] = 'Exported From This System';
 $string['exportfromthissystemdesc'] = 'If the import is an export from this system, or using a template from this system, then leave this checked and it can use the database ids. If it is a manual import then please tick this. It will then attempt to find quals, units and criteria by their names, levels and families etc.';
 $string['exportdatasheet'] = 'Export Data Sheet';
-
-
+$string['exportspec'] = 'Export Qualification Specification';
+$string['exportrun'] = 'Export & Run';
 //F
 $string['family'] = 'Family';
 $string['famqual'] = 'Qualification to add marks to';
@@ -722,7 +732,7 @@ $string['importgrid:desc'] = 'If you have downloaded a Data Sheet of this qualif
 $string['importstudgrid:desc'] = 'If you have downloaded a Data Sheet for this student, you can import it back into the system here.';
 $string['importunitgrid:desc'] = 'If you have downloaded a Data Sheet for this unit, you can import it back into the system here.';
 $string['importwarning'] = 'Some of the criteria values in the system have been updated since you downloaded the spreadsheet. Please make sure you defintely want to over-write these before continuing:';
-
+$string['importspec'] = 'Import Qualification Specification';
 
 //J
 
@@ -743,6 +753,8 @@ $string['lowerrangescore'] = 'Lower Range Score';
 $string['linkedonotherquals'] = 'This symbol denotes that this user is on this qualification on another course.';
 
 //M
+$string['managefagrades'] = 'Manage Formal Assessment Grades';
+$string['managefagradeshelp'] = 'Select which grades can be selected when entering grades for formal assessment. Please note that the CETA grades are the Target Grades for the qualifications.';
 $string['matchgroupmetacourseimport'] = 'Alter Meta Courses';
 $string['matchgroupmetacourseimportdesc'] = 'With this selected it will find all Meta Courses associated with this child course. It will then create the same Groups(and Groupings) on the Meta Course and add the students(and Groups) to the Meta Course.';
 $string['mathsgcse'] = 'Mth GCSE';
@@ -777,11 +789,17 @@ $string['mlstartdatefieldname'] = 'Module `Start Date` DB Column Name';
 $string['modtitlefname'] = 'Module Instance `Title` DB Column Name';
 $string['modulecolourkey'] = 'Module Colour Key';
 $string['mlmodsubmissiontable'] = 'Module submission table name';
+$string['mlmodgradingscalefname'] = 'Module `Grading Scale ID` DB Column Name';
+$string['mlgradeuserfname'] = 'Grade `User ID` DB Column Name';
 $string['mintargetgrades'] = 'Min Target Grades';
 $string['mlsubmissionuserfield'] = 'Submission `User` DB Column Name';
 $string['mlsubmissiondatefield'] = 'Submission `Date` DB Column Name';
 $string['mlsubmissionmoduleinstancefield'] = 'Submission `Module Instance` DB Column Name';
 $string['mlcheckautolinking'] = 'Auto update checks for Grade Tracker (IN, WNS, L)';
+$string['mlgradetablename'] = 'Grade table name';
+$string['mlgradetimefname'] = 'Grade `Time` DB Column Name';
+$string['mlgradegradefname'] = 'Grade `Grade` DB COlumn Name';
+$string['mlgrademodinstancefname'] = 'Grade `Module Instance` DB Column Name';
 $string['modulelinks'] = 'Module links';
 $string['moduletypes'] = 'Module types';
 $string['myassessmentcalendar'] = 'My Assessment Calendar';
@@ -836,6 +854,7 @@ $string['nodistinction'] = 'No Dis';
 $string['nomerit'] = 'No Merit';
 $string['nopass'] = 'No Pass';
 $string['nospecs'] = 'No Specifications Available';
+$string['nomodules'] = 'No Modules';
 $string['notutorrole'] = 'No valid "Tutor" role has been defined. Please edit this in the Grade Tracker settings';
 $string['nonmetcriteriavalues'] = 'Non-Met Criteria Values';
 $string['nonmetcriteriavalueshelp'] = 'These will be available as choices on all Bespoke qualifications/Units, they are not specific to a qualification.';
@@ -851,6 +870,7 @@ $string['nousergroupings'] = 'There are no groupings on any courses you are enro
 //O
 $string['onlyshowcritacts'] = 'Only criteria activities';
 $string['on'] = 'on';
+$string['openstudentgrid'] = 'Open Student Grid';
 $string['or'] = 'Or';
 $string['order'] = 'Order';
 $string['orderbybtec'] = 'By BTEC Spec';
@@ -893,6 +913,12 @@ $string['plcreatemissinggrade'] = 'Insert Grade';
 $string['plcreatemissinggradedesc'] = 'If selected this will create any grades that are not in the system but are in the csv';
 $string['plcreatemissinguser'] = 'Insert User';
 $string['plcreatemissinguserdesc'] = 'If selected this will create any users that are not in the system but are in the csv';
+
+$string['plcalculatetargetgrades'] = 'Calculate Target Grades';
+$string['plcalculatetargetgradesdesc'] = 'If selected this will use the average gcse score to calculate and set a Target Grade';
+$string['plcalculateaspgrades'] = 'Calculate Aspirational Target Grades';
+$string['plcalculateaspgradesdesc'] = 'If selected this will use the target grade to calculate and set an Aspirational Target Grade based upon the settings in the global configuration.';
+
 $string['pleaseselect'] = 'Please select an option';
 $string['pleaseselectblank'] = '';
 $string['pleaseselectaqualprint'] = 'To Print: Please select a Qualification';
@@ -912,7 +938,7 @@ $string['predicted'] = 'Predicted';
 $string['priorlearning'] = 'Prior Learning';
 $string['priorquals'] = 'Prior Quals';
 $string['printgrid'] = 'Print Grid';
-$string['printreport'] = 'Print Report';
+$string['printreport'] = 'Print Report/Comments';
 $string['points'] = 'Points';
 
 //Q
@@ -967,11 +993,13 @@ $string['remove'] = 'Remove';
 $string['removelink'] = 'Remove Link';
 $string['ranges'] = 'Ranges';
 $string['report'] = 'Report';
+$string['results'] = 'Results';
 $string['run'] = 'Run';
 $string['ranking'] = 'Ranking';
 $string['recordsfoundcount'] = 'Number of records found';
 $string['results'] = 'Results';
 $string['removetutorassignments'] = 'Remove Assignments';
+$string['reportoptions'] = 'Report Options...';
 $string['reports:pl:numrecords'] = 'No. PL Records';
 $string['reports:pl:percentwith'] = '% With PL';
 $string['reports:pl:percentwithout'] = '% Without PL';
@@ -1017,6 +1045,7 @@ $string['reportingcats'] = 'Reporting Course Categories';
 $string['reportingcats:desc'] = 'If you have the Grade Tracker Reporting feature, and you wish to create a report by Course Category, this list will let you choose which categories to use.';
 $string['reportingftptfilter'] = 'Reporting Fulltime/Parttime Filter';
 $string['reportingftptfilterdesc'] = 'WARNING: FOR THIS FILTER TO WORK YOU MUST HAVE A FIELD IN YOUR MDL_USER TABLE CALLED "mode" WHICH CONTAINS EITHER "FT" OR "PT" FOR EACH USER (OR NULL). This filter in the Reporting tab will let you filter by whether the student is fulltime or part time.';
+$string['run'] = 'Run';
 $string['rundatacheck'] = 'Run Data Check';
 $string['rundatacleanse'] = 'Run Data Cleanse';
 $string['runactualdatachanges'] = 'Run Data Import with Changes';
@@ -1066,11 +1095,15 @@ $string['specifictargetgrade'] = 'Weighted Target';
 $string['status'] = 'Status';
 $string['studentchoose'] = 'Students to Choose From';
 $string['studentfas'] = 'Student Formal Assessments';
+$string['studentprogressdefinitions:predgrade'] = 'Student\'s Predicted Grade needs to meet or exceed their Target Grade.';
 $string['studgrid'] = 'Student Grid';
 $string['step2editstuunits'] = 'Step 2 : Edit Students Units';
 $string['studentsunitheading'] = 'Select Students Units';
 $string['studentsunitheadingstage'] = 'Select Students Units';
 $string['studentsearch'] = 'Search Courses By Student';
+
+$string['studentprogress:info:gradetracker:predgrade'] = '%q%: Predicted Grade meets or exceeds Target Grade? (%g%)';
+
 $string['subject'] = 'Subject';
 $string['subtypes'] = 'Subtypes';
 $string['subtype'] = 'Subtype';

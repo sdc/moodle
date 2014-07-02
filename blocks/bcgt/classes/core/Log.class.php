@@ -107,12 +107,12 @@ class Log {
         $pagesRequired = ceil($countRecords / 100);       
                 
         // Limit
-        $limit = 50;
-                                                   
-        $limitFrom = (--$page) * 50;
-        
+//        $limit = 50;
+//                                                   
+//        $limitFrom = (--$page) * 50;
+//        
         $return = array();
-        $return['records'] = $DB->get_records_sql($sql, $params, $limitFrom, $limit);
+        $return['records'] = $DB->get_records_sql($sql, $params);
         $return['pages'] = $pagesRequired;
         
         return $return;

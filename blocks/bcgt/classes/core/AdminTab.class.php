@@ -197,10 +197,19 @@ class AdminTab extends DashTab{
         {
             $retval = '<ul class="bcgt_list bcgt_admin_list">';
             foreach($families AS $family)
-            {
-                $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/qual_settings.php?cID='.$courseID.'&fID='.
+            {                
+                $pluginName = get_plugin_name($family->id);
+                if($pluginName)
+                {
+                   $path = $CFG->dirroot.'/blocks/bcgt/plugins/'.$pluginName.'/forms/qual_settings.php'; 
+                }
+                //check if file exists. 
+                if(file_exists($path))
+                {
+                    $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/qual_settings.php?cID='.$courseID.'&fID='.
                         $family->id.'">'.$family->family.' '.
                         get_string('settings').'</a></li>';
+                }
             }
             $retval .= '</ul>';
         }
@@ -295,6 +304,9 @@ class AdminTab extends DashTab{
         $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/assessments.php?cID='.$courseID.'"'. 
                 'title="'.get_string('managefahelp', 'block_bcgt').'">'.
                 get_string('managefas', 'block_bcgt').'</a></li>';
+        $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/assessment_grades.php?cID='.$courseID.'"'. 
+                'title="'.get_string('managefagradeshelp', 'block_bcgt').'">'.
+                get_string('managefagrades', 'block_bcgt').'</a></li>';
         if(has_capability('block/bcgt:managemodlinking', $currentContext))
         {
             $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/mod_linking.php?cID='.$courseID.'"'. 
@@ -460,7 +472,20 @@ class AdminTab extends DashTab{
         {
             $courseContext = context_course::instance($COURSE->id);
         }
+        
         $retval = '<ul class="bcgt_list bcgt_admin_list">';
+        
+        if  ( has_capability('block/bcgt:exportqualspec', $courseContext)){
+            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/qual_select.php?cID='.$courseID.'">'.get_string('exportspec', 'block_bcgt').'</a></li>';
+        }
+        
+        if  ( has_capability('block/bcgt:importqualspec', $courseContext)){
+//            $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/import_spec.php">'.get_string('importspec', 'block_bcgt').'</a></li>';
+        }
+        
+        $retval .= "</ul>";
+        $retval .= '<ul class="bcgt_list bcgt_admin_list">';
+        
         if(has_capability('block/bcgt:importdata', $courseContext))
         {
             $retval .= '<li><a href="'.$CFG->wwwroot.'/blocks/bcgt/forms/import.php?cID='.$courseID.'&a=pl"'. 

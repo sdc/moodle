@@ -47,9 +47,11 @@ if(isset($_POST['editstudentsunits']))
 }
 
 if (isset($_POST['copy']) && $qualID > 0){
-    
     Qualification::copy_qual($qualID);
-    
+}
+
+if (isset($_POST['exportspec']) && $qualID > 0){
+    redirect('export_spec.php?qID='.$qualID);
 }
 
 $PAGE->set_context($context);
@@ -209,8 +211,11 @@ echo'<h2 class="bcgt_form_heading">'.get_string('selectqual', 'block_bcgt').'</h
                     echo '<input type="submit" disabled="disabled" name="viewCourses" value="View Courses" class="bcgtFormButton" />';
                     echo '<input type="submit" disabled="disabled" name="select" value="Add to Course" class="bcgtFormButton" />';
                     echo '<input type="submit" name="editstudentsunits" value="Edit Students Units" class="bcgtFormButton" />';
+                    echo "<br>";
+                    echo '<input type="submit" name="exportspec" value="Export Specification" class="bcgtFormButton" />';
 			    echo '</form>';
-                            
+                echo "<br>";            
+                
                         echo '<h3 class="subTitle"><a href="edit_qual.php?">Add a new Qualification</a></h3>';
                         echo '<h3 class="menuLink"><a href="my_dashboard.php">Back to Menu</a></h3>';
                         

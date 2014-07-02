@@ -1783,5 +1783,20 @@ class CGHBVRQUnit extends CGUnit {
     }
     
     
+    public function export_unit_grid($qualID)
+    {
+        header_remove('Content-Disposition');
+        header('Content-type: text/html');
+        echo 'Not supported for this qualification type';
+        exit;
+    }
+    
+    public function import_unit_grid($qualID, $file, $confirm = false){
+        header_remove('Content-Disposition');
+        header('Content-type: text/html');
+        echo 'Not supported for this qualification type';
+        exit;
+    }
+    
     
 }

@@ -1184,41 +1184,88 @@ class CGUnit extends Unit {
         //load the session object
         $sessionUnits = isset($_SESSION['session_unit'])? 
         unserialize(urldecode($_SESSION['session_unit'])) : array();
+                
+        //pn($sessionUnits);exit;
+                
         $studentsLoaded = false;
         $studentsArray = array();
         
         $qualArray = array();
         $unitObject = new stdClass();
-                
+                        
         if(array_key_exists($this->id, $sessionUnits))
         {
+            
             $unitObject = $sessionUnits[$this->id];
-            if (isset($unitObject->qualArray))
+          
+//            if (isset($unitObject->qualArray))
+//            {
+//                $qualArray = $unitObject->qualArray;
+//                pn($qualArray);exit;
+//                if(array_key_exists($qualID, $qualArray) && !empty($qualArray[$qualID]))
+//                {
+//                    //what happens if a student has been added since?
+//
+//                    //then this will return an array of students unit objects
+//                    //for this qualid for this unit.
+//                    $studentsArray = $qualArray[$qualID];
+//                    if(count($studentsArray) != 0)
+//                    {
+//                        $studentsLoaded = true;
+//                    }
+//                    //studentsArray[] is an object with two properties. The Unit Object with stu
+//                    //loaded and a few of the students information.
+//                }  
+//            }
+                        
+            if (isset($unitObject->unit))
             {
-                $qualArray = $unitObject->qualArray;
-                if(array_key_exists($qualID, $qualArray) && !empty($qualArray[$qualID]))
+                            
+                if (isset($unitObject->qualArray))
                 {
-                    //what happens if a student has been added since?
-
-                    //then this will return an array of students unit objects
-                    //for this qualid for this unit.
-                    $studentsArray = $qualArray[$qualID];
-                    if(count($studentsArray) != 0)
+                
+                    $qualArray = $unitObject->qualArray;
+                    $unitObject = $unitObject->unit;
+                                        
+                    if (isset($unitObject->students))
                     {
+                        $studentsArray = array();
+                        $unitStudents = $unitObject->students;
+
+                        if ($qualArray)
+                        {
+                            foreach($qualArray as $qualID => $students)
+                            {
+                                if ($students)
+                                {
+                                    foreach($students as $student)
+                                    {
+                                        if (isset($unitStudents[$student->id]))
+                                        {
+                                            $unitStudents[$student->id] = $student;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        $studentsArray = $unitStudents;
                         $studentsLoaded = true;
+                        
                     }
-                    //studentsArray[] is an object with two properties. The Unit Object with stu
-                    //loaded and a few of the students information.
-                }  
+                
+                }
+
             }
+            
         }
-        
+                
         if(!$studentsLoaded)
         {   
             //load the students that are on this unit for this qual. 
             $studentsArray = get_users_on_unit_qual($this->id, $qualID, $courseID, $groupingID);
         }
-                      
+                          
         if(get_config('bcgt','pagingnumber') != 0)
         {
             $pageRecords = get_config('bcgt','pagingnumber');
@@ -1260,9 +1307,6 @@ class CGUnit extends Unit {
         else {
             $studentsShowArray = $studentsArray;
         }
-        
-        
-        
                 
         $rowCount = 0;
         $studentsSessionArray = $studentsArray;
@@ -2560,6 +2604,9 @@ class CGUnit extends Unit {
                     }
 
                 }
+                
+                // recalculate student unit award
+                $this->calculate_unit_award($qualID);
 
             }
             

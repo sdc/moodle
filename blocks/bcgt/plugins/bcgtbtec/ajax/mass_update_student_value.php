@@ -38,12 +38,6 @@ $loadParams = new stdClass();
 $loadParams->loadLevel = Qualification::LOADLEVELALL;
 $loadParams->loadAward = true;
 
-$unit = Unit::get_unit_class_id($unitID, $loadParams);
-if (!$unit){
-    echo 0;
-    exit;
-}
-
 // Get students
 $studentsArray = get_users_on_unit_qual($unitID, $qualID, $courseID, $groupID);
 if (!$studentsArray){
@@ -59,46 +53,52 @@ $sessionUnits = isset($_SESSION['session_unit'])?
 foreach($studentsArray as $student)
 {
 
-    $unit->load_student_information($student->id, $qualID, $loadParams);   
-
-    $studentCriterion = $unit->get_single_criteria(-1, $criteriaName);
-    
-    if ($studentCriterion)
+    $unit = Unit::get_unit_class_id($unitID, $loadParams);
+    if ($unit)
     {
-    
-        $studentCriterion->set_user($USER->id);
-        $studentCriterion->set_date();
-        $studentCriterion->update_students_value($valueID);
-        $studentCriterion->save_student($qualID, true); 
         
-        $award = $unit->calculate_unit_award($qualID);
-        if ($award)
-        {
-            $awardID = $award->get_id();
-        }
-        else
-        {
-            $awardID = '';
-        }
+        $unit->load_student_information($student->id, $qualID, $loadParams);   
 
-        $student->unit = $unit;
+        $studentCriterion = $unit->get_single_criteria(-1, $criteriaName);
 
-        // Update session unit
-        if (!isset($sessionUnits[$unitID])){
-            $sessionUnits[$unitID] = new stdClass();
-            $sessionUnits[$unitID]->sessionStartTime = time();
-            $sessionUnits[$unitID]->qualArray = array();
+        if ($studentCriterion)
+        {
+
+            $studentCriterion->set_user($USER->id);
+            $studentCriterion->set_date();
+            $studentCriterion->update_students_value($valueID);
+            $studentCriterion->save_student($qualID, true); 
+
+            $award = $unit->calculate_unit_award($qualID);
+            if ($award)
+            {
+                $awardID = $award->get_id();
+            }
+            else
+            {
+                $awardID = '';
+            }
+
+            $student->unit = $unit;
+
+            // Update session unit
+            if (!isset($sessionUnits[$unitID])){
+                $sessionUnits[$unitID] = new stdClass();
+                $sessionUnits[$unitID]->sessionStartTime = time();
+                $sessionUnits[$unitID]->qualArray = array();
+            }
+
+            if (!isset($sessionUnits[$unitID]->qualArray[$qualID])){
+                $sessionUnits[$unitID]->qualArray[$qualID] = array();
+            }
+
+            $sessionUnits[$unitID]->qualArray[$qualID][$student->id] = $student;
+
+            // Update the select menu of this student
+            echo " $('#sID_{$student->id}_cID_{$studentCriterion->get_id()}').val('{$valueID}'); ";
+            echo " $('#uAw_{$student->id}').val('{$awardID}'); ";
+
         }
-        
-        if (!isset($sessionUnits[$unitID]->qualArray[$qualID])){
-            $sessionUnits[$unitID]->qualArray[$qualID] = array();
-        }
-        
-        $sessionUnits[$unitID]->qualArray[$qualID][$student->id] = $student;
-        
-        // Update the select menu of this student
-        echo " $('#sID_{$student->id}_cID_{$studentCriterion->get_id()}').val('{$valueID}'); ";
-        echo " $('#uAw_{$student->id}').val('{$awardID}'); ";
     
     }
     

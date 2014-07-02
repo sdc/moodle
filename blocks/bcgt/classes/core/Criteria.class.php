@@ -81,6 +81,7 @@ class Criteria {
                 $this->targetDate = $criteria->targetdate;
                 $this->defaultTargetDate = $criteria->targetdate;
                 $this->displayname = $criteria->displayname;
+                $this->parentCriteriaID = $criteria->parentcriteriaid;
                 if(isset($criteria->comments))
                 {
                     $this->comments = $criteria->comments;
@@ -524,6 +525,21 @@ class Criteria {
         $check = $DB->get_record_select("block_bcgt_criteria", "id = ?", 
                 array($this->id), "parentcriteriaid");
         return (isset($check->parentcriteriaid)) ? $check->parentcriteriaid : null;
+    }
+    
+    public function get_parent_name(){
+        
+        global $DB;
+        
+        if ($this->parentCriteriaID){
+            
+            $crit = $DB->get_record("block_bcgt_criteria", array("id" => $this->parentCriteriaID));
+            if ($crit){
+                return $crit->name;
+            }
+            
+        }
+        
     }
     
     public function add_range_link($id, $points)

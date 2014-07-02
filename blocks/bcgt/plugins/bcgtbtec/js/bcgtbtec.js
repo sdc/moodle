@@ -4073,6 +4073,63 @@ $('.studentUnitInfo').bind('click', function(){
     
     
     
+    $('.bcgt_student_comments_dialog').each( function(indx, item){
+        
+        if (!$(item).hasClass('ui-dialog-content')){
+            
+            var studentID = $(item).attr('studentID');
+            var qualID = $(item).attr('qualID');
+            var unitID = $(item).attr('unitID');
+            var gridType = $('#gridType').val();
+            
+            var btns = {
+                    
+                "Confirm": function(){
+
+                    var comments = $('#student_response_comments_S'+studentID+'_U'+unitID+'_Q'+qualID).val();
+                    var params = {action: 'confirmUnitCommentsRead', params: {studentID: studentID, qualID: qualID, unitID: unitID, studentComments: comments} };
+
+                    $.post( M.cfg.wwwroot+'/blocks/bcgt/plugins/bcgtbtec/ajax/update.php', params, function(data){
+                        eval(data);
+                    });
+
+                },
+                Cancel: function(){
+                    $(this).dialog("close");
+                }
+
+            };
+            
+            // Unit grid we don't want the confirm button
+            if (gridType == 'unit'){
+                delete btns["Confirm"];
+            }
+            
+            $(item).dialog({
+
+                resizable: false,
+                autoOpen: false,
+                show: {
+                    effect: "fade",
+                    duration: 500
+                },
+                hide: {
+                    effect: "fade",
+                    duration: 500
+                },
+                buttons: btns
+
+            });
+        
+        }
+        
+    } );
+    
+    
+    
+    
+    
+    
     $('.addComments').unbind('click');
     $('.addComments').bind('click', function(){
         
@@ -4127,6 +4184,21 @@ $('.studentUnitInfo').bind('click', function(){
         $('#dialog_S'+studentID+'_U'+unitID+'_Q'+qualID).dialog("open");
         
     } );
+    
+    
+    // Student's Unit Comments
+    $('.studentUnitComments').unbind('click');
+    $('.studentUnitComments').bind('click', function(){
+        
+        var unitID = $(this).attr('unitID');
+        var studentID = $(this).attr('studentID');
+        var qualID = $(this).attr('qualID');
+                
+        $('#student_dialog_S'+studentID+'_U'+unitID+'_Q'+qualID).dialog("open");
+                
+        
+    } );
+    
 //    
 //    
 //    
@@ -4235,7 +4307,7 @@ $('.studentUnitInfo').bind('click', function(){
 //    });
     
     // Set class for background yellow on comments
-    $('.editComments, .editCommentsUnit, .tooltipContent, .showCommentsUnit, .hasComments').each( function(){
+    $('.editComments, .tooltipContent, .showCommentsUnit, .hasComments').each( function(){
         
         $($(this).parents('td')[0]).addClass('criteriaComments');
         

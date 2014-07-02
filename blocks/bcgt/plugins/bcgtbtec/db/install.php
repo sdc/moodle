@@ -440,6 +440,13 @@ function xmldb_bcgtbtec_install()
     $record->bcgttypeid = 5;
     $btecLPassID = $DB->insert_record('block_bcgt_type_award', $record);
     
+    $record = new stdClass();
+    $record->award = 'Fail';
+    $record->ranking = 2;
+    $record->bcgttypeid = 5;
+    $record->shortaward = 'Fail';
+    $btecLFailID = $DB->insert_record('block_bcgt_type_award', $record);
+    
     // ---------------------- The Unit Points ---------------------------
     //level 3
     $record = new stdClass();
@@ -2071,6 +2078,19 @@ function xmldb_bcgtbtec_install()
 
     $targetGrade = new TargetGrade(-1, null);
     $targetGrade->import_csv($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbtec/data/BTECgrades.csv');
+    
+    
+    
+    
+    
+    
+    // Grading scale
+    $record = new stdClass();
+    $record->name = 'BCGT BTEC Scale (PMD)';
+    $record->scale = 'Pass,Merit,Distinction';
+    $record->description = 'Scale to be used with BTEC Grade Tracker activities';
+    $DB->insert_record('scale', $record);
+    
     
 //    // 
 //    //Level 2 Award $l2AwardID

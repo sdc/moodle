@@ -62,6 +62,39 @@ class BespokeCriteria extends Criteria {
         return $DB->get_records("block_bcgt_bspk_c_grade_vals", array("critgradingid" => $this->grading), "rangelower DESC");
     }
     
+    public function get_grading_serialized_object(){
+        
+        global $DB;
+        
+        if ($this->grading)
+        {
+            
+            $grading = $DB->get_record("block_bcgt_bspk_crit_grading", array("id" => $this->grading));
+            if ($grading)
+            {
+                
+                $grading->vals = array();
+                
+                $vals = $DB->get_records("block_bcgt_bspk_c_grade_vals", array("critgradingid" => $grading->id));
+                if ($vals)
+                {
+                    
+                    foreach($vals as $val)
+                    {
+                        $grading->vals[] = $val;
+                    }
+                    
+                }
+                
+            }
+            
+        }
+                
+        return serialize($grading);
+        
+    }
+    
+    
     public function get_grading_met_info(){
         global $DB;
         if (!$this->grading || $this->grading < 1) return false;
@@ -127,7 +160,7 @@ class BespokeCriteria extends Criteria {
         
         global $DB;
         
-        return $DB->get_records_select("block_bcgt_bspk_c_grade_vals", "critgradingid IS NULL OR critgradingid = ?", array($this->grading), "met DESC, rangelower ASC, shortgrade ASC");
+        return $DB->get_records_select("block_bcgt_bspk_c_grade_vals", "critgradingid IS NULL OR critgradingid = ?", array($this->grading), "met DESC, points ASC, rangelower ASC, shortgrade ASC");
         
     }
     

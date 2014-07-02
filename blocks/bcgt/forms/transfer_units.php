@@ -99,7 +99,7 @@ if ($studentID > 0 && isset($_POST['transfer']) && ctype_digit($_POST['transferf
                         
                         // Archive old one
                         $DB->execute( "INSERT INTO {block_bcgt_user_unit_his} 
-                                       (bcgtuserunitid, userid, bcgtqualificationid, bcgtunitid, bcgttypeawardid, comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset) 
+                                       (bcgtuserunitid, userid, bcgtqualificationid, bcgtunitid, bcgttypeawardid, comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset, studentcomments) 
                                        SELECT * FROM {block_bcgt_user_unit} WHERE id = ?", array($userRecord->id) );
                         
                         // Update record

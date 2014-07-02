@@ -2144,6 +2144,7 @@ M.block_bcgt.initassessmenttracker = function(Y, studentID, courseID, qualID){
         $('#filter_calendar').bind('click', function(){
                         
             // Filters
+            var viewType = $('input[name="viewtype"]:checked').val();
             var year = $('#yearfield').val();
             // Only get the courseID from the form if it's there, otherwise use the one in the url
             if ($('#coursefield').length > 0){
@@ -2160,7 +2161,8 @@ M.block_bcgt.initassessmenttracker = function(Y, studentID, courseID, qualID){
                 qualID: qualID,
                 year: year,
                 modLinks: modLinks,
-                modTypes: modTypes
+                modTypes: modTypes,
+                viewType: viewType
             };
             
              $.post(M.cfg.wwwroot + '/blocks/bcgt/ajax/load_assessment_tracker.php', params, function(data){
@@ -2229,6 +2231,34 @@ function bind_mod_items(studentID){
     });
     
     $('.mod_item').addClass('hand');
+    
+    
+    
+    // Click on a mod_item
+    $('.mod_head').unbind('click');
+    $('.mod_head').bind('click', function(){
+
+        var mod = $(this).attr('moduleType');
+        var id = $(this).attr('moduleID');
+
+        $('#assessment_tracker_info').hide();
+        $('#loading').show();
+
+        var params = { id: id, mod: mod, studentID: studentID };
+
+        $.post(M.cfg.wwwroot + '/blocks/bcgt/ajax/load_mod_info.php', params, function(data){
+
+            var json = Y.JSON.parse(data);
+
+            $('#assessment_tracker_info_title').text( json.title );
+            $('#assessment_tracker_info_content').html( json.content );
+            $('#loading').hide();
+            $('#assessment_tracker_info').show();
+
+        });
+
+    });
+    
   
 }
 
@@ -2275,3 +2305,48 @@ function draw_assessment_tracker(studentID){
     $('#loading2').hide();
     
 }
+
+M.block_bcgt.initcorereports = function(Y, url1, url2){
+    $('document').ready(function () {
+        $('#exportsub').unbind('click');
+        $('#exportsub').bind('click', function(){
+            $('#corereportrun').attr('action', url1);
+            $('#corereportrun').attr('target', '_blank');
+        });
+        
+        $('#runsub').unbind('click');
+        $('#runsub').bind('click', function(){
+            $('#corereportrun').attr('action', url2);
+            $('#corereportrun').attr('target', '');
+        });
+        
+        $('#optionsContent').css('display','none');
+        $('#optionsHeader').unbind('click');
+        $('#optionsHeader').bind('click', function(){
+            $( "#optionsContent" ).slideToggle( "slow", function() {
+            // Animation complete.
+          });
+        });  
+        
+        if($('#results'))
+        {
+            
+            var oTable = $('#resultsTable').dataTable( {
+                "sScrollX": "100%",
+                "sScrollY": "700px",
+                "bScrollCollapse": true,
+                "bPaginate": false,
+                "bSort":false,
+                "bInfo":false,
+                "bFilter":false,
+            } );
+
+            var fCol = new FixedColumns( oTable, {
+                            "iLeftColumns": 3,
+                            "iLeftWidth": 280 
+                        } );
+        }
+        
+    });
+}
+

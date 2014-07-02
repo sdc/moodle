@@ -224,8 +224,10 @@ JS;
         $retval .= "</table>";
         
         // Qual Comment
-        if ($this->comments == '') $this->comments = 'N/A';
-        $retval .= "<div id='qualComment'><br><fieldset><legend><h2>Qualification Comments</h2></legend><br>".nl2br( htmlentities($this->comments, ENT_QUOTES) )."</fieldset></div>";
+        if ($this->comments != ''){
+            if ($this->comments == '') $this->comments = 'N/A';
+            $retval .= "<div id='qualComment'><br><fieldset><legend><h2>Qualification Comments</h2></legend><br>".nl2br( htmlentities($this->comments, ENT_QUOTES) )."</fieldset></div>";
+        }
         
         if($this->has_final_grade() && $studentView && !$editing)
 		{
@@ -967,5 +969,16 @@ JS;
         echo "Not yet available";
     }
     
+    public function export_specification(){
+        return false;
+    }
+    
+    public function export_studentt_grid($qualID)
+    {
+        header_remove('Content-Disposition');
+        header('Content-type: text/html');
+        echo 'Not supported for this qualification type';
+        exit;
+    }
     
 }

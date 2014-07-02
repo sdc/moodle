@@ -57,13 +57,7 @@ class A2LevelQualification extends ALevelQualification {
 	public function get_class_ID()
     {
         return A2LevelQualification::ID;
-    }
-  
-    public function get_alps_multiplier()
-    {
-        return 100;
-    }
-    
+    }    
     
     public function insert_qualification($insertUnits = true, $insertWeightings = true)
     {

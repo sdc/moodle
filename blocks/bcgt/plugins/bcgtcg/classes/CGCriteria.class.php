@@ -64,12 +64,14 @@ class CGCriteria extends Criteria {
                 
         if (is_null($this->grading)){
             $get = $DB->get_record("block_bcgt_criteria_att", array("bcgtcriteriaid" => $this->id, "attribute" => "GRADING"));
-            if ($get) $this->grading = $get->value;
+            if ($get){
+                $this->grading = $get->value;
+            }
         }
         
         return $this->grading;
     }
-    
+        
     public function set_weighting($v){
         $this->weighting = $v;
     }
