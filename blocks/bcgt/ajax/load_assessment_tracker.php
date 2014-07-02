@@ -10,6 +10,7 @@ $qualID = (isset($_POST['qualID']) && $_POST['qualID'] > 0) ? $_POST['qualID'] :
 $year = $_POST['year'];
 $modLinks = (isset($_POST['modLinks'])) ? $_POST['modLinks'] : false;
 $modTypes = $_POST['modTypes'];
+$viewType = (isset($_POST['viewType'])) ? $_POST['viewType'] : false;
 
 //pn($studentID);
 //pn($courseID);
@@ -91,6 +92,7 @@ elseif ($qual)
     $AssessmentTracker->setQual($qual);
     $AssessmentTracker->setModuleLinks($modLinks);
     $AssessmentTracker->setModuleTypes($modTypes);
+    $AssessmentTracker->setViewType($viewType);
     
     echo $AssessmentTracker->getQualTracker();
     exit;
@@ -105,7 +107,8 @@ elseif ($course)
     $AssessmentTracker->setCourse($course);
     $AssessmentTracker->setModuleLinks($modLinks);
     $AssessmentTracker->setModuleTypes($modTypes);
-    
+    $AssessmentTracker->setViewType($viewType);
+       
     echo $AssessmentTracker->getCourseTracker();
     exit;
     

@@ -5,7 +5,7 @@ class bcgtbtec extends bcgt {
     const NAME = 'bcgtbtec';
     const TITLE = 'BTEC';
     
-    const VERSION = 2014030605;  
+    const VERSION = 2014052000;  
     
     function bcgtbtec()
     {

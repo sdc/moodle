@@ -1619,6 +1619,88 @@ class Project {
         return $DB->get_records_sql($sql, $params);
     }
     
+    public function update_users_qual_cron_grading($userID, $cmID, $scale, $grade){
+        
+        global $DB;
+        
+        $quals = $this->get_users_quals_on_poject($userID, $cmID);
+        if(!$quals)
+        {
+            mtrace("NO USER QUALS");
+            return false;
+        }
+        
+        
+        foreach($quals AS $qual)
+        {
+            $qualID = $qual->id;
+            //now load up the users qualification
+            $loadParams = new stdClass();
+            $loadParams->loadLevel = Qualification::LOADLEVELALL;
+            $qualification = Qualification::get_qualification_class_id($qualID, $loadParams);
+            if(!$qualification)
+            {
+                mtrace("couldnt load qual");
+                return false;
+            }
+            
+            $qualification->load_student_information($userID, $loadParams);
+            
+            // Get the criteria linked to the project
+            $unitsCriteria = $this->get_course_mod_units_criteria($cmID, $qual->id);
+            if(!$unitsCriteria)
+            {
+                mtrace("no Units Criteria");
+                return false;
+            }
+            
+            
+            $criteriaArray = array();
+            
+            foreach($unitsCriteria as $unitCriterion){
+                
+                $unit = $qualification->get_single_unit($unitCriterion->bcgtunitid);
+                if (!$unit)
+                {
+                    mtrace("no unit $unitCriterion->bcgtunitid");
+                    continue;
+                }
+                
+                $criteria = $unit->get_single_criteria($unitCriterion->bcgtcriteriaid);
+                if (!$criteria)
+                {
+                    mtrace("no criteria $unitCriterion->bcgtcriteriaid");
+                    continue;
+                }
+                                
+                // Only use this criteria if it doesn't already have a met value
+                $currentUserValue = $criteria->get_student_value();
+                if($currentUserValue)
+                {
+                    $specialValue = $currentUserValue->get_special_val();
+                    if($specialValue == 'A')
+                    {
+                        //if its WNS or N/A then we can overwrite it. 
+                        //WNS can be overwritten with IN or LATE. 
+                        mtrace("value already found : ({$currentUserValue->get_short_value()}) for UNITID = $unitCriterion->bcgtunitid AND criteria {$criteria->get_name()}");
+                        continue;
+                    }
+                }
+                
+                $criteriaArray[] = $criteria;
+                
+            }
+            
+            mtrace("calling qualification method to update student's criteria");
+            $qualification->update_student_criteria_from_mod_grading($criteriaArray, $scale, $grade);
+            
+            
+            
+        }
+        
+        
+    }
+    
     public function update_users_qual_cron($userID, $courseModuleID, $action)
     {
         global $DB;

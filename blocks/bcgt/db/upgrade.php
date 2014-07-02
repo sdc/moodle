@@ -3543,6 +3543,167 @@ function xmldb_block_bcgt_upgrade($oldversion = 0)
         
     }
     
+    if ($oldversion < 2014051905){
+        
+        // Define field gradetablename to be added to block_bcgt_mod_linking.
+        $table = new xmldb_table('block_bcgt_mod_linking');
+        $field = new xmldb_field('gradetablename', XMLDB_TYPE_TEXT, null, null, null, null, null, 'checkforautotracking');
+
+        // Conditionally launch add field gradetablename.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        
+        $field = new xmldb_field('gradetimefname', XMLDB_TYPE_TEXT, null, null, null, null, null, 'gradetablename');
+
+        // Conditionally launch add field gradetimefname.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+         
+        
+        
+        // Define field gradegradefname to be added to block_bcgt_mod_linking.
+        $field = new xmldb_field('gradegradefname', XMLDB_TYPE_TEXT, null, null, null, null, null, 'gradetimefname');
+
+        // Conditionally launch add field gradegradefname.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        
+        
+         // Define field grademodinstancefname to be added to block_bcgt_mod_linking.
+        $field = new xmldb_field('grademodinstancefname', XMLDB_TYPE_TEXT, null, null, null, null, null, 'gradegradefname');
+
+        // Conditionally launch add field grademodinstancefname.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        
+    }
+    
+    
+    if ($oldversion < 2014051906){
+        
+        
+        // Assign mod linking
+        $assign = $DB->get_record("modules", array("name" => "assign"));
+        if ($assign)
+        {
+            $record = $DB->get_record("block_bcgt_mod_linking", array("moduleid" => $assign->id));
+            if ($record)
+            {
+                $record->gradetablename = 'assign_grades';
+                $record->gradetimefname = 'timemodified';
+                $record->gradegradefname = 'grade';
+                $record->grademodinstancefname = 'assignment';
+                $DB->update_record("block_bcgt_mod_linking", $record);
+            }
+        }
+        
+        
+        // todo: others
+        
+        
+    }
+    
+    if ($oldversion < 2014051907){
+        
+        // Define field modgradingscalefname to be added to block_bcgt_mod_linking.
+        $table = new xmldb_table('block_bcgt_mod_linking');
+        $field = new xmldb_field('modgradingscalefname', XMLDB_TYPE_TEXT, null, null, null, null, null, 'grademodinstancefname');
+
+        // Conditionally launch add field modgradingscalefname.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+                        
+    }
+    
+    
+    if ($oldversion < 2014052000){
+        
+        // Assign mod linking
+        $assign = $DB->get_record("modules", array("name" => "assign"));
+        if ($assign)
+        {
+            $record = $DB->get_record("block_bcgt_mod_linking", array("moduleid" => $assign->id));
+            if ($record)
+            {
+                $record->modgradingscalefname = 'grade';
+                $DB->update_record("block_bcgt_mod_linking", $record);
+            }
+        }
+        
+    }
+    
+    if ($oldversion < 2014052001){
+        
+        // Define field gradeuserfname to be added to block_bcgt_mod_linking.
+        $table = new xmldb_table('block_bcgt_mod_linking');
+        $field = new xmldb_field('gradeuserfname', XMLDB_TYPE_TEXT, null, null, null, null, null, 'modgradingscalefname');
+
+        // Conditionally launch add field gradeuserfname.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        
+        // Assign mod linking
+        $assign = $DB->get_record("modules", array("name" => "assign"));
+        if ($assign)
+        {
+            $record = $DB->get_record("block_bcgt_mod_linking", array("moduleid" => $assign->id));
+            if ($record)
+            {
+                $record->gradeuserfname = 'userid';
+                $DB->update_record("block_bcgt_mod_linking", $record);
+            }
+        }
+        
+        
+    }
+    
+    
+    
+    if ($oldversion < 2014052203){
+        
+        
+        // Define field studentcomments to be added to block_bcgt_user_unit.
+        $table = new xmldb_table('block_bcgt_user_unit');
+        $field = new xmldb_field('studentcomments', XMLDB_TYPE_TEXT, null, null, null, null, null, 'dateset');
+
+        // Conditionally launch add field studentcomments.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        
+         // Define field studentcomments to be added to block_bcgt_user_unit_his.
+        $table = new xmldb_table('block_bcgt_user_unit_his');
+        $field = new xmldb_field('studentcomments', XMLDB_TYPE_TEXT, null, null, null, null, null, 'dateset');
+
+        // Conditionally launch add field studentcomments.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+                        
+        
+    }
+    
+    if($oldversion < 2014061100)
+    {
+        global $DB;
+        $sql = "UPDATE {block_bcgt_value} SET enabled = ? WHERE context = ?";
+        $DB->execute($sql, array(1, 'assessment'));
+    }
+        
+    
+    
+    
     
     //update required:
     //values

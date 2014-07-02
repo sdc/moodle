@@ -32,6 +32,7 @@ abstract class Unit {
 	protected $studentID;
         
     protected $comments;
+    protected $studentComments;
         
     protected $userDefinedValue;
     protected $valueID;
@@ -73,7 +74,7 @@ abstract class Unit {
                 }
                 else
                	{
-                	$this->levelID = -1;;
+                	$this->levelID = -1;
                 }              
                 $level = Unit::retrieve_level($unitID);
                 if($level)
@@ -376,7 +377,16 @@ abstract class Unit {
     {
         $this->comments = $comment;
     }
+    
+    public function set_student_comments($comment)
+    {
+        $this->studentComments = $comment;
+    }
 
+    public function get_student_comments(){
+        return $this->studentComments;
+    }
+    
     public function get_specific_award_type()
     {
         return $this->specificAwardType;
@@ -541,6 +551,7 @@ abstract class Unit {
              
             // Get the comments on the student's unit as well
             $this->set_comments($this->retrieve_comments());
+            $this->studentComments = $this->retrieve_student_comments();
             //TODO qual specific:     
             //
             //TODO put a loadLevel param into this. 
@@ -929,6 +940,8 @@ abstract class Unit {
             {
             	$stdObj->bcgtvalueid = $this->value->get_id();
             }
+            
+            
 			$DB->update_record('block_bcgt_user_unit', $stdObj);
             // Log
             $awardTypeID = -1;
@@ -1355,7 +1368,7 @@ abstract class Unit {
         
         // Archive & delete any user_unit records for this unit
         $DB->execute( "INSERT INTO {block_bcgt_user_unit_his} 
-                       (bcgtuserunitid, userid, bcgtqualificationid, bcgtunitid, bcgttypeawardid, comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset) 
+                       (bcgtuserunitid, userid, bcgtqualificationid, bcgtunitid, bcgttypeawardid, comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset, studentcomments) 
                        SELECT * FROM {block_bcgt_user_unit} WHERE bcgtunitid = ?", array($this->id) );
         
         $DB->delete_records("block_bcgt_user_unit", array("bcgtunitid" => $this->id));
@@ -1465,6 +1478,26 @@ abstract class Unit {
 		}
 		return false;
     }
+    
+    public function update_student_comments($qualID, $comments)
+    {
+        global $DB;
+        
+        $sql = "SELECT * FROM {block_bcgt_user_unit} AS userunit 
+		WHERE userunit.userid = ? AND bcgtqualificationid = ? 
+		AND bcgtunitid = ?";
+		$userUnit = $DB->get_record_sql($sql, array($this->studentID, $qualID, $this->id));
+		if($userUnit)
+		{
+			$id = $userUnit->id;
+			$obj = new stdClass();
+			$obj->id = $id;
+			$obj->studentcomments = $comments;
+			return $DB->update_record('block_bcgt_user_unit', $obj);
+		}
+		return false;
+    }
+    
     
     public static function get_unit_edit_form_menu($familyID, $disabled, $unitID, $typeID)
 	{
@@ -1639,6 +1672,23 @@ abstract class Unit {
             return "";
         }
         return $check->comments;
+    }
+    
+    protected function retrieve_student_comments()
+    {
+        global $DB;
+        $checks = $DB->get_records_select("block_bcgt_user_unit", 
+                "userid = ? AND bcgtqualificationid = ? AND bcgtunitid = ?",  
+                array($this->studentID,$this->qualID,$this->id));
+        $check = new stdClass();
+        if($checks)
+        {
+            $check = end($checks);
+        }
+        if(!isset($check->id) || is_null($check->id) || $check->studentcomments == ""){
+            return "";
+        }
+        return $check->studentcomments;
     }
     
     /**
@@ -1927,7 +1977,7 @@ abstract class Unit {
 		global $DB;
 		$sql = "INSERT INTO {block_bcgt_user_unit_his} 
 		(bcgtuserunitid, userid, bcgtqualificationid, bcgtunitid, bcgttypeawardid, 
-		comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset) 
+		comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset, studentcomments) 
 		SELECT * FROM {block_bcgt_user_unit} WHERE bcgtunitid = ?";
         $params = array($this->id);
         if($studentID != -1)
@@ -1948,7 +1998,7 @@ abstract class Unit {
         global $DB;
 		$sql = "INSERT INTO {block_bcgt_user_unit_his} 
 		(bcgtuserunitid, userid, bcgtqualificationid, bcgtunitid, bcgttypeawardid, 
-		comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset) 
+		comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset, studentcomments) 
 		SELECT * FROM {block_bcgt_user_unit} WHERE id = ?";
         $params = array($id);
 		return $DB->execute($sql, $params);

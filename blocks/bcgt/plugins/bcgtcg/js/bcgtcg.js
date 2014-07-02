@@ -741,37 +741,6 @@ M.mod_bcgtcg.inithbvrqstudgrid = function(Y, qualID, studentID, grid){
     
     $(document).ready( function(){
         
-        var viewsimple = Y.one('#viewsimple');
-        if (viewsimple != null){
-            viewsimple.on('click', function(e){
-                e.preventDefault();
-                window.location = M.cfg.wwwroot + '/blocks/bcgt/grids/student_grid.php?sID='+studentID+'&qID='+qualID+'&g=s';
-            });
-        }
-        
-        var viewadv = Y.one('#viewadvanced');
-        if (viewadv != null){
-            viewadv.on('click', function(e){
-                e.preventDefault();
-                window.location = M.cfg.wwwroot + '/blocks/bcgt/grids/student_grid.php?sID='+studentID+'&qID='+qualID+'&g=a';
-            });
-        }
-        
-        var editsimple = Y.one('#editsimple');
-        if (editsimple != null){
-            editsimple.on('click', function(e){
-                e.preventDefault();
-                window.location = M.cfg.wwwroot + '/blocks/bcgt/grids/student_grid.php?sID='+studentID+'&qID='+qualID+'&g=se';
-            });
-        }
-        
-        var editadv = Y.one('#editadvanced');
-        if (editadv != null){
-            editadv.on('click', function(e){
-                e.preventDefault();
-                window.location = M.cfg.wwwroot + '/blocks/bcgt/grids/student_grid.php?sID='+studentID+'&qID='+qualID+'&g=ae';
-            });
-        }
         
         applyTT();
         applyStudentTT();
@@ -1253,32 +1222,36 @@ M.mod_bcgtcg.initstudentgrid = function(Y, qualID, studentID, grid, cols) {
     
 }
 
-M.mod_bcgtcg.inithbvrqunitgrid = function(Y, qualID, unitID, grid){
+M.mod_bcgtcg.inithbvrqunitgrid = function(Y, qualID, unitID, page){
     
     $(document).ready( function(){
+        
+        if (page === undefined || page === false || page === ''){
+            page = 1;
+        }
         
         var viewsimple = Y.one('#viewsimple');
         viewsimple.on('click', function(e){
             e.preventDefault();
-            window.location = M.cfg.wwwroot + '/blocks/bcgt/grids/unit_grid.php?uID='+unitID+'&qID='+qualID+'&g=s';
+            window.location = M.cfg.wwwroot + '/blocks/bcgt/grids/unit_grid.php?uID='+unitID+'&qID='+qualID+'&g=s&page='+page;
         });
         
         var viewadv = Y.one('#viewadvanced');
         viewadv.on('click', function(e){
             e.preventDefault();
-            window.location = M.cfg.wwwroot + '/blocks/bcgt/grids/unit_grid.php?uID='+unitID+'&qID='+qualID+'&g=a';
+            window.location = M.cfg.wwwroot + '/blocks/bcgt/grids/unit_grid.php?uID='+unitID+'&qID='+qualID+'&g=a&page='+page;
         });
         
         var editsimple = Y.one('#editsimple');
         editsimple.on('click', function(e){
             e.preventDefault();
-            window.location = M.cfg.wwwroot + '/blocks/bcgt/grids/unit_grid.php?uID='+unitID+'&qID='+qualID+'&g=se';
+            window.location = M.cfg.wwwroot + '/blocks/bcgt/grids/unit_grid.php?uID='+unitID+'&qID='+qualID+'&g=se&page='+page;
         });
         
         var editadv = Y.one('#editadvanced');
         editadv.on('click', function(e){
             e.preventDefault();
-            window.location = M.cfg.wwwroot + '/blocks/bcgt/grids/unit_grid.php?uID='+unitID+'&qID='+qualID+'&g=ae';
+            window.location = M.cfg.wwwroot + '/blocks/bcgt/grids/unit_grid.php?uID='+unitID+'&qID='+qualID+'&g=ae&page='+page;
         });
         
         applyTT();
@@ -2541,7 +2514,11 @@ $('.uNToolTipInfo').bind('click', function(){
         tmpDate = $(this).val();
     });
     
-    $( "#genericPopup" ).draggable();
+    $( "#genericPopup" ).draggable(
+        {
+            handle: "#genericContent"
+        }
+    );
         
     
     //$('#genericPopup').resizable();
@@ -2569,11 +2546,19 @@ $('.uNToolTipInfo').bind('click', function(){
         
     } );
     
+    // if IE, change button links to have onclick, because as we all know, IE is shit and plays by its own rules
+    if (navigator.appName === 'Microsoft Internet Explorer')
+    {
+        $('a input.btn').click(function(){
+            window.location = $(this).closest('a').attr('href');
+        });
+    }
+    
     $(document).on('click', 'body', function(){
         $('.ui-tooltip').fadeOut();
     });
     
-    
+    $('#loading').hide();
         
 }
 
@@ -4295,6 +4280,7 @@ function loadSignOffSheets(studentID, unitID, qualID, sheetID)
 
 function callPopUp(type, params)
 {
+    $('#loading').show();
     $.post(M.cfg.wwwroot+'/blocks/bcgt/plugins/bcgtcg/ajax/popUpScript.php', {type: type, params: params}, function(data){
         eval(data);
         applyTT();

@@ -422,6 +422,7 @@ function process_bcgt_btec_uit_criteria_check($qualID, $unitID, $value, $student
             $studentUnit->load_student_information($studentID, $qualID, $loadParams);
         }
     }
+       
     if($studentUnit)
     {
         $criteria = $studentUnit->get_single_criteria($criteriaID);
@@ -602,7 +603,7 @@ function process_bcgt_btec_uit_criteria_check($qualID, $unitID, $value, $student
             $retval->qualaward = $jsonQualAward;
             $retval->time = date('H:i:s');
         }   
-         
+                 
         if(array_key_exists($unitID, $sessionUnits))
         {
             $unitObject = $sessionUnits[$unitID];
@@ -625,7 +626,7 @@ function process_bcgt_btec_uit_criteria_check($qualID, $unitID, $value, $student
             $unitObject->unit = Unit::get_unit_class_id($unitID, $loadParams);
             $qualArray = array();
         }
-                
+                        
         if(array_key_exists($qualID, $qualArray))
         {
             $studentArray = $qualArray[$qualID];

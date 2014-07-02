@@ -1625,6 +1625,9 @@ class CGHBNVQUnit extends CGUnit {
         }
         $late = optional_param('late', false, PARAM_BOOL);
         $grid = optional_param('g', 's', PARAM_TEXT);
+        $page = optional_param('page', 1, PARAM_INT);
+
+                
         $retval .= '<input type="hidden" id="grid" name="g" value="'.$grid.'"/>';
         $advancedMode = false;
         $editing = false;
@@ -1659,7 +1662,7 @@ class CGHBNVQUnit extends CGUnit {
         );
         //
         
-        $PAGE->requires->js_init_call('M.mod_bcgtcg.inithbvrqunitgrid', array($qualID, $this->id), true, $jsModule);
+        $PAGE->requires->js_init_call('M.mod_bcgtcg.inithbvrqunitgrid', array($qualID, $this->id, $page), true, $jsModule);
         require_once($CFG->dirroot.'/blocks/bcgt/lib.php');
         load_javascript(true);
         $retval .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/bcgt/css/start/jquery-ui-1.10.3.custom.min.css' />";
@@ -1673,6 +1676,31 @@ class CGHBNVQUnit extends CGUnit {
 		$retval .= "</div>";
         
         $retval .= "<br style='clear:both;' /><br>";
+        
+        
+        $pageRecords = get_config('bcgt','pagingnumber');
+        if ($pageRecords < 1 || $pageRecords > 10){
+            $pageRecords = 10;
+        }
+        
+        $studentsArray = get_users_on_unit_qual($this->id, $qualID);
+        $totalNoStudents = count($studentsArray);
+        $noPages = ceil($totalNoStudents/$pageRecords);
+
+        $retval .= '<div class="bcgt_pagination c">'.get_string('pagenumber', 'block_bcgt').' : ';
+
+                for ($i = 1; $i <= $noPages; $i++)
+                {
+                    $class = ($i == $page) ? 'active' : '';
+                    $retval .= "<a class='unitgridpage pageNumber {$class}' page='{$i}' href='{$CFG->wwwroot}/blocks/bcgt/grids/unit_grid.php?uID={$this->id}&qID={$qualID}&page={$i}&g={$grid}'>{$i}</a>";
+                }
+
+        $retval .= '</div>';
+        $retval .= '<input type="hidden" name="pageInput" id="pageInput" value="'.$page.'"/>';
+        
+        
+        
+        $retval .= "<p id='loading' class='c'><img src='{$CFG->wwwroot}/blocks/bcgt/pix/ajax-loader.gif' alt='loading...' /></p>";
         
         //the grid -> ajax
         $retval .= '<div id="CGUnitGrid">';
@@ -1740,10 +1768,22 @@ class CGHBNVQUnit extends CGUnit {
             $unitAwards = Unit::get_possible_unit_awards($this->get_typeID());
         }
         
-                        
+              
+        $page = optional_param('page', 1, PARAM_INT);
+        if ($page < 1){
+            $page = 1;
+        }
+        
+        $limit = get_config('bcgt','pagingnumber');
+        if ($limit < 1 || $limit > 10){
+            $limit = 10;
+        }
+        
+        $limitFrom = ($page - 1) * $limit;
+        
         
         //load the students that are on this unit for this qual. 
-        $studentsArray = get_users_on_unit_qual($this->id, $qualID);
+        $studentsArray = get_users_on_unit_qual($this->id, $qualID, -1, -1, $limit, $limitFrom);
         
         if ($studentsArray)
         {
@@ -2034,7 +2074,22 @@ class CGHBNVQUnit extends CGUnit {
         return true;
         
     }
+ 
     
+    public function export_unit_grid($qualID)
+    {
+        header_remove('Content-Disposition');
+        header('Content-type: text/html');
+        echo 'Not supported for this qualification type';
+        exit;
+    }
+    
+    public function import_unit_grid($qualID, $file, $confirm = false){
+        header_remove('Content-Disposition');
+        header('Content-type: text/html');
+        echo 'Not supported for this qualification type';
+        exit;
+    }
     
     
 }

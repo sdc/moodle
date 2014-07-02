@@ -1806,12 +1806,17 @@ class AlevelQualification extends Qualification{
 	 * Returns the possible values that can be selected for this qualification type
 	 * when updating criteria for students
 	 */
-	public static function get_possible_values($typeID)
+	public static function get_possible_values($typeID, $checkEnabled = true)
 	{
 		global $DB;
 		$sql = "SELECT * FROM {block_bcgt_value} 
 		WHERE bcgttypeid = ?";
         $params = array($typeID);
+        if($checkEnabled)
+        {
+            $sql .= " AND enabled = ?";
+            $params[] = 1;
+        }
 		return $DB->get_records_sql($sql, $params);
 		
 	}
@@ -2413,6 +2418,10 @@ class AlevelQualification extends Qualification{
             $familyID = -1, $params = null, $loadParams = null)
     {
         //units and criteria are directly on the qualification
+        if(!$loadParams)
+        {
+            $loadParams = new stdClass();
+        }
         $loadParams->loadLevel = Qualification::LOADLEVELALL;
         global $CFG;
         $subTypeID = -1;

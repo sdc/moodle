@@ -4892,6 +4892,28 @@ function xmldb_block_bcgtbtec_upgrade($oldversion = 0)
         $targetGrade->import_csv($CFG->dirroot.'/blocks/bcgt/plugins/bcgtbtec/data/BTECgrades.csv');
     }
     
+        
+    if ($oldversion < 2014051902)
+    {
+        
+        //now the scale
+        $record = new stdClass();
+        $record->name = 'BCGT BTEC Scale (PMD)';
+        $record->scale = 'Pass,Merit,Distinction';
+        $record->description = 'Scale to be used with BTEC Grade Tracker activities';
+        $DB->insert_record('scale', $record);
+        
+    }
     
+    
+    if($oldversion < 2014052000)
+    {
+        $stdObj = new stdClass();
+        $stdObj->award = 'Fail';
+        $stdObj->ranking = 2;
+        $stdObj->bcgttypeid = 5;
+        $stdObj->shortaward = 'Fail';
+        $unclasAward = $DB->insert_record('block_bcgt_type_award', $stdObj);
+    }
     
 }

@@ -9,6 +9,7 @@
 
 @import url("css/start/jquery-ui-1.10.3.custom.css");
 
+
 /************************/
  /*Start of CSS rewrite:*/
 
@@ -1049,14 +1050,20 @@ div#commentClose {
     padding: 5px;
 }
 
-.popUpDiv > textarea.dialogCommentText
+textarea.dialogCommentText
 {
     width: 80%;
     height: 200px;
     margin: auto;
 }
 
-.bcgt_comments_dialog, .bcgt_unit_comments_dialog
+.bcgt_student_comments_dialog textarea
+{
+    width: 75%;
+    height: 100px;
+}
+
+.bcgt_comments_dialog, .bcgt_unit_comments_dialog, .bcgt_student_comments_dialog
 {
     display: none;
 }
@@ -3591,7 +3598,23 @@ div#assessment_tracker_div th.month, div#assessment_tracker_div td.month
     overflow: hidden;
 }
 
-div#assessment_tracker_div th.monthheader, div#assessment_tracker_div .daynum
+div#assessment_tracker_div th.mod, div#assessment_tracker_div td.mod
+{
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    overflow: hidden;
+    /*font-size: 7pt;*/
+}
+
+
+div#assessment_tracker_div td.mod:empty
+{
+    background-color: #EAEAEA;
+}
+
+div#assessment_tracker_div th.monthheader, div#assessment_tracker_div .daynum, 
+div#assessment_tracker_div th.modheader, div#assessment_tracker_div .weeknum
 {
     background-color: #87BBFC;;
     color: #fff;
@@ -3605,12 +3628,51 @@ div#assessment_tracker_div th.daynum, div#assessment_tracker_div td.daynum
     text-align: center;
 }
 
+div#assessment_tracker_div th.weeknum, div#assessment_tracker_div td.weeknum
+{
+    width: 75px;
+    min-width: 75px;
+    max-width: 75px;
+    text-align: center;
+    /*font-size: 7pt;*/
+}
+
 div#assessment_tracker_div td.non-date
 {
     background-color: #F0F0F0;
 }
 
-div#assessment_tracker_div td img.icn
+div#assessment_tracker_div td.modstart
+{
+    background-color: #cfffd2;
+    text-align: center;
+}
+
+div#assessment_tracker_div td.modend
+{
+    background-color: #ffcfd3;
+    text-align: center;
+}
+
+
+div#assessment_tracker_div td.mod img
+{
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+}
+
+div#assessment_tracker_div a.mod_head
+{
+    color: #FFFFFF;
+}
+
+div#assessment_tracker_div a.mod_head:hover
+{
+    color: #000000;
+}
+
+img.icn
 {
     width: 10px;
 }
@@ -3703,4 +3765,119 @@ div#assessment_tracker_info_content img.icn
     background: inherit !important;
     color: inherit !important;
     font-weight: inherit !important;
+}
+
+
+textarea[readonly]{
+    background-color: rgb(235, 235, 228);
+    color: rgb(84, 84, 84);
+}
+
+
+/*Core Reporting*/
+#reportoptions, #reportResults {
+    padding:1%;
+    border-color:#efefef;
+    border-style:solid;
+    border-width:2px;
+    border-radius: 10px;
+    background-color:lightgray;
+}
+
+#reportResults {
+    margin-top:1%;
+}
+
+
+#reportoptions #optionsHeader {
+    cursor: pointer;
+}
+
+#reportoptions #coreOptions table {
+    background-color: white;
+}
+
+#reportoptions #coreOptions table th, #reportResults table th {
+    text-align: center;
+    background-color: lightgray;
+    border-color:grey;
+    border-style:solid;
+    border-width:1px;
+}
+
+#reportoptions #coreOptions table td {
+    padding-left:3px;
+    padding-right:5%;
+    border-color:grey;
+    border-style:solid;
+    border-width:1px;
+}
+
+#reportResults
+{
+    overflow-x: scroll;
+}
+
+#reportResults  tr.even:hover, #reportResults  tr.even:hover td:empty{
+	background-color:#ECFFB3!important;
+}
+
+#reportResults  tr.odd:hover, #reportResults  tr.odd:hover td:empty{
+	background-color:#E6FF99!important;
+}
+
+#reportResults table td {
+    padding:1px;
+    border-color:#efefef;
+    border-style:solid;
+    border-width:1px;
+}
+
+#reportResults table {
+    background-color: white;
+}
+
+#reportResults .dataTable tr td:empty {
+    width:auto!important;
+    background-color:white;
+}
+#reportResults table tr:nth-child(even) td:empty {
+    background-color: #efefef;
+}
+
+
+#reportResults table tr:nth-child(even) {
+    background-color: #efefef;
+}
+
+#reportoptions #coreOptions span {
+    display:block;
+    padding-left:1%;
+    padding-right:1%;
+    margin-right:5%;
+    clear:right;
+    width:120%;
+}
+
+#reportoptions #coreOptions span input{
+    float:right;
+    margin-left:4px;
+}
+
+#outputcommands {
+    width:120px;
+    margin:auto;
+    margin-top:1%;
+    margin-bottom: 1%;
+}
+
+#outputcommands input
+{
+    margin-left:1%;
+    margin-right:1%;
+    padding:1%;
+}
+
+#optionsContent {
+    display:hidden;
 }

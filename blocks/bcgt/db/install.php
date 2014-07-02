@@ -311,12 +311,20 @@ function xmldb_block_bcgt_install()
         $stdObj->moduleid = $assign->id;
         $stdObj->modtablename = 'assign';
         $stdObj->modtablecoursefname = 'course';
+        $stdObj->modtablestartdatefname = 'allowsubmissionsfromdate';
         $stdObj->modtableduedatefname = 'duedate';
         $stdObj->modsubmissiontable = 'assign_submission';
+        $stdObj->modtitlefname = 'name';
         $stdObj->submissionuserfname = 'userid';
         $stdObj->submissiondatefname = 'timecreated';
         $stdObj->submissionmodidfname = 'assignment';
         $stdObj->checkforautotracking = 1;
+        $stdObj->gradetablename = 'assign_grades';
+        $stdObj->gradetimefname = 'timemodified';
+        $stdObj->gradegradefname = 'grade';
+        $stdObj->grademodinstancefname = 'assignment';
+        $stdObj->gradeuserfname = 'userid';
+        $stdObj->modgradingscalefname = 'grade';
         $DB->insert_record('block_bcgt_mod_linking', $stdObj);
     }
 
@@ -328,8 +336,10 @@ function xmldb_block_bcgt_install()
         $stdObj->moduleid = $assignment->id;
         $stdObj->modtablename = 'assignment';
         $stdObj->modtablecoursefname = 'course';
+        $stdObj->modtablestartdatefname = 'timeavailable';
         $stdObj->modtableduedatefname = 'timedue';
         $stdObj->modsubmissiontable = 'assignment_submissions';
+        $stdObj->modtitlefname = 'name';
         $stdObj->submissionuserfname = 'userid';
         $stdObj->submissiondatefname = 'timecreated';
         $stdObj->submissionmodidfname = 'assignment';
@@ -345,8 +355,10 @@ function xmldb_block_bcgt_install()
         $stdObj->moduleid = $quiz->id;
         $stdObj->modtablename = 'quiz';
         $stdObj->modtablecoursefname = 'course';
+        $stdObj->modtablestartdatefname = 'timeopen';
         $stdObj->modtableduedatefname = 'timeclose';
         $stdObj->modsubmissiontable = 'quiz_attempts';
+        $stdObj->modtitlefname = 'name';
         $stdObj->submissionuserfname = 'userid';
         $stdObj->submissiondatefname = 'timefinish';
         $stdObj->submissionmodidfname = 'quiz';
@@ -359,11 +371,13 @@ function xmldb_block_bcgt_install()
     if($turnitin)
     {
         $stdObj = new stdClass();
-        $stdObj->moduleid = $quiz->id;
+        $stdObj->moduleid = $turnitin->id;
         $stdObj->modtablename = 'turnitintool';
         $stdObj->modtablecoursefname = 'course';
+        $stdObj->modtablestartdatefname = 'defaultdtstart';
         $stdObj->modtableduedatefname = 'defaultdtdue';
         $stdObj->modsubmissiontable = 'turnitintool_submissions';
+        $stdObj->modtitlefname = 'name';
         $stdObj->submissionuserfname = 'userid';
         $stdObj->submissiondatefname = 'submission_modified';
         $stdObj->submissionmodidfname = 'turnitintoolid';

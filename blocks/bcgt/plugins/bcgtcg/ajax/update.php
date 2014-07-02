@@ -35,7 +35,7 @@ if(is_null($action)) exit;
 function _check($req, &$params){
     if( count($req) > count($params) ) _error('count');
     foreach($req as $key){
-        if(!isset($params[$key]) || $params[$key] == '') _error('key: ' . $key);
+        if(!isset($params[$key])) _error('key: ' . $key);
     }
     $params = (object)$params;
 }

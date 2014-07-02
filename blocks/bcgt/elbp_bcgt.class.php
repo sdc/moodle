@@ -879,7 +879,10 @@ class elbp_bcgt extends Plugin {
                 $TPL->set("obj", $this)
                     ->set("access", $access);
                 
-                if ($params['type'] == 'tracker') $this->loadTracker( $params['id'], $TPL );
+                if ($params['type'] == 'tracker'){
+                    $this->loadTracker( $params['id'], $TPL );
+                    $TPL->set("student", $this->student);
+                }
                 
                 try {
                     $TPL->load( $this->CFG->dirroot . $this->path . 'tpl/elbp_bcgt/'.$params['type'].'.html' );
@@ -893,5 +896,179 @@ class elbp_bcgt extends Plugin {
         }
         
     }
+    
+    
+    
+    protected function supportsStudentProgress()
+    {
+        return true;
+    }
+    
+    
+    /**
+     * Targets can have the definitions:
+     * - Each target +1
+     * - Set number of targets +1
+     * - Set number of targets achieved +1
+     */
+    protected function getStudentProgressDefinitionForm()
+    {
+        
+        $output = "";
+        
+        $output .= "<table class='student-progress-definitions'>";
+        
+            $output .= "<tr>";
+
+                $output .= "<th></th>";
+                $output .= "<th>".get_string('value', 'block_elbp')."</th>";
+                $output .= "<th>".get_string('description')."</th>";
+                $output .= "<th>".get_string('importance', 'block_elbp')."</th>";
+
+            $output .= "</tr>";
+        
+            $output .= "<tr>";
+                $chk = ($this->getSetting('student_progress_definitions_predgrade') == 1) ? 'checked' : '';
+                $output .= "<td><input type='checkbox' name='student_progress_definitions_predgrade' value='1' {$chk} /></td>";
+                $output .= "<td></td>";
+                $output .= "<td>".get_string('studentprogressdefinitions:predgrade', 'block_bcgt')."</td>";
+                $output .= "<td><input type='number' min='0.5' step='0.5' class='elbp_smallish' name='student_progress_definition_importance_predgrade' value='{$this->getSetting('student_progress_definition_importance_predgrade')}' /></td>";
+            $output .= "</tr>";
+            
+        
+        $output .= "</table>";
+        
+        return $output;
+        
+    }
+    
+     public function calculateStudentProgress(){
+        
+         global $DB;
+         
+        $max = 0;
+        $num = 0;
+        $info = array();
+        
+        // Enabled
+        if ($this->getSetting('student_progress_definitions_predgrade') == 1)
+        {
+            
+            $importance = $this->getSetting('student_progress_definition_importance_predgrade');
+
+            // Get all student's quals with a target grade and predicted grade
+            $quals = \get_users_quals($this->student->id, 5);
+                        
+            // Ahead/Behind/On target            
+            $loadParams = new \stdClass();
+            $loadParams->loadLevel = \Qualification::LOADLEVELMIN;
+            $loadParams->loadAward = true;
+            
+            if ($quals)
+            {
+                
+                foreach($quals as $qual)
+                {
+                                        
+                    $targetRanking = false;
+                    $predictedRanking = false;
+                    
+                    $qualObj = \Qualification::get_qualification_class_id($qual->id, $loadParams);
+                    $qualObj->load_student_information($this->student->id, $loadParams);
+                                        
+                    // get the target grade for this qual
+                    $userCourseTarget = new \UserCourseTarget();
+                    $targetGrade = $userCourseTarget->retrieve_users_target_grades($this->student->id, $qual->id);
+                    
+                    if($targetGrade)
+                    {
+                        $targetGradeObj = $targetGrade[$qual->id];
+                        if($targetGradeObj && isset($targetGradeObj->breakdown))
+                        {
+                            $breakdown = $targetGradeObj->breakdown;
+                            if($breakdown)
+                            {
+                                $targetRanking = $breakdown->get_ranking();
+                            }
+                        }
+                    }
+                    
+                    // get the predicted grade for this qual
+                    $getPredicted = $DB->get_record_sql("SELECT b.*
+                                                         FROM {block_bcgt_user_award} a
+                                                         INNER JOIN {block_bcgt_target_breakdown} b ON b.id = a.bcgtbreakdownid
+                                                         WHERE a.userid = ? AND a.bcgtqualificationid = ? AND a.type = 'Predicted'", array($this->student->id, $qual->id));
+                    if ($getPredicted)
+                    {
+                        $predictedRanking = $getPredicted->ranking;
+                    }
+                    
+                    if ($targetRanking && $predictedRanking){
+                                                
+                        // Once for every qual
+                        $max += $importance;
+                        
+                        // If meet or exceed target, add max
+                        if ($predictedRanking >= $targetRanking)
+                        {
+                            $num += $importance;
+                            $diff = 100;
+                        }
+                        else
+                        {
+                            
+                            // Otherwise work out what percentage of the targe tthey are at and
+                            // add that % of the importance
+                            $diff = ($predictedRanking / $targetRanking) * 100;
+                            $val = ($diff / 100) * $importance;
+                            $num += $val;
+                            
+                        }
+                        
+                        $key = get_string('studentprogress:info:gradetracker:predgrade', 'block_bcgt');
+                        $key = str_replace('%q%', $qualObj->get_short_display_name(), $key);
+                        $key = str_replace('%g%', $breakdown->get_target_grade(), $key);
+                        $info[$key] = array(
+                            'percent' => $diff,
+                            'value' => $getPredicted->targetgrade
+                        );
+                        
+                                                
+                    }
+                    
+                }
+                
+            }
+                            
+        }
+                
+         
+        return array(
+            'max' => $max,
+            'num' => $num,
+            'info' => $info
+        );
+        
+    }
+    
+    public function saveConfig($settings) {
+        
+        // Student progress definitions
+                         
+        // If any of them aren't defined, set their value to 0 for disabled        
+        if (!isset($settings['student_progress_definitions_predgrade'])){
+            $settings['student_progress_definitions_predgrade'] = 0;
+            $settings['student_progress_definition_importance_predgrade'] = 0;
+        }
+
+
+        // If the req ones don't have a valid number as their value, set to disabled
+        if (!isset($settings['student_progress_definition_importance_predgrade']) || $settings['student_progress_definition_importance_predgrade'] <= 0) $settings['student_progress_definitions_predgrade'] = 0;
+                
+        parent::saveConfig($settings);
+        
+    }
+    
+    
     
 }
