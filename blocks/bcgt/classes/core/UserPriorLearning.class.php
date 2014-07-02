@@ -33,6 +33,9 @@ class UserPriorLearning {
     protected $importmissingsubject;
     protected $importmissinggrade;
     protected $importmissinguser;
+    protected $calculateTargetGrade;
+    protected $calculateAspGrade;
+    
     
     protected $summary;
     protected $success;
@@ -165,6 +168,15 @@ class UserPriorLearning {
         $retval .= '<tr><td><label for="option4">'.get_string('plcreatemissinguser', 'block_bcgt').' : </label></td>';
         $retval .= '<td><input type="checkbox" name="option4"/></td>';
         $retval .= '<td><span class="description">('.get_string('plcreatemissinguserdesc', 'block_bcgt').')</span></td></tr>';
+        
+        $retval .= '<tr><td><label for="option5">'.get_string('plcalculatetargetgrades', 'block_bcgt').' : </label></td>';
+        $retval .= '<td><input type="checkbox" name="option5"/></td>';
+        $retval .= '<td><span class="description">('.get_string('plcalculatetargetgradesdesc', 'block_bcgt').')</span></td></tr>';
+        
+        $retval .= '<tr><td><label for="option6">'.get_string('plcalculateaspgrades', 'block_bcgt').' : </label></td>';
+        $retval .= '<td><input type="checkbox" name="option6"/></td>';
+        $retval .= '<td><span class="description">('.get_string('plcalculateaspgradesdesc', 'block_bcgt').')</span></td></tr>';
+        
         $retval .= '</table>';
         return $retval;
     }
@@ -186,6 +198,24 @@ class UserPriorLearning {
         if(isset($_POST['option4']))
         {
             $this->importmissinguser = true;
+        }
+        
+        if(isset($_POST['option5']))
+        {
+            $this->calculateTargetGrade = true;
+        }
+        else
+        {
+            $this->calculateTargetGrade = false;
+        }
+        
+        if(isset($_POST['option6']))
+        {
+            $this->calculateAspGrade = true;
+        }
+        else
+        {
+            $this->calculateAspGrade = false;
         }
     }
     
@@ -318,7 +348,8 @@ class UserPriorLearning {
         {
             //then calculate average gcse scores
             $userCourseTarget = new UserCourseTarget();
-            $userCourseTarget->calculate_users_average_gcse_score($usersArray, true);
+            $userCourseTarget->calculate_aspirational_grades_check($this->calculateAspGrade);
+            $userCourseTarget->calculate_users_average_gcse_score($usersArray, $this->calculateTargetGrade);
         }
         $success = true;
         if((!$this->importmissinguser && count($userNotFound) > 0) ||

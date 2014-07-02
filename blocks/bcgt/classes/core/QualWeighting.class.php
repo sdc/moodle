@@ -28,6 +28,7 @@ class QualWeighting {
     //| seperated list of levels that will be supported. 
     CONST BCGT_WEIGHTINGS_LEVELS = "3";
     CONST BCGT_WEIGHTING_CONSTANT_ATT_NAME = "ALPS_WEIGHTING_CONSTANT";
+    CONST BCGT_WEIGHTING_MULTIPLIER_ATT_NAME = "ALPS_MULTIPLIER_CONSTANT";
     
     public function QualWeighting($id = -1, $params = null)
     {
@@ -425,11 +426,31 @@ class QualWeighting {
         return 0;
     }
     
+    public function get_multiplier($targetQualID)
+    {
+        $record = $this->retrieve_multiplier($targetQualID);
+        if($record)
+        {
+            return $record->value;
+        }
+        return 100;
+    }
+    
+    
+    
     protected function retrieve_constant($targetQualID)
     {
         global $DB;
         $sql = "SELECT * FROM {block_bcgt_target_qual_att} WHERE name = ? AND bcgttargetqualid = ?";
         $record = $DB->get_record_sql($sql, array(QualWeighting::BCGT_WEIGHTING_CONSTANT_ATT_NAME, $targetQualID));
+        return $record;
+    }
+    
+    protected function retrieve_multiplier($targetQualID)
+    {
+        global $DB;
+        $sql = "SELECT * FROM {block_bcgt_target_qual_att} WHERE name = ? AND bcgttargetqualid = ?";
+        $record = $DB->get_record_sql($sql, array(QualWeighting::BCGT_WEIGHTING_MULTIPLIER_ATT_NAME, $targetQualID));
         return $record;
     }
     
@@ -448,6 +469,25 @@ class QualWeighting {
             $record->bcgttargetqualid = $targetQualID;
             $record->name = QualWeighting::BCGT_WEIGHTING_CONSTANT_ATT_NAME;
             $record->value = $constant;
+            $DB->insert_record('block_bcgt_target_qual_att', $record);
+        }
+    }
+    
+    public function save_multiplier($targetQualID, $multiplier)
+    {
+        global $DB;
+        $record = $this->retrieve_multiplier($targetQualID);
+        if($record)
+        {
+            $record->value = $multiplier;
+            $DB->update_record('block_bcgt_target_qual_att', $record);
+        }
+        else
+        {
+            $record = new stdClass();
+            $record->bcgttargetqualid = $targetQualID;
+            $record->name = QualWeighting::BCGT_WEIGHTING_MULTIPLIER_ATT_NAME;
+            $record->value = $multiplier;
             $DB->insert_record('block_bcgt_target_qual_att', $record);
         }
     }

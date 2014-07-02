@@ -836,6 +836,35 @@ $capabilities = array(
             'teacher' => CAP_ALLOW,
             'student' => CAP_ALLOW
         ),
+    ),
+    
+    'block/bcgt:exportqualspec' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'student' => CAP_PREVENT
+        ),
+    ),
+    
+    'block/bcgt:importqualspec' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'student' => CAP_PREVENT
+        ),
+    ),
+    
+    'block/bcgt:confirmreadcomments' => array(
+        'captype' => 'view',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'student' => CAP_ALLOW,
+            'user' => CAP_ALLOW
+        ),
     )
     
 );

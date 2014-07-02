@@ -286,25 +286,28 @@ elseif($grid == 'unit')
     {
         $unitObject = $sessionUnits[$unitID];
         $unit = $unitObject->unit;
-        $qualArray = $unitObject->qualArray;
-        if(array_key_exists($qualID, $qualArray))
+        if (isset($unitObject->qualArray))
         {
-            $studentArray = $qualArray[$qualID];
-            if(array_key_exists($studentID, $studentArray))
+            $qualArray = $unitObject->qualArray;
+            if(array_key_exists($qualID, $qualArray))
             {
-                $studentObject = $studentArray[$studentID];
-                
-                // Added isset as fix for session problem
-                if (isset($studentObject->unit))
+                $studentArray = $qualArray[$qualID];
+                if(array_key_exists($studentID, $studentArray))
                 {
-                    $studentUnit = $studentObject->unit;
-                    if($studentUnit)
+                    $studentObject = $studentArray[$studentID];
+
+                    // Added isset as fix for session problem
+                    if (isset($studentObject->unit))
                     {
-                        $studentUnitFound = true;
+                        $studentUnit = $studentObject->unit;
+                        if($studentUnit)
+                        {
+                            $studentUnitFound = true;
+                        }
                     }
                 }
-            }
-        } 
+            } 
+        }
     }
     //will be used later
     $loadParams = new stdClass();
@@ -512,12 +515,19 @@ elseif($grid == 'unit')
     //                                
     //                $retval .= "<error>{$GLOBALS['AJAX_ERROR']}</error>";
 
-        
+                
         if(array_key_exists($unitID, $sessionUnits))
         {
             $unitObject = $sessionUnits[$unitID];
             $unit = $unitObject->unit;
-            $qualArray = $unitObject->qualArray;
+            if(isset($unitObject->qualArray))
+            {
+                $qualArray = $unitObject->qualArray;
+            }
+            else
+            {
+                $qualArray = array();
+            }
         }
         else
         {
@@ -528,6 +538,7 @@ elseif($grid == 'unit')
             $unitObject->unit = Unit::get_unit_class_id($unitID, $loadParams);
             $qualArray = array();
         }
+                
         if(array_key_exists($qualID, $qualArray))
         {
             $studentArray = $qualArray[$qualID];
@@ -536,7 +547,7 @@ elseif($grid == 'unit')
         {
             $studentArray = array();
         }
-                
+                        
         if(array_key_exists($studentID, $studentArray))
         {
             $studentObject = $studentArray[$studentID];
@@ -545,11 +556,15 @@ elseif($grid == 'unit')
         {
             $studentObject = $DB->get_record_sql("SELECT * FROM {user} WHERE id = ?", array($studentID));
         }
+                
         $studentObject->unit = $studentUnit;
         $studentArray[$studentID] = $studentObject;
         $qualArray[$qualID] = $studentArray;
         $unitObject->qualArray = $qualArray;
         $sessionUnits[$unitID] = $unitObject;
+        
+       // pn($sessionUnits);
+        
         $_SESSION['session_unit'] = urlencode(serialize($sessionUnits));
 
         echo json_encode( $retval );

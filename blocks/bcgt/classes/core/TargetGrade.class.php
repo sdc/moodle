@@ -60,6 +60,13 @@ class TargetGrade {
         return $this->id;
     }
     
+    public function get_all_target_grades($targetQualID)
+    {
+        global $DB;
+        $sql = "SELECT * FROM {block_bcgt_target_grades} grades WHERE grades.bcgttargetqualid = ?";
+        return $DB->get_records_sql($sql, array($targetQualID));
+    }
+    
     /**
      * Saves the Target Grade into the database. 
      * It either updates or inserts. 
@@ -131,7 +138,12 @@ class TargetGrade {
         //add the difference to the current ranking
         //get the new breakdown
         $newRanking = $this->ranking + $difference;
-        return $this->get_new_target_by_ranking($newRanking);
+        $newGrade =  $this->get_new_target_by_ranking($newRanking);
+        if(!$newGrade)
+        {
+            $newGrade = $this->get_new_target_by_ranking($this->ranking);
+        }
+        return $newGrade;
     }
     
     public function get_new_target_by_ranking($newRanking)
@@ -260,7 +272,7 @@ class TargetGrade {
         }
         else
         {
-            $this->ucaspoints = NULL;
+            $this->ucaspoints = 0;
         }
         if(isset($params->bcgttargetqualid) && $params->bcgttargetqualid != 'NULL')
         {
@@ -342,7 +354,14 @@ class TargetGrade {
                     
                     $params = new stdClass();
                     $params->grade = $grade[3];
-                    $params->ucaspoints = $grade[4];
+                    if(isset($grade[4]) && $grade[4] != '')
+                    {
+                        $params->ucaspoints = $grade[4];
+                    }
+                    else
+                    {
+                        $params->ucaspoints = 0;
+                    }
                     $params->upperscore = $grade[5];
                     $params->lowerscore = $grade[6];
                     $params->ranking = $grade[7];

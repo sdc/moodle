@@ -257,6 +257,7 @@ elseif($tab == 'con')
     $out .= '<head>';
     $out .= '<tr><th>'.get_string('targetqual','block_bcgt').'</th>';
     $out .= '<th>'.get_string('constant', 'block_bcgt').'</th>';
+    $out .= '<th>'.get_string('alpsmultiplier', 'block_bcgt').'</th>';
     $out .= '</tr>';
     $out .= '</head>';
     $out .= '<body>';
@@ -275,9 +276,11 @@ elseif($tab == 'con')
             if($saving)
             {
                 $constant = optional_param('tq_'.$targetQual->id, null, PARAM_TEXT);
+                $multiplier = optional_param('tqw_'.$targetQual->id, null, PARAM_TEXT);
                 $params = new stdClass();
                 $qualWeighting = new QualWeighting(-1);
                 $qualWeighting->save_constant($targetQual->id, $constant);
+                $qualWeighting->save_multiplier($targetQual->id, $multiplier);
             }
             
             $count++;
@@ -293,6 +296,7 @@ elseif($tab == 'con')
             //go and get the value
             $qualWeighting = new QualWeighting();
             $constant = $qualWeighting->get_constant($targetQual->id);
+            $multiplier = $qualWeighting->get_multiplier($targetQual->id);
             if($editing)
             {
                 $out .= '<input class="coef" type="text" name="tq_'.$targetQual->id.'" value="'.$constant.'"/>';
@@ -301,6 +305,17 @@ elseif($tab == 'con')
             {
                 $out .= $constant;
             }
+            $out .= '</td>';
+            $out .= '<td>';
+            if($editing)
+            {
+                $out .= '<input class="coef" type="text" name="tqw_'.$targetQual->id.'" value="'.$multiplier.'"/>';
+            }
+            else
+            {
+                $out .= $multiplier;
+            }
+            
             $out .= '</td>';
         }
     }

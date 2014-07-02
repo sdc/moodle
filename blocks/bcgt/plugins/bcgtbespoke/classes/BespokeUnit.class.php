@@ -292,6 +292,40 @@ class BespokeUnit extends Unit {
         return $this->grading;
     }
     
+    
+    public function get_grading_info(){
+        
+        global $DB;
+        
+        if ($this->grading)
+        {
+            
+            $grading = $DB->get_record("block_bcgt_bspk_unit_grading", array("id" => $this->grading));
+            if ($grading)
+            {
+                
+                $grading->vals = array();
+                
+                $vals = $DB->get_records("block_bcgt_bspk_u_grade_vals", array("unitgradingid" => $grading->id));
+                if ($vals)
+                {
+                    
+                    foreach($vals as $val)
+                    {
+                        $grading->vals[] = $val;
+                    }
+                    
+                }
+                
+            }
+            
+        }
+                
+        return serialize($grading);
+        
+    }
+    
+    
     public function get_display_name()
     {
         
@@ -2628,6 +2662,9 @@ class BespokeUnit extends Unit {
                     }
 
                 }
+                
+                // recalculate student unit award
+                $this->calculate_unit_award($qualID);
 
             }
             

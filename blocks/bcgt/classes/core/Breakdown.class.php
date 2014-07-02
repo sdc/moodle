@@ -142,7 +142,12 @@ class Breakdown {
         //add the difference to the current ranking
         //get the new breakdown
         $newRanking = $this->ranking + $difference;
-        return $this->get_new_breakdown_by_ranking($newRanking);
+        $newBreakdown = $this->get_new_breakdown_by_ranking($newRanking);
+        if(!$newBreakdown)
+        {
+            $newBreakdown = $this->get_new_breakdown_by_ranking($this->ranking);
+        }
+        return $newBreakdown;
     }
     
     public function get_new_breakdown_by_ranking($newRanking)

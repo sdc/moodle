@@ -15,6 +15,9 @@ class BTECQualification extends Qualification {
     const ID = 2;
 	const NAME = 'BTEC';
 	const FAMILYID = 2;
+    
+    const SUPPORTED_BTEC_GRADE_SCALES = 'BCGT BTEC Scale (PMD)';
+    
 	protected $credits;
     protected $usedCriteriaNames;
     protected $defaultColumns = array('picture', 'username', 'name');
@@ -98,11 +101,6 @@ class BTECQualification extends Qualification {
 		$removed = parent::remove_units_qual($unit);
 		return $removed;	
 	}
-    
-    public function get_alps_multiplier()
-    {
-        return 100;
-    }
     
     /**
 	 * Get the value for the MET
@@ -2488,16 +2486,21 @@ JS;
     
     public function call_display_student_grid_external($from = false)
     {
-        $output = $this->display_student_grid_btec(false, true, false, true, $from);
+        
+        $output = "";
+        $output .= $this->display_student_grid_btec(false, true, false, true, $from);
         
         // If called from parent portal, append the summary thing, as we won't have the
         // capabilities to see it otherwise
-        if ($from == 'portal'){
-            $output .= '<br><br>';
+        if ($from == 'portal' || $from == 'elbp'){
+            $output .= '<br>';
             $output .= '<table id="summaryAwardGrades">';
             $output .= '<tr><th colspan="2">'.get_string('grade','block_bcgt').'</th>';
 			$output .= $this->show_target_grade(false);
             $output .= $this->show_asp_grade(false);
+            
+            $totalCredits = $this->get_students_total_credits(true);            
+			$output .= $this->show_predicted_qual_award($this->studentAward, null, $totalCredits, false, true);
             $output .= '</table>';
         }
         
@@ -2833,7 +2836,7 @@ JS;
         return true;
     }
     
-	protected function show_predicted_qual_award($studentAward, $context, $totalCredits, $seeUcas = false)
+	protected function show_predicted_qual_award($studentAward, $context, $totalCredits, $seeUcas = false, $skipCapabilityChecks = false)
 	{
         $warningClass = '';
         $warning = false;
@@ -2845,7 +2848,7 @@ JS;
         }
         //TODO CHANGE THIS TO USE THE STUDENT AWARD
 		$retval = "";
-        if($this->has_min_award() && has_capability('block/bcgt:viewbtecmingrade', $context))
+        if($skipCapabilityChecks || ($this->has_min_award() && has_capability('block/bcgt:viewbtecmingrade', $context)))
         {
             $minAward = '';
             $minUcas = '';
@@ -2871,7 +2874,7 @@ JS;
             $retval .= '</tr>';
         }
         
-        if($this->has_max_award() && has_capability('block/bcgt:viewbtecmaxgrade', $context))
+        if($skipCapabilityChecks || ($this->has_max_award() && has_capability('block/bcgt:viewbtecmaxgrade', $context)))
         {
             $maxAward = '';
             $maxUcas = '';
@@ -2899,7 +2902,7 @@ JS;
             $retval .= '</tr>';
         }
         
-        if($this->has_final_award() && has_capability('block/bcgt:viewbtecavggrade', $context))
+        if($skipCapabilityChecks || ($this->has_final_award() && has_capability('block/bcgt:viewbtecavggrade', $context)))
         {
             //are the predicted and final different?
             if($this->studentAward && $this->predictedAward && 
@@ -3022,7 +3025,7 @@ JS;
     public function get_student_grid_data($advancedMode, $editing, 
             $studentView)
     {
-        global $DB, $OUTPUT;
+        global $DB, $OUTPUT, $CFG, $USER;
         
         $output = "";
         
@@ -3274,48 +3277,94 @@ JS;
 
                     // Unit Comment
                     $comments = $unit->get_comments();
+                    $studentComments = $unit->get_student_comments();
 
                     $w = ($editing) ? 65 : 40;
                     
                     $output .= "<td style='width:{$w}px;min-width:{$w}px;max-width:{$w}px;'>";
                     
-                    $output .= "<div class='criteriaTDContent'>";
+                        $output .= "<div class='criteriaTDContent'>";#
 
-                        if(has_capability('block/bcgt:editunit', $context)){
-                            //$output .= "<a href='{$CFG->wwwroot}/blocks/bcgt/grids/unit_grid.php?uID={$unit->get_id()}&qID={$this->id}' target='_blank' title='View Unit Grid'><img src='".$OUTPUT->pix_url('i/calendar', 'core')."' /></a><br>";
-                            $output .= "<a href='{$CFG->wwwroot}/blocks/bcgt/forms/edit_unit.php?unitID={$unit->get_id()}' target='_blank' title='Edit Unit'><img src='".$OUTPUT->pix_url('t/editstring', 'core')."' /></a>";
-                        }
+                        $studentCommentsSetting = $this->get_attribute("read_unit_comments_{$unit->get_id()}", $this->studentID);
 
-                    $output .= "</div>";
+                            if(has_capability('block/bcgt:editunit', $context)){
 
-                    $output .= "<div class='hiddenCriteriaCommentButton'>";
+                                if ($studentComments && strlen($studentComments) > 0){
+                                    $output .= "<img src='{$CFG->wwwroot}/blocks/bcgt/pix/comment.png' class='studentUnitComments hand' id='studentUnitComments_S{$this->studentID}_U{$unit->get_id()}_Q{$this->id}' studentID='{$this->studentID}' unitID='{$unit->get_id()}' qualID='{$this->id}' /> ";
+                                }
+                                elseif ($studentCommentsSetting && $studentCommentsSetting > 0){
+                                    $output .= "<img src='{$CFG->wwwroot}/blocks/bcgt/pix/tick.png' title='Unit Comments Have Been Read' /> ";
+                                }
 
-                        $username = $this->student->username;
-                        $fullname = fullname($this->student);
-                        $unitname = bcgt_html($unit->get_name());
-                        $critname = "N/A";
-                        $cellID = "cmtCell_U_{$unit->get_id()}_S_{$this->studentID}_Q_{$this->id}";
+                                //$output .= "<a href='{$CFG->wwwroot}/blocks/bcgt/grids/unit_grid.php?uID={$unit->get_id()}&qID={$this->id}' target='_blank' title='View Unit Grid'><img src='".$OUTPUT->pix_url('i/calendar', 'core')."' /></a><br>";
+                                $output .= "<a href='{$CFG->wwwroot}/blocks/bcgt/forms/edit_unit.php?unitID={$unit->get_id()}' target='_blank' title='Edit Unit'><img src='".$OUTPUT->pix_url('t/editstring', 'core')."' /></a>";
+                            } elseif ($this->studentID == $USER->id && has_capability('block/bcgt:confirmreadcomments', $context) && $unit->get_comments() != ""){
 
-                        if (!empty($comments))
-                        {
-                            $output .= "<img id='{$cellID}' criteriaid='-1' unitid='{$unit->get_id()}' studentid='{$this->studentID}' qualid='{$this->id}' username='{$username}' fullname='{$fullname}' unitname='{$unitname}' critname='{$critname}' grid='student' class='editCommentsUnit' title='Click to Edit Comments'  src='{$CFG->wwwroot}/blocks/bcgt/plugins/bcgtcg/pix/comment_edit.png' alt='".get_string('editcomments', 'block_bcgt')."' />";
-                        }
-                        else
-                        {
-                            $output .= "<img id='{$cellID}' criteriaid='-1' unitid='{$unit->get_id()}' studentid='{$this->studentID}' qualid='{$this->id}' username='{$username}' fullname='{$fullname}' unitname='{$unitname}' critname='{$critname}' grid='student' class='addCommentsUnit' title='Click to Add Comments'  src='{$CFG->wwwroot}/blocks/bcgt/plugins/bcgtcg/pix/comment_add.png' alt='".get_string('addcomment', 'block_bcgt')."' />";
-                        }
+                                $output .= "<img src='{$CFG->wwwroot}/blocks/bcgt/pix/comment.png' class='studentUnitComments hand' id='studentUnitComments_S{$this->studentID}_U{$unit->get_id()}_Q{$this->id}' studentID='{$this->studentID}' unitID='{$unit->get_id()}' qualID='{$this->id}' />";
 
-                        //$retval .= "<span class='tooltipContent' style='display:none !important;'>".bcgt_html($this->comments, true)."</span>";
-                        $output .= "<div class='popUpDiv bcgt_unit_comments_dialog' id='dialog_S{$this->studentID}_U{$unit->get_id()}_Q{$this->id}' qualID='{$this->id}' unitID='{$unit->get_id()}' critID='-1' studentID='{$this->studentID}' grid='student' imgID='{$cellID}' title='Comments'>";
-                            $output .= "<span class='commentUserSpan'>Comments for {$fullname} : {$username}</span><br>";
-                            $output .= "<span class='commentUnitSpan'>{$unit->get_display_name()}</span><br>";
-                            $output .= "<span class='commentCriteriaSpan'>N/A</span><br><br><br>";
-                            $output .= "<textarea class='dialogCommentText' id='text_S{$this->studentID}_U{$unit->get_id()}_Q{$this->id}'>".bcgt_html($comments)."</textarea>";
+                            }
+
+                        $output .= "</div>";
+
+                        $output .= "<div class='hiddenCriteriaCommentButton'>";
+
+                            $username = $this->student->username;
+                            $fullname = fullname($this->student);
+                            $unitname = bcgt_html($unit->get_name());
+                            $critname = "N/A";
+                            $cellID = "cmtCell_U_{$unit->get_id()}_S_{$this->studentID}_Q_{$this->id}";
+
+                            if (!empty($comments))
+                            {
+                                $output .= "<img id='{$cellID}' criteriaid='-1' unitid='{$unit->get_id()}' studentid='{$this->studentID}' qualid='{$this->id}' username='{$username}' fullname='{$fullname}' unitname='{$unitname}' critname='{$critname}' grid='student' class='editCommentsUnit' title='Click to Edit Comments'  src='{$CFG->wwwroot}/blocks/bcgt/plugins/bcgtcg/pix/comment_edit.png' alt='".get_string('editcomments', 'block_bcgt')."' />";
+                            }
+                            else
+                            {
+                                $output .= "<img id='{$cellID}' criteriaid='-1' unitid='{$unit->get_id()}' studentid='{$this->studentID}' qualid='{$this->id}' username='{$username}' fullname='{$fullname}' unitname='{$unitname}' critname='{$critname}' grid='student' class='addCommentsUnit' title='Click to Add Comments'  src='{$CFG->wwwroot}/blocks/bcgt/plugins/bcgtcg/pix/comment_add.png' alt='".get_string('addcomment', 'block_bcgt')."' />";
+                            }
+
+                            //$retval .= "<span class='tooltipContent' style='display:none !important;'>".bcgt_html($this->comments, true)."</span>";
+                            $output .= "<div class='popUpDiv bcgt_unit_comments_dialog' id='dialog_S{$this->studentID}_U{$unit->get_id()}_Q{$this->id}' qualID='{$this->id}' unitID='{$unit->get_id()}' critID='-1' studentID='{$this->studentID}' grid='student' imgID='{$cellID}' title='Comments'>";
+                                $output .= "<span class='commentUserSpan'>Comments for {$fullname} : {$username}</span><br>";
+                                $output .= "<span class='commentUnitSpan'>{$unit->get_display_name()}</span><br>";
+                                $output .= "<span class='commentCriteriaSpan'>N/A</span><br><br><br>";
+                                $output .= "<textarea class='dialogCommentText' id='text_S{$this->studentID}_U{$unit->get_id()}_Q{$this->id}'>".bcgt_html($comments)."</textarea>";
+                            $output .= "</div>";
+
+
                         $output .= "</div>";
 
 
-                    $output .= "</div>";
-                    
+                        $output .= "<div class='bcgt_student_comments_dialog c' id='student_dialog_S{$this->studentID}_U{$unit->get_id()}_Q{$this->id}' qualID='{$this->id}' unitID='{$unit->get_id()}' studentID='{$this->studentID}'>";
+
+                            $output .= "<p><small>Unit Comments</small></p>";
+                            $output .= "<textarea disabled>";
+                                $output .= $unit->get_comments();
+                            $output .= "</textarea>";
+                            $output .= "<br><br>";
+
+                            // Students' response comments
+                            $output .= "<p><small>Student Comments</small></p>";
+                            
+                            $disabled = 'disabled';
+                            if ($this->studentID == $USER->id && has_capability('block/bcgt:confirmreadcomments', $context)){
+                                $disabled = '';
+                            }
+                            
+                            $output .= "<textarea {$disabled} id='student_response_comments_S{$this->studentID}_U{$unit->get_id()}_Q{$this->id}'>";
+                                $output .= $unit->get_student_comments();
+                            $output .= "</textarea>";
+                            $output .= "<br><br>";
+
+                            if ($studentCommentsSetting && $studentCommentsSetting > 0){
+                                 $output .= "<small><img src='{$CFG->wwwroot}/blocks/bcgt/pix/tick.png' /> You have already confirmed that you have read these comments</small>";
+                            } else {
+                                $output .= "<small>Please Confirm when you have read the comments.</small>";
+                            }
+
+                        $output .= "</div>";
+                                            
+                                        
                     $output .= "</td>";
                     
                     
@@ -4476,12 +4525,12 @@ JS;
         {
             
             // Check custom first
-            if (!is_null($custImgLate) && file_exists($CFG->dirroot . '/blocks/bcgt/plugins/bcgtbtec' . $custImgLate))
+            if (!is_null($custImgLate) && $custImgLate != "" && file_exists($CFG->dirroot . '/blocks/bcgt/plugins/bcgtbtec' . $custImgLate))
             {
                 $image = $custImgLate;
             }
             // Then core
-            elseif (!is_null($coreImgLate) && file_exists($CFG->dirroot . '/blocks/bcgt/plugins/bcgtbtec' . $coreImgLate))
+            elseif (!is_null($coreImgLate) && $coreImgLate != "" && file_exists($CFG->dirroot . '/blocks/bcgt/plugins/bcgtbtec' . $coreImgLate))
             {
                 $image = $coreImgLate;
             }
@@ -4491,12 +4540,12 @@ JS;
         {
             
             // Custom first
-            if (!is_null($custImg) && file_exists($CFG->dirroot . '/blocks/bcgt/plugins/bcgtbtec' . $custImg))
+            if (!is_null($custImg) && $custImg != "" && file_exists($CFG->dirroot . '/blocks/bcgt/plugins/bcgtbtec' . $custImg))
             {
                 $image = $custImg;
             }
             // Then core
-            elseif (!is_null($coreImg) && file_exists($CFG->dirroot . '/blocks/bcgt/plugins/bcgtbtec' . $coreImg))
+            elseif (!is_null($coreImg) && $coreImg != "" && file_exists($CFG->dirroot . '/blocks/bcgt/plugins/bcgtbtec' . $coreImg))
             {
                 $image = $coreImg;
             }
@@ -6853,8 +6902,8 @@ JS;
                                 $objValidation->setShowDropDown(true);
                                 $objValidation->setErrorTitle('input error');
                                 $objValidation->setError('Value is not in list');
-                                $objValidation->setPromptTitle('Choose a value');
-                                $objValidation->setPrompt('Please choose a criteria value from the list');
+                                //$objValidation->setPromptTitle('Choose a value');
+                                //$objValidation->setPrompt('Please choose a criteria value from the list');
                                 $objValidation->setFormula1('"'.implode(",", $possibleValuesArray).'"');
 
                             }
@@ -7685,12 +7734,101 @@ JS;
 //    }
     
     
-    public function sort_criteria($criteriaNames){
+    public function sort_criteria($criteriaNames = null, $criteria = null){
         
         require_once 'sorters/BTECCriteriaSorter.class.php';
         $sorter = new BTECCriteriaSorter();
-        usort($criteriaNames, array($sorter, "ComparisonDelegateByName"));
-        return $criteriaNames;
+        if (!is_null($criteriaNames)){
+            usort($criteriaNames, array($sorter, "ComparisonDelegateByName"));
+            return $criteriaNames;
+        }
+        
+        if (!is_null($criteria)){
+            usort($criteria, array($sorter, "ComparisonDelegateByNameObject"));
+            return $criteria;
+        }
+        
+        return false;
+        
+    }
+    
+    
+    public function update_student_criteria_from_mod_grading($criteria, $scale, $grade){
+        
+        $supportedTypes = explode(",", self::SUPPORTED_BTEC_GRADE_SCALES);
+        
+        if (!in_array($scale, $supportedTypes)){
+            mtrace("This qualification does not support this grading scale ({$scale})");
+            return false;
+        }
+        
+        // Loop through criteria linked to this project
+        if ($criteria)
+        {
+            
+            $metValue = $this->get_criteria_met_value();
+            if (!$metValue){
+                mtrace("error finding met value");
+                return false;
+            }
+            
+            $valueObj = new Value($metValue);
+            
+            foreach($criteria as $criterion)
+            {
+        
+                $name = $criterion->get_name();
+                $letter = substr($name, 0, 1);
+                $save = false;
+                
+                switch($scale)
+                {
+                    
+                    // PMD scale
+                    case 'BCGT BTEC Scale (PMD)':
+
+                        // If grade given is pass, achieve all the P criteria linked to the project
+                        // If it's Merit, achieve all the P and the M criteria linked to project
+                        // If it's Distinction, achieve all P, M and D criteria linked to project
+                        if ($grade == 'Pass' && $letter == 'P'){
+
+                            $criterion->set_student_value($valueObj);
+                            $save = true;
+                            
+                        } elseif ($grade == 'Merit' && ($letter == 'P' || $letter == 'M')){
+
+                            $criterion->set_student_value($valueObj);
+                            $save = true;
+                            
+                        } elseif ($grade == 'Distinction' && ($letter == 'P' || $letter == 'M' || $letter == 'D')){
+
+                            $criterion->set_student_value($valueObj);
+                            $save = true;
+                            
+                        }
+                        
+                        if ($save){
+                            $criterion->save_student($this->id, true);
+                            mtrace("saved student's criterion {$name} with value: {$valueObj->get_short_value()}");
+                        }
+
+                    break;
+
+                }
+        
+            }
+        
+        }
+        
+    }
+    
+    public function get_extra_rows_for_export_spec(&$obj, $unit, $rowNum){
+        
+        $rowNum++;
+        $obj->getActiveSheet()->setCellValue("A{$rowNum}", "Unit Specification Type");
+        $obj->getActiveSheet()->setCellValue("B{$rowNum}", $unit->get_type_name());
+        $rowNum++;
+        return $rowNum;
         
     }
     
