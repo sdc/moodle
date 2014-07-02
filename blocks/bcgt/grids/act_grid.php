@@ -192,14 +192,14 @@ $out = $OUTPUT->header();
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="button" id="deleteComment" value="Delete" />
             </div>';
-     $out .= '<div id="genericPopup" style="display:none;">
+     $out .= '<div id="genericPopup" style="display:none;"><div id="genericContent">
                 <div id="commentClose"><a href="#" onclick="popup.close();return false;"><img src="'.$CFG->wwwroot.'/blocks/bcgt/pix/close.png" style="width:24px;" alt="Close" /></a></div><br class="cl" /><!-- Toggle -->
                 <span id="popUpTitle"></span><br><br>
                     <div id="popUpSubTitle"></div><br>
                     <div id="popUpContent"></div>
                     <br>
                     <input type="button" value="Close" onclick="popup.close();return false;" />    
-            </div>';
+              </div></div>';
     $out .= '</form>';			
 $out .= $OUTPUT->footer();
 echo $out;

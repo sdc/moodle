@@ -104,11 +104,11 @@ class CGHBVRQQualification extends CGQualification {
     /**
      * Displays the student Grid
      */
-    public function display_student_grid($fullGridView = true, $studentView = true, $strippedView = false)
+    public function display_student_grid($fullGridView = true, $studentView = true, $strippedView = false, $from = false)
     {
         
         global $COURSE, $PAGE, $CFG, $OUTPUT;
-        
+                
         $this->update_any_beyond_target();
         
         $grid = optional_param('g', 's', PARAM_TEXT);
@@ -120,8 +120,8 @@ class CGHBVRQQualification extends CGQualification {
         if (!$strippedView)
         {
         
-            $retval .= "<input type='submit' id='viewsimple' class='gridbuttonswitch viewsimple' name='viewsimple' value='View Simple'/>";
-            $retval .= "<input type='submit' id='viewadvanced' class='gridbuttonswitch viewadvanced' name='viewadvanced' value='View Advanced'/>";
+            $retval .= "<a href='{$CFG->wwwroot}/blocks/bcgt/grids/student_grid.php?sID={$this->studentID}&qID={$this->id}&g=s'><input type='button' id='viewsimple' class='gridbuttonswitch viewsimple btn' name='viewsimple' value='View Simple'/></a>";
+            $retval .= "<a href='{$CFG->wwwroot}/blocks/bcgt/grids/student_grid.php?sID={$this->studentID}&qID={$this->id}&g=a'><input type='button' id='viewadvanced' class='gridbuttonswitch viewadvanced btn' name='viewadvanced' value='View Advanced'/></a>";
             $retval .= "<br>";  
             $courseID = optional_param('cID', -1, PARAM_INT);
             $context = context_course::instance($COURSE->id);
@@ -131,8 +131,8 @@ class CGHBVRQQualification extends CGQualification {
             }
             if(has_capability('block/bcgt:editstudentgrid', $context))
             {	
-                $retval .= "<input type='submit' id='editsimple' class='gridbuttonswitch editsimple' name='editsimple' value='Edit Simple'/>";
-                $retval .= "<input type='submit' id='editadvanced' class='gridbuttonswitch editadvanced' name='editadvanced' value='Edit Advanced'/>"; 
+                $retval .= "<a href='{$CFG->wwwroot}/blocks/bcgt/grids/student_grid.php?sID={$this->studentID}&qID={$this->id}&g=se'><input type='button' id='editsimple' class='gridbuttonswitch editsimple btn' name='editsimple' value='Edit Simple'/></a>";
+                $retval .= "<a href='{$CFG->wwwroot}/blocks/bcgt/grids/student_grid.php?sID={$this->studentID}&qID={$this->id}&g=ae'><input type='button' id='editadvanced' class='gridbuttonswitch editadvanced btn' name='editadvanced' value='Edit Advanced'/></a>"; 
             }
         
         }
@@ -185,7 +185,7 @@ JS;
         
         $retval .= "<br style='clear:both;' />";
         
-        if($this->has_final_grade() && $studentView)
+        if($this->has_final_grade() && $studentView && $from != 'portal')
 		{
             //>>BEDCOLL TODO this need to be taken from the qual object
             //as foundatonQual is different
@@ -231,7 +231,7 @@ JS;
         $retval .= "</div>";
         $retval .= '</div>';
         
-        if($this->has_final_grade() && $studentView)
+        if($this->has_final_grade() && $studentView && $from != 'portal')
 		{
             //>>BEDCOLL TODO this need to be taken from the qual object
             //as foundatonQual is different
@@ -242,8 +242,10 @@ JS;
         }
         
         // Qual Comment
-        if ($this->comments == '') $this->comments = 'N/A';
-        $retval .= "<div id='qualComment'><br><fieldset><legend><h2>Qualification Comments</h2></legend><br>".nl2br( htmlentities($this->comments, ENT_QUOTES) )."</fieldset></div>";
+        if ($this->comments != ''){
+            if ($this->comments == '') $this->comments = 'N/A';
+            $retval .= "<div id='qualComment'><br><fieldset><legend><h2>Qualification Comments</h2></legend><br>".nl2br( htmlentities($this->comments, ENT_QUOTES) )."</fieldset></div>";
+        }
         
         $retval .= $this->get_required_settings();
         
@@ -826,6 +828,17 @@ JS;
         echo "Not yet available";
     }
     
+    public function export_specification(){
+        return false;
+    }
     
+    public function export_studentt_grid($qualID)
+    {
+        header_remove('Content-Disposition');
+        header('Content-type: text/html');
+        echo 'Not supported for this qualification type';
+        exit;
+    }
+  
     
 }

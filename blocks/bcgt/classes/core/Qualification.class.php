@@ -41,6 +41,7 @@ abstract class Qualification {
     const LOADLEVELCRITERIA = 7;
     const LOADLEVELSUBCRITERIA = 7.5;
     const LOADLEVELALL = 10;
+    const SUPPORTED_GRADE_SCALES = 'BCGT BTEC Scale (PMD)';
     
     protected $id;
 	protected $name;
@@ -544,25 +545,28 @@ abstract class Qualification {
         $params[] = 1;
         if($search != '')
         {
-            $sql .= " AND (user.firstname LIKE ? OR user.lastname LIKE ? 
-                OR user.email LIKE ? OR user.username LIKE ? ";
-            $params[] = '%'.$search.'%';
-            $params[] = '%'.$search.'%';
-            $params[] = '%'.$search.'%';
-            $params[] = '%'.$search.'%';
-            $searchSplit = explode(' ', $search);
-            if($searchSplit)
-            {
-                foreach($searchSplit AS $split)
-                {
-                    $sql .= ' OR user.firstname LIKE ? OR user.lastname LIKE ? 
-                OR user.email LIKE ? OR user.username LIKE ? ';
-                    $params[] = '%'.$split.'%';
-                    $params[] = '%'.$split.'%';
-                    $params[] = '%'.$split.'%';
-                    $params[] = '%'.$split.'%';
-                }
-            }
+            $sql .= ' AND (';
+            $sql .= bcgt_student_search_db($search, $params);
+            
+//            $sql .= " AND (user.firstname LIKE ? OR user.lastname LIKE ? 
+//                OR user.email LIKE ? OR user.username LIKE ? ";
+//            $params[] = '%'.$search.'%';
+//            $params[] = '%'.$search.'%';
+//            $params[] = '%'.$search.'%';
+//            $params[] = '%'.$search.'%';
+//            $searchSplit = explode(' ', $search);
+//            if($searchSplit)
+//            {
+//                foreach($searchSplit AS $split)
+//                {
+//                    $sql .= ' OR user.firstname LIKE ? OR user.lastname LIKE ? 
+//                OR user.email LIKE ? OR user.username LIKE ? ';
+//                    $params[] = '%'.$split.'%';
+//                    $params[] = '%'.$split.'%';
+//                    $params[] = '%'.$split.'%';
+//                    $params[] = '%'.$split.'%';
+//                }
+//            }
             $sql .= ')';
         }
         if($courseID != -1 && !$onCourse)
@@ -927,8 +931,11 @@ abstract class Qualification {
         $temp = '';
         if($cetaUcas && $targetGradeUcasPoints)
         {
+            
+            $qualWeighting = new QualWeighting();
+            $multiplier = $qualWeighting->get_multiplier($this->bcgtTargetQualID);
             $alps = new Alps();
-            $alps->set_alps_multiplier($this->get_alps_multiplier());
+            $alps->set_alps_multiplier($multiplier);
             $temp = $alps->calculate_students_alps_report($targetGradeUcasPoints, $cetaUcas, $this->id, $showCoefficient);
         }
         return $temp;
@@ -1018,8 +1025,11 @@ abstract class Qualification {
         $temp = '';
         if($faUcas && $targetGradeUcasPoints)
         {
+            $qualWeighting = new QualWeighting();
+            $multiplier = $qualWeighting->get_multiplier($this->bcgtTargetQualID);
+            
             $alps = new Alps();
-            $alps->set_alps_multiplier($this->get_alps_multiplier());
+            $alps->set_alps_multiplier($multiplier);
             $temp = $alps->calculate_students_alps_report($targetGradeUcasPoints, $faUcas, $this->id, $showCoefficient);
         }
         return $temp;
@@ -1060,8 +1070,11 @@ abstract class Qualification {
         $temp = '';
         if($cetaUcas && $targetGradeUcasPoints)
         {
+            $qualWeighting = new QualWeighting();
+            $multiplier = $qualWeighting->get_multiplier($this->bcgtTargetQualID);
+            
             $alps = new Alps();
-            $alps->set_alps_multiplier($this->get_alps_multiplier());
+            $alps->set_alps_multiplier($multiplier);
             $temp = $alps->calculate_students_alps_report($targetGradeUcasPoints, $cetaUcas, $this->id, $showCoefficient);
         }
         return $temp;
@@ -1120,8 +1133,11 @@ abstract class Qualification {
         $temp = '';
         if($gradeBookUcas && $targetGradeUcasPoints)
         {
+            $qualWeighting = new QualWeighting();
+            $multiplier = $qualWeighting->get_multiplier($this->bcgtTargetQualID);
+            
             $alps = new Alps();
-            $alps->set_alps_multiplier($this->get_alps_multiplier());
+            $alps->set_alps_multiplier($multiplier);
             $temp = $alps->calculate_students_alps_report($targetGradeUcasPoints, $gradeBookUcas, $this->id, $showCoefficient);
         }
         return $temp;
@@ -1167,8 +1183,11 @@ abstract class Qualification {
         $temp = '';
         if($totalFaUcas != 0 && $totalTargetUcas != 0 && $userCount != 0)
         {
+            $qualWeighting = new QualWeighting();
+            $multiplier = $qualWeighting->get_multiplier($this->bcgtTargetQualID);
+            
             $alps = new Alps();
-            $alps->set_alps_multiplier($this->get_alps_multiplier());
+            $alps->set_alps_multiplier($multiplier);
             $temp = $alps->calculate_class_alps_report($totalTargetUcas, $totalFaUcas, $this->id, $userCount, $showCoefficient);
         }
         return $temp;
@@ -1216,8 +1235,11 @@ abstract class Qualification {
         $temp = '';
         if($totalGBUcas != 0 && $totalTargetUcas != 0 && $userCount != 0)
         {
+            $qualWeighting = new QualWeighting();
+            $multiplier = $qualWeighting->get_multiplier($this->bcgtTargetQualID);
+            
             $alps = new Alps();
-            $alps->set_alps_multiplier($this->get_alps_multiplier());
+            $alps->set_alps_multiplier($multiplier);
             $temp = $alps->calculate_class_alps_report($totalTargetUcas, $totalGBUcas, $this->id, $userCount, $showCoefficient);
         }
         return $temp;
@@ -1250,8 +1272,11 @@ abstract class Qualification {
         $temp = '';
         if($totalCetaUcas != 0 && $totalTargetUcas != 0 && $userCount != 0)
         {
+            $qualWeighting = new QualWeighting();
+            $multiplier = $qualWeighting->get_multiplier($this->bcgtTargetQualID);
+            
             $alps = new Alps();
-            $alps->set_alps_multiplier($this->get_alps_multiplier());
+            $alps->set_alps_multiplier($multiplier);
             $temp = $alps->calculate_class_alps_report($totalTargetUcas, $totalCetaUcas, $this->id, $userCount, $showCoefficient);
         }
         return $temp; 
@@ -1297,8 +1322,11 @@ abstract class Qualification {
         $temp = '';
         if($totalCetaUcas != 0 && $totalTargetUcas != 0 && $userCount != 0)
         {
+            $qualWeighting = new QualWeighting();
+            $multiplier = $qualWeighting->get_multiplier($this->bcgtTargetQualID);
+            
             $alps = new Alps();
-            $alps->set_alps_multiplier($this->get_alps_multiplier());
+            $alps->set_alps_multiplier($multiplier);
             $temp = $alps->calculate_class_alps_report($totalTargetUcas, $totalCetaUcas, $this->id, $userCount, $showCoefficient);
         }
         return $temp;
@@ -1394,8 +1422,11 @@ abstract class Qualification {
         $temp = '';
         if($faUcas && $targetGradeUcasPoints)
         {
+            $qualWeighting = new QualWeighting();
+            $multiplier = $qualWeighting->get_multiplier($this->bcgtTargetQualID);
+            
             $alps = new Alps();
-            $alps->set_alps_multiplier($this->get_alps_multiplier());
+            $alps->set_alps_multiplier($multiplier);
             $temp = $alps->calculate_students_alps_report($targetGradeUcasPoints, $faUcas, $this->id, $showCoefficient);
         }
         return $temp;
@@ -1786,6 +1817,44 @@ abstract class Qualification {
             LEFT OUTER JOIN {block_bcgt_project_att} att ON att.bcgtprojectid = project.id 
             WHERE refs.bcgtqualificationid = ? AND userref.userid = ? AND userref.dateupdated < NOW() 
             AND userref.bcgttargetgradesid != ?
+            ORDER BY userref.dateupdated DESC";
+        //            OR (SELECT id FROM {block_bcgt_project_att} WHERE name = ?) IS NULL 
+//            AND project.targetdate < NOW() AND project.targetdate IS NOT NULL) 
+        return $DB->get_records_sql($sql, array($qualID,$userID, 0), 0, 1);
+    }
+    
+    public static function get_current_fa_grade($qualID, $userID)
+    {
+        //so we want the ceta that is closest to todays date, but before it
+        global $DB;
+        $sql = "SELECT value.*, userref.dateupdated FROM {block_bcgt_user_activity_ref} userref 
+            JOIN {block_bcgt_activity_refs} refs ON refs.id = userref.bcgtactivityrefid 
+            JOIN {block_bcgt_value} value ON value.id = userref.bcgtvalueid  
+            JOIN {block_bcgt_project} project ON project.id = refs.bcgtprojectid
+            LEFT OUTER JOIN {block_bcgt_project_att} att ON att.bcgtprojectid = project.id 
+            WHERE refs.bcgtqualificationid = ? AND userref.userid = ? AND 
+            project.targetdate < UNIX_TIMESTAMP(NOW()) AND project.targetdate IS NOT NULL AND userref.bcgtvalueid IS NOT NULL 
+            ORDER BY project.targetdate DESC";
+        //            OR (SELECT id FROM {block_bcgt_project_att} WHERE name = ?) IS NULL 
+//            AND project.targetdate < NOW() AND project.targetdate IS NOT NULL) 
+        $records = $DB->get_records_sql($sql, array($qualID,$userID), 0, 1);
+        if($records)
+        {
+            return end($records);
+        }
+        return false;
+    }
+    
+    public static function get_most_recent_fa_grade($qualID, $userID)         
+    {
+        global $DB;
+        $sql = "SELECT value.*, userref.dateupdated FROM {block_bcgt_user_activity_ref} userref 
+            JOIN {block_bcgt_activity_refs} refs ON refs.id = userref.bcgtactivityrefid 
+            JOIN {block_bcgt_value} value ON value.id = userref.bcgtvalueid 
+            JOIN {block_bcgt_project} project ON project.id = refs.bcgtprojectid
+            LEFT OUTER JOIN {block_bcgt_project_att} att ON att.bcgtprojectid = project.id 
+            WHERE refs.bcgtqualificationid = ? AND userref.userid = ? AND userref.dateupdated < NOW() 
+            AND userref.bcgtvalueid != ?
             ORDER BY userref.dateupdated DESC";
         //            OR (SELECT id FROM {block_bcgt_project_att} WHERE name = ?) IS NULL 
 //            AND project.targetdate < NOW() AND project.targetdate IS NOT NULL) 
@@ -3429,24 +3498,43 @@ abstract class Qualification {
         JOIN {block_bcgt_course_qual} coursequal ON coursequal.bcgtqualificationid = userqual.bcgtqualificationid AND coursequal.courseid = course.id
 		";
                 
-                 $sql .= " LEFT OUTER JOIN 
-                (
-                    
-                    SELECT b.id, b.ranking, b.targetgrade, user.id as userid, b.unitsscorelower
-                    FROM {block_bcgt_target_breakdown} b
-                    INNER JOIN {block_bcgt_user_course_trgts} ct ON ct.teacherset_breakdownid = b.id
-                    INNER JOIN {user} user ON user.id = ct.userid
-
-                ) AS teacherSetBreakdown ON teacherSetBreakdown.userid = user.id";
-                 $sql .= " LEFT OUTER JOIN 
-                (
-                    
-                    SELECT t.id, t.ranking, t.grade, user.id as userid
-                    FROM {block_bcgt_target_grades} t
-                    INNER JOIN {block_bcgt_user_course_trgts} ct ON ct.teacherset_targetid = t.id
-                    INNER JOIN {user} user ON user.id = ct.userid
-
-                ) AS teacherSetTarget ON teacherSetTarget.userid = user.id";
+//                 $sql .= " LEFT OUTER JOIN 
+//                (
+//                    
+//                    SELECT b.id, b.ranking, b.targetgrade, user.id as userid, b.unitsscorelower
+//                    FROM {block_bcgt_target_breakdown} b
+//                    INNER JOIN {block_bcgt_user_course_trgts} ct ON ct.teacherset_breakdownid = b.id
+//                    INNER JOIN {user} user ON user.id = ct.userid
+//
+//                ) AS teacherSetBreakdown ON teacherSetBreakdown.userid = user.id";
+        
+        $sql .= " LEFT OUTER JOIN 
+            (
+                SELECT b.id, b.ranking, b.targetgrade, user.id AS userid, b.unitsscorelower
+                FROM {block_bcgt_target_breakdown} b 
+                INNER JOIN {block_bcgt_stud_course_grade} grade ON grade.recordid = b.id
+                INNER JOIN {user} user ON user.id = grade.userid 
+                WHERE grade.location = ? AND grade.type = ? AND grade.qualid = ?
+            ) AS teacherSetBreakdown ON teacherSetBreakdown.userid = user.id";
+        
+//                 $sql .= " LEFT OUTER JOIN 
+//                (
+//                    
+//                    SELECT t.id, t.ranking, t.grade, user.id as userid
+//                    FROM {block_bcgt_target_grades} t
+//                    INNER JOIN {block_bcgt_user_course_trgts} ct ON ct.teacherset_targetid = t.id
+//                    INNER JOIN {user} user ON user.id = ct.userid
+//
+//                ) AS teacherSetTarget ON teacherSetTarget.userid = user.id";
+        
+        $sql .= " LEFT OUTER JOIN 
+            (
+                SELECT t.id, t.ranking, t.grade, user.id AS userid
+                FROM {block_bcgt_target_grades} t 
+                INNER JOIN {block_bcgt_stud_course_grade} grade ON grade.recordid = t.id
+                INNER JOIN {user} user ON user.id = grade.userid 
+                WHERE grade.location = ? AND grade.type = ? AND grade.qualid = ?
+            ) AS teacherSetTarget ON teacherSetTarget.userid = user.id";
                  
                  $sql .= " LEFT OUTER JOIN
                             (
@@ -3551,6 +3639,15 @@ abstract class Qualification {
 		$params = array();
         $params[] = $qualID;
         $params[] = 'student';
+        
+        $params[] = 'block_bcgt_target_breakdown';
+        $params[] = 'aspirational';
+        $params[] = $qualID;
+        
+        $params[] = 'block_bcgt_target_grades';
+        $params[] = 'aspirational';
+        $params[] = $qualID;
+        
         $params[] = $qualID;
         if($hasUnits)
         {
@@ -4920,9 +5017,9 @@ abstract class Qualification {
 		global $DB;
 		$sql = "INSERT INTO {block_bcgt_user_unit_his} 
 		(bcgtuserunitid, userid, bcgtqualificationid, bcgtunitid, bcgttypeawardid, 
-        comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset) 
+        comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset, studentcomments) 
 		SELECT id, userid, bcgtqualificationid, bcgtunitid, 
-		bcgttypeawardid, comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset  
+		bcgttypeawardid, comments, dateupdated, userdefinedvalue, bcgtvalueid, setbyuserid, updatedbyuserid, dateset, studentcomments  
 		FROM {block_bcgt_user_unit} WHERE bcgtqualificationid = ?";
         $params = array($this->id);
 		if($studentID != -1)
@@ -5421,14 +5518,25 @@ abstract class Qualification {
    
     protected function load_possible_assessment_values($typeID = -1, $targetQualID = -1)
     {
+        $possibleValues = Qualification::get_possible_assessment_valued($typeID,$targetQualID);
+        $this->possibleValues = $possibleValues;
+    }
+    
+    public static function get_possible_assessment_valued($typeID = -1, $targetQualID = -1, $checkForEnabled = true)
+    {
         global $DB;
 		$sql = "SELECT * FROM {block_bcgt_value} ";
         $sql .= "WHERE context = ? AND ((bcgttypeid = ? AND bcgttargetqualid = ?) OR (bcgttypeid = ? AND bcgttargetqualid IS NULL))";
         $params = array('assessment', -1, $targetQualID, $typeID);
+        if($checkForEnabled)
+        {
+            $sql .= ' AND enabled = ?';
+            $params[] = 1;
+        }
         $sql .= " ORDER BY ranking DESC, id ASC";
         
 		$possibleValues = $DB->get_records_sql($sql, $params);
-        $this->possibleValues = $possibleValues;
+        return $possibleValues;
     }
     
     protected function load_possible_values($typeID = -1, array $query = null)
@@ -5870,12 +5978,153 @@ abstract class Qualification {
     }
     
     
-    public function sort_criteria($criteriaNames){
+     public function sort_criteria($criteriaNames = null, $criteria = null){
         
         $sorter = new CriteriaSorter();
-        usort($criteriaNames, array($sorter, "ComparisonSimple"));
-        return $criteriaNames;
+        if (!is_null($criteriaNames)){
+            usort($criteriaNames, array($sorter, "ComparisonSimple"));
+            return $criteriaNames;
+        }
         
+        if (!is_null($criteria)){
+            usort($criteria, array($sorter, "ComparisonSimpleObject"));
+            return $criteria;
+        }
+        
+        return false;
+        
+    }
+    
+    /**
+     * This is the detault which will be overridden by qual families which support it
+     * @param type $criteria
+     * @param type $scale
+     * @param type $grade
+     */
+    public function update_student_criteria_from_mod_grading($criteria, $scale, $grade){
+        mtrace("This qualification type does not support this");
+    }
+    
+    
+    /**
+     * Export the spec of the qualification - units, criteria, etc... 
+     * No user data
+     * @return boolean
+     */
+    public function export_specification(){
+        
+        global $CFG, $USER;
+        
+        $objPHPExcel = new \PHPExcel();
+        $objPHPExcel->getProperties()
+                     ->setCreator(fullname($USER))
+                     ->setLastModifiedBy(fullname($USER))
+                     ->setTitle($this->get_display_name())
+                     ->setSubject($this->get_display_name())
+                     ->setDescription($this->get_display_name() . " - generated by Moodle Grade Tracker");
+
+        // Remove default sheet
+        $objPHPExcel->removeSheetByIndex(0);
+        
+        $sheetIndex = 0;
+        
+        // Have a worksheet for each unit
+        $units = $this->get_units();
+        
+        $unitSorter = new UnitSorter();
+        usort($units, array($unitSorter, "ComparisonDelegateByType"));
+        
+        if ($units)
+        {
+            
+            foreach($units as $unit)
+            {
+                
+                // Set current sheet
+                $unitName = substr($unit->get_name(), 0, 30);
+                $unitName = preg_replace("/[^a-z 0-9]/i", "", $unitName);
+                
+                $objPHPExcel->createSheet($sheetIndex);
+                $objPHPExcel->setActiveSheetIndex($sheetIndex);
+                $objPHPExcel->getActiveSheet()->setTitle($unitName);
+                
+                // Unit name
+                $objPHPExcel->getActiveSheet()->setCellValue("A1", "Unit Name");
+                $objPHPExcel->getActiveSheet()->setCellValue("B1", $unit->get_name());
+                
+                // Unit code
+                $objPHPExcel->getActiveSheet()->setCellValue("A2", "Unit Code");
+                $objPHPExcel->getActiveSheet()->setCellValue("B2", $unit->get_uniqueID());
+                
+                // Unit details
+                $objPHPExcel->getActiveSheet()->setCellValue("A3", "Unit Details");
+                $objPHPExcel->getActiveSheet()->setCellValue("B3", $unit->get_details());
+                
+                // Unit level
+                $objPHPExcel->getActiveSheet()->setCellValue("A4", "Unit Level");
+                $objPHPExcel->getActiveSheet()->setCellValue("B4", $unit->get_level()->get_level());
+                
+                // Unit credits
+                $objPHPExcel->getActiveSheet()->setCellValue("A5", "Unit Credits");
+                $objPHPExcel->getActiveSheet()->setCellValue("B5", $unit->get_credits());
+                
+                $rowNum = $this->get_extra_rows_for_export_spec($objPHPExcel, $unit, 5);
+                
+                // Criteria headers
+                $objPHPExcel->getActiveSheet()->setCellValue("A{$rowNum}", "Criteria Names");
+                $objPHPExcel->getActiveSheet()->setCellValue("B{$rowNum}", "Criteria Details");
+                
+                
+                $criteria = $this->sort_criteria(null, $unit->get_criteria());
+                
+                $rowNum++;
+                
+                if ($criteria)
+                {
+                    foreach($criteria as $criterion)
+                    {
+
+                        $objPHPExcel->getActiveSheet()->setCellValue("A{$rowNum}", $criterion->get_name());
+                        $objPHPExcel->getActiveSheet()->setCellValue("B{$rowNum}", $criterion->get_details());
+
+                        $rowNum++;
+
+                    }
+                }
+               
+                                                
+                $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+                
+                $sheetIndex++;
+                
+            }
+            
+        }
+        
+        
+        // Alignment
+        $objPHPExcel->getDefaultStyle()
+                    ->getAlignment()
+                    ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+        
+        
+        // End
+        if ($units){
+            $objPHPExcel->setActiveSheetIndex(0);
+        }
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+
+        ob_clean();
+        $objWriter->save('php://output');
+        
+        return true;
+        
+    }
+    
+    
+    public function get_extra_rows_for_export_spec(&$obj, $unit, $rowNum){
+        return $rowNum;
     }
     
     

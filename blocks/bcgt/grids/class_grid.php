@@ -141,7 +141,7 @@ $out = $OUTPUT->header();
     $out .= '<input type="hidden" id="selects" name="selects" value="'.$dropDowns.'"/>'; 
     $out .= '<input type="hidden" id="user" name="user" value="'.$USER->id.'"/>';
     
-    $out .= get_grid_menu($studentID, $unitID, $qualID);
+    $out .= get_grid_menu($studentID, $unitID, $qualID, $courseID);
     $out .= '</div>';
     
     $heading = get_string('trackinggrid','block_bcgt');

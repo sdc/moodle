@@ -154,6 +154,18 @@ class CriteriaSorter
     }
     
     
+    /**
+     * @param type $obj1
+     * @param type $obj2
+     * @return type
+     */
+    function ComparisonSimpleObject($obj1, $obj2)
+    {
+        $A = ( preg_match("/^[a-z]0/i", $obj1->get_name()) && strlen($obj1->get_name()) <> strlen($obj2->get_name()) ) ? preg_replace("/0/", "", $obj1->get_name(), 1) : $obj1->get_name();
+        $B = ( preg_match("/^[a-z]0/i", $obj2->get_name()) && strlen($obj2->get_name()) <> strlen($obj1->get_name()) ) ? preg_replace("/0/", "", $obj2->get_name(), 1) : $obj2->get_name();
+        return ( strnatcasecmp($A, $B) == 0 ) ? 0 : (  strnatcasecmp($A, $B) > 0 ) ? 1 : -1;
+    }
+    
 
 }
 ?>

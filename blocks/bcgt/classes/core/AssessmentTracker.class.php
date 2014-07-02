@@ -16,6 +16,7 @@ class AssessmentTracker {
     private $qual;
     private $modLinks;
     private $modTypes;
+    private $viewType = 'calendar';
     private $showValues = false;
     
     public function __construct() {
@@ -73,6 +74,10 @@ class AssessmentTracker {
     
     public function setShowValues($val){
         $this->showValues = $val;
+    }
+    
+    public function setViewType($type){
+        $this->viewType = $type;
     }
     
     public function getColour($id){
@@ -348,36 +353,15 @@ class AssessmentTracker {
             return false;
         }
         
-        
-        // If we only want ones linked to criteria, filter out others
-        if ($this->modLinks == 'crit'){
-            
-            $newCourseArray = array();
-            
-            if ($this->courses)
-            {
-                foreach($this->courses as $course)
-                {
-                    
-                    if (bcgt_course_has_criteria_module_links($course->id))
-                    {
-                        $newCourseArray[] = $course;
-                    }
-                    
-                }
-            }
                         
-            $this->courses = $newCourseArray;
-            
-            
-        }
-        
-                
         $output = "";
         
+        
         $output .= "<h2 class='c'>".$this->course->fullname."</h2>";
-                
-            // Colour key
+
+        // Colour key
+        if ($this->viewType == 'calendar')
+        {
             $output .= "<fieldset><legend>".get_string('modulecolourkey', 'block_bcgt')."</legend>";
 
                 $output .= "<div class='c'>";
@@ -399,54 +383,183 @@ class AssessmentTracker {
                 $output .= "</div>";
 
             $output .= "</fieldset><br>";
-            
-            
-            $output .= "<p class='c' id='loading2'><img src='{$CFG->wwwroot}/blocks/bcgt/pix/ajax-loader.gif' /></p>";
+        }
 
-            $output .= "<div id='assessment_tracker_div'>";
+        $output .= "<p class='c' id='loading2'><img src='{$CFG->wwwroot}/blocks/bcgt/pix/ajax-loader.gif' /></p>";
 
-                $output .= "<table id='assessment_tracker_table'>";
-                    $output .= "<thead>";
+        $output .= "<div id='assessment_tracker_div'>";
+
+        $output .= "<table id='assessment_tracker_table'>";
+
+        
+        // Normal calendar view
+        if ($this->viewType == 'calendar')
+        {
+        
+
+            $output .= "<thead>";
+                $output .= "<tr>";
+                $output .= "<th class='daynum'></th>";
+
+                for ($month = 1; $month <= 12; $month++)
+                {
+                    $strtime = "01-{$month}-{$this->year}";
+                    $output .= "<th class='month monthheader'>".date('M', strtotime($strtime))."</th>";
+                }
+
+                $output .= "</tr>";
+            $output .= "</thead>";
+
+                $output .= "<tbody>";
+                for ($day = 1; $day <= 31; $day++)
+                {
                     $output .= "<tr>";
-                    $output .= "<th class='daynum'></th>";
+                        $output .= "<td class='daynum'>{$day}</td>";
 
-                    for ($month = 1; $month <= 12; $month++)
-                    {
-                        $strtime = "01-{$month}-{$this->year}";
-                        $output .= "<th class='month monthheader'>".date('M', strtotime($strtime))."</th>";
-                    }
+                        for ($month = 1; $month <= 12; $month++)
+                        {
+                            if (checkdate($month, $day, $this->year))
+                            {
+                                $output .= "<td class='month'>".$this->getCourseTrackerDay($day, $month, $this->year)."</td>";
+                            }
+                            else
+                            {
+                                $output .= "<td class='non-date'></td>";
+                            }
+                        }
 
                     $output .= "</tr>";
-                    $output .= "<thead>";
+                }
 
-                    $output .= "<tbody>";
-                    for ($day = 1; $day <= 31; $day++)
-                    {
-                        $output .= "<tr>";
-                            $output .= "<td class='daynum'>{$day}</td>";
+            $output .= "</tbody>";
 
-                            for ($month = 1; $month <= 12; $month++)
-                            {
-                                if (checkdate($month, $day, $this->year))
-                                {
-                                    $output .= "<td class='month'>".$this->getCourseTrackerDay($day, $month, $this->year)."</td>";
-                                }
-                                else
-                                {
-                                    $output .= "<td class='non-date'></td>";
-                                }
-                            }
 
-                        $output .= "</tr>";
+        }
+        else
+        {
+            
+            
+            // Get all modules this year for this course
+            $year = $this->year;
+            $strtimestart = "01-01-{$year} 00:00";
+            $strtimeend = "31-12-{$year} 23:59";
+            
+            $start = strtotime($strtimestart);
+            $end = strtotime($strtimeend);
+            
+            $activeMods = $this->getActiveModules($start, $end, $this->course);
+            
+            $activeModsArray = array();
+            if ($activeMods){
+                foreach($activeMods as $activeMod){
+                    $courseModule = bcgt_get_course_module($this->course->id, $activeMod->modid , $activeMod->id);
+                    if (!$courseModule){
+                        continue;
                     }
-                    $output .= "</tbody>";
 
-                    $output .= "<tfoot></tfoot>";
-
-                $output .= "</table>";       
-
-            $output .= "</div>";    
+                    // If we only want criteria linked ones, and this has none, skip
+                    if ($this->modLinks == 'crit' && !bcgt_course_module_has_criteria_links($courseModule->id)){
+                        continue;
+                    }
                     
+                    $activeModsArray[] = $activeMod;
+                    
+                }
+            }
+            
+            $activeMods = $activeModsArray;
+            
+                        
+            // Modules along the top
+            $output .= "<thead>";
+                $output .= "<tr>";
+                $output .= "<th class='weeknum'></th>";
+
+                if ($activeMods)
+                {
+                    foreach($activeMods as $activeMod)
+                    {
+                        
+                        // See if there is an icon
+                        $icon = $CFG->dirroot . '/mod/' . $activeMod->modtype . '/pix/icon.png';
+                        $iconOutput = '';
+                        if (file_exists($icon)){
+
+                            $icon = str_replace($CFG->dirroot, $CFG->wwwroot, $icon);
+                            $iconOutput = "<img class='icn' src='{$icon}' /> ";
+
+                        }
+                        
+                        $output .= "<th class='modheader mod'><a href='#' class='mod_head' moduleType='{$activeMod->modtype}' moduleID='{$activeMod->id}'>{$iconOutput} {$activeMod->name}</a></th>";
+                    }
+                }
+                else
+                {
+                    $output .= "<th class='modheader mod'>".get_string('nomodules', 'block_bcgt')."</th>";
+                }
+
+                $output .= "</tr>";
+            $output .= "</thead>";
+            
+            $output .= "<tbody>";
+                                    
+            for ($i = 0; $i < 52; $i++)
+            {
+                $week = array();
+                $week['number'] = $i + 1;
+                $week['start'] = strtotime("+{$i} weeks", $start);
+                $week['end'] = strtotime("+6 days 23:59", $week['start']);
+                
+                $output .= "<tr>";
+                
+                    $output .= "<td class='weeknum'>".date('d/m/Y', $week['start'])."</td>";
+                    
+                    if ($activeMods)
+                    {
+                        foreach($activeMods as $activeMod)
+                        {
+                            $mod = get_mod_linking_by_name($activeMod->modtype);
+                            
+                            $sField = $mod->modtablestartdatefname;
+                            $eField = $mod->modtableduedatefname;
+                            
+                            // Did the module start during this week?
+                            if ($activeMod->$sField >= $week['start'] && $activeMod->$sField <= $week['end'])
+                            {
+                                $output .= "<td class='mod modstart'><img src='{$CFG->wwwroot}/blocks/bcgt/pix/start.png' /> ".date('D jS M Y, H:i', $activeMod->$sField)."</td>";
+                            }
+                            // Does the module end during this week?
+                            elseif($activeMod->$eField >= $week['start'] && $activeMod->$eField <= $week['end'])
+                            {
+                                $output .= "<td class='mod modend'><img src='{$CFG->wwwroot}/blocks/bcgt/pix/stop.png' /> ".date('D jS M Y, H:i', $activeMod->$eField)."</td>";
+                            }
+                            else
+                            {
+                                $output .= "<td class='mod'></td>";
+                            }
+                            
+                        }
+                    }
+                    else
+                    {
+                        $output .= "<td class='mod'></td>";
+                    }
+                    
+                $output .= "</tr>";
+                                
+            }
+            
+            $output .= "</tbody>";
+            
+            
+        }
+                    
+        $output .= "<tfoot></tfoot>";
+
+        $output .= "</table>";       
+
+        $output .= "</div>";    
+        
         
         return $output;
         
@@ -472,6 +585,17 @@ class AssessmentTracker {
         $url = $CFG->wwwroot . '/blocks/bcgt/grids/assessment_tracker.php';
         
         $output .= "<form>";
+        
+        // View
+        $output .= "<small>".get_string('view')."</small><br>";
+        $output .= "&nbsp;&nbsp;";
+        $chk = ($this->viewType == 'calendar') ? 'checked' : '';
+        $output .= "<small>".get_string('calendar', 'block_bcgt')."</small>  <input type='radio' name='viewtype' value='calendar' {$chk} />";
+        $output .= "&nbsp;&nbsp;";
+        $chk = ($this->viewType == 'weeks') ? 'checked' : '';
+        $output .= "<small>".get_string('assweeks', 'block_bcgt')."</small>  <input type='radio' name='viewtype' value='weeks' {$chk} />";
+        
+        $output .= "<br><br>";
         
         // Year
         $currentYear = date('Y');
@@ -777,6 +901,8 @@ class AssessmentTracker {
         $output .= "<h2 class='c'>".$this->qual->get_display_name()."</h2>";
                         
             // Colour key
+        if ($this->viewType != 'weeks'){
+            
             $output .= "<fieldset><legend>".get_string('modulecolourkey', 'block_bcgt')."</legend>";
 
                 $output .= "<div class='c'>";
@@ -798,8 +924,8 @@ class AssessmentTracker {
                 $output .= "</div>";
 
             $output .= "</fieldset><br>";
-
-
+            
+        }
 
             $output .= "<p class='c' id='loading2'><img src='{$CFG->wwwroot}/blocks/bcgt/pix/ajax-loader.gif' /></p>";
 
@@ -810,35 +936,162 @@ class AssessmentTracker {
                     $output .= "<tr>";
                     $output .= "<th class='daynum'></th>";
 
-                    for ($month = 1; $month <= 12; $month++)
-                    {
-                        $strtime = "01-{$month}-{$this->year}";
-                        $output .= "<th class='month monthheader'>".date('M', strtotime($strtime))."</th>";
+                    if ($this->viewType == 'weeks'){
+                        
+                        // Get all modules this year for this course
+                        $year = $this->year;
+                        $strtimestart = "01-01-{$year} 00:00";
+                        $strtimeend = "31-12-{$year} 23:59";
+
+                        $start = strtotime($strtimestart);
+                        $end = strtotime($strtimeend);
+                        
+                        $activeModsArray = array();
+                        
+                        if ($this->courses)
+                        {
+
+                            foreach($this->courses as $course)
+                            {
+                                
+                                $activeMods = $this->getActiveModules($start, $end, $course);
+                                
+                                if ($activeMods){
+                                    
+                                    foreach($activeMods as $activeMod){
+                                                                                
+                                        $courseModule = bcgt_get_course_module($course->id, $activeMod->modid , $activeMod->id);
+                                        if (!$courseModule){
+                                            continue;
+                                        }
+
+                                        // If we only want criteria linked ones, and this has none, skip
+                                        if ($this->modLinks == 'crit' && !bcgt_course_module_has_criteria_links($courseModule->id)){
+                                            continue;
+                                        }
+
+                                        $activeModsArray[$activeMod->id] = $activeMod;
+
+                                    }
+                                }
+                                
+                            }
+                        
+                        }
+
+                        $activeMods = $activeModsArray;
+                        
+                        if ($activeMods)
+                        {
+                            foreach($activeMods as $activeMod)
+                            {
+                                // See if there is an icon
+                                $icon = $CFG->dirroot . '/mod/' . $activeMod->modtype . '/pix/icon.png';
+                                $iconOutput = '';
+                                if (file_exists($icon)){
+
+                                    $icon = str_replace($CFG->dirroot, $CFG->wwwroot, $icon);
+                                    $iconOutput = "<img class='icn' src='{$icon}' /> ";
+
+                                }
+
+                                $output .= "<th class='modheader mod'><a href='#' class='mod_head' moduleType='{$activeMod->modtype}' moduleID='{$activeMod->id}'>{$iconOutput} {$activeMod->name}</a></th>";
+
+                            }
+                        }
+                        
+                        
+                        
+                    } else {
+                    
+                        for ($month = 1; $month <= 12; $month++)
+                        {
+                            $strtime = "01-{$month}-{$this->year}";
+                            $output .= "<th class='month monthheader'>".date('M', strtotime($strtime))."</th>";
+                        }
+                    
                     }
 
                     $output .= "</tr>";
                     $output .= "<thead>";
 
                     $output .= "<tbody>";
-                    for ($day = 1; $day <= 31; $day++)
+                    
+                    if ($this->viewType == 'weeks')
                     {
-                        $output .= "<tr>";
-                            $output .= "<td class='daynum'>{$day}</td>";
+                        
+                        for ($i = 0; $i < 52; $i++)
+                        {
+                            $week = array();
+                            $week['number'] = $i + 1;
+                            $week['start'] = strtotime("+{$i} weeks", $start);
+                            $week['end'] = strtotime("+6 days 23:59", $week['start']);
 
-                            for ($month = 1; $month <= 12; $month++)
-                            {
-                                if (checkdate($month, $day, $this->year))
+                            $output .= "<tr>";
+
+                                $output .= "<td class='weeknum'>".date('d/m/Y', $week['start'])."</td>";
+
+                                if ($activeMods)
                                 {
-                                    $output .= "<td class='month'>".$this->getQualTrackerDay($day, $month, $this->year)."</td>";
+                                    foreach($activeMods as $activeMod)
+                                    {
+                                        $mod = get_mod_linking_by_name($activeMod->modtype);
+
+                                        $sField = $mod->modtablestartdatefname;
+                                        $eField = $mod->modtableduedatefname;
+
+                                        // Did the module start during this week?
+                                        if ($activeMod->$sField >= $week['start'] && $activeMod->$sField <= $week['end'])
+                                        {
+                                            $output .= "<td class='mod modstart'><img src='{$CFG->wwwroot}/blocks/bcgt/pix/start.png' /> ".date('D jS M Y, H:i', $activeMod->$sField)."</td>";
+                                        }
+                                        // Does the module end during this week?
+                                        elseif($activeMod->$eField >= $week['start'] && $activeMod->$eField <= $week['end'])
+                                        {
+                                            $output .= "<td class='mod modend'><img src='{$CFG->wwwroot}/blocks/bcgt/pix/stop.png' /> ".date('D jS M Y, H:i', $activeMod->$eField)."</td>";
+                                        }
+                                        else
+                                        {
+                                            $output .= "<td class='mod'></td>";
+                                        }
+
+                                    }
                                 }
                                 else
                                 {
-                                    $output .= "<td class='non-date'></td>";
+                                    $output .= "<td class='mod'></td>";
                                 }
-                            }
 
-                        $output .= "</tr>";
+                            $output .= "</tr>";
+
+                        }
+                        
                     }
+                    else
+                    {
+                    
+                        for ($day = 1; $day <= 31; $day++)
+                        {
+                            $output .= "<tr>";
+                                $output .= "<td class='daynum'>{$day}</td>";
+
+                                for ($month = 1; $month <= 12; $month++)
+                                {
+                                    if (checkdate($month, $day, $this->year))
+                                    {
+                                        $output .= "<td class='month'>".$this->getQualTrackerDay($day, $month, $this->year)."</td>";
+                                    }
+                                    else
+                                    {
+                                        $output .= "<td class='non-date'></td>";
+                                    }
+                                }
+
+                            $output .= "</tr>";
+                        }
+                    
+                    }
+                    
                     $output .= "</tbody>";
 
                     $output .= "<tfoot></tfoot>";
@@ -877,6 +1130,19 @@ class AssessmentTracker {
         $url = $CFG->wwwroot . '/blocks/bcgt/grids/assessment_tracker.php';
         
         $output .= "<form>";
+        
+        
+        // View
+        $output .= "<small>".get_string('view')."</small><br>";
+        $output .= "&nbsp;&nbsp;";
+        $chk = ($this->viewType == 'calendar') ? 'checked' : '';
+        $output .= "<small>".get_string('calendar', 'block_bcgt')."</small>  <input type='radio' name='viewtype' value='calendar' {$chk} />";
+        $output .= "&nbsp;&nbsp;";
+        $chk = ($this->viewType == 'weeks') ? 'checked' : '';
+        $output .= "<small>".get_string('assweeks', 'block_bcgt')."</small>  <input type='radio' name='viewtype' value='weeks' {$chk} />";
+        
+        $output .= "<br><br>";
+        
         
         // Year
         $currentYear = date('Y');
@@ -1070,7 +1336,7 @@ class AssessmentTracker {
                                 
                 $modID = $mod->moduleid;
                 
-                $sql = "SELECT *, '{$type}' as modtype, '{$modID}' as modid
+                $sql = "SELECT *, '{$type}' as modtype, '{$modID}' as modid, {$mod->modtitlefname} as name
                         FROM {{$mod->modtablename}}
                         WHERE {$mod->modtablecoursefname} = ?
                         AND 
@@ -1130,9 +1396,7 @@ class AssessmentTracker {
                     
                     $courseModule = bcgt_get_course_module($course->id, $activeMod->modid , $activeMod->id);
                     $modLinkInfo = get_mod_linking_by_name($activeMod->modtype);
-                    
-                    \elbp_pn($modLinkInfo);
-                    
+                                        
                     $dueDateField = $modLinkInfo->modtableduedatefname;
                     $titleField = $modLinkInfo->modtitlefname;
                     

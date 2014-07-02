@@ -588,197 +588,197 @@ abstract class DashTab {
     
     public static function bcgt_tab_get_report_tab()
     {
-        global $DB, $USER;
-        $courseID = optional_param('courseID', -1, PARAM_INT);
-        $cID = optional_param('cID', -1, PARAM_INT);
-        $studentID = optional_param('sID', -1, PARAM_INT);
-        $search = optional_param('search', '', PARAM_TEXT);
-        $qualID = optional_param('qID', -1, PARAM_INT);
-        $stuSearch = optional_param('stusearch', '', PARAM_TEXT);
-        $grade = optional_param('grade', '', PARAM_TEXT);
-        $retval = '';
-        $retval .= '<h2 class="dashContentHeading">'.get_string('myreports', 'block_bcgt').'</h2>';
-        
-        //select a qual
-        //get all quals or get 
-        //select a course
-        //search for a user and select them
-        //list of reports
-        //run. 
-        if(has_capability('block/bcgt:viewallgrids', context_system::instance()))
-        {
-            $viewAll = true;
-            $onCourse = null;
-            if($courseID != -1)
-            {
-                $onCourse = true;
-            }
-            $quals = search_qualification(-1, -1, -1, '', 
-                -1, null, -1, $onCourse, true); 
-            $courses = bcgt_get_courses_with_quals(-1);
-        }
-        else
-        {
-            $teacher = $DB->get_record_select('role', 'shortname = ?', array('editingteacher'));
-            $userQualRole = $DB->get_record_select('role', 'shortname = ?', array('teacher'));
-            $quals = get_users_quals($USER->id, $userQualRole->id, '', -1, -1, null);
-            if(!$quals)
-            {
-                $teacher = $DB->get_record_select('role', 'shortname = ?', array('editingteacher'));
-                $quals = get_users_quals($USER->id, $teacher->id);
-            }
-            $courses = bcgt_get_users_courses($USER->id, $teacher->id, true, -1, null);
-        }
-        $retval .= '<form name="gridselect" action="" method="POST" id="gridselect">';
-        $retval .= '<input type="hidden" id="cID" name="cID" value="'.$cID.'"/>';
-        $retval .= '<div class="inputContainer"><div class="inputLeft">'.
-                    '<label for="type">'.get_string('quals', 'block_bcgt').'</label></div>';
-        $retval .= '<div class="inputRight"><select name="qID" id="qual">'.
-                '<option value="-1">'.get_string('pleaseselect','block_bcgt').'</option>';
-        if($quals)
-        {    
-            foreach($quals AS $qual)
-            {
-                if(count($quals) == 1)
-                {
-                    $qualID = $qual->id;
-                }
-                $selected = '';
-                if(count($quals) == 1 || ($qualID != -1 && $qualID == $qual->id))
-                {
-                    $selected = 'selected';
-                }
-                $retval .= '<option '.$selected.' value="'.$qual->id.'">'.
-                        bcgt_get_qualification_display_name($qual, true).'</option>';
-            }
-        }
-        $retval .= '</select>';
-        $retval .= '</div></div>';
-        $retval .= '<div class="inputContainer"><div class="inputLeft">'.
-                    '<label for="course">'.get_string('course').'</label></div>';
-        $retval .= '<div class="inputRight"><select name="courseID" id="course">'.
-                '<option value="-1">'.get_string('pleaseselect','block_bcgt').'</option>';
-        if($courses)
-        {    
-            foreach($courses AS $course)
-            {
-                if(count($courses) == 1)
-                {
-                    $courseID = $course->id;
-                }
-                $selected = '';
-                if(count($courses) == 1 || ($courseID != -1 && $courseID == $course->id))
-                {
-                    $selected = 'selected';
-                }
-                $retval .= '<option '.$selected.' value="'.$course->id.'">'.
-                        $course->shortname.':'.$course->fullname.'</option>';
-            }
-        }
-        $retval .= '</select>';
-        $retval .= '</div></div>';
-        //then have a student or qual searchable
-        //drop down of all of their students
-        if(!$viewAll)
-        {
-            $stuRole = $DB->get_record_select('role', 'shortname = ?', array('student'));
-            $students = bcgt_get_users_users($USER->id, $userQualRole->id, $stuRole->id, $search);
-            if($students)
-            {
-                $retval .= '<div class="inputContainer"><div class="inputLeft">'.
-                '<label for="students">'.get_string('students', 'block_bcgt').'</label></div>';
-                $retval .= '<div class="inputRight"><select name="sID" id="studentID">'.
-                    '<option value="-1">'.get_string('pleaseselect','block_bcgt').'</option>'; 
-                foreach($students AS $student)
-                {
-                    $selected = '';
-                    if($student->id == $studentID)
-                    {
-                        $selected = 'selected';
-                    }
-                    $retval .= '<option '.$selected.' value="'.$student->id.'">'.
-                            $student->username .' : '.$student->firstname.' '.$student->lastname.'</option>';
-                }
-                $retval .= '</select>';
-                $retval .= '</div></div>';
-            }
-        }
-        else {
-            $retval .= '<div class="inputContainer"><div class="inputLeft">'.
-                '<label for="stusearch">'.get_string('students', 'block_bcgt').'</label></div>';
-                $retval .= '<div class="inputRight"><input type="text"'.
-                        ' name="stusearch" id="stusearch" value="'.$stuSearch.'">';
-                $retval .= '<input type="submit" name="search" value="'.get_string('search', 'block_bcgt').'"/>';
-            $retval .= '</div></div>';
-            if($stuSearch != '')
-            {
-                //then lets find the students
-                $students = $DB->get_records_sql("SELECT * FROM {user} WHERE username ".
-                        "LIKE ? OR firstname LIKE ? OR lastname LIKE ?", array('%'.$stuSearch.'%', '%'.$stuSearch.'%', '%'.$stuSearch.'%'));
-                if($students)
-                {
-                    $retval .= '<div class="inputContainer"><div class="inputLeft">'.
-                    '<label for="students">'.get_string('students', 'block_bcgt').'</label></div>';
-                    $retval .= '<div class="inputRight"><select name="sID" id="studentID">'.
-                        '<option value="-1">'.get_string('pleaseselect','block_bcgt').'</option>'; 
-                    foreach($students AS $student)
-                    {
-                        $selected = '';
-                        if($student->id == $studentID)
-                        {
-                            $selected = 'selected';
-                        }
-                        $retval .= '<option '.$selected.' value="'.$student->id.'">'.
-                                $student->username .' : '.$student->firstname.' '.$student->lastname.'</option>';
-                    }
-                    $retval .= '</select>';
-                    $retval .= '</div></div>';
-                }
-                
-            }
-        }
-        
-        
-        //get a list of the reports. 
-        $reporting = new Reporting();
-        $retval .= '<div class="inputContainer"><div class="inputLeft">'.
-                    '<label for="report">'.get_string('report', 'block_bcgt').'</label></div>';
-        $retval .= '<div class="inputRight">';
-        $retval .= $reporting->get_reports_drop_down();
-        $retval .= '</div></div>';
-        
-        $retval .= '<div class="inputContainer"><div class="inputLeft">'.
-                    '<label for="grade">'.get_string('gradetype', 'block_bcgt').'</label></div>';
-        $retval .= '<div class="inputRight">';
-        $retval .= '<select name="grade">';
-        $selected = '';
-        if($grade == 'full')
-        {
-            $selected = 'selected';
-        }
-        $retval .= '<option '.$selected.' value="full">'.get_string('gradetypealps','block_bcgt').'</option>';
-        $selected = '';
-        if($grade == 'weight')
-        {
-            $selected = 'selected';
-        }
-        $retval .= '<option '.$selected.' value="weight">'.get_string('gradetypeweighted','block_bcgt').
-                '</option>';
-        $selected = '';
-        if($grade == 'teach')
-        {
-            $selected = 'selected';
-        }
-        $retval .= '<option '.$selected.' value="teach">'.get_string('gradetypealps','block_bcgt').'</option></select>';
-        $retval .= '</div></div>';
-        $retval .= '<input type="submit" name="run" value="Fetch Report"/>';
-        $retval .= '</form>';
-        
-        if(isset($_POST['run']))
-        {
-            $retval .= $reporting->get_report();
-        }
-        return $retval;
+//        global $DB, $USER;
+//        $courseID = optional_param('courseID', -1, PARAM_INT);
+//        $cID = optional_param('cID', -1, PARAM_INT);
+//        $studentID = optional_param('sID', -1, PARAM_INT);
+//        $search = optional_param('search', '', PARAM_TEXT);
+//        $qualID = optional_param('qID', -1, PARAM_INT);
+//        $stuSearch = optional_param('stusearch', '', PARAM_TEXT);
+//        $grade = optional_param('grade', '', PARAM_TEXT);
+//        $retval = '';
+//        $retval .= '<h2 class="dashContentHeading">'.get_string('myreports', 'block_bcgt').'</h2>';
+//        
+//        //select a qual
+//        //get all quals or get 
+//        //select a course
+//        //search for a user and select them
+//        //list of reports
+//        //run. 
+//        if(has_capability('block/bcgt:viewallgrids', context_system::instance()))
+//        {
+//            $viewAll = true;
+//            $onCourse = null;
+//            if($courseID != -1)
+//            {
+//                $onCourse = true;
+//            }
+//            $quals = search_qualification(-1, -1, -1, '', 
+//                -1, null, -1, $onCourse, true); 
+//            $courses = bcgt_get_courses_with_quals(-1);
+//        }
+//        else
+//        {
+//            $teacher = $DB->get_record_select('role', 'shortname = ?', array('editingteacher'));
+//            $userQualRole = $DB->get_record_select('role', 'shortname = ?', array('teacher'));
+//            $quals = get_users_quals($USER->id, $userQualRole->id, '', -1, -1, null);
+//            if(!$quals)
+//            {
+//                $teacher = $DB->get_record_select('role', 'shortname = ?', array('editingteacher'));
+//                $quals = get_users_quals($USER->id, $teacher->id);
+//            }
+//            $courses = bcgt_get_users_courses($USER->id, $teacher->id, true, -1, null);
+//        }
+//        $retval .= '<form name="gridselect" action="" method="POST" id="gridselect">';
+//        $retval .= '<input type="hidden" id="cID" name="cID" value="'.$cID.'"/>';
+//        $retval .= '<div class="inputContainer"><div class="inputLeft">'.
+//                    '<label for="type">'.get_string('quals', 'block_bcgt').'</label></div>';
+//        $retval .= '<div class="inputRight"><select name="qID" id="qual">'.
+//                '<option value="-1">'.get_string('pleaseselect','block_bcgt').'</option>';
+//        if($quals)
+//        {    
+//            foreach($quals AS $qual)
+//            {
+//                if(count($quals) == 1)
+//                {
+//                    $qualID = $qual->id;
+//                }
+//                $selected = '';
+//                if(count($quals) == 1 || ($qualID != -1 && $qualID == $qual->id))
+//                {
+//                    $selected = 'selected';
+//                }
+//                $retval .= '<option '.$selected.' value="'.$qual->id.'">'.
+//                        bcgt_get_qualification_display_name($qual, true).'</option>';
+//            }
+//        }
+//        $retval .= '</select>';
+//        $retval .= '</div></div>';
+//        $retval .= '<div class="inputContainer"><div class="inputLeft">'.
+//                    '<label for="course">'.get_string('course').'</label></div>';
+//        $retval .= '<div class="inputRight"><select name="courseID" id="course">'.
+//                '<option value="-1">'.get_string('pleaseselect','block_bcgt').'</option>';
+//        if($courses)
+//        {    
+//            foreach($courses AS $course)
+//            {
+//                if(count($courses) == 1)
+//                {
+//                    $courseID = $course->id;
+//                }
+//                $selected = '';
+//                if(count($courses) == 1 || ($courseID != -1 && $courseID == $course->id))
+//                {
+//                    $selected = 'selected';
+//                }
+//                $retval .= '<option '.$selected.' value="'.$course->id.'">'.
+//                        $course->shortname.':'.$course->fullname.'</option>';
+//            }
+//        }
+//        $retval .= '</select>';
+//        $retval .= '</div></div>';
+//        //then have a student or qual searchable
+//        //drop down of all of their students
+//        if(!$viewAll)
+//        {
+//            $stuRole = $DB->get_record_select('role', 'shortname = ?', array('student'));
+//            $students = bcgt_get_users_users($USER->id, $userQualRole->id, $stuRole->id, $search);
+//            if($students)
+//            {
+//                $retval .= '<div class="inputContainer"><div class="inputLeft">'.
+//                '<label for="students">'.get_string('students', 'block_bcgt').'</label></div>';
+//                $retval .= '<div class="inputRight"><select name="sID" id="studentID">'.
+//                    '<option value="-1">'.get_string('pleaseselect','block_bcgt').'</option>'; 
+//                foreach($students AS $student)
+//                {
+//                    $selected = '';
+//                    if($student->id == $studentID)
+//                    {
+//                        $selected = 'selected';
+//                    }
+//                    $retval .= '<option '.$selected.' value="'.$student->id.'">'.
+//                            $student->username .' : '.$student->firstname.' '.$student->lastname.'</option>';
+//                }
+//                $retval .= '</select>';
+//                $retval .= '</div></div>';
+//            }
+//        }
+//        else {
+//            $retval .= '<div class="inputContainer"><div class="inputLeft">'.
+//                '<label for="stusearch">'.get_string('students', 'block_bcgt').'</label></div>';
+//                $retval .= '<div class="inputRight"><input type="text"'.
+//                        ' name="stusearch" id="stusearch" value="'.$stuSearch.'">';
+//                $retval .= '<input type="submit" name="search" value="'.get_string('search', 'block_bcgt').'"/>';
+//            $retval .= '</div></div>';
+//            if($stuSearch != '')
+//            {
+//                //then lets find the students
+//                $students = $DB->get_records_sql("SELECT * FROM {user} WHERE username ".
+//                        "LIKE ? OR firstname LIKE ? OR lastname LIKE ?", array('%'.$stuSearch.'%', '%'.$stuSearch.'%', '%'.$stuSearch.'%'));
+//                if($students)
+//                {
+//                    $retval .= '<div class="inputContainer"><div class="inputLeft">'.
+//                    '<label for="students">'.get_string('students', 'block_bcgt').'</label></div>';
+//                    $retval .= '<div class="inputRight"><select name="sID" id="studentID">'.
+//                        '<option value="-1">'.get_string('pleaseselect','block_bcgt').'</option>'; 
+//                    foreach($students AS $student)
+//                    {
+//                        $selected = '';
+//                        if($student->id == $studentID)
+//                        {
+//                            $selected = 'selected';
+//                        }
+//                        $retval .= '<option '.$selected.' value="'.$student->id.'">'.
+//                                $student->username .' : '.$student->firstname.' '.$student->lastname.'</option>';
+//                    }
+//                    $retval .= '</select>';
+//                    $retval .= '</div></div>';
+//                }
+//                
+//            }
+//        }
+//        
+//        
+//        //get a list of the reports. 
+//        $reporting = new Reporting();
+//        $retval .= '<div class="inputContainer"><div class="inputLeft">'.
+//                    '<label for="report">'.get_string('report', 'block_bcgt').'</label></div>';
+//        $retval .= '<div class="inputRight">';
+//        $retval .= $reporting->get_reports_drop_down();
+//        $retval .= '</div></div>';
+//        
+//        $retval .= '<div class="inputContainer"><div class="inputLeft">'.
+//                    '<label for="grade">'.get_string('gradetype', 'block_bcgt').'</label></div>';
+//        $retval .= '<div class="inputRight">';
+//        $retval .= '<select name="grade">';
+//        $selected = '';
+//        if($grade == 'full')
+//        {
+//            $selected = 'selected';
+//        }
+//        $retval .= '<option '.$selected.' value="full">'.get_string('gradetypealps','block_bcgt').'</option>';
+//        $selected = '';
+//        if($grade == 'weight')
+//        {
+//            $selected = 'selected';
+//        }
+//        $retval .= '<option '.$selected.' value="weight">'.get_string('gradetypeweighted','block_bcgt').
+//                '</option>';
+//        $selected = '';
+//        if($grade == 'teach')
+//        {
+//            $selected = 'selected';
+//        }
+//        $retval .= '<option '.$selected.' value="teach">'.get_string('gradetypealps','block_bcgt').'</option></select>';
+//        $retval .= '</div></div>';
+//        $retval .= '<input type="submit" name="run" value="Fetch Report"/>';
+//        $retval .= '</form>';
+//        
+//        if(isset($_POST['run']))
+//        {
+//            $retval .= $reporting->get_report();
+//        }
+//        return $retval;
     }
     
     public static function bcgt_tab_get_feedback_tab()
@@ -894,14 +894,16 @@ abstract class DashTab {
         global $CFG;
         
         require_once $CFG->dirroot . '/blocks/bcgt/classes/core/ReportingSystem.class.php';
-        
+        require_once $CFG->dirroot . '/blocks/bcgt/classes/core/CoreReports.class.php';
         $action = optional_param('action', false, PARAM_TEXT);
         $id = optional_param('id', false, PARAM_INT);
         
         $retval = '';
         $retval .= '<h2 class="c">'.get_string('dashtabreporting', 'block_bcgt').'</h2>';
         
-        $retval .= '<p class="c"><a href="my_dashboard.php?tab=reporting&action=create">Create Report</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="my_dashboard.php?tab=reporting&action=view">View Saved Reports</a></p>';
+        $retval .= '<p class="c"><a href="my_dashboard.php?tab=reporting&action=create">Create Report</a>';
+        $retval .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="my_dashboard.php?tab=reporting&';
+        $retval .= 'action=view">View Saved Reports</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="my_dashboard.php?tab=reporting&action=bespoke">View Core Reports</a></p>';
         $retval .= '<br><br><br>';
                 
         if ($action == 'create')
@@ -919,6 +921,18 @@ abstract class DashTab {
                 $retval .= ReportingSystem::display_view_reports();
             }
         }
+        elseif($action == 'bespoke')
+        {
+            if($id)
+            {
+                $retval .= CoreReports::display_view_report($id);
+            }
+            else
+            {
+                $retval .= CoreReports::display_view_reports();
+                
+            }
+        }       
         else
         {
             $retval .= 'Please choose an action';

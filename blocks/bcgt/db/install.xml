@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/bcgt/db" VERSION="20140514" COMMENT="XMLDB file for Moodle blocks/bcgt"
+<XMLDB PATH="blocks/bcgt/db" VERSION="20140522" COMMENT="XMLDB file for Moodle blocks/bcgt"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -594,6 +594,7 @@
         <FIELD NAME="setbyuserid" TYPE="int" LENGTH="18" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="updatedbyuserid" TYPE="int" LENGTH="18" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="dateset" TYPE="int" LENGTH="18" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="studentcomments" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -625,6 +626,7 @@
         <FIELD NAME="setbyuserid" TYPE="int" LENGTH="18" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="updatedbyuserid" TYPE="int" LENGTH="18" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="dateset" TYPE="int" LENGTH="18" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="studentcomments" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -1819,6 +1821,12 @@
         <FIELD NAME="submissiondatefname" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="This is the name of the column where we find what date the submission was made/attempted. e,g. datecreated, datesubmitted."/>
         <FIELD NAME="submissionmodidfname" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="This is the name of the column where we will find the id of the module instance from the module table associated with this submission. E.g. in assign_submission the module instance id is found in the column assignment."/>
         <FIELD NAME="checkforautotracking" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="This denotes if we are going to check and alter the tracking sheets that are linked to these mods for the values of IN, NOT IN and LATE."/>
+        <FIELD NAME="gradetablename" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="gradetimefname" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="gradegradefname" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="grademodinstancefname" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="modgradingscalefname" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="gradeuserfname" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

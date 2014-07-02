@@ -29,9 +29,19 @@ if(isset($_POST['save']))
     $stdObject->modtableduedatefname = isset($_POST['modtableduedatefname'])? $_POST['modtableduedatefname'] : '';
     $stdObject->modsubmissiontable = isset($_POST['modsubmissiontable'])? $_POST['modsubmissiontable'] : '';
     $stdObject->modtitlefname = isset($_POST['modtitlefname'])? $_POST['modtitlefname'] : '';
+    $stdObject->modgradingscalefname = isset($_POST['modgradingscalefname'])? $_POST['modgradingscalefname'] : '';
+    
+    
     $stdObject->submissionuserfname = isset($_POST['submissionuserfname'])? $_POST['submissionuserfname'] : '';
     $stdObject->submissiondatefname = isset($_POST['submissiondatefname'])? $_POST['submissiondatefname'] : '';
     $stdObject->submissionmodidfname = isset($_POST['submissionmodidfname'])? $_POST['submissionmodidfname'] : '';
+    
+    $stdObject->gradetablename = isset($_POST['gradetablename'])? $_POST['gradetablename'] : '';
+    $stdObject->gradetimefname = isset($_POST['gradetimefname'])? $_POST['gradetimefname'] : '';
+    $stdObject->gradegradefname = isset($_POST['gradegradefname'])? $_POST['gradegradefname'] : '';
+    $stdObject->grademodinstancefname = isset($_POST['grademodinstancefname'])? $_POST['grademodinstancefname'] : '';
+    $stdObject->gradeuserfname = isset($_POST['gradeuserfname'])? $_POST['gradeuserfname'] : '';
+    
     $stdObject->checkforautotracking = isset($_POST['checkforautotracking'])? 1 : 0;
     if($id != -1)
     {
@@ -151,6 +161,15 @@ if($action == 'new' || $action == 'edit')
             'value="'.(isset($module->modtitlefname)? $module->modtitlefname : '').'"/>';
     $out .= '</div></div>';
     
+    
+    $out .= '<div class="inputContainer"><div class="inputLeft">';
+    $out .= '<label for="modgradingscalefname">'
+        .get_string('mlmodgradingscalefname', 'block_bcgt').': </label></div>';
+    $out .= '<div class="inputRight"><input type="text" name="modgradingscalefname"'.
+            'value="'.(isset($module->modgradingscalefname)? $module->modgradingscalefname : '').'"/>';
+    $out .= '</div></div>';
+    
+    
     $out .= '<div class="inputContainer"><div class="inputLeft">';
     $out .= '<label for="modsubmssiontable">'
         .get_string('mlmodsubmissiontable', 'block_bcgt').': </label></div>';
@@ -179,6 +198,53 @@ if($action == 'new' || $action == 'edit')
             'value="'.(isset($module->submissionmodidfname)? $module->submissionmodidfname : '').'"/>';
     $out .= '</div></div>';
     
+    
+    $out .= '<div class="inputContainer"><div class="inputLeft">';
+    $out .= '<label for="gradetablename">'
+        .get_string('mlgradetablename', 'block_bcgt').': </label></div>';
+    $out .= '<div class="inputRight"><input type="text" name="gradetablename"'.
+            'value="'.(isset($module->gradetablename)? $module->gradetablename : '').'"/>';
+    $out .= '</div></div>';
+    
+    
+    $out .= '<div class="inputContainer"><div class="inputLeft">';
+    $out .= '<label for="gradetimefname">'
+        .get_string('mlgradetimefname', 'block_bcgt').': </label></div>';
+    $out .= '<div class="inputRight"><input type="text" name="gradetimefname"'.
+            'value="'.(isset($module->gradetimefname)? $module->gradetimefname : '').'"/>';
+    $out .= '</div></div>';
+    
+    
+    $out .= '<div class="inputContainer"><div class="inputLeft">';
+    $out .= '<label for="gradegradefname">'
+        .get_string('mlgradegradefname', 'block_bcgt').': </label></div>';
+    $out .= '<div class="inputRight"><input type="text" name="gradegradefname"'.
+            'value="'.(isset($module->gradegradefname)? $module->gradegradefname : '').'"/>';
+    $out .= '</div></div>';
+    
+    
+    $out .= '<div class="inputContainer"><div class="inputLeft">';
+    $out .= '<label for="gradeuserfname">'
+        .get_string('mlgradeuserfname', 'block_bcgt').': </label></div>';
+    $out .= '<div class="inputRight"><input type="text" name="gradeuserfname"'.
+            'value="'.(isset($module->gradeuserfname)? $module->gradeuserfname : '').'"/>';
+    $out .= '</div></div>';
+    
+    
+    $out .= '<div class="inputContainer"><div class="inputLeft">';
+    $out .= '<label for="grademodinstancefname">'
+        .get_string('mlgrademodinstancefname', 'block_bcgt').': </label></div>';
+    $out .= '<div class="inputRight"><input type="text" name="grademodinstancefname"'.
+            'value="'.(isset($module->grademodinstancefname)? $module->grademodinstancefname : '').'"/>';
+    $out .= '</div></div>';
+    
+    
+    
+    
+    
+    
+    
+    
     $out .= '<div class="inputContainer"><div class="inputLeft">';
     $out .= '<label for="checkforautotracking">'
         .get_string('mlcheckautolinking', 'block_bcgt').': </label></div>';
@@ -203,11 +269,17 @@ elseif($action == 'view')
         $out .= '<th>'.get_string('mlcoursefieldname', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('mlstartdatefieldname', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('mlduedatefieldname', 'block_bcgt').'</th>';
+        $out .= '<th>'.get_string('mlmodgradingscalefname', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('modtitlefname', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('mlmodsubmissiontable', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('mlsubmissionuserfield', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('mlsubmissiondatefield', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('mlsubmissionmoduleinstancefield', 'block_bcgt').'</th>';
+        $out .= '<th>'.get_string('mlgradetablename', 'block_bcgt').'</th>';
+        $out .= '<th>'.get_string('mlgradetimefname', 'block_bcgt').'</th>';
+        $out .= '<th>'.get_string('mlgradegradefname', 'block_bcgt').'</th>';
+        $out .= '<th>'.get_string('mlgradeuserfname', 'block_bcgt').'</th>';
+        $out .= '<th>'.get_string('mlgrademodinstancefname', 'block_bcgt').'</th>';        
         $out .= '<th>'.get_string('mlcheckautolinking', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('edit', 'block_bcgt').'</th>';
         $out .= '<th>'.get_string('delete', 'block_bcgt').'</th>';
@@ -227,11 +299,19 @@ elseif($action == 'view')
             $out .= '<td>'.$mod->modtablecoursefname.'</td>';
             $out .= '<td>'.$mod->modtablestartdatefname.'</td>';
             $out .= '<td>'.$mod->modtableduedatefname.'</td>';
+            $out .= '<td>'.$mod->modgradingscalefname.'</td>';
             $out .= '<td>'.$mod->modtitlefname.'</td>';
             $out .= '<td>'.$mod->modsubmissiontable.'</td>';
             $out .= '<td>'.$mod->submissionuserfname.'</td>';
             $out .= '<td>'.$mod->submissiondatefname.'</td>';
             $out .= '<td>'.$mod->submissionmodidfname.'</td>';
+            
+            $out .= '<td>'.$mod->gradetablename.'</td>';
+            $out .= '<td>'.$mod->gradetimefname.'</td>';
+            $out .= '<td>'.$mod->gradegradefname.'</td>';
+            $out .= '<td>'.$mod->gradeuserfname.'</td>';
+            $out .= '<td>'.$mod->grademodinstancefname.'</td>';
+            
             $out .= '<td>'.$mod->checkforautotracking.'</td>';
             $out .= '<td><a href="?cID='.$cID.'&a=edit&id='.$mod->id.'">'.get_string('edit', 'block_bcgt').'</a></td>';
             $out .= '<td><a href="?cID='.$cID.'&a=del&id='.$mod->id.'">'.get_string('delete', 'block_bcgt').'</a></td>';

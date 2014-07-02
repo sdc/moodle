@@ -851,24 +851,47 @@ class BTECUnit extends Unit{
         if(array_key_exists($this->id, $sessionUnits))
         {
             $unitObject = $sessionUnits[$this->id];
-            if(isset($unitObject->qualArray))
+            
+            if (isset($unitObject->unit))
             {
-                $qualArray = $unitObject->qualArray;
-                if(array_key_exists($qualID, $qualArray))
+                            
+                if (isset($unitObject->qualArray))
                 {
-                    //what happens if a student has been added since?
-
-                    //then this will return an array of students unit objects
-                    //for this qualid for this unit.
-                    $studentsArray = $qualArray[$qualID];
-                    if(count($studentsArray) != 0)
+                
+                    $qualArray = $unitObject->qualArray;
+                    $unitObject = $unitObject->unit;
+                                        
+                    if (isset($unitObject->students))
                     {
+                        $studentsArray = array();
+                        $unitStudents = $unitObject->students;
+
+                        if ($qualArray)
+                        {
+                            foreach($qualArray as $qualID => $students)
+                            {
+                                if ($students)
+                                {
+                                    foreach($students as $student)
+                                    {
+                                        if (isset($unitStudents[$student->id]))
+                                        {
+                                            $unitStudents[$student->id] = $student;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        $studentsArray = $unitStudents;
                         $studentsLoaded = true;
+                        
                     }
-                    //studentsArray[] is an object with two properties. The Unit Object with stu
-                    //loaded and a few of the students information.
-                }  
+                
+                }
+
             }
+            
               
         }
         else
@@ -1023,6 +1046,11 @@ class BTECUnit extends Unit{
             
             // Unit Comment
             $comments = $studentUnit->get_comments();
+            $studentComments = $studentUnit->get_student_comments();
+            
+            $qual = Qualification::get_qualification_class_id($qualID);
+            $studentCommentsSetting = $qual->get_attribute("read_unit_comments_{$studentUnit->get_id()}", $student->id);
+            
             $class = ($comments != '') ? 'hasComments' : '';
             
             $output .= "<td class='unitCommentTD {$class}'>";            
@@ -1030,8 +1058,14 @@ class BTECUnit extends Unit{
                 $output .= "<div class='criteriaTDContent'>";
                 
                     $output .= " <img src='{$CFG->wwwroot}/blocks/bcgt/pix/info.png' height='12' width='12' class='uNToolTipInfo hand' unitID='{$this->id}' /><div class='unitInfoContent' title='{$studentUnit->get_display_name()}'>{$studentUnit->build_unit_details_table()}</div><br><br>";
-                    //$output .= "<a href='{$CFG->wwwroot}/blocks/bcgt/grids/student_grid.php?qID={$qualID}&sID={$student->id}' target='_blank' title='View Student Grid'><img src='".$OUTPUT->pix_url('i/calendar', 'core')."' /></a><br>";
 
+                    if ($studentComments && strlen($studentComments) > 0){
+                        $output .= "<img src='{$CFG->wwwroot}/blocks/bcgt/pix/comment.png' class='studentUnitComments hand' id='studentUnitComments_S{$student->id}_U{$studentUnit->get_id()}_Q{$qualID}' studentID='{$student->id}' unitID='{$studentUnit->get_id()}' qualID='{$qualID}' /> ";
+                    }
+                    elseif ($studentCommentsSetting && $studentCommentsSetting > 0){
+                        $output .= "<img src='{$CFG->wwwroot}/blocks/bcgt/pix/tick.png' title='Unit Comments Have Been Read' /> ";
+                    }
+                    
                 $output .= "</div>";
 
                 $output .= "<div class='hiddenCriteriaCommentButton'>";
@@ -1061,6 +1095,29 @@ class BTECUnit extends Unit{
 
 
                 $output .= "</div>";
+                
+                
+                
+                $output .= "<div class='bcgt_student_comments_dialog c' id='student_dialog_S{$student->id}_U{$studentUnit->get_id()}_Q{$qualID}' qualID='{$qualID}' unitID='{$studentUnit->get_id()}' studentID='{$student->id}'>";
+
+                    $output .= "<p><small>Unit Comments</small></p>";
+                    $output .= "<textarea readonly>";
+                        $output .= $studentUnit->get_comments();
+                    $output .= "</textarea>";
+                    $output .= "<br><br>";
+
+                    // Students' response comments
+                    $output .= "<p><small>Student Comments</small></p>";
+
+                    $output .= "<textarea id='student_response_comments_S{$student->id}_U{$studentUnit->get_id()}_Q{$qualID}' readonly>";
+                        $output .= $studentUnit->get_student_comments();
+                    $output .= "</textarea>";
+                    $output .= "<br><br>";
+
+                $output .= "</div>";
+                
+                
+                
             
             $output .= "</td>";
             // End Unit Comment  
@@ -3403,7 +3460,10 @@ class BTECUnit extends Unit{
         
         // Have a worksheet for each unit
         $qualificationID = ($qualID) ? $qualID : -1;
-        $students = get_users_on_unit_qual($this->id, $qualificationID);
+        $courseID = optional_param('cID', -1, PARAM_INT);
+        $groupID = optional_param('grID', -1, PARAM_INT);
+        
+        $students = get_users_on_unit_qual($this->id, $qualificationID, $courseID, $groupID);
                 
         $criteria = $this->get_used_criteria_names();
         $criteriaSorter = new CriteriaSorter();
@@ -3490,8 +3550,8 @@ class BTECUnit extends Unit{
                                 $objValidation->setShowDropDown(true);
                                 $objValidation->setErrorTitle('input error');
                                 $objValidation->setError('Value is not in list');
-                                $objValidation->setPromptTitle('Choose a value');
-                                $objValidation->setPrompt('Please choose a criteria value from the list');
+                                //$objValidation->setPromptTitle('Choose a value');
+                                //$objValidation->setPrompt('Please choose a criteria value from the list');
                                 $objValidation->setFormula1('"'.implode(",", $possibleValuesArray).'"');
 
                             }
@@ -3747,6 +3807,9 @@ class BTECUnit extends Unit{
                     }
 
                 }
+                
+                // recalculate student unit award
+                $this->calculate_unit_award($qualID);
 
             }
             
