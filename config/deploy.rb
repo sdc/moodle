@@ -41,5 +41,5 @@ after "deploy:create_symlink" do
     run "cp #{shared_path}/clickheat/config.php #{current_path}/clickheat/config/"
 
     # copy SDC Three theme images from shared folder to theme folder
-    run "cp #{shared_path}/sdcthree_theme_images/* #{current_path}/theme/sdcthree/pix/graphics/"
+    #run "cp #{shared_path}/sdcthree_theme_images/* #{current_path}/theme/sdcthree/pix/graphics/"
 end
