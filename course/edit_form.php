@@ -125,7 +125,7 @@ class course_edit_form extends moodleform {
         $mform->addHelpButton('startdate', 'startdate');
         $mform->setDefault('startdate', time() + 3600 * 24);
 
-        $mform->addElement('text','idnumber', get_string('idnumbercourse'),'maxlength="100"  size="10"');
+        $mform->addElement('text','idnumber', get_string('idnumbercourse'),'maxlength="100"  size="50"');
         $mform->addHelpButton('idnumber', 'idnumbercourse');
         $mform->setType('idnumber', PARAM_RAW);
         if (!empty($course->id) and !has_capability('moodle/course:changeidnumber', $coursecontext)) {
