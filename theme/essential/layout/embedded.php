@@ -34,10 +34,8 @@ echo $OUTPUT->doctype() ?>
     <link rel="shortcut icon" href="<?php echo $OUTPUT->favicon(); ?>" />
     <?php echo $OUTPUT->standard_head_html() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php if (!empty($fontselect) && ($fontselect < 7)) {
-        // Google web fonts -->
-        require_once(dirname(__FILE__).'/includes/fonts.php');
-    }?>
+	<!-- Google web fonts -->
+    <?php require_once(dirname(__FILE__).'/includes/fonts.php'); ?>
     <!-- iOS Homescreen Icons -->
     <?php require_once(dirname(__FILE__).'/includes/iosicons.php'); ?>
     <!-- Start Google Analytics -->
@@ -50,16 +48,25 @@ echo $OUTPUT->doctype() ?>
 <body <?php echo $OUTPUT->body_attributes($bodyclasses); ?>>
 
 <?php echo $OUTPUT->standard_top_of_body_html() ?>
+<header id="page-header" class="clearfix">
+	<div class="container-fluid maintenance">
+		<div class="row-fluid">
+			<?php echo $OUTPUT->heading($PAGE->title); ?>
+		</div>
+	</div>
+</header>
 
 <section role="main-content">
-    <div id="page">
-        <div id="page-content" class="clearfix">
-            <?php echo $OUTPUT->main_content(); ?>
+    <div id="page" class="container-fluid maintenance">
+
+        <div id="page-content" class="row-fluid">
+            <section id="region-main" class="span12">
+                <?php echo $OUTPUT->main_content(); ?>
+				<center><i class="fa fa-refresh fa-spin fa-2x"></i></center>
+            </section>
         </div>
+
     </div>
 </section>
-
-<?php echo $OUTPUT->standard_end_of_body_html() ?>
-
 </body>
 </html>
