@@ -1,6 +1,6 @@
-/* -------------------------------------------
-   Home Styles 
----------------------------------------------*/
+/* HOME STYLES
+-------------------------------------------------------------- */
+@slideshow_height : ~"[[setting:slideshowheight]]";
 
 #home-page{
     margin-bottom: 20px;
@@ -70,12 +70,10 @@ h2.lonely-title {
 }
 
 
-/* -------------------------------------------
-   Slideshow Styles 
-
+/* SLIDESHOW STYLES
    This is from responsive slides. There are just
    small modifications.
----------------------------------------------*/
+-------------------------------------------------------------- */
 
 .rslides {
     margin: 0 auto;
@@ -83,7 +81,7 @@ h2.lonely-title {
         list-style: none;
         overflow: hidden;  
         width: 100%;
-        min-height: 300px;
+        height: @slideshow_height;
         p{
             max-width: 100%;
         }
@@ -91,6 +89,7 @@ h2.lonely-title {
             width: auto;
             height: auto;
             max-width: 100%;
+            max-height: 100%;
         }
     }
   }
@@ -99,11 +98,10 @@ h2.lonely-title {
   position: relative;
   width: 100%;
   height: auto;
-  display:none;
-}
-
-.rslides_container.ready{
-  display:block;
+  visibility: hidden;
+  &.ready{
+    visibility: visible;
+  }
 }
 
 .centered-btns_nav{
@@ -186,5 +184,18 @@ h2.lonely-title {
 .large-btns_here a {
   background: #222;
   background: rgba(0,0,0, .8);
+}
+
+#button-pause-play.paused{
+  background: transparent url(~"[[pix:theme|slideshow/play]]");
+}
+
+#button-pause-play{
+  background: transparent url(~"[[pix:theme|slideshow/pause]]");
+  width: 16px;
+  height:16px;
+  margin: 0 auto;
+  cursor: pointer;
+  clear: both;
 }
 
