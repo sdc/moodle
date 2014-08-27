@@ -14,9 +14,12 @@ This plugin is part of Archaius theme, if you use it outside the theme
 you should create your own styles. You can use archaius stylesheet as
 a example.
 
-@copyright  2013 Daniel Munera Sanchez
+@copyright  2013 on wards Daniel Munera Sanchez
 
 */
+
+/* ARCHAIUS JS EFFECTS
+-----------------------------------------------------------------------------*/
 
 //I am using !function(){}(); because (function()()) has problem with
 // Moodle javascript compression.
@@ -37,175 +40,240 @@ a example.
         return regex.test($(elem)[attr.method](attr.property));
     }
 
+    //Archaius effects object to execute JS effects
     window.ArchaiusJSEffects = (function(){
         var ArchaiusJSEffectsInstance;
 
+        //Function to create the unique Archaius effect object
         var createArchaiusJSEffects = function(){
-            var regionPost = $("#region-post");
-            var regionPre = $("#region-pre");  
 
+            //Regions of Archaius that can be converted into
+            //accordions of moodle blocks
+            var regionPost = $("#region-post");
+            var regionPre = $("#region-pre"); 
+            var regionCenterPre = $('#region-center-pre');
+            var regionCenterPost = $('#region-center-post'); 
+            var mediaQueries = Modernizr.mq('only all');
+
+            //Function to animate regions using velocity or
+            //any other jquery plugin in the future. 
+            var animateRegion = function(
+                region,
+                main,
+                cssRuleRegion,
+                cssRuleMain){
+
+                region.velocity(cssRuleRegion,400,null);
+                main.velocity(cssRuleMain ,400,null);
+
+            }
+
+            //Function to animate any DOM element.
+            var animate = function(region,action,options){
+                region.velocity(action, options);
+            }
+
+            //Hide and show effects for left and right block regions
             var hideShowBlocks = function(){
                 var regionMain = $("#region-main");
+                
                 var reportRegionPre = $("#report-region-pre");
+
+                var moveLeftTrigger = 
+                    "<div id='move-region' class='move'></div>";
+
                 if(reportRegionPre.length > 0){
                     var reportRegionContent =  
                         $(".report-page").find(".main-report-content");
-                    $("#regions-control").append("<div id='move-region' class='move'></div>");
-                    $("#move-region").on("click", { region : reportRegionPre ,
-                    main : reportRegionContent },function(event){
-                        var data = event.data;
+
+                    $("#regions-control").append(moveLeftTrigger);
+
+                    $("#move-region").on("click",function(){
                         if(!($(this).hasClass("hidden-region"))){
                             $("#move-region").addClass("hidden-region");
-                            data.region.animate({
-                                'margin-left' : '-=220px'
-                            },400,null);
-                            data.main.animate({
-                                'width' : '100%'
-                            },400,null);
+                            animateRegion(
+                                reportRegionPre,
+                                reportRegionContent,
+                                {'margin-left':'-=220px'},
+                                {'width':'100%'}
+                            );
                         }else{
                             $("#move-region").removeClass("hidden-region");
-                            data.region.animate({
-                                'margin-left' : '+=220px'
-                            },400, null);
-                            data.main.animate({
-                                'width' : '75%'
-                             },400,null);
+                            animateRegion(
+                                reportRegionPre,
+                                reportRegionContent,
+                                {'margin-left' : '+=220px'},
+                                {'width' : '75%'}
+                            );
                         }
                     });
                 }
                 if(regionPre.length > 0 ){
-                    $("#regions-control").append("<div id='move-region' class='move'></div>");
-                    $("#move-region").on("click", { region : regionPre,
-                    main : regionMain },function(event){
-                        var data = event.data;
+                    $("#regions-control").append(moveLeftTrigger);
+                    $("#move-region").on("click", function(){
                         var $this = $(this);
                         if(!($(this).hasClass("hidden-region"))){
                             $this.addClass("hidden-region");
-                            data.region.animate({
-                                'left' : '-=200px'
-                                    },400,null);
-                            data.main.animate({
-                                'margin-left' : '-=200px'
-                                    },400,null);
+                            animateRegion(
+                                regionPre,
+                                regionMain,
+                                {'left' : '-=200px'},
+                                {'margin-left' :'-=200px'}
+                            );
                         }else{
                             $this.removeClass("hidden-region");
-                            data.region.animate({
-                                'left' : '+=200px'
-                            },400, null);
-                            data.main.animate({
-                                'margin-left' : '+=200px'
-                            },400,null);
+                            animateRegion(
+                                regionPre,
+                                regionMain,
+                                {'left':'+=200px'},
+                                {'margin-left':'+=200'}
+                            );
                         }
                     });
                 }
                 if(regionPost.length > 0){
                     $("#regions-control")
                         .append("<div id='move-region-right' class='move'></div>");
-                    $("#move-region-right").on("click",{ region : regionPost, 
-                    main : regionMain },function(event){
-                        var data = event.data;
+                    $("#move-region-right").on("click",function(){
                         var $this = $(this);
                         if(!($this.hasClass("hidden-region"))){
                             $this.addClass("hidden-region");  
-                            data.region.animate({
-                                'left' : '+=200px'
-                            },400,null);
-                            data.main.animate({
-                                'margin-right' : '-=200px'
-                            },400,null);
+                            animateRegion(
+                                regionPost,
+                                regionMain,
+                                {'left':'+=200px'},
+                                {'margin-right' : '-=200px'}
+                            );
                         }else{
                             $this.removeClass("hidden-region");
-                            data.region.animate({
-                                'left' : '-=200px'
-                            },400,null);
-                            data.main.animate({
-                                'margin-right' : '+=200px'
-                            },400,null);
+                            animateRegion(
+                                regionPost,
+                                regionMain,
+                                {'left' : '-=200px'},
+                                {'margin-right' : '+=200px'}
+                            );
                         }
                     });
                 } 
             };
-                
+            
+            //Create collapsible topics effect
             var topicsCourseMenu = function(active){
-                var topics = $('ul.topics'); //unordered list of topics.  
-                var editing = $('div.commands').length > 0;            
-                //Verify if we are in the man view of chapters.                                                                                                                               
+                //unordered list of topics. 
+                var topics = $('ul.topics');  
+                //command is the class of editing containers.
+                var editing = $('div.commands').length > 0;
+
+                //Verify if we are in the main view of chapters. And
+                //check if the effect it need(criteria topics > 2)                                                                                                                              
                 if(($("div.summary").length > 2) && (topics.length != 0)
                     && active != 0 && !(editing)){
 
                     // course sections.                                                                         
                     var sections = topics.find('li.section.main');
+                    //tab selector the create the topic tabs
                     var tabSelector = "h3.sectionname";
-                    if(topics.find(tabSelector).length != topics.find("li.section.main").length ){
+                    if(topics.find(tabSelector).length != 
+                        topics.find("li.section.main").length ){
+
+                        //Create a title for tabs if title is not present
                         sections.each(function(index){
                                 $this = $(this);
                                 if($this.find("h3.sectionname").length == 0){
-                                    $this.find("div.summary").prepend(
-                                        "<h3 class='sectionname'> Topic " + index  + "</h3>");
+                                    var alternativeTabHTML = 
+                                        "<h3 class='sectionname'> Topic " + 
+                                            index  + "</h3>";
+                                    $this
+                                        .find("div.summary")
+                                        .prepend(alternativeTabHTML);
                                 }
 
                             });
                     }
                     var topicTab = topics.find(tabSelector);
+                    
+                    //this hide first tab when it doesnt have title
                     topicTab
                         .addClass("topic-tab")
-                        .removeClass("accesshide"); //this hide first tab when it doesnt have title
+                        .removeClass("accesshide"); 
+
                     topicTab.prepend("<span class='triangle'></span>");
+
                     //update the sections variable after prepend the first section.                                                                                                                   
                     sections = topics.find('li.section.main');
-                    //put each summary as a tab (outside of the container).                                                                                                                           
-                    sections.each(function(){$(this).before($(this).find(tabSelector))});
+
+                    //put each tab outside of the topics container.                                                                                                                           
+                    sections.each(function(){
+                        $(this).before($(this).find(tabSelector));
+                    });
+
+                    //Bind click event to open and close topics
                     topicTab.bind("click", function(){
-                            var content = $(this).next();
-                            if($(this).hasClass("current")){
-                                $(this).removeClass("current");
-                                content.slideUp();
-                            } else {
-                                $(this).addClass("current");
-                                content.slideDown();
-                            }
-                        });
+                        var content = $(this).next();
+                        if($(this).hasClass("current")){
+                            $(this).removeClass("current");
+                            content.velocity("slideUp",{duration : 300});
+                        } else {
+                            $(this).addClass("current");
+                            content.velocity("slideDown",{duration : 300});
+                        }
+                    });
                 }else if(active == false){
+                        //Show all sections it the effect is deactive
                         topics.find('li.section.main').show();
                 }else{
                     //If there is only one topic, display it.                                                                                                                                         
                     $("li.section.main").css("display","block");
                 }
             };
-
+            //Effect to expand and shrink question bank
             var expandBank = function(questionBank){
+                //If the display if too small, do no attach any
+                //event and put question bank after quiz content
                 var viewPortWidth = $(window).width();
                 if(viewPortWidth <= 768){
-                    $("#quizcontentsblock").after($('.questionbankwindow.block'));
+                    $("#quizcontentsblock")
+                        .after($('.questionbankwindow.block'));
                 }else{
-                    questionBank.find('.header').first().find(".title")
-                    .append("<a id = 'expand-bank' class='shrink"+
-                    " btn-warning btn pretty-link-button'>expand</input>");
+                    //Append button to shrink question bank
+                    var buttonHTML = "<a id = 'expand-bank' class='shrink"+
+                    " btn-warning btn pretty-link-button'>expand</input>";
+
+                    questionBank
+                        .find('.header')
+                        .first()
+                        .find(".title")
+                        .append(buttonHTML);
+
                     var page = $('#page-mod-quiz-edit div.quizcontents');
+
+                    //Bind click event
                     $('#expand-bank').on("click",function(){
                         var $this = $(this);
                         if($this.hasClass("shrink")){
-                            questionBank.animate({
-                                    'width' : '50%'
-                            },300,null);
-                            page.animate({
-                                    'width' : '50%'
-                                        },300,null);
                             $this.removeClass("shrink");
                             $this.html("shrink");
+                            animateRegion(
+                                questionBank,
+                                page,
+                                {'width' : '50%'},
+                                {'width' : '50%'}
+                            );
                         }else{
-                            questionBank.animate({
-                                    'width' : '30%'
-                            },300,null);
-                            page.animate({
-                                    'width' : '70%'
-                                        },300,null);
                             $this.addClass("shrink");
                             $this.html("expand");
+                            animateRegion(
+                                questionBank,
+                                page,
+                                {'width' : '30%'},
+                                {'width' : '70%'}
+                            );
                         }
                     });
                 }
             };
+            //Function to append header to Block summary in order to
+            //make it works with accordion effect.
             var organizeBlockSummary = function(){
                 var blockSummary = $('#inst2');
                 if(blockSummary.prev(".header-tab").length == 0){
@@ -227,13 +295,220 @@ a example.
                     region.find("div:regex(id,inst)").show();
                 }    
             };
+
+            var startSlideShow = function(activatePausePlay,slideshowTimeout){
+                var pausePlay = parseInt(activatePausePlay);
+                if(slideshowTimeout < 1500){
+                    var slideshowTimeout = 1500;
+                }
+                if($(".rslides").length > 0){
+                    var options = {
+                        auto : true,
+                        speed : 1000,
+                        timeout : slideshowTimeout,
+                        pausePlay : pausePlay,
+                        pager : true,
+                        nav : true,
+                        maxwidth : 'auto',
+                        namespace : "large-btns",
+                        callback : function(){ 
+                            $(".rslides_container").addClass("ready");
+                        }
+                    }
+                    $(".rslides").responsiveSlides(options);
+                }
+            };
+            var initSlideshow = function(
+                activatePausePlay, 
+                slideshowTimeout, 
+                confirmationDeleteSlide,
+                noSlides){
+
+                    startSlideShow(activatePausePlay,slideshowTimeout);
+
+                    $("#toggle-admin-menu").on("click",function(){
+                        var action = "slideUp";
+                        $this = $(this);
+                        if(! $this.hasClass("expanded")){
+                            var action = "slideDown"; 
+                            $this.addClass("expanded");
+                        }else{
+                            $this.removeClass("expanded");
+                        } 
+                        animate($this.next(), action, { duration: 500 });       
+                    });
+                    //Delete slideshow using AJAX to avoid page reload.
+                    $(".delete-slide").on("click",function(event){
+                        event.preventDefault();
+                        $this = $(this);
+                        if(confirm(confirmationDeleteSlide)){
+                            var url = $this.attr("href") + "&ajax=1";
+                            $.get(url , function(data) {
+                                $(".rslides_container").html("");
+                                $('.rslides_container').html(data);
+                                startSlideShow(activatePausePlay,slideshowTimeout);
+                                var index = $(".delete-slide").index($this);
+                                var slidesTable = $(".admin-options table"); 
+                                if(slidesTable.find("tr").length > 2){
+                                    $this.closest("tr").remove();
+                                }else{
+                                    slidesTable.remove();
+                                    $(".admin-options")
+                                        .append("<h2>" + noSlides +"</h2>");
+                                }
+                                $(".admin-options .notice")
+                                    .show()
+                                    .html("<p>Slide deleted</p>")
+                                    .delay( 1000 )
+                                    .fadeOut('slow');
+                            });
+                        }
+                    });
+            };
+
+            var getDistanceToParent = function(item,KingOfParent){
+                return item.parents(KingOfParent).length;
+            };
+
+            //Function to do some DOM transformations with window is resized
+            var checkOnResize = function(){
+                var viewPortWidth = $(window).width();
+                var mobileCustommenu = $("#mobile-custommenu");
+                var pageHeader = $("#page-header");
+                if(viewPortWidth <= 768){
+                    if(mediaQueries == false){
+                        $("html").addClass("no-media-queries");
+                    }
+                    $("#custommenu").addClass("collapsed");
+                    if(mobileCustommenu.length == 0 ){
+                        var nav = 
+                            "<nav id='mobile-custommenu' class='collapsed'></nav>";
+
+                        pageHeader
+                            .append(nav); 
+                        
+                        if($("#custommenu").length > 0){
+                            var items = $("#custommenu ul li a");
+                            var clonedItems = items.clone();
+                            $.each(items,function(index){
+                                var $this = $(this);
+                                var hierarchyLevel = 
+                                    getDistanceToParent($this,"div") - 4;
+                                //Coefficient to calculate the hierarchy of 
+                                //menu items is 4 (minimum number of elements 
+                                //to the parent element)    
+                                var hierarchyLine = "";
+                                for(var i=0;i<hierarchyLevel;i++){
+                                    var itemClass = "hierarchy-mark";
+                                    if(i == 0 && hierarchyLevel == 1){
+                                        itemClass += " parent-item";
+                                    }else{
+                                        if(i == hierarchyLevel-1)
+                                            itemClass += " parent-item";
+                                    }
+                                    hierarchyLine += "<span class='"+ itemClass +"'></span>";    
+                                }
+                                var content = hierarchyLine.concat(" ",$this.text());
+                                clonedItems.eq(index)
+                                    .prepend(hierarchyLine)
+                                    .removeClass();
+                            });
+                            $("#mobile-custommenu").append(clonedItems);  
+                        }
+                    }else{
+                        pageHeader.find(".menu-icon").show();
+                    }
+                }else{
+                    if(mediaQueries == false){
+                        $("html").removeClass("no-media-queries");
+                    }
+                    $("#custommenu").removeClass("collapsed");
+                    mobileCustommenu.hide();
+                    pageHeader.find(".menu-icon").hide();
+                    mobileCustommenu.addClass("collapsed");
+                }
+                return viewPortWidth;   
+            };
+            var stickyCustommenu = function(){
+                if($("#custommenu").length > 0 ){
+                    $('#custommenu').waypoint('sticky');
+                }  
+            };
+            var accordionBlocks = function(){
+                if(regionPre.length != 0){
+                        regionPre.archaiusCustomBlocks();
+                }
+                if(regionPost.length != 0 ){
+                    regionPost.archaiusCustomBlocks({regionLocation: "post"});
+                }
+                if($("#report-region-pre").length > 0){   
+                    $("#report-region-pre").archaiusCustomBlocks();
+                }
+            };
+            var commonBlocks = function(){
+                if(regionPre.length != 0){
+                    regionPre.addClass("no-accordion");
+                }
+                if(regionPost.length != 0 ){
+                    regionPost.addClass("no-accordion");
+                }
+                if($("#report-region-pre").length > 0){   
+                    $("#report-region-pre").addClass("no-accordion");
+                }
+
+            };
+            var initEffects = function(){
+                organizeRegionCenter(regionCenterPre);
+                organizeRegionCenter(regionCenterPost);
+                organizeBlockSummary();
+                stickyCustommenu();
+
+                var questionBank = $(".questionbankwindow.block");
+                if(questionBank.length > 0 && !(questionBank.hasClass("collapsed"))){
+                    expandBank($(".questionbankwindow.block"));
+                }
+                //add search form to the header page
+                $('.page-header-top div.top-inner')
+                    .prepend($('div.footer form.adminsearchform')); 
+                //remove search button                                   
+                $("#page-header form.adminsearchform input:regex(type,submit)").remove(); 
+                $('#region-post-box').prepend($('.blogsearchform'));
+
+                var windowSize = checkOnResize();
+                if(windowSize >= 768 ){
+                    $("#custommenu").removeClass("collapsed");
+                }
+                $("#page-header").on("click",".menu-icon",function(){
+                    var $this = $(this);
+                    if($this.hasClass("deactive")){
+                        $this.removeClass("deactive");
+                        $this.addClass("active");
+                    }else{
+                        $this.removeClass("active");
+                        $this.addClass("deactive");
+                    }
+                    $("#mobile-custommenu").slideToggle();
+                });  
+
+                if($("#custommenu").length > 0 || $("div.langmenu").length > 0){
+                    $(window).resize(function() {
+                        //resize just happened, pixels changed
+                        checkOnResize();
+                    });    
+                }
+                $(".notifysuccess").velocity(
+                    { opacity: 0 }, 
+                    { visibility: "hidden", duration:3000 }
+                );
+            };
+            //public functions
             return {
                     hideShowBlocks: hideShowBlocks,
                     topicsCourseMenu : topicsCourseMenu,
-                    expandBank : expandBank , 
-                    organizeBlockSummary : organizeBlockSummary,
-                    organizeRegionCenter : organizeRegionCenter
-
+                    initSlideshow :  initSlideshow,
+                    accordionBlocks : accordionBlocks,
+                    commonBlocks : commonBlocks,
+                    initEffects: initEffects 
             };
         };
 
@@ -247,119 +522,8 @@ a example.
         };
 
     })();
+}(window,jQuery);
 
-    function getDistanceToParent(item,parentSelector,KingOfParent){
-        return item.parents(KingOfParent).length;
-    }
-    function checkOnResize(){
-        var viewPortWidth = $(window).width();
-        var mobileCustommenu = $("#mobile-custommenu");
-        var pageHeader = $("#page-header");
-        if(viewPortWidth <= 768){
-            if(mediaQueries == false){
-                $("html").addClass("no-media-queries");
-            }
-            $("#custommenu").addClass("collapsed");
-            if(mobileCustommenu.length == 0 ){
-                pageHeader.append("<nav id='mobile-custommenu' class='collapsed'></nav>"); 
-                pageHeader.find(".headermenu").wrap("<div id='header-wrap'></div>");
-                $("#header-wrap").append("<div class='menu-icon deactive'></div>");
-                if($("#custommenu").length > 0){
-                    var items = $("#custommenu ul li a");
-                    var clonedItems = items.clone();
-                    $.each(items,function(index){
-                        var $this = $(this);
-                        var hierarchy = getDistanceToParent($this,"custommenu","div");
-                        //Coefficient to calculate the hierarchy of 
-                        //menu items is 4 (minimum number of elements to the parent element)
-                        if(hierarchy > 4){
-                            var hierarchyLevel = (hierarchy - 4) / 2;
-                            var hierarchyLine = "";
-                            for(var i=0;i<hierarchyLevel;i++){
-                                hierarchyLine += "- ";    
-                            }
-                            var content = hierarchyLine.concat(" ",$this.text());
-                            clonedItems.eq(index).text(content);
-                        }
-                        clonedItems.eq(index).removeClass();
-                    });
-                    $("#mobile-custommenu").append(clonedItems);  
-                }
-            }else{
-                pageHeader.find(".menu-icon").show();
-            }
-        }else{
-            if(mediaQueries == false){
-                $("html").removeClass("no-media-queries");
-            }
-            $("#custommenu").removeClass("collapsed");
-            mobileCustommenu.hide();
-            pageHeader.find(".menu-icon").hide();
-            mobileCustommenu.addClass("collapsed");
-        }
-        return viewPortWidth;
-    }
-    if(Modernizr.mq('only all') == false){
-        var mediaQueries = false;
-    }else{
-        var mediaQueries = true;
-    }
-    var archaiusJSEffects = ArchaiusJSEffects.getInstance();
-    var regionPre = $('#region-pre');
-    var regionPost = $('#region-post');
-    var regionCenterPre = $('#region-center-pre');
-    var regionCenterPost = $('#region-center-post');        
-
-   //Move options to edit blocks to the header tab
-    archaiusJSEffects.organizeRegionCenter(regionCenterPre);
-    archaiusJSEffects.organizeRegionCenter(regionCenterPost);
-    archaiusJSEffects.organizeBlockSummary();
-    
-    if(regionPre.length != 0){
-        regionPre.archaiusCustomBlocks();
-    }
-    if(regionPost.length != 0 ){
-        regionPost.archaiusCustomBlocks({regionLocation: "post"});
-    }
-    if($("#report-region-pre").length > 0){   
-        $("#report-region-pre").archaiusCustomBlocks();
-    }
-
-    var questionBank = $(".questionbankwindow.block");
-    if(questionBank.length > 0 && !(questionBank.hasClass("collapsed"))){
-        archaiusJSEffects.expandBank($(".questionbankwindow.block"));
-    }
-    //add search form to the header page
-    $('#page-header').prepend($('div.footer form.adminsearchform')); 
-    //remove search button                                   
-    $("#page-header form.adminsearchform input:regex(type,submit)").remove(); 
-    $('#region-post-box').prepend($('.blogsearchform'));
-
-    var windowSize = checkOnResize();
-    if(windowSize >= 768 ){
-        $("#custommenu").removeClass("collapsed");
-    }
-    $("#page-header").on("click",".menu-icon",function(){
-        var $this = $(this);
-        if($this.hasClass("deactive")){
-            $this.removeClass("deactive");
-            $this.addClass("active");
-        }else{
-            $this.removeClass("active");
-            $this.addClass("deactive");
-        }
-        $("#mobile-custommenu").slideToggle();
-    });  
-
-    if($("#custommenu").length > 0 || $("div.langmenu").length > 0){
-        $(window).resize(function() {
-            //resize just happened, pixels changed
-            checkOnResize();
-        });    
-    }
-}(this,jQuery);
-
-
-
-
+//Init ArchaiusJSEffects when this JS is loaded!
+ArchaiusJSEffects.getInstance().initEffects();
 

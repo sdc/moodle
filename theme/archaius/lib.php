@@ -11,238 +11,245 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
-
 This plugin is part of Archaius theme.
-@copyright  2013 Daniel Munera Sanchez
-
-*/
-
-/*
-*
- * Functions needed by the archaius theme should be put here.
- *
- * Any functions that get created here should ALWAYS contain the theme name
- * to reduce complications for other theme designers who may be copying this theme.
  */
 
-function archaius_process_css($css, $theme) {
+/**
+* Functions needed by the archaius theme should be put here. 
+* Any functions that get created here should ALWAYS contain the theme name
+* to reduce complications for other theme designers who may be copying this
+*theme.
+* @package   theme_archaius
+* @copyright 2012 onwards Daniel Munera Sanchez  {@link http://dmuneras.com}
+* @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+*
+*/
 
-    // Set the background image for the logo
-    if (!empty($theme->settings->logo)) {
-        $logo = $theme->settings->logo;
-    } else {
-        $logo = null;
-    }
-    $css = archaius_set_logo($css, $logo);
+/* ARCHAIUS LIB
+-----------------------------------------------------------------------------*/
 
-    // Set custom CSS
-    if (!empty($theme->settings->customcss)) {
-        $customcss = $theme->settings->customcss;
-    } else {
-        $customcss = null;
-    }
-    $css = archaius_set_customcss($css, $customcss);
+/** 
+*   Function to be called for CSS postprocess, this function replace all
+*   CSS tags for their values in the setting page.
+*   @param String $css
+*   @param Object $theme
+*   @return String $css - final CSS of the theme
+*/
+function theme_archaius_process_css($css, $theme) {
 
-    if (!empty($theme->settings->themecolor)) {
-        $themecolor = $theme->settings->themecolor;
-    } else {
-        $themecolor = null;
-    }
+    $customcss = 
+        theme_archaius_check_css_setting($theme->settings->customcss);
+    $css = 
+        theme_archaius_replace_tag_css(
+            $css,$customcss,'[[setting:customcss]]');
 
-    $css = archaius_set_themecolor($css,$themecolor);
+    $themecolor = 
+        theme_archaius_check_css_setting($theme->settings->themecolor);
 
-    if (!empty($theme->settings->bgcolor)) {
-      $bgcolor = $theme->settings->bgcolor;
-    } else {
-      $bgcolor = null;
-    }
+    $css = 
+        theme_archaius_replace_tag_css(
+            $css,$themecolor,'[[setting:themecolor]]');
 
-    $css = archaius_set_bgcolor($css,$bgcolor);
+    $bgcolor = 
+        theme_archaius_check_css_setting($theme->settings->bgcolor);
+
+    $css = 
+        theme_archaius_replace_tag_css(
+            $css,$bgcolor,'[[setting:bgcolor]]');
     
-    if (!empty($theme->settings->headercolor)) {
-        $headercolor = $theme->settings->headercolor;
-    } else {
-        $headercolor = null;
-    }
+    $headercolor = 
+        theme_archaius_check_css_setting($theme->settings->headercolor);
 
-    $css = archaius_set_headercolor($css,$headercolor);
+    $css = 
+        theme_archaius_replace_tag_css(
+            $css,$headercolor,'[[setting:headercolor]]');
 
-    if (!empty($theme->settings->currentcolor)) {
-        $currentcolor = $theme->settings->currentcolor;
-    } else {
-        $currentcolor = null;
-    }
+    $currentcolor = 
+        theme_archaius_check_css_setting($theme->settings->currentcolor);
 
-    $css = archaius_set_currentcolor($css,$currentcolor);
+    $css = 
+        theme_archaius_replace_tag_css(
+            $css,$currentcolor,'[[setting:currentcolor]]');
 
-    if (!empty($theme->settings->currentcustommenucolor)) {
-        $currentcustommenucolor = $theme->settings->currentcustommenucolor;
-    } else {
-        $currentcustommenucolor = null;
-    }
+    $currentcustommenucolor = 
+        theme_archaius_check_css_setting(
+            $theme->settings->currentcustommenucolor);
+    
+    $css = 
+        theme_archaius_replace_tag_css(
+            $css,$currentcustommenucolor,'[[setting:currentcustommenucolor]]');
 
-    $css = archaius_set_currentcustommenucolor($css,$currentcustommenucolor);
+    $custommenucolor =
+        theme_archaius_check_css_setting($theme->settings->custommenucolor);
 
-    return $css;
-}
+    $css = 
+        theme_archaius_replace_tag_css(
+            $css,$custommenucolor,'[[setting:custommenucolor]]');
 
-function archaius_set_logo($css, $logo) {
-    global $OUTPUT;
-    $tag = '[[setting:logo]]';
-    $replacement = $logo;
-    if (is_null($replacement)) {
-        $replacement = $OUTPUT->pix_url('images/logo','theme');
-    }
+    $slideshowheight =
+        theme_archaius_check_css_setting($theme->settings->slideshowheight);
 
-    $css = str_replace($tag, $replacement, $css);
+    $css = theme_archaius_set_slideshowheight($css,$slideshowheight);
 
     return $css;
 }
 
+/** 
+*   Check if a setting is empty or not.
+*   @param $setting Setting name
+*   @return mixed NULL or the setting value
+*/
+function theme_archaius_check_css_setting($setting){
+    if (!empty($setting)) 
+        return $setting;
+    return null;
+}
 
-function archaius_set_customcss($css, $customcss) {
-    $tag = '[[setting:customcss]]';
-    $replacement = $customcss;
+/** 
+*   Replace a specific setting in CSS stylesheets.
+*   @param String $css
+*   @param $setting Setting name
+*   @return String $css
+*/
+function theme_archaius_replace_tag_css($css,$replacement,$tag){
     if (is_null($replacement) ) {
         $replacement = '';
     }
-
     $css = str_replace($tag, $replacement, $css);
-
-    return $css;
+    return $css;    
 }
 
-function archaius_set_customjs($js, $customjs) {
-    $tag = '[[setting:customjs]]';
-    $replacement = $customjs;
-    if (is_null($replacement)) {
-        $replacement = '';
+/** 
+*   Replace slideshow height in CSS files. this is diffent from
+*   the other method because you have to validate that the value
+*   is integer. the value must be numeric and the result is given
+*   in pixels.
+*   @param String $css
+*   @param String $slideshowheight 
+*   @return String $css
+*/
+function theme_archaius_set_slideshowheight($css, $slideshowheight) {
+    $tag = '[[setting:slideshowheight]]';
+    $replacement = $slideshowheight;
+    if (is_null($replacement) || !(is_numeric($replacement))){
+        $replacement = '200';
+    }else{
+        //pixel is used and the can't be float.
+        $replacement = intval($replacement);
+        $replacement = (string)round($replacement);        
     }
-
-    $js = str_replace($tag, $replacement, $js);
-
-    return $js;
-}
-
-function archaius_set_theme_collasibleTopics($js, $collasible) {
-    $tag = '[[theme_archaius/collasibleTopics]]';
-    $replacement = $collasible;
-    if (is_null($replacement)) {
-        $replacement = '';
-    }
-
-    $js = str_replace($tag, $replacement, $js);
-
-    return $js;
-}
-
-function archaius_set_theme_hideShowBlocks($js, $collasible) {
-    $tag = '[[theme_archaius/hideShowBlocks]]';
-    $replacement = $collasible;
-    if (is_null($replacement)) {
-        $replacement = '';
-    }
-
-    $js = str_replace($tag, $replacement, $js);
-
-    return $js;
-}
-
-function archaius_set_theme_activateSlideshow($js, $collasible) {
-    $tag = '[[theme_archaius/activateSlideshow]]';
-    $replacement = $collasible;
-    if (is_null($replacement)) {
-        $replacement = '';
-    }
-
-    $js = str_replace($tag, $replacement, $js);
-
-    return $js;
-}
-
-function archaius_set_themecolor($css, $themecolor) {
-    $tag = '[[setting:themecolor]]';
-    $replacement = $themecolor;
-    if (is_null($replacement)) {
-        $replacement = '#2E3332';
-    }
+    $replacement = $replacement . 'px';
     $css = str_replace($tag, $replacement, $css);
     return $css;
 }
 
-function archaius_set_headercolor($css, $headercolor) {
-    $tag = '[[setting:headercolor]]';
-    $replacement = $headercolor;
-    if (is_null($replacement)) {
-        $replacement = '#A7A39B';
-    }
-    $css = str_replace($tag, $replacement, $css);
-    return $css;
-}
-
-function archaius_set_currentcolor($css, $currentcolor) {
-    $tag = '[[setting:currentcolor]]';
-    $replacement = $currentcolor;
-    if (is_null($replacement)) {
-        $replacement = '#2E3332';
-    }
-    $css = str_replace($tag, $replacement, $css);
-    return $css;
-}
-
-function archaius_set_currentcustommenucolor($css, $currentcustommenucolor) {
-    $tag = '[[setting:currentcustommenucolor]]';
-    $replacement = $currentcustommenucolor;
-    if (is_null($replacement)) {
-        $replacement = '#342917';
-    }
-    $css = str_replace($tag, $replacement, $css);
-    return $css;
-}
-
-function archaius_set_bgcolor($css, $bgcolor) {
-  $tag = '[[setting:bgcolor]]';
-  $replacement = $bgcolor;
-  if (is_null($replacement)) {
-    $replacement = '#F5F5F5';
-  }
-  $css = str_replace($tag, $replacement, $css);
-  return $css;
-}
-
-
-
-//Callback function to get files related with the carousel of information on
-//the frontpage.
-function theme_archaius_pluginfile($course, $cm, $context, $filearea, $args,
-                                     $forcedownload, array $options = array()) {
+/**
+ * Serves any files associated with the theme settings.
+ * Callback function to get files related with the carousel of information on
+ * the frontpage.
+ *
+ * @param stdClass $course
+ * @param stdClass $cm
+ * @param context $context
+ * @param string $filearea
+ * @param array $args
+ * @param bool $forcedownload
+ * @param array $options
+ * @return bool
+ */
+function theme_archaius_pluginfile($course, $cm, $context, $filearea, 
+                            $args, $forcedownload, array $options = array()){
 
     if ($context->contextlevel == CONTEXT_SYSTEM) {
-        $fs = get_file_storage();
-        $relativepath = implode('/', $args);
-        $fullpath = "/$context->id/theme_archaius/$filearea/$relativepath";
-        $hash = sha1($fullpath);
-        $file = $fs->get_file_by_hash($hash);
-        if (!$file or $file->is_directory()) {
-            return false;
-        
-        } else {
-            return send_stored_file($file, 86400, 0, $forcedownload, $options);
+        if ($filearea === 'logo') {
+            $theme = theme_config::load('archaius');
+            return $theme->setting_file_serve(
+                'logo', 
+                $args, 
+                $forcedownload, 
+                $options
+            );
+
+
+        }elseif ($filearea === 'mobilelogo') {
+            $theme = theme_config::load('archaius');
+            return $theme->setting_file_serve(
+                'mobilelogo', 
+                $args, 
+                $forcedownload, 
+                $options
+            );
+
+        }else{
+            $fs = get_file_storage();
+            $relativepath = implode('/', $args);
+            $fullpath = "/$context->id/theme_archaius/$filearea/$relativepath";
+            $hash = sha1($fullpath);
+            $file = $fs->get_file_by_hash($hash);
+            if (!$file or $file->is_directory()) {
+                send_file_not_found();
+            }else {
+                return send_stored_file(
+                    $file, 
+                    86400, 
+                    0, 
+                    $forcedownload, 
+                    $options
+                );
+            }            
         }
+
     }
 }
 
+/** 
+*   Function to add jQuery and jQuery plugins using Moodle standard way
+*   @param moodle_page $page
+*/
+function theme_archaius_page_init(moodle_page $page) { 
+    global $PAGE;
+
+    $page->requires->jquery();
+
+    //Load responsive slideshow only when the effect is active
+    $slideshow_active = 
+        isset($PAGE->theme->settings->activateSlideshow) ?
+            intval($PAGE->theme->settings->activateSlideshow) : 0;
+
+    if($slideshow_active)
+        $page->requires->jquery_plugin('responsive-slides', 'theme_archaius');
+
+    //CORE JQUERY PLUGINS
+    $page->requires->jquery_plugin('velocity-jquery', 'theme_archaius'); 
+    $page->requires->jquery_plugin('waypoints', 'theme_archaius'); 
+    $page->requires->jquery_plugin('waypoints-sticky', 'theme_archaius');   
+
+    $accordion_blocks_active = 
+        isset($PAGE->theme->settings->accordionBlocks) ?
+            intval($PAGE->theme->settings->accordionBlocks) : 0;
+
+    //Load accordion blocks only when the effect is active
+    if($accordion_blocks_active)
+        $page->requires->jquery_plugin('accordion-blocks', 'theme_archaius');
+}
 
 //To translate items in the customenu, it is from:
 // http://docs.moodle.org/dev/Extending_the_theme_custom_menu
 class theme_archaius_transmuted_custom_menu_item extends custom_menu_item {
     public function __construct(custom_menu_item $menunode) {
-        parent::__construct($menunode->get_text(), $menunode->get_url(), 
-            $menunode->get_title(), $menunode->get_sort_order(), $menunode->get_parent());
+        parent::__construct(
+            $menunode->get_text(), 
+            $menunode->get_url(), 
+            $menunode->get_title(), 
+            $menunode->get_sort_order(), 
+            $menunode->get_parent()
+        );
         $this->children = $menunode->get_children();
  
         $matches = array();
-        if (preg_match('/^\[\[([a-zA-Z0-9\-\_\:]+)\]\]$/', $this->text, $matches)) {
+        if (preg_match('/^\[\[([a-zA-Z0-9\-\_\:]+)\]\]$/', 
+            $this->text, $matches)) {
+
             try {
                 $this->text = get_string($matches[1], 'theme_archaius');
             } catch (Exception $e) {
@@ -251,7 +258,9 @@ class theme_archaius_transmuted_custom_menu_item extends custom_menu_item {
         }
  
         $matches = array();
-        if (preg_match('/^\[\[([a-zA-Z0-9\-\_\:]+)\]\]$/', $this->title, $matches)) {
+        if (preg_match('/^\[\[([a-zA-Z0-9\-\_\:]+)\]\]$/', 
+            $this->title, $matches)) {
+
             try {
                 $this->title = get_string($matches[1], 'theme_archaius');
             } catch (Exception $e) {
@@ -260,4 +269,3 @@ class theme_archaius_transmuted_custom_menu_item extends custom_menu_item {
         }
     }
 }
-
