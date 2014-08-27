@@ -13,7 +13,7 @@ class block_sharing_cart extends block_base
 	public function init()
 	{
 		$this->title   = get_string('pluginname', __CLASS__);
-		$this->version = 2014022400;
+		$this->version = 2014060600;
 	}
 
 	public function applicable_formats()
@@ -62,7 +62,9 @@ class block_sharing_cart extends block_base
 		$controller = new sharing_cart\controller();
 		$html = $controller->render_tree($USER->id);
 		
-		if (empty($CFG->enableajax)) {
+		if (moodle_major_version() >= 2.7) {
+			// Moodle 2.7 or later runs always with Ajax
+		} elseif (empty($CFG->enableajax)) {
 			$html = $this->get_content_noajax();
 		} else {
 			$noscript = html_writer::tag('noscript',
