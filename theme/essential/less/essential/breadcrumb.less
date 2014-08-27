@@ -1,10 +1,35 @@
+/* @group Breadcrumb Button */
+
 .breadcrumb-button {
     margin-top: 0px;
+    input[type="submit"] {
+        color: ~"[[setting:themenavcolor]]";
+        background: ~"[[setting:themecolor]]";
+        text-shadow: none;
+        border: 0px none;
+        margin: 0;
+        
+        &:hover {
+            color: ~"[[setting:themecolor]]";
+            background: ~"[[setting:themenavcolor]]";
+        }
+        
+        > .singlebutton > form > div {
+            margin: 0;
+        }
+    }
 }
 
+/* @end */
+
+/* @group Breadcrumb */
+
 .breadcrumb-nav {
+    width: 85%;
     margin: 0px;
-    /** Some breadcrumb style **/
+    
+    /* @group Breadcrumb Style Fancy */
+    
     ul.breadcrumb.style1 {  
         display: block;
         padding: 0;  
@@ -12,9 +37,12 @@
         height: 28px;
         width: 100%;
         overflow: hidden;
+        word-wrap: break-word;
+        text-overflow: clip;
         margin-top: 0px;
+        background: none;
         li {
-            color: white;
+            color: ~"[[setting:themenavcolor]]";
             padding: 0 0 0 45px;
             background: ~"[[setting:themecolor]]";
             position: relative; 
@@ -25,11 +53,18 @@
             border-radius: 0px;
             text-shadow: none;
             a {
-                color: white;
+                color: ~"[[setting:themenavcolor]]";
                 text-decoration: none;
+                padding-right: 3px;
+                overflow: hidden;
             }
             a:hover {
+                color: ~"[[setting:themecolor]]";
                 text-decoration: underline;
+            }
+            .dimmed_text {
+                text-decoration: line-through;
+                color: #999;
             }
         }
         li:after  { 
@@ -39,12 +74,12 @@
             height: 0;
             border-top: 50px solid transparent;           /* Go big on the size, and let overflow hide */
             border-bottom: 50px solid transparent;
-            border-left: 30px solid ~"[[setting:themecolor]]";;
+            border-left: 30px solid ~"[[setting:themecolor]]";
             position: absolute;
             top: 50%;
             margin-top: -50px; 
             left: 100%;
-            z-index: 1; 
+            z-index: 100;
         }
         li:before { 
             content: " "; 
@@ -59,13 +94,11 @@
             margin-top: -50px; 
             margin-left: 1px;
             left: 100%;
-            z-index: 1; 
+            z-index: 100;
         }
-        li:first-of-type {
+        .first {
             border-top-left-radius: 4px;
             border-bottom-left-radius: 4px;
-        }
-        li:first-child {
             a {	
                 margin-left: -25px;
             }
@@ -75,39 +108,70 @@
                 content: "\f015 ";
                 margin-right: 5px;
                 text-decoration: none;
+                color: #fff;
+            }
+            a:hover:before {
+                color: ~"[[setting:themecolor]]";
             }
         }
-        li:last-child {
-            padding-left: 10px;
+        .last:before,
+        .last:after,
+        li:last-of-type:before,
+        li:last-of-type:after {
+            content: '';
+            display: none;
         }
-        li:last-child:after { 
-            content: "";
-            border: 0px;
-        }
-        li:last-child:before { 
-            border: 0px;
+        .last,
+        li:last-of-type {
+            padding-right: 10px;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
         }
         li:hover {
-            background: ~"[[setting:themehovercolor]]";
+            color: ~"[[setting:themecolor]]";
+            background: ~"[[setting:themenavcolor]]";
+            a {
+                color: ~"[[setting:themecolor]]";
+            }
+            .dimmed_text {
+                text-decoration: line-through;
+                color: #999;
+            }
         }
         li:hover:after {
-            border-left-color: ~"[[setting:themehovercolor]]" !important;
+            border-left-color: ~"[[setting:themenavcolor]]";
+            a {
+                color: ~"[[setting:themecolor]]";
+            }
         }
     }
+    
+    /* @end */
+    
+    /* @group Breadcrumb Style Simple */
 
     ul.breadcrumb.style2 {
+        width: 100%;
         padding: 0px;
         display: block;
         background: transparent;
+        overflow: hidden;
+        word-wrap: break-word;
+        text-overflow: clip;
         li {
             display: block;
+            height: 20px;
             float: left;
             padding: 2px;
             border-radius: 0px;
             text-shadow: none;
             background-color: #F5F5F5;
             a {
+                color: ~"[[setting:themetextcolor]]";
                 margin-right: 3px;
+            }
+            a:hover {
+                color: ~"[[setting:themehovercolor]]";
             }
         }
         li:first-of-type {
@@ -121,7 +185,8 @@
             font-family: FontAwesome;
             content: "\f138 ";
             padding: 5px;
-            vertical-align: middle;
+            line-height: 20px;
+            vertical-align: top;
         }
         li:last-child:after {
             content: "";
@@ -132,26 +197,40 @@
             border-bottom-right-radius: 4px;
         }
     }
+    
+    /* @end */
+    
+    /* @group Breadcrumb Style Thin */
 
     ul.breadcrumb.style3 {
+        width: 100%;
         display: block;
         background: transparent;
         padding: 0px;
+        overflow: hidden;
+        word-wrap: break-word;
+        text-overflow: clip;
+        height: 12px;
         li {
+            line-height: 12px;
             display: block;
             float: left;
             text-transform: uppercase;
-            font-size: 11px;
+            font-size: 12px;
             background: transparent;
         }
         li:after {
-            content: " / ";
-            margin-left: 2px;
-            margin-right: 4px;
-            vertical-align: middle;
+            font-family: FontAwesome;
+            content: "\f105";
+            padding: 2px;
+            vertical-align: top;
         }
         li:last-child:after {
             content: "";
         }
     }
+    
+    /* @end */
 }
+
+/* @end */

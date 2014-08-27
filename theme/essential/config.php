@@ -32,22 +32,39 @@ $THEME->name = 'essential';
 
 $THEME->doctype = 'html5';
 $THEME->yuicssmodules = array();
-$THEME->parents = array('bootstrapbase');
-$THEME->sheets = array('fontawesome', 'essential', 'custom');
-$THEME->supportscssoptimisation = false;
+$THEME->parents = array();
 
-if ($CFG->version >= 2014051200.10 ) {
-    $THEME->enable_dock = true;
+$THEME->sheets[] = 'moodle';
+
+if (right_to_left()) {
+    $THEME->sheets[] = 'essential-rtl';
+} else {
+    $THEME->sheets[] = 'essential';
 }
 
-$THEME->editor_sheets = array();
+if ((get_config('theme_essential', 'enablealternativethemecolors1')) || 
+    (get_config('theme_essential', 'enablealternativethemecolors2')) || 
+    (get_config('theme_essential', 'enablealternativethemecolors3'))) 
+{
+    $THEME->sheets[] = 'alternative';
+}
 
-$THEME->plugins_exclude_sheets = array(
-    'block' => array(
-        'html',
-    ),
-);
+$THEME->sheets[] = 'custom';
 
+$THEME->supportscssoptimisation = false;
+$THEME->enable_dock = true;
+
+$THEME->editor_sheets = array('editor');
+
+if (get_config('theme_essential','frontpagemiddleblocks') == 1 || 
+   (get_config('theme_essential','frontpagemiddleblocks') == 2 && is_loggedin())) {
+    $addregions = array('home-left', 'home-middle', 'home-right');
+} else {
+    $addregions = array();
+}
+if (is_siteadmin()){
+    $addregions[] = 'hidden-dock';
+}
 $THEME->layouts = array(
     // Most backwards compatible layout without the blocks - this is the layout used by default.
     'base' => array(
@@ -59,9 +76,8 @@ $THEME->layouts = array(
     // Front page.
     'frontpage' => array(
         'file' => 'frontpage.php',
-        'regions' => array('side-pre', 'home-left', 'home-middle', 'home-right', 'footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
-        'defaultregion' => 'hidden-dock',
-        'options' => array('nonavbar'=>true),
+        'regions' => array_merge(array('side-pre', 'footer-left', 'footer-middle', 'footer-right'), $addregions),
+        'defaultregion' => 'side-pre',
     ),
     // Standard layout with blocks, this is recommended for most pages with general information.
     'standard' => array(
@@ -98,7 +114,6 @@ $THEME->layouts = array(
         'file' => 'columns3.php',
         'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right'),
         'defaultregion' => 'side-post',
-        'options' => array('langmenu'=>true),
     ),
     // My public page.
     'mypublic' => array(
@@ -110,7 +125,6 @@ $THEME->layouts = array(
         'file' => 'login.php',
         'regions' => array('footer-left', 'footer-middle', 'footer-right'),
         'defaultregion' => '',
-        'options' => array('langmenu'=>true),
     ),
 
     // Pages that appear in pop-up windows - no navigation, no blocks, no header.
@@ -145,7 +159,7 @@ $THEME->layouts = array(
         'file' => 'columns1.php',
         'regions' => array('footer-left', 'footer-middle', 'footer-right'),
         'defaultregion' => 'footer-right',
-        'options' => array('nofooter'=>true, 'nonavbar'=>false),
+        'options' => array('nofooter'=>true),
     ),
     // The pagelayout used when a redirection is occuring.
     'redirect' => array(
@@ -167,19 +181,8 @@ $THEME->layouts = array(
     ),
 );
 
-$THEME->javascripts = array(
-    'coloursswitcher',
-);
+$THEME->javascripts_footer[] = 'coloursswitcher';
+$THEME->javascripts_footer[] = 'dock';
 
 $THEME->rendererfactory = 'theme_overridden_renderer_factory';
-
 $THEME->csspostprocess = 'theme_essential_process_css';
-
-$useragent = '';
-if (!empty($_SERVER['HTTP_USER_AGENT'])) {
-    $useragent = $_SERVER['HTTP_USER_AGENT'];
-}
-
-if (core_useragent::is_ie() && !core_useragent::check_ie_version('9.0')) {
-    $THEME->javascripts[] = 'html5shiv';
-}
