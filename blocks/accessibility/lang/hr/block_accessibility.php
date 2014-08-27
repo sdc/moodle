@@ -16,43 +16,46 @@
 
 
 /**
- * Spanish translation                                                 (1)
+ * English Lang Strings                                                (1)
  *
- * @author  Enrique Robredo                                            (2)
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later (3)
+ * @author  Mark Johnson                                              (2)
+ * @copyright &copy; Taunton's College 2009                             (3)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later (4)
  */
 defined('MOODLE_INTERNAL') || die();
 
-$string['autolaunch'] = '(¿siempre?)';
-$string['blockname'] = 'Accesibilidad';
+$string['autolaunch'] = '(uvijek?)';
+$string['blockname'] = 'Pristupačnost';
+$string['clearedoldcache'] = 'Obrisano {$a} datoteka iz cachea';
 $string['char'] = 'A';
-$string['clearedoldcache'] = 'Eliminados de la caché {$a} archivos antiguos';
-$string['dectext'] = 'Disminuir Texto';
-$string['inctext'] = 'Aumentar Texto';
-$string['invalidop'] = 'Esta operación será invalidada';
-$string['jsnocolour'] = 'Se ha producido un error cambiando el esquema de colores';
-$string['jsnocolourreset'] = 'Se ha producido un error reiniciano el esquema de colores';
-$string['jsnosave'] = 'Se ha producido un error cambiando la configuración';
-$string['jsnosize'] = 'Se ha producido un error cambiando el tamaño';
-$string['jsnosizereset'] = 'Se ha producido un error reiniciando el tamaño del texto';
-$string['launchtoolbar'] = 'Lanzar ATbar';
-$string['pluginname'] = 'Accesibilidad';
-$string['pluginnameplural'] = 'Accesibilidad';
-$string['resettext'] = 'Recuperar tamaño de la fuente (Se pierde la configuración guardada)';
-$string['reset'] = 'Configuración Reiniciada';
-$string['save'] = 'Guardar configuración';
-$string['saved'] = 'Configuración guardada';
-$string['col1text'] = 'Volver al esquema de colores original (Se pierde la configuración guardada)';
-$string['col2text'] = 'Bajo Contraste 1';
-$string['col3text'] = 'Bajo Contraste 2';
-$string['col4text'] = 'Alto Contraste';
+$string['dectext'] = 'Povećaj tekst';
+$string['inctext'] = 'Smanji tekst';
+$string['invalidop'] = 'Tražena operacija ne postoji!';
+$string['jsnocolour'] = 'Greška kod promjene profila boja';
+$string['jsnocolourreset'] = 'Greška kod resetiranja profila boja';
+$string['jsnosave'] = 'Greška kod pohrane postavki';
+$string['jsnosize'] = 'Greška kod promjene veličine teksta';
+$string['jsnosizereset'] = 'Greška kod resetiranja veličine teksta';
+$string['launchtoolbar'] = 'Pokreni ATbar';
+$string['pluginname'] = 'Pristupačnost';
+$string['pluginnameplural'] = 'Blokovi za pristupačnost';
+$string['resettext'] = 'Resetiranje veličine teksta (postavke obrisane)';
+$string['reset'] = 'Postavke obrisane';
+$string['save'] = 'Pohrani postavke';
+$string['saved'] = 'Postavke pohranjene';
+$string['col1text'] = 'Pretpostavljeni profil boja (postavke obrisane)';
+$string['col2text'] = 'Smanjeni kontrast 1';
+$string['col3text'] = 'Smanjeni kontrast 2';
+$string['col4text'] = 'Visoki kontrast';
 
 /*	Configuration form - please help us translate it on GitHub 
 	------------------------------------------------------------
 */
+/* not implemented
 $string['config_autosave'] = 'Auto save'; // label
 $string['config_autosave_checkbox'] = 'Save user settings automatically (button "save" will disappear)'; // checkbox label
 $string['config_autosave_help'] = 'Font size and colour schemes settings are automatically saved to the session as long as user is logged in to the system. However, session settings will be cleared once the user log off. The user can keep chosen settings throughout the sessions using the "save" button in the block. Enabling Auto-save option will remove the "save" button and automatically save settings for the user. This might lead to slightly higher impact to the system performance, which is why this option is disabled by default.'; // help block
+*/
 $string['config_showATbar'] = 'ATbar';
 $string['config_showATbar_checkbox'] = 'Allow ATbar appearance within Accessibility block';
 $string['config_showATbar_help'] = 'Accessibility block also integrates ATbar from Southampton University ECS <a href="http://www.atbar.org">http://www.atbar.org</a>.';
