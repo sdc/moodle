@@ -236,6 +236,16 @@ Known Issues
 
 History
 =============
+25th August 2014 Version 2.7.1.4
+  1.  Fixed CONTRIB-5256.  Thanks to Marius Jugariu for reporting the problem.
+
+18th August 2014 Version 2.7.1.3
+  1.  Fixed issue whereby the grid shade box is underneath certain theme components:
+      https://moodle.org/mod/forum/discuss.php?d=266192#p1152232.
+
+9th August 2014 Version 2.7.1.2
+  1.  Fixed CONTRIB-5191.  This is a workaround that depends on MDL-43525 being implemented before it is reversed.
+
 12th June 2014 - Version 2.7.1.1
   1.  Slight change to CSS for Bootstrap V3.
   2.  Fixed CONTRIB-5106 - thanks to Hanna Edelman for this.
