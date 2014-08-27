@@ -209,7 +209,7 @@ function certificate_user_complete($course, $user, $mod, $certificate) {
         echo get_string('issued', 'certificate') . ": ";
         echo userdate($issue->timecreated);
         $cm = get_coursemodule_from_instance('certificate', $certificate->id, $course->id);
-        certificate_print_user_files($certificate->id, $user->id, context_module::instance($cm->id));
+        certificate_print_user_files($certificate, $user->id, context_module::instance($cm->id)->id);
         echo '<br />';
         echo $OUTPUT->box_end();
     } else {
@@ -729,9 +729,9 @@ function certificate_get_issues($certificateid, $sort="ci.timecreated ASC", $gro
     // Get all the users that have certificates issued, should only be one issue per user for a certificate
     $allparams = $conditionsparams + array('certificateid' => $certificateid);
 
-    $namefields = get_all_user_name_fields(true, 'u');
+    // The picture fields also include the name fields for the user.
     $picturefields = user_picture::fields('u');
-    $users = $DB->get_records_sql("SELECT u.id, $namefields, $picturefields, ci.code, ci.timecreated
+    $users = $DB->get_records_sql("SELECT $picturefields, u.idnumber, ci.code, ci.timecreated
                                      FROM {user} u
                                INNER JOIN {certificate_issues} ci
                                        ON u.id = ci.userid
