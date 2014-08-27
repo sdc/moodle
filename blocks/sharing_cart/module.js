@@ -647,8 +647,15 @@ YUI.add('block_sharing_cart', function (Y)
                 $section.all('li.activity').each(function ($activity)
                 {
                     var $backup = create_command('backup');
-                    $activity.one('.commands').append($backup);
-                    
+                    var $menu = $activity.one('ul[role="menu"]');
+                    if ($menu) {
+                        $menu.append(Y.Node.create('<li role="presentation"/>').append($backup.set('role', 'menuitem')));
+                        if ($menu.getStyle('display') == 'none') {
+                            $backup.append($backup.get('title'));
+                        }
+                    } else {
+                        $activity.one('.commands').append($backup);
+                    }
                     $backup.on('click', this.on_backup, this);
                     
 //                    var drag = Y.DD.DDM.getDrag($activity);
@@ -746,7 +753,7 @@ YUI.add('block_sharing_cart', function (Y)
         M.block_sharing_cart.init_resource_dragdrop.call(M.block_sharing_cart);
     }
 },
-'2.4, release 1',
+'2.6, release 1 patch 4',
 {
     requires: [ 'base', 'node', 'io', 'dom', 'cookie', 'dd', 'moodle-course-dragdrop' ]
 });
