@@ -5,11 +5,22 @@
 <?php include 'partials/page_content.php' ?>
 <?php include 'partials/footer.php' ?>
 <script type = "text/javascript">
-    //<![CDATA[   
+    //<![CDATA[
     <?php if (!empty($PAGE->theme->settings->customjs)) {
         echo $PAGE->theme->settings->customjs;
     } ?>
     //]]>
 </script>
+
+<script type="text/javascript" src="http://moodle.southdevon.ac.uk/clickheat/js/clickheat.js"></script>
+<script type="text/javascript">
+<!--
+clickHeatSite = 'mainmoodle';
+clickHeatGroup = (document.title == '' ? '-none-' : encodeURIComponent(document.title));
+clickHeatServer = 'http://moodle.southdevon.ac.uk/clickheat/click.php';
+initClickHeat();
+//-->
+</script>
+
 </body>
 </html>
