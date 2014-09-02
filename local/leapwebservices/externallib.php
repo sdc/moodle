@@ -23,6 +23,7 @@
  */
 
 require_once($CFG->libdir.'/externallib.php');
+require_once($CFG->libdir.'/gradelib.php');
 
 /**
  * External Webservices API class
@@ -386,7 +387,7 @@ class local_leapwebservices_external extends external_api {
 
         $user = $DB->get_record('user', array('username' => $params['username']));
         $courses = enrol_get_users_courses($user->id, false, '*');
-        if (!empty($courses)) {   
+        if (!empty($courses)) {
 
             $contents = array();
             foreach ($courses as $course) {
@@ -448,12 +449,6 @@ class local_leapwebservices_external extends external_api {
     }
 
 
-    /*************************************************************************
-     * New for 2014:                                                         *
-     *                                                                       *
-     * GET TARGETS BY USERNAME                                               *
-     *************************************************************************/
-
     /**
      * Returns description of method parameters
      * @return external_function_parameters
@@ -464,13 +459,14 @@ class local_leapwebservices_external extends external_api {
                 'username' => new external_value( PARAM_TEXT, 'Username. If empty, fail.' ),
             )
         );
-    }
+    } // END function.
+
 
     /**
      * Get user information
      *
-     * @param array $username array of user ids
-     * @return array An array of arrays describing users
+     * @param int $username 8-digit user ids
+     * @return array An array describing targets (and metadata) for that user for all leapcore_* courses.
      */
     public static function get_targets_by_username( $username ) {
         global $CFG, $DB;
@@ -482,70 +478,146 @@ class local_leapwebservices_external extends external_api {
             exit(1);
         }
 
-        // Get the Moodle userid for the user with the supplied username.
-        //$user = $DB->get_record( 'user', array( 'username' => $params['username'] ) );
+        // Could do with knowing what this user's {user}.id is.
+        $sql = "SELECT id from {user} WHERE username LIKE ?;";
+        if ( !$user = $DB->get_record_sql( $sql, array( $params['username'] . '%' ) ) ) {
+            header( $_SERVER["SERVER_PROTOCOL"].' 422 Unprocessable Entity ($params[\'username\'] could not be matched against a valid user.)', true, 422 );
+            exit(1);
+        }
 
         $cores = array(
-            'core'      => 'leapcore_core',
-            'english'   => 'leapcore_english',
-            'maths'     => 'leapcore_maths',
-            'ppd'       => 'leapcore_ppd',
+            'core'              => 'leapcore_core',
+            'english'           => 'leapcore_english',
+            'maths'             => 'leapcore_maths',
+            'ppd'               => 'leapcore_ppd',
+            'test'              => 'leapcore_test',
+
+            'a2_artdes'         => 'leapcore_a2_artdes',
+            'a2_artdesphoto'    => 'leapcore_a2_artdesphoto',
+            'a2_artdestext'     => 'leapcore_a2_artdestext',
+            'a2_biology'        => 'leapcore_a2_biology',
+            'a2_busstud'        => 'leapcore_a2_busstud',
+            'a2_chemistry'      => 'leapcore_a2_chemistry',
+            'a2_englishlang'    => 'leapcore_a2_englishlang',
+            'a2_englishlit'     => 'leapcore_a2_englishlit',
+            'a2_envsci'         => 'leapcore_a2_envsci',
+            'a2_envstud'        => 'leapcore_a2_envstud',
+            'a2_filmstud'       => 'leapcore_a2_filmstud',
+            'a2_geography'      => 'leapcore_a2_geography',
+            'a2_history'        => 'leapcore_a2_history',
+            'a2_law'            => 'leapcore_a2_law',
+            'a2_maths'          => 'leapcore_a2_maths',
+            'a2_mathsfurther'   => 'leapcore_a2_mathsfurther',
+            'a2_media'          => 'leapcore_a2_media',
+            'a2_philosophy'     => 'leapcore_a2_philosophy',
+            'a2_physics'        => 'leapcore_a2_physics',
+            'a2_psychology'     => 'leapcore_a2_psychology',
+            'a2_sociology'      => 'leapcore_a2_sociology',
+            'btecex_applsci'    => 'leapcore_btecex_applsci',
+
         );
+
+        // Define the target's names.
+        $targets = array( 'TAG', 'L3VA', 'MAG' );
 
         $courses = array();
         foreach ( $cores as $core => $coresql ) {
 
-            //$courses['leapcore'][$core] = array();
-            $courses[$core]['leapcore']  = $core;
+            $courses[$core]['leapcore'] = $core;
 
-            $sql = "SELECT mdl_course.id AS courseid, shortname
-                FROM mdl_user, mdl_course
-                WHERE mdl_user.username LIKE '" . $params['username'] . "%'
-                    AND mdl_course.idnumber LIKE '%|" . $coresql . "|%';";
+            // Checking for user enrolled as student role.
+            $sql = "SELECT DISTINCT c.id AS courseid, c.shortname AS shortname, c.fullname AS fullname, username
+                FROM mdl_user u
+                    JOIN mdl_user_enrolments ue ON ue.userid = u.id
+                    JOIN mdl_enrol e ON e.id = ue.enrolid
+                    JOIN mdl_role_assignments ra ON ra.userid = u.id
+                    JOIN mdl_context ct ON ct.id = ra.contextid
+                        AND ct.contextlevel = 50
+                    JOIN mdl_course c ON c.id = ct.instanceid
+                        AND e.courseid = c.id
+                    JOIN mdl_role r ON r.id = ra.roleid
+                        AND r.shortname = 'student'
+                WHERE c.idnumber LIKE '%|" . $coresql . "|%'
+                    AND u.username LIKE '" . $params['username'] . "%'
+                    AND e.status = 0
+                    AND u.suspended = 0
+                    AND u.deleted = 0
+                    AND (
+                        ue.timeend = 0
+                        OR ue.timeend > NOW()
+                    )
+                    AND ue.status = 0;";
 
-            if ( $result = $DB->get_record_sql( $sql ) ) {
-                $courses[$core]['course_name']  = $result->shortname;
-                $courses[$core]['course_id']    = $result->courseid;
+            // There is potential here for a user to have more than one 'leapcore_core' course, but it's pretty unlikely.
+            // We probably need to handle this better (at the moment the below function expects 0 or 1 results and fails).
+            if ( !$result = $DB->get_record_sql( $sql ) ) {
+                unset($courses[$core]);
+                continue;
+            } else {
+                $courses[$core]['course_shortname'] = $result->shortname;
+                $courses[$core]['course_fullname']  = $result->fullname;
+                $courses[$core]['course_id']        = $result->courseid;
             }
 
-            $sql2 = "SELECT itemname, finalgrade
-                FROM mdl_grade_grades, mdl_grade_items, mdl_grade_categories, mdl_user, mdl_course
-                WHERE mdl_grade_grades.itemid = mdl_grade_items.id
-                    AND mdl_grade_items.categoryid = mdl_grade_categories.id
-                    AND mdl_grade_grades.userid = mdl_user.id
-                    AND mdl_user.username LIKE '" . $params['username'] . "%'
-                    AND mdl_grade_items.courseid = mdl_course.id
-                    AND mdl_course.idnumber LIKE '%|" . $coresql . "|%';";
+            // Walk through a fair few objects to get the course's time modified, final grade and named grade.
+            $gi         = new grade_item();
+            // Pulling from the already-set MAG as the 'course' setting is unreliable.
+            $gi_item    = $gi::fetch( array( 'courseid' => $courses[$core]['course_id'], 'itemtype' => 'manual', 'itemname' => 'MAG' ) );
+            $courses[$core]['course_total_modified'] = $gi_item->timemodified;
 
-            if ( $result2 = $DB->get_records_sql( $sql2 ) ) {
-                $courses[$core]['mag']  = $result2['MAG']->finalgrade;
-                $courses[$core]['tag']  = $result2['TAG']->finalgrade;
-                $courses[$core]['l3va'] = $result2['L3VA']->finalgrade;
+            $gg         = new grade_grade();
+            $gg_grade   = $gg::fetch( array( 'itemid' => $gi_item->id, 'userid' => $user->id ) );
+            $courses[$core]['course_total'] = $gg_grade->finalgrade;
+
+            $gs         = new grade_scale();
+            $gs_scale   = $gs::fetch( array( 'id' => $gi_item->scaleid ) );
+            $courses[$core]['course_total_display'] = $gs_scale->get_nearest_item( $gg_grade->finalgrade );
+
+            // For each target, same as above.
+            foreach ( $targets as $target ) {
+
+                $gi         = new grade_item();
+                $gi_item    = $gi::fetch( array( 'courseid' => $courses[$core]['course_id'], 'itemtype' => 'manual', 'itemname' => $target ) );
+
+                $gg         = new grade_grade();
+                $gg_grade   = $gg::fetch( array( 'itemid' => $gi_item->id, 'userid' => $user->id ) );
+                $courses[$core][strtolower($target)]   = $gg_grade->finalgrade;
+
+                // Get the named result (e.g. 'merit') only for targets which are not L3VA.
+                if ( $target <> 'L3VA' ) {
+
+                    $gs         = new grade_scale();
+                    $gs_scale   = $gs::fetch( array( 'id' => $gi_item->scaleid ) );
+
+                    $courses[$core][strtolower($target) . '_display'] = $gs_scale->get_nearest_item( $gg_grade->finalgrade );
+                } else {
+
+                    $courses[$core][strtolower($target) . '_display'] = $courses[$core][strtolower($target)];
+                }
+
             }
 
-        }
+            // Stress reduction code.
+            $courses[$core]['meaning_of_life']  = '42';
+            $courses[$core]['smiley_face']      = ':)';
+
+            // Incomplete course check.
+            // TODO: make this better. We scan through all four 'leapcore_' tags (and all the new A2 ones) and get the results, 
+            // but sometimes there aren't any.  So for the tags with no associated courses, we remove them.
+            if ( !isset( $courses[$core]['course_shortname'] ) ) {
+                unset($courses[$core]);
+            }
+
+        } // END foreach $courses.
 
         if ( !empty( $courses ) ) {
-
-/*
-            $context = context_course::instance($courses[$core]['course_id']);
-            try {
-                self::validate_context($context);
-            } catch (Exception $e) {
-                $exceptionparam             = new stdClass();
-                $exceptionparam->message    = $e->getMessage();
-                $exceptionparam->courseid   = $courseid;
-                throw new moodle_exception(
-                    get_string('errorcoursecontextnotvalid', 'webservice', $exceptionparam));
-            }
-            require_capability('moodle/grade:viewall', $context);
-*/
 
             return $courses;
 
         }
 
     } // END function.
+
 
     /**
      * Returns description of method result value
@@ -555,16 +627,26 @@ class local_leapwebservices_external extends external_api {
         return new external_multiple_structure(
             new external_single_structure(
                 array(
-                    'leapcore'      => new external_value(PARAM_TEXT, 'The type of core course found.'),
-                    'course_name'   => new external_value(PARAM_TEXT, 'The course name.'),
-                    'course_id'     => new external_value(PARAM_INTEGER, 'The course ID number.'),
-                    'mag'           => new external_value(PARAM_FLOAT, 'Minimum Achievable Grade.'),
-                    'tag'           => new external_value(PARAM_FLOAT, 'Target Achievable Grade.'),
-                    'l3va'          => new external_value(PARAM_FLOAT, 'Level 3 Value Added.'),
+                    'leapcore'                  => new external_value( PARAM_TEXT,      'The type of core course found.' ),
+                    'course_shortname'          => new external_value( PARAM_TEXT,      'The short course name.' ),
+                    'course_fullname'           => new external_value( PARAM_TEXT,      'The full course name.' ),
+                    'course_id'                 => new external_value( PARAM_INTEGER,   'The course ID number.' ),
+                    'mag'                       => new external_value( PARAM_FLOAT,     'Minimum Achievable Grade.' ),
+                    'mag_display'               => new external_value( PARAM_TEXT,      'Minimum Achievable Grade (for display).' ),
+                    'tag'                       => new external_value( PARAM_FLOAT,     'Target Achievable Grade.' ),
+                    'tag_display'               => new external_value( PARAM_TEXT,      'Target Achievable Grade (for display).' ),
+                    'l3va'                      => new external_value( PARAM_FLOAT,     'Level 3 Value Added.' ),
+                    'l3va_display'              => new external_value( PARAM_TEXT,      'Level 3 Value Added (for display).' ),
+                    'course_total'              => new external_value( PARAM_FLOAT,     'Course total score.' ),
+                    'course_total_display'      => new external_value( PARAM_TEXT,      'Course total score (for display).' ),
+                    'course_total_modified'     => new external_value( PARAM_INTEGER,   'Course total modification timestamp.' ),
+                    'meaning_of_life'           => new external_value( PARAM_INTEGER,   'Meaning of life.' ),
+                    'smiley_face'               => new external_value( PARAM_TEXT,      'Smiley face.' ),
                 )
             )
         );
-    }
+
+    } // END function.
 
 
 } // END class.
