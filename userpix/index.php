@@ -28,7 +28,7 @@ foreach ($rs as $user) {
     $fullname = fullname($user);
     echo "<a href=\"$CFG->wwwroot/user/view.php?id=$user->id&amp;course=1\" ".
          "title=\"$fullname\">";
-    echo $OUTPUT->user_picture($user);
+    echo $OUTPUT->user_picture($user, array( 'size' => 200 ) );
     echo "</a> \n";
 }
 $rs->close();
