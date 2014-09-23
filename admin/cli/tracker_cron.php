@@ -17,10 +17,11 @@
 $time_start = microtime(true);
 
 // Null or an int (course's id): run the script only for this course. For testing or one-offs.
+//$thiscourse = null; // null or e.g. 1234
 $thiscourse = null; // null or e.g. 1234
 
-$version    = '1.0.8';
-$build      = '20140916';
+$version    = '1.0.11';
+$build      = '20140923';
 
 tlog( 'GradeTracker script, v' . $version . ', ' . $build . '.', 'hiya' );
 tlog( 'Started at ' . date( 'c', $time_start ) . '.', ' go ' );
@@ -59,23 +60,29 @@ if ( !$CFG->trackerhash ) {
 
 // Logging array for the end-of-script summary.
 $logging = array(
-    'courses'           => array(),     // For each course which has been processed (key is id).
-    'students'          => array(),     // For each student who has been processed.
-    'grade_types'       => array(       // Can set these, but they'll get created automatically if they don't exist.
-        'btec'              => 0,       // +1 for each BTEC course.
-        'a level'           => 0,       // +1 for each A Level course.
+    'courses'               => array(),     // For each course which has been processed (key is id).
+    'students_processed'    => array(),     // For each student who has been processed.
+    'students_unique'       => array(),     // For each unique student who has been processed.
+    'no_l3va'               => array(),     // Students with no L3VA.
+    'grade_types'           => array(       // Can set these, but they'll get created automatically if they don't exist.
+        'btec'                  => 0,       // +1 for each BTEC course.
+        'a level'               => 0,       // +1 for each A Level course.
+        'gcse'                  => 0,       // +1 for each GCSE course.
         // For the sake of not causing PHP Notices, added the following:
-        'refer and pass'    => 0,
-        'noscale'           => 0,
-        'develop, pass'     => 0,
+        'refer and pass'        => 0,
+        'noscale'               => 0,
+        'develop, pass'         => 0,
     ),
-    'poor_grades'       => array(),     // An entry for each student with a E, F, U, Refer, etc.
+    'poor_grades'           => array(),     // An entry for each student with a E, F, U, Refer, etc.
 
-    'num'               => array(
-        'courses'           => 0,       // Integer number of courses processed.
-        'students'          => 0,       // Integer number of students processed.
-        'grade_types'       => 0,       // Integer number of grade types (should be the same as courses - relevant?).
-        'poor_grades'       => 0,       // Integer number of poorly-graded students processed.
+    'num'                   => array(
+        'courses'               => 0,       // Integer number of courses processed.
+        'students_processed'    => 0,       // Integer number of students processed.
+        'students_unique'       => 0,       // Integer number of unique students processed.
+        'no_l3va'               => 0,       // Integer number of unique students with no L3VA score.
+        'grade_types'           => 0,       // Integer number of grades used.
+        'grade_types_in_use'    => 0,       // Integer number of grade types.
+        'poor_grades'           => 0,       // Integer number of poorly-graded students processed.
     ),
 );
 
@@ -112,7 +119,11 @@ $l3va_data = array(
 
 );
 
-//var_dump($l3va_data); die();
+// Small array to store the GCSE English and maths grades from the JSON.
+$gcse = array(
+    'english'   => null,
+    'maths'     => null,
+);
 
 // A little function to make the output look nice.
 function tlog($msg, $type = 'ok') {
@@ -132,10 +143,11 @@ function tlog($msg, $type = 'ok') {
  */
 function make_mag( $in, $course = 'leapcore_default', $scale = 'BTEC', $tag = false ) {
 
-    if ( $in == '' || !is_numeric($in) || $in <= 0 || !$in ) {
+    //if ( $in == '' || !is_numeric($in) || $in <= 0 || !$in ) {
+    if ( $in == '' || !$in ) {
         return false;
     }
-    if ( $course == '' || !$in ) {
+    if ( $course == '' ) {
         return false;
     }
 
@@ -172,7 +184,6 @@ function make_mag( $in, $course = 'leapcore_default', $scale = 'BTEC', $tag = fa
     } else if ( $scale == 'A Level' ) {
         // We're using an A Level scale.
         // AS Levels are exactly half of A (A2) Levels, if we need to know them in the future.
-        // Does this system work for L3 (English and Maths) GSCEs also?
 
         // As A Level grades are precisely 30 apart, to get a TAG one grade up we just add 30 to the score.
         if ( $tag ) {
@@ -200,9 +211,35 @@ function make_mag( $in, $course = 'leapcore_default', $scale = 'BTEC', $tag = fa
         //    $score = 7; // A*
         //}
 
+    } else if ( $scale == 'GCSE' ) {
+
+        $score = 1; // U
+        if ( $adj_l3va == 'U' ) {
+            $score = 1;
+        }
+        if ( $adj_l3va == 'F' ) {
+            $score = 2;
+        }
+        if ( $adj_l3va == 'E' ) {
+            $score = 3;
+        }
+        if ( $adj_l3va == 'D' ) {
+            $score = 4;
+        }
+        if ( $adj_l3va == 'C' ) {
+            $score = 5;
+        }
+        if ( $adj_l3va == 'B' ) {
+            $score = 6;
+        }
+        if ( $adj_l3va == 'A' ) {
+            $score = 7;
+        }
+
     } else if ( $scale == 'noscale' ) {
         // Using no scale, simply return null.
         $score = null;
+
     } else {
         // Set a default score if none of the above criteria are met.
         $score = null;
@@ -265,7 +302,7 @@ foreach ($courses as $course) {
 
     $cur_courses++;
 
-    tlog('Processing course (' . $cur_courses . '/' . $num_courses . ') ' . $course->shortname . ' (id: ' . $course->id . ').', 'info');
+    tlog('Processing course (' . $cur_courses . '/' . $num_courses . ') ' . $course->fullname . ' (' . $course->shortname . ') [' . $course->id . '] at ' . date( 'c', time() ) . '.', 'info');
     $logging['courses'][] = $course->fullname . ' (' . $course->shortname . ') [' . $course->id . '].';
 
     // Set up the scale to be used here, null by default.
@@ -295,6 +332,26 @@ foreach ($courses as $course) {
                 }
 
                 break;
+
+            } else if ( stristr( $value, str_replace ( '%', '', IDNUMBERLIKE ) . 'gcse' ) ) {
+                // This check is specifically for GCSE courses.
+                $course->scalename  = 'GCSE';
+                $course->coursetype = $value;
+
+                tlog( 'Course ' . $course->id . ' appears to be a GCSE course, so setting that scale for use later.', 'info' );
+
+                // Get the scale ID.
+                if ( !$moodlescaleid = $DB->get_record( 'scale', array( 'name' => 'GCSE' ), 'id' ) ) {
+                    tlog( ' Could not find a scale called \'' . $course->scalename . '\' for course ' . $course->id . '.', 'warn' );
+
+                } else {
+                    // Scale located.
+                    $course->scaleid = $moodlescaleid->id;
+                    tlog( ' Scale called \'' . $course->scalename . '\' found with ID ' . $moodlescaleid->id . '.', 'info' );
+                }
+
+                break;
+
             } else {
                 $course->coursetype = $value;
             }
@@ -483,12 +540,12 @@ foreach ($courses as $course) {
 
     // EPIC 'get enrolled students' query from Stack Overflow:
     // http://stackoverflow.com/questions/22161606/sql-query-for-courses-enrolment-on-moodle
-    // Only selects manually enrolled, not self-enrolled student roles.
+    // Only selects manually enrolled, not self-enrolled student roles (redacted!).
     $sql = "SELECT DISTINCT u.id AS userid, firstname, lastname, username
         FROM mdl_user u
             JOIN mdl_user_enrolments ue ON ue.userid = u.id
             JOIN mdl_enrol e ON e.id = ue.enrolid
-                AND e.enrol = 'manual'
+                -- AND e.enrol = 'manual'
             JOIN mdl_role_assignments ra ON ra.userid = u.id
             JOIN mdl_context ct ON ct.id = ra.contextid
                 AND ct.contextlevel = 50
@@ -523,152 +580,156 @@ foreach ($courses as $course) {
             // Attempt to extract the student ID from the username.
             $tmp = explode('@', $enrollee->username);
             $enrollee->studentid = $tmp[0];
-            //if ( strlen( $enrollee->studentid ) != 8 && !is_numeric( $enrollee->studentid ) ) {
-            //    // This is most likely a staff member enrolled as a student, so skip.
-            //    tlog(' Ignoring (' . $cur_enrollees . '/' . $num_enrollees . ') ' . $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->userid . ') [' . $enrollee->studentid . '].', 'skip');
-            //} else {
-                // A proper student, hopefully.
-                tlog(' Processing user (' . $cur_enrollees . '/' . $num_enrollees . ') ' . $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->userid . ') [' . $enrollee->studentid . '] on course ' . $course->id . '.', 'info');
-                $logging['students'][] = $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->studentid . ') [' . $enrollee->userid . '] on course ' . $course->id . '.';
 
-                // Assemble the URL with the correct data.
-                //$leapdataurl = sprintf( LEAP_TRACKER_API, $CFG->trackerhash, $enrollee->studentid );
-                $leapdataurl = sprintf( LEAP_TRACKER_API, $enrollee->studentid, $CFG->trackerhash );
+            // A proper student, hopefully.
+            tlog(' Processing user (' . $cur_enrollees . '/' . $num_enrollees . ') ' . $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->userid . ') [' . $enrollee->studentid . '] on course ' . $course->id . '.', 'info');
+            $logging['students_processed'][] = $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->studentid . ') [' . $enrollee->userid . '] on course ' . $course->id . '.';
+            $logging['students_unique'][$enrollee->userid] = $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->studentid . ') [' . $enrollee->userid . '].';
+
+            // Assemble the URL with the correct data.
+            $leapdataurl = sprintf( LEAP_TRACKER_API, $enrollee->studentid, $CFG->trackerhash );
+            if ( DEBUG ) {
+                tlog('  Leap URL: ' . $leapdataurl, 'dbug');
+            }
+
+            // Use fopen to read from the API.
+            if ( !$handle = fopen($leapdataurl, 'r') ) {
+                // If the API can't be reached for some reason.
+                tlog(' Cannot open ' . $leapdataurl . '.', 'EROR');
+
+            } else {
+                // API reachable, get the data.
+                $leapdata = fgets($handle);
+                fclose($handle);
+
                 if ( DEBUG ) {
-                    tlog('  Leap URL: ' . $leapdataurl, 'dbug');
+                    tlog('  Returned JSON: ' . $leapdata, 'dbug');
                 }
 
-                // Use fopen to read from the API.
-                //$handle = fopen($leapdataurl, 'r');
-                if ( !$handle = fopen($leapdataurl, 'r') ) {
-                    // If the API can't be reached for some reason.
-                    tlog(' Cannot open ' . $leapdataurl . '.', 'EROR');
+                // Handle an empty result from the API.
+                if ( strlen($leapdata) == 0 ) {
+                    tlog('  API returned 0 bytes.', 'EROR');
 
                 } else {
-                    // API reachable, get the data.
-                    $leapdata = fgets($handle);
-                    fclose($handle);
+                    // Decode the JSON into an object.
+                    $leapdata = json_decode($leapdata);
 
-                    if ( DEBUG ) {
-                        tlog('  Returned JSON: ' . $leapdata, 'dbug');
-                    }
-
-                    // Handle an empty result from the API.
-                    if ( strlen($leapdata) == 0 ) {
-                        tlog('  API returned 0 bytes.', 'EROR');
-
+                    // Checking for JSON decoding errors, seems only right.
+                    if ( json_last_error() ) {
+                        tlog('  JSON decoding returned error code ' . json_last_error() . ' for user ' . $enrollee->studentid . '.', 'EROR');
                     } else {
-                        // Decode the JSON into an object.
-                        $leapdata = json_decode($leapdata);
 
-                        // Checking for JSON decoding errors, seems only right.
-                        if ( json_last_error() ) {
-                            tlog('  JSON decoding returned error code ' . json_last_error() . ' for user ' . $enrollee->studentid . '.', 'EROR');
+                        // We have a L3VA score! And possibly GCSE English and maths grades too.
+                        $targets['l3va']    = number_format( $leapdata->person->l3va, DECIMALS );
+                        $gcse['english']    = $leapdata->person->gcse_english;
+                        $gcse['maths']      = $leapdata->person->gcse_maths;
+
+                        if ( $targets['l3va'] == '' || !is_numeric( $targets['l3va'] ) || $targets['l3va'] <= 0 ) {
+                            // If the L3VA isn't good.
+                            tlog('  L3VA is not good: \'' . $targets['l3va'] . '\'.', 'warn');
+                            $logging['no_l3va'][$enrollee->userid] = $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->studentid . ') [' . $enrollee->userid . '].';
+
                         } else {
 
-                            // Handle any status which is not 'ok' from the API.
-//                            if ( $leapdata->status == 'fail' ) {
-//                                tlog('  API returned failure.', 'EROR');
-//
-//                            } else if ( $leapdata->status != 'ok' ) {
-//                                tlog('  API returned unexpected status: \'' . $leapdata->status . '\'.', 'EROR');
-//
-//                            } else {
-                                // We have a L3VA score! Woo!
-                                $targets['l3va'] = number_format( $leapdata->person->l3va, DECIMALS );
-                                if ( $targets['l3va'] == '' || !is_numeric( $targets['l3va'] ) || $targets['l3va'] <= 0 ) {
-                                    // If the L3VA isn't good.
-                                    tlog('  L3VA is not good: \'' . $targets['l3va'] . '\'.', 'warn');
+                            tlog('  ' . $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->userid . ') [' . $enrollee->studentid . '] L3VA score: ' . $targets['l3va'] . '.', 'info');
+
+                            // If this course is tagged as a GCSE English or maths course, use the grades supplied in the JSON.
+                            if ( $course->coursetype == 'leapcore_gcseenglish' ) {
+                                $magtemp        = make_mag( $gcse['english'], $course->coursetype, $course->scalename );
+                                $tagtemp        = array( null, null );
+
+                            } else if ( $course->coursetype == 'leapcore_gcsemaths' ) {
+                                $magtemp        = make_mag( $gcse['maths'], $course->coursetype, $course->scalename );
+                                $tagtemp        = array( null, null );
+
+                            } else {
+                                // Make the MAG from the L3VA.
+                                $magtemp        = make_mag( $targets['l3va'], $course->coursetype, $course->scalename );
+                                // Make the TAG in the same way, setting 'true' at the end for the next grade up.
+                                $tagtemp        = make_mag( $targets['l3va'], $course->coursetype, $course->scalename, true );
+
+                            }
+                            $targets['mag'] = $magtemp[0];
+                            $targets['tag'] = $tagtemp[0];
+
+                            if ( $course->coursetype == 'leapcore_gcseenglish' || $course->coursetype == 'leapcore_gcsemaths' ) {
+                                tlog('   GCSEs passed through from Leap JSON: MAG: \'' . $targets['mag'] . '\' ['. $magtemp[1] .']. TAG: \'' . $targets['tag'] . '\' ['. $tagtemp[1] .'].', 'info');
+                            } else {
+                                tlog('   Generated data: MAG: \'' . $targets['mag'] . '\' ['. $magtemp[1] .']. TAG: \'' . $targets['tag'] . '\' ['. $tagtemp[1] .'].', 'info');
+                            }
+
+                            if ( $targets['mag'] == '0' || $targets['mag'] == '1' ) {
+                                $logging['poor_grades'][] = 'MAG ' . $targets['mag'] . ' assigned to ' . $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->studentid . ') [' . $enrollee->userid . '] on course ' . $course->id . '.';
+                            }
+                            if ( $targets['tag'] == '0' || $targets['tag'] == '1' ) {
+                                $logging['poor_grades'][] = 'TAG ' . $targets['tag'] . ' assigned to ' . $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->studentid . ') [' . $enrollee->userid . '] on course ' . $course->id . '.';
+                            }
+
+                            // Loop through all three settable, updateable grades.
+                            foreach ( $targets as $target => $score ) {
+
+                                // Need the grade_items.id for grade_grades.itemid.
+                                $gradeitem = $DB->get_record('grade_items', array(
+                                    'courseid' => $course->id,
+                                    'itemname' => strtoupper( $target ),
+                                ), 'id, categoryid');
+
+                                // Check to see if this data already exists in the database, so we can insert or update.
+                                $gradegrade = $DB->get_record('grade_grades', array(
+                                    'itemid' => $gradeitem->id,
+                                    'userid' => $enrollee->userid,
+                                ), 'id');
+
+                                // New grade_grade object.
+                                $grade = new grade_grade();
+                                $grade->userid          = $enrollee->userid;
+                                $grade->itemid          = $gradeitem->id;
+                                $grade->categoryid      = $gradeitem->categoryid;
+                                $grade->rawgrade        = $score; // Will stay as set.
+                                $grade->finalgrade      = $score; // Will change with the grade, e.g. 3.
+                                $grade->timecreated     = time();
+                                $grade->timemodified    = $grade->timecreated;
+
+                                // If no id exists, INSERT.
+                                if ( !$gradegrade ) {
+
+                                    if ( !$gl = $grade->insert() ) {
+                                        tlog('   ' . strtoupper( $target ) . ' insert failed for user ' . $enrollee->userid . ' on course ' . $course->id . '.', 'EROR' );
+                                    } else {
+                                        tlog('   ' . strtoupper( $target ) . ' (' . $score . ') inserted for user ' . $enrollee->userid . ' on course ' . $course->id . '.' );
+                                    }
 
                                 } else {
+                                    // If the row already exists, update, but don't ever *update* the TAG.
+                                    if ( $target != 'tag' ) {
+                                        $grade->id = $gradegrade->id;
 
-                                    tlog('  ' . $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->userid . ') [' . $enrollee->studentid . '] L3VA score: ' . $targets['l3va'] . '.', 'info');
+                                        // We don't want to set this again, but we do want the modified time set.
+                                        unset( $grade->timecreated );
+                                        $grade->timemodified = time();
 
-                                    // Make the MAG from the L3VA.
-                                    $magtemp        = make_mag( $targets['l3va'], $course->coursetype, $course->scalename );
-                                    $targets['mag'] = $magtemp[0];
-
-                                    // Make the TAG in the same way, setting 'true' at the end for the next grade up.
-                                    $tagtemp        = make_mag( $targets['l3va'], $course->coursetype, $course->scalename, true );
-                                    $targets['tag'] = $tagtemp[0];
-
-                                    tlog('   Generated data: MAG: \'' . $targets['mag'] . '\' ['. $magtemp[1] .']. TAG: \'' . $targets['tag'] . '\' ['. $tagtemp[1] .'].', 'info');
-                                    if ( $targets['mag'] == 'U' || $targets['mag'] == 'F' || $targets['mag'] == 'E' ) {
-                                        $logging['poor_grades'][] = 'MAG ' . $targets['mag'] . ' assigned to ' . $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->studentid . ') [' . $enrollee->userid . '] on course ' . $course->id . '.';
-                                    }
-                                    if ( $targets['tag'] == 'U' || $targets['tag'] == 'F' || $targets['tag'] == 'E') {
-                                        $logging['poor_grades'][] = 'TAG ' . $targets['tag'] . ' assigned to ' . $enrollee->firstname . ' ' . $enrollee->lastname . ' (' . $enrollee->studentid . ') [' . $enrollee->userid . '] on course ' . $course->id . '.';
-                                    }
-
-                                    // Loop through all three settable, updateable grades.
-                                    foreach ( $targets as $target => $score ) {
-
-                                        // Need the grade_items.id for grade_grades.itemid.
-                                        $gradeitem = $DB->get_record('grade_items', array( 
-                                            'courseid' => $course->id,
-                                            'itemname' => strtoupper( $target ),
-                                        ), 'id, categoryid');
-
-                                        // Check to see if this data already exists in the database, so we can insert or update.
-                                        $gradegrade = $DB->get_record('grade_grades', array( 
-                                            'itemid' => $gradeitem->id,
-                                            'userid' => $enrollee->userid,
-                                        ), 'id');
-
-                                        // New grade_grade object.
-                                        $grade = new grade_grade();
-                                        $grade->userid          = $enrollee->userid;
-                                        $grade->itemid          = $gradeitem->id;
-                                        $grade->categoryid      = $gradeitem->categoryid;
-                                        $grade->rawgrade        = $score; // Will stay as set.
-                                        $grade->finalgrade      = $score; // Will change with the grade, e.g. 3.
-                                        $grade->timecreated     = time();
-                                        $grade->timemodified    = $grade->timecreated;
-
-                                        // If no id exists, INSERT.
-                                        if ( !$gradegrade ) {
-
-                                            if ( !$gl = $grade->insert() ) {
-                                                tlog('   ' . strtoupper( $target ) . ' insert failed for user ' . $enrollee->userid . ' on course ' . $course->id . '.', 'EROR' );
-                                            } else {
-                                                tlog('   ' . strtoupper( $target ) . ' (' . $score . ') inserted for user ' . $enrollee->userid . ' on course ' . $course->id . '.' );
-                                            }
-
+                                        if ( !$gl = $grade->update() ) {
+                                            tlog('   ' . strtoupper( $target ) . ' update failed for user ' . $enrollee->userid . ' on course ' . $course->id . '.', 'EROR' );
                                         } else {
-                                            // If the row already exists, update, but don't ever *update* the TAG.
-                                            if ( $target != 'tag' ) {
-                                                $grade->id = $gradegrade->id;
+                                            tlog('   ' . strtoupper( $target ) . ' (' . $score . ') update for user ' . $enrollee->userid . ' on course ' . $course->id . '.' );
+                                        }
 
-                                                // We don't want to set this again, but we do want the modified time set.
-                                                unset( $grade->timecreated );
-                                                $grade->timemodified = time();
+                                    } else {
+                                        tlog('   ' . strtoupper( $target ) . ' purposefully not updated for user ' . $enrollee->userid . ' on course ' . $course->id . '.', 'skip' );
 
-                                                if ( !$gl = $grade->update() ) {
-                                                    tlog('   ' . strtoupper( $target ) . ' update failed for user ' . $enrollee->userid . ' on course ' . $course->id . '.', 'EROR' );
-                                                } else {
-                                                    tlog('   ' . strtoupper( $target ) . ' (' . $score . ') update for user ' . $enrollee->userid . ' on course ' . $course->id . '.' );
-                                                }
+                                    } // END ignore updating the TAG.
 
-                                            } else {
-                                                tlog('   ' . strtoupper( $target ) . ' purposefully not updated for user ' . $enrollee->userid . ' on course ' . $course->id . '.', 'skip' );
+                                } // END insert or update check.
 
-                                            } // END ignore updating the TAG.
+                            } // END foreach loop.
 
-                                        } // END insert or update check.
+                        } // END L3VA check.
 
-                                    } // END foreach loop.
+                    } // END any json_decode errors.
 
-                                } // END L3VA check.
+                } // END empty API result.
 
-//                            } // END API status.
-
-                        } // END any json_decode errors.
-
-                    } // END empty API result.
-
-                } // END open leap API for reading.
-
-            //} // END extracting the student id number.
+            } // END open leap API for reading.
 
         } // END cycle through each course enrollee.
 
@@ -682,54 +743,91 @@ foreach ($courses as $course) {
 // Sort and dump the summary log.
 tlog(' Summary of all performed operations.', 'smry');
 asort($logging['courses']);
-asort($logging['students']);
+asort($logging['students_processed']);
+asort($logging['students_unique']);
+asort($logging['no_l3va']);
+arsort($logging['grade_types']);
 
 // Processing.
 $logging['num']['courses']  = count($logging['courses']);
-$logging['num']['students'] = count($logging['students']);
+$logging['num']['students_processed'] = count($logging['students_processed']);
+$logging['num']['students_unique'] = count($logging['students_unique']);
+$logging['num']['no_l3va'] = count($logging['no_l3va']);
+$logging['num']['grade_types'] = count($logging['grade_types']);
 foreach ( $logging['grade_types'] as $value ) {
-    $logging['num']['grade_types'] += $value ;
+    $logging['num']['grade_types_in_use'] += $value;
 }
 $logging['num']['poor_grades'] = count($logging['poor_grades']);
 
-var_dump($logging);
+//var_dump($logging);
 //$json = json_encode($logging);
 //echo $json."\n";
 
+//echo '<pre>'; var_dump($logging['num']); die();
+tlog('', '----');
 if ( $logging['num']['courses'] ) {
-    tlog( '  ' . $logging['num']['courses'] . ' courses.', 'smry' );
-    foreach ( $logging['num']['courses'] as $course ) {
-        echo $course . "\n";
+    tlog( $logging['num']['courses'] . ' courses:', 'smry' );
+    $count = 0;
+    foreach ( $logging['courses'] as $course ) {
+        echo sprintf( '%4s', ++$count ) . ': ' . $course . "\n";
     }
 } else {
-    tlog( '  No courses processed.', 'warn' );
+    tlog( 'No courses processed.', 'warn' );
 }
 
-if ( $logging['num']['students'] ) {
-    tlog( '  ' . $logging['num']['students'] . ' students.', 'smry' );
-    foreach ( $logging['num']['students'] as $student ) {
-        echo $student . "\n";
+tlog('', '----');
+if ( $logging['num']['students_processed'] ) {
+    tlog( $logging['num']['students_processed'] . ' student-courses processed:', 'smry' );
+    $count = 0;
+    foreach ( $logging['students_processed'] as $student ) {
+        echo sprintf( '%4s', ++$count ) . ': ' . $student . "\n";
     }
 } else {
-    tlog( '  No students processed.', 'warn' );
+    tlog( 'No student-courses processed.', 'warn' );
 }
 
+tlog('', '----');
+if ( $logging['num']['students_unique'] ) {
+    tlog( $logging['num']['students_unique'] . ' unique students:', 'smry' );
+    $count = 0;
+    foreach ( $logging['students_unique'] as $student ) {
+        echo sprintf( '%4s', ++$count ) . ': ' . $student . "\n";
+    }
+} else {
+    tlog( 'No unique students processed.', 'warn' );
+}
+
+tlog('', '----');
+if ( $logging['num']['no_l3va'] ) {
+    tlog( $logging['num']['no_l3va'] . ' students with no L3VA:', 'smry' );
+    $count = 0;
+    foreach ( $logging['no_l3va'] as $no_l3va ) {
+        echo sprintf( '%4s', ++$count ) . ': ' . $no_l3va . "\n";
+    }
+} else {
+    tlog( 'No missing L3VAs.', 'warn' );
+}
+
+tlog('', '----');
 if ( $logging['num']['grade_types'] ) {
-    tlog( '  ' . $logging['num']['grade_types'] . ' grade types.', 'smry' );
-    foreach ( $logging['num']['students'] as $grade_type => $count ) {
-        echo $grade_type . ': ' . ' . $count . ' . ".\n";
+    tlog( $logging['num']['grade_types'] . ' grade types with ' . $logging['num']['grade_types_in_use']  . ' grades set:', 'smry' );
+    $count = 0;
+    foreach ( $logging['grade_types'] as $grade_type => $num_grades ) {
+        echo sprintf( '%4s', ++$count ) . ': ' . $grade_type . ': ' . $num_grades . ".\n";
     }
 } else {
-    tlog( '  No grade_types found.', 'warn' );
+    tlog( 'No grade_types found.', 'warn' );
 }
 
+tlog('', '----');
 if ( $logging['num']['poor_grades'] ) {
-    tlog('  ' . $logging['num']['poor_grades'] . ' poor grades.', 'smry');
-    foreach ( $logging['num']['poor_grades'] as $grade ) {
-        echo $grade . "\n";
+    tlog( $logging['num']['poor_grades'] . ' poor grades:', 'smry');
+    $count = 0;
+    foreach ( $logging['poor_grades'] as $poorgrade ) {
+        echo sprintf( '%4s', ++$count ) . ': ' . $poorgrade . "\n";
     }
 } else {
-    tlog( '  No poor grades found. Good!' );
+    tlog( 'No poor grades found. Good!', 'smry' );
 }
 
 
