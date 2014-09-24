@@ -532,7 +532,7 @@ class local_leapwebservices_external extends external_api {
                 FROM mdl_user u
                     JOIN mdl_user_enrolments ue ON ue.userid = u.id
                     JOIN mdl_enrol e ON e.id = ue.enrolid
-                        AND e.enrol = 'manual'
+                        -- AND e.enrol = 'manual'
                     JOIN mdl_role_assignments ra ON ra.userid = u.id
                     JOIN mdl_context ct ON ct.id = ra.contextid
                         AND ct.contextlevel = 50
@@ -750,5 +750,130 @@ class local_leapwebservices_external extends external_api {
 
     } // END function.
 
+
+    /**
+     * Returns description of method parameters
+     * @return external_function_parameters
+     */
+    public static function get_users_with_mag_parameters() {
+        return new external_function_parameters(
+            array()
+        );
+    } // END function.
+
+    /**
+     * Get user information
+     *
+     * @param string $username EBS username, could be 8-digit int or string.
+     * @return array An array describing targets (and metadata) for that user for all leapcore_* courses.
+     */
+    public static function get_users_with_mag() {
+        global $CFG, $DB;
+
+        // One query to get all the details we need.
+        $sql = "SELECT DISTINCT gg.userid, u.username
+                FROM {$CFG->prefix}grade_items gi, {$CFG->prefix}grade_grades gg, {$CFG->prefix}user u
+                WHERE gi.itemname = 'MAG'
+                    AND gi.id = gg.itemid
+                    AND gg.userid = u.id;";
+
+        if ( !$users = $DB->get_records_sql( $sql ) ) {
+            return array();
+            exit(1);
+        }
+
+        $output = array();
+        $count = 0;
+        foreach ( $users as $user ) {
+            $count++;
+
+            $output[$count]['userid'] = $user->userid;
+            $tmp = explode( '@', $user->username);
+            $output[$count]['username'] = $tmp[0];
+        }
+
+        return $output;
+
+    } // END function.
+
+    /**
+     * Returns description of method result value
+     * @return external_description
+     */
+    public static function get_users_with_mag_returns() {
+        return new external_multiple_structure(
+            new external_single_structure(
+                array(
+                    'userid'    => new external_value( PARAM_INT,   'Moodle ID of the user.' ),
+                    'username'  => new external_value( PARAM_TEXT,  'Username of the user.' ),
+                )
+            )
+        );
+
+    } // END function.
+
+    /**
+     * Returns description of method parameters
+     * @return external_function_parameters
+     */
+    public static function get_users_with_badges_parameters() {
+        return new external_function_parameters(
+            array()
+        );
+    } // END function.
+
+    /**
+     * Get user information
+     *
+     * @return array A list of users who have been assigned badges.
+     */
+    public static function get_users_with_badges() {
+        global $CFG, $DB;
+
+        // One query to get all the details we need.
+        $sql = "SELECT DISTINCT u.id, u.username
+                FROM {$CFG->prefix}user u, {$CFG->prefix}badge_issued bi
+                WHERE u.id = bi.userid
+                    AND bi.visible = 1
+                    AND (
+                        UNIX_TIMESTAMP ( NOW() ) < bi.dateexpire
+                        OR bi.dateexpire IS NULL
+                    )
+                ORDER BY u.id ASC;";
+
+        if ( !$users = $DB->get_records_sql( $sql ) ) {
+            return array();
+            exit(1);
+        }
+
+        $output = array();
+        $count = 0;
+        foreach ( $users as $user ) {
+            $count++;
+
+            $output[$count]['userid'] = $user->id;
+            $tmp = explode( '@', $user->username);
+            $output[$count]['username'] = $tmp[0];
+        }
+
+        return $output;
+
+    } // END function.
+
+    /**
+     * Returns description of method result value
+     * @return external_description
+     */
+    public static function get_users_with_badges_returns() {
+        return new external_multiple_structure(
+            new external_single_structure(
+                array(
+                    'userid'    => new external_value( PARAM_INT,   'Moodle ID of the user.' ),
+                    'username'  => new external_value( PARAM_TEXT,  'Username of the user.' ),
+                )
+            )
+        );
+
+    } // END function.
 
 } // END class.
