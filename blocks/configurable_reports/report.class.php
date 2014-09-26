@@ -54,7 +54,7 @@
         $remotedbuser = get_config('block_configurable_reports', 'dbuser');
         $remotedbpass = get_config('block_configurable_reports', 'dbpass');
 
-        if (!empty($remotedbhost) and !empty($remotedbname) and !empty($remotedbuser) and !empty($remotedbpass) ) {
+        if (!empty($remotedbhost) and !empty($remotedbname) and !empty($remotedbuser) and !empty($remotedbpass) and $this->config->remote) {
             $db_class = get_class($DB);
             $remotedb = new $db_class();
             $remotedb->connect($remotedbhost, $remotedbuser, $remotedbpass, $remotedbname, $CFG->prefix);
@@ -675,7 +675,7 @@
 
         // Debug
         $debug = optional_param('debug', false, PARAM_BOOL);
-        if ($debug OR $CFG->debugdisplay OR $this->config->debug) {
+        if ($debug or $this->config->debug) {
             echo html_writer::empty_tag('hr');
             echo html_writer::tag('div', $this->sql, array('id'=>'debug', 'style'=>'direction:ltr;text-align:left;'));
             echo html_writer::empty_tag('hr');
