@@ -30,8 +30,9 @@ $string['reportlimit'] = "Report row limit";
 $string['reportlimitinfo'] = "Limit the number of rows that are displayed in the report table (Default is 5000 rows. Better to have some limit, so users will not over load the DB engine)";
 
 $string['configurable_reports:addinstance'] = 'Add a new configurable reports block';
+$string['configurable_reports:myaddinstance'] = 'Add a new configurable reports block to MY HOME page';
 $string['configurable_reports:manageownreports'] = "Manage own reports";
-$string['configurable_reports:managereports'] = "Mange reports";
+$string['configurable_reports:managereports'] = "Manage reports";
 $string['configurable_reports:managesqlreports'] = "Manage SQL reports";
 $string['configurable_reports:viewreports'] = "View reports";
 
@@ -51,6 +52,9 @@ $string['jsordering'] = 'JavaScript Ordering';
 $string['cron'] = 'Auto run daily';
 $string['crondescription'] = 'Schedule this query to run each day (At night)';
 $string['cron_help'] = 'Schedule this query to run each day (At night)';
+$string['remote'] = 'Run on remote db';
+$string['remotedescription'] = 'Do you want to run this query on the remote db';
+$string['remote_help'] = 'Do you want to run this query on the remote db';
 $string['setcourseid'] = 'Set courseid';
 
 // Columns
