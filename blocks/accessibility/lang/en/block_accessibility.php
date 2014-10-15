@@ -64,3 +64,7 @@ $string['config_fg_help'] = 'Define colour scheme foreground colour here. Keep i
 $string['config_bg'] = 'Background colour';
 $string['config_bg_help'] = 'Define colour scheme background colour here. Keep in mind that the background colour will be applied uniformly to all user interface elements.';
 $string['color_input_error'] = 'Please enter a color in a format as such: #FF0050';
+
+$string['accessibility:addinstance'] = 'Add a new Accessibility block';
+$string['accessibility:myaddinstance'] = 'Add a new Accessibility block to My home';
+$string['jsnotloggedin'] = 'Error! Please check if you are logged-in to the system or contact your administrator';

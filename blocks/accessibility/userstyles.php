@@ -32,7 +32,7 @@
 
 header('Content-Type: text/css', true);
 header("X-Content-Type-Options: nosniff"); // for IE
-//header('Cache-Control: no-cache');
+header('Cache-Control: no-cache');
 
 
 require_once('../../config.php');
@@ -70,14 +70,25 @@ else if (!empty($options->colourscheme)) $colourscheme = $options->colourscheme;
 // Echo out CSS for the body element. Use !important to override any other external stylesheets.
 if (!empty($fontsize)) {
 	echo '
+	
 	#page { /* block elements */
 		font-size: '.$fontsize.'% !important;
 		line-height:1.5; /*WCAG 2.0*/
 	}
+
 	#page *{
-		font-size: inherit !important;
 		line-height: inherit !important;
+		font-size: inherit !important;
 	}
+
+
+	/* issue #74 - default h* sizes from Moodle CSS */
+	#page #page-header h1, #page #region-main h1{font-size:'. (0.32 * $fontsize) .'px !important}
+	#page #page-header h2, #page #region-main h2{font-size:'. (0.28 * $fontsize) .'px !important}
+	#page #page-header h3, #page #region-main h3{font-size:'. (0.24 * $fontsize) .'px !important}
+	#page #page-header h4, #page #region-main h4{font-size:'. (0.20 * $fontsize) .'px !important}
+	#page #page-header h5, #page #region-main h5{font-size:'. (0.16 * $fontsize) .'px !important}
+	#page #page-header h6, #page #region-main h6{font-size:'. (0.12 * $fontsize) .'px !important}
 	';
 }
 
@@ -90,7 +101,7 @@ if (!empty($fontsize)) {
 if (!empty($colourscheme)) {
 	// $colourscheme == 1 is reset, so don't output any styles
 	if($colourscheme > 1 && $colourscheme < 5){ // this is how many declarations we defined in edit_form.php
-		if(!empty($block_instance->config)){
+		if($block_instance->config !== NULL){
 			$fg_colour = $block_instance->config->{'fg'.$colourscheme};
 			$bg_colour = $block_instance->config->{'bg'.$colourscheme};
 		}
@@ -102,12 +113,20 @@ if (!empty($colourscheme)) {
 		
 	}
 
+
+	// keep in mind that :not selector cannot work properly with IE <= 8 so this will not be included
+	$not_selector_for_gteIE8 = '';
+	if(!preg_match('/(?i)msie [1-8]/',$_SERVER['HTTP_USER_AGENT']))
+	{
+		$not_selector_for_gteIE8 = ':not([class*="mce"]):not([id*="mce"]):not([id*="editor"])';
+	}
+
 	// if no colours defined, no output, it will remain as default
 	if(!empty($bg_colour)){ echo '
 		forumpost .topic {
 			background-image: none !important;
 		}
-		*:not([class*="mce"]):not([id*="mce"]):not([id*="editor"]){
+		*'. $not_selector_for_gteIE8 .'{
 			/* it works well only with * selector but mce editor gets unusable */
 			background-color: '.$bg_colour.' !important;
 			background-image: none !important;
@@ -118,7 +137,7 @@ if (!empty($colourscheme)) {
 
 	// it is recommended not to change forground colour
 	if(!empty($fg_colour)){ echo '
-		*:not([class*="mce"]):not([id*="mce"]):not([id*="editor"]){
+		*'. $not_selector_for_gteIE8 .'{
 			/* it works well only with * selector but mce editor gets unusable */
 			color: '.$fg_colour.' !important;
 		}
@@ -142,7 +161,8 @@ if (!empty($colourscheme)) {
 // ================================================
 for($i=2; $i<5; $i++) {  // this is how many declarations we defined in defaults.php
 	$colourscheme = $i;
-	if(!empty($block_instance->config)){
+	if($block_instance->config !== NULL){
+		//var_dump($block_instance->config->{'fg'.$colourscheme}, $block_instance->config->{'bg'.$colourscheme});
 		$fg_colour = $block_instance->config->{'fg'.$colourscheme};
 		$bg_colour = $block_instance->config->{'bg'.$colourscheme};
 	}
@@ -155,8 +175,11 @@ for($i=2; $i<5; $i++) {  // this is how many declarations we defined in defaults
 	if(!empty($fg_colour)) echo 'color:'.$fg_colour.' !important;';
 	if(!empty($bg_colour)) echo 'background-color:'.$bg_colour.' !important;';
 	echo '}';
-
-
 }
-
 		
+// display:inline-block CSS declaration is not applied to block's buttons because IE7 doesn't support it. float is used insted for IE7 only
+if(preg_match('/(?i)msie [1-7]/',$_SERVER['HTTP_USER_AGENT']))
+{
+	echo '#accessibility_controls .access-button{float:left;}';
+	echo '.atbar-always{float:left;}';
+}
