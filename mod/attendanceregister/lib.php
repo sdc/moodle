@@ -548,14 +548,14 @@ function attendanceregister_force_recalc_all($register) {
 function attendanceregister_updates_all_users_sessions($register) {
     // [issue #37] Gets only users whose sessions need updating
     $users = attendanceregister__get_tracked_users_need_update($register); 
-    debugging('Found ' . count($users) . ' Users whose AttendanceRegister Sessions need updating');
+    //debugging('Found ' . count($users) . ' Users whose AttendanceRegister Sessions need updating');
     $updatedUsersCount = 0;
     foreach ($users as $user) {
         if (attendanceregister_update_user_sessions($register, $user->id)) {
-            debugging('Updated AttendanceRegister Sessions for User: ' . $user->id . ',' . $user->username);
+            //debugging('Updated AttendanceRegister Sessions for User: ' . $user->id . ',' . $user->username);
             $updatedUsersCount++;
         }  else {
-            debugging('No actual update of AttendanceRegister Sessions for User: ' . $user->id . ',' .  $user->username);
+            //debugging('No actual update of AttendanceRegister Sessions for User: ' . $user->id . ',' .  $user->username);
         }
     }
     return $updatedUsersCount;
@@ -589,13 +589,13 @@ function attendanceregister_check_user_sessions_need_update($register, $userId, 
 
     // If user never logged in, no update needed ;)
     if (!$user->lastaccess) {
-        debugging("UserId:$userId never logged in: no session update needed on registerId:$register->id");
+        //debugging("UserId:$userId never logged in: no session update needed on registerId:$register->id");
         return false;
     }
 
     // If No User Aggregate yet, need update and lastSessionLogout is 0
     if (!$userGrandTotalAggregate) {
-        debugging("userId:$userId has no User Aggregate: session update needed on registerId:$register->id");
+        //debugging("userId:$userId has no User Aggregate: session update needed on registerId:$register->id");
         $lastSessionLogout = 0;
         return true;
     }
@@ -606,10 +606,10 @@ function attendanceregister_check_user_sessions_need_update($register, $userId, 
     if (($user->lastaccess > $userGrandTotalAggregate->lastsessionlogout) 
             && ( ($now - $user->lastaccess) > ($register->sessiontimeout * 60) )) {
         $lastSessionLogout = $userGrandTotalAggregate->lastsessionlogout;
-        debugging("userId:$userId; session update needed on registerId:$register->id as LastSession logout=$lastSessionLogout, lastAccess=$user->lastaccess");
+        //debugging("userId:$userId; session update needed on registerId:$register->id as LastSession logout=$lastSessionLogout, lastAccess=$user->lastaccess");
         return true;
     } else {
-        debugging("userId:$userId; no session update needed on registerId:$register->id");
+        //debugging("userId:$userId; no session update needed on registerId:$register->id");
         return false;
     }
 }
