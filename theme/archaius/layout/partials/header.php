@@ -9,6 +9,7 @@ $hassidecenterpost = $PAGE->blocks->region_has_content('side-center-post', $OUTP
 $hasnavbar = (empty($PAGE->layout_options['nonavbar']) && $PAGE->has_navbar());
 $custommenu = $OUTPUT->custom_menu();
 $hascustommenu = (empty($PAGE->layout_options['nocustommenu']) && !empty($custommenu));
+$haslangmenu = !(empty($PAGE->layout_options['langmenu']));
 
 //Add classes to body depending on components to be displayed
 $bodyclasses = array();
@@ -39,16 +40,4 @@ echo $OUTPUT->doctype() ?>
     <!--[if lt IE 9]>
         <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
     <![endif]-->
-
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-      ga('create', 'UA-1183265-2', 'auto');
-      ga('send', 'pageview');
-    </script>
-
-
 </head>

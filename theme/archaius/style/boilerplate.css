@@ -90,13 +90,31 @@ a {
    and vertical margins are automatically calculated from this. 
    The percentage is of 16px (0.75 * 16px = 12px). */
 body { 
-	font-size: 80%; 
+	font-size: 85%; 
 }
 
+@font-face {
+  font-family: 'OpenSans';
+  src: url([[font|OpenSans-Regular.ttf]]) format('truetype'),
+        url([[font|OpenSans-Regular.woff]]) format('woff'),
+        url([[font|OpenSans-Regular.eot]]) format('embedded-opentype') ,
+        url([[font|OpenSans-Regular.svg]]) format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'OpenSans';
+  src: url([[font|OpenSans-Semibold.ttf]]) format('truetype'),
+        url([[font|OpenSans-Semibold.woff]]) format('woff'),
+        url([[font|OpenSans-Semibold.eot]]) format('embedded-opentype') ,
+        url([[font|OpenSans-Semibold.svg]]) format('svg');
+  font-weight: bold;
+  font-style: normal;
+}
 
 /* Default fonts and colors. */
 body,h1,h2,h3,h4,h5,h6,p,ul,ol,dl,input,textarea { 
-	font-family: Helvetica, Arial, sans-serif; 
+	font-family: 'OpenSans', Helvetica, Arial, sans-serif; 
 }
 
 
