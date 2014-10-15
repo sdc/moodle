@@ -144,31 +144,40 @@ class block_accessibility extends block_base {
 			'id' => "block_accessibility_save"
 		);
 
-		// if any of increase/decrease buttons reached maximum size, disable it
-		if (isset($USER->fontsize)) {
-			if (accessibility_getsize($USER->fontsize) == MIN_PX_FONTSIZE) {
-				$dec_attrs['class'] = 'disabled';
-				unset($dec_attrs['href']);
-			}
-			if (accessibility_getsize($USER->fontsize) == MAX_PX_FONTSIZE) {
-				$inc_attrs['class'] = 'disabled';
-				unset($inc_attrs['href']);
-			}
-		}
-
-		// if user is not logged in, disable save button
-		if (isset($USER->username) && (isset($USER->fontsize) || isset($USER->colourscheme))) {
-			$save_attrs['href'] = $db_url->out(false);
-		} else {
-			$save_attrs['class'] = 'disabled';
-		}
-
 		// initialization of reset button
 		$reset_attrs = array(
 			'id' => 'block_accessibility_reset',
 			'title' => get_string('resettext', 'block_accessibility'),
 			'href' => $size_url->out(false, array('op' => 'reset'))
 		);
+
+
+		// if any of increase/decrease buttons reached maximum size, disable it
+		if (isset($USER->fontsize)) {
+			if ($USER->fontsize == MIN_FONTSIZE) {
+				$dec_attrs['class'] = 'disabled';
+				unset($dec_attrs['href']);
+			}
+			if ($USER->fontsize == MAX_FONTSIZE) {
+				$inc_attrs['class'] = 'disabled';
+				unset($inc_attrs['href']);
+			}
+		}
+		// or disable reset button
+		else{
+			$reset_attrs['class'] = 'disabled';
+		}
+
+		// if user is not logged in, disable save button
+		// UPDATE 18.9.2014. Anyway the block will not be displayed for nonauthenticated users
+		/*
+		if (isset($USER->username) && (isset($USER->fontsize) || isset($USER->colourscheme))) {
+			$save_attrs['href'] = $db_url->out(false);
+		} else {
+			$save_attrs['class'] = 'disabled';
+		}
+		*/
+
 
 		// initialization of scheme profiles buttons
 		$c1_attrs = array(
@@ -187,12 +196,23 @@ class block_accessibility extends block_base {
 			'id' => 'block_accessibility_colour4',
 			'href' => $colour_url->out(false, array('scheme' => 4))
 		);
+		if (!isset($USER->colourscheme)) {
+			$c1_attrs['class'] = 'disabled';
+		}
+
+
+		// display:inline-block CSS declaration is not applied to block's buttons because IE7 doesn't support it. float is used insted for IE7 only
+		$clearfix = '';
+		if(preg_match('/(?i)msie [1-7]/',$_SERVER['HTTP_USER_AGENT'])){
+			$clearfix = html_writer::tag('div', '', array('style'=>'clear:both')); // required for IE7
+		}
 
 		// RENDER BLOCK HTML
 		// ===============================================
 		$content = '';
 
 		$strchar = get_string('char', 'block_accessibility');
+		$resetchar = "R";
 		$divattrs = array('id' => 'accessibility_controls', 'class' => 'content');
 		$listattrs = array('id' => 'block_accessibility_textresize', 'class' => 'button_row');
 
@@ -216,27 +236,33 @@ class block_accessibility extends block_base {
 		$content .= html_writer::end_tag('li');
 
 		$content .= html_writer::end_tag('ul');
+		
+		$content .= $clearfix;
+
 
 		// Colour change buttons
 		$content .= html_writer::start_tag('ul', array('id' => 'block_accessibility_changecolour'));
 
 		$content .= html_writer::start_tag('li', array('class' => 'access-button'));
-		$content .= html_writer::tag('a', get_string('char', 'block_accessibility'), $c1_attrs);
+		$content .= html_writer::tag('a', $resetchar, $c1_attrs);
 		$content .= html_writer::end_tag('li');
 
 		$content .= html_writer::start_tag('li', array('class' => 'access-button'));
-		$content .= html_writer::tag('a', get_string('char', 'block_accessibility'), $c2_attrs);
+		$content .= html_writer::tag('a', $strchar, $c2_attrs);
 		$content .= html_writer::end_tag('li');
 
 		$content .= html_writer::start_tag('li', array('class' => 'access-button'));
-		$content .= html_writer::tag('a', get_string('char', 'block_accessibility'), $c3_attrs);
+		$content .= html_writer::tag('a', $strchar, $c3_attrs);
 		$content .= html_writer::end_tag('li');
 
 		$content .= html_writer::start_tag('li', array('class' => 'access-button'));
-		$content .= html_writer::tag('a', get_string('char', 'block_accessibility'), $c4_attrs);
+		$content .= html_writer::tag('a', $strchar, $c4_attrs);
 		$content .= html_writer::end_tag('li');
 
 		$content .= html_writer::end_tag('ul');
+
+		$content .= $clearfix;
+
 
 
 		// e.g. "settings saved" or etc.
@@ -311,6 +337,9 @@ class block_accessibility extends block_base {
 		$content .= html_writer::start_tag('span', $spanattrs);
 		$content .= html_writer::end_tag('span');
 
+		$content .= $clearfix;
+
+
 
 
 		// SET THE BLOCK CONTENT
@@ -319,27 +348,33 @@ class block_accessibility extends block_base {
 		$this->content->footer = '';
 		$this->content->text = $content;
 
-		// INCLUDE JS AND PASS PARAMETERS
-		// ===============================================
-		// language strings to pass to module.js
-		$this->page->requires->string_for_js('saved', 'block_accessibility');
-		$this->page->requires->string_for_js('jsnosave', 'block_accessibility');
-		$this->page->requires->string_for_js('reset', 'block_accessibility');
-		$this->page->requires->string_for_js('jsnosizereset', 'block_accessibility');
-		$this->page->requires->string_for_js('jsnocolourreset', 'block_accessibility');
-		$this->page->requires->string_for_js('jsnosize', 'block_accessibility');
-		$this->page->requires->string_for_js('jsnocolour', 'block_accessibility');
-		$this->page->requires->string_for_js('jsnosizereset', 'block_accessibility');
-		$this->page->requires->string_for_js('launchtoolbar', 'block_accessibility');
 
-		$jsmodule = array(
-			'name'  =>  'block_accessibility',
-			'fullpath'  =>  JS_URL,
-			'requires'  =>  array('base', 'node', 'stylesheet')
-		);
+		// keep in mind that dynamic AJAX mode cannot work properly with IE <= 8 (for now), so javascript will not even be loaded
+		if(!preg_match('/(?i)msie [1-8]/',$_SERVER['HTTP_USER_AGENT']))
+		{
+			// INCLUDE JS AND PASS PARAMETERS
+			// ===============================================
+			// language strings to pass to module.js
+			$this->page->requires->string_for_js('saved', 'block_accessibility');
+			$this->page->requires->string_for_js('jsnosave', 'block_accessibility');
+			$this->page->requires->string_for_js('reset', 'block_accessibility');
+			$this->page->requires->string_for_js('jsnosizereset', 'block_accessibility');
+			$this->page->requires->string_for_js('jsnocolourreset', 'block_accessibility');
+			$this->page->requires->string_for_js('jsnosize', 'block_accessibility');
+			$this->page->requires->string_for_js('jsnocolour', 'block_accessibility');
+			$this->page->requires->string_for_js('jsnosizereset', 'block_accessibility');
+			$this->page->requires->string_for_js('jsnotloggedin', 'block_accessibility');
+			$this->page->requires->string_for_js('launchtoolbar', 'block_accessibility');
 
-		// include js script and pass the arguments
-		$this->page->requires->js_init_call('M.block_accessibility.init', $jsdata, false, $jsmodule);
+			$jsmodule = array(
+				'name'  =>  'block_accessibility',
+				'fullpath'  =>  JS_URL,
+				'requires'  =>  array('base', 'node', 'stylesheet')
+			);
+
+			// include js script and pass the arguments
+			$this->page->requires->js_init_call('M.block_accessibility.init', $jsdata, false, $jsmodule);
+		}
 		
 
 		return $this->content;
