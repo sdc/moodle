@@ -15,9 +15,11 @@ M.block_accessibility = {
 	// only in JS-mode, because .getStyle('fontSize') will return computed style in px
 	DAFAULT_PX_FONTSIZE: 13,
 	MAX_PX_FONTSIZE: 26,
-	MIN_PX_FONTSIZE: 10,
+	MIN_PX_FONTSIZE: 10+1, // +1 because of unknown error...YUI for 77% returns style of 11px
 
-	stylesheet: '',
+	MAIN_SELECTOR : '#page', // userstyles.php applies CSS font-size to this element
+
+	//stylesheet: '',
 
 	sheetnode: '',
 
@@ -29,19 +31,21 @@ M.block_accessibility = {
 
 	debug: false,
 
-
 	init: function(Y, autoload_atbar, instance_id) {
-		this.log('Accessibility block Debug mode active');
+		// keep in mind that dynamic AJAX mode cannot work properly with IE <= 8 (for now), so this script will not even be loaded in block_accessibillity.php
+
+
 		this.Y = Y;
 		this.instance_id = instance_id;
 		
 		this.sheetnode = Y.one('link[href="'+M.cfg.wwwroot+
 			'/blocks/accessibility/userstyles.php?instance_id='+instance_id+'"]');
-		this.stylesheet = Y.StyleSheet(this.sheetnode);
+		//this.stylesheet = Y.StyleSheet(this.sheetnode);
 
 		// Set default font size
-		this.log('Initial size: '+Y.one('body').getStyle('fontSize'));
-		this.defaultsize = M.block_accessibility.get_current_fontsize('body');
+		//this.log('Initial size: '+Y.one('body').getStyle('fontSize'));
+		//this.defaultsize = M.block_accessibility.get_current_fontsize('body'); // this is disabled because it gives false results...
+		this.defaultsize = M.block_accessibility.DEFAULT_FONTSIZE; 
 
 		// Attach the click handler
 		Y.all('#block_accessibility_textresize a').on('click', function(e) {
@@ -97,10 +101,8 @@ M.block_accessibility = {
 		}
 
 		// assign loader icon events
-		Y.on('io:start', M.block_accessibility.show_loading);
+		// Y.on('io:start', M.block_accessibility.show_loading); // this triggers even for io actions outside block
 		Y.on('io:complete', M.block_accessibility.hide_loading);
-				
-
 	},
 
 
@@ -121,7 +123,7 @@ M.block_accessibility = {
 	 * @param {String} msg the message to display
 	 */
 	show_message: function(msg) {
-		this.log('Message set to '+msg);
+		//this.log('Message set to '+msg);
 		this.Y.one('#block_accessibility_message').setContent(msg);
 
 		// make message disappear after some time
@@ -147,7 +149,8 @@ M.block_accessibility = {
 				},
 				failure: function(id, o) {
 					alert(M.util.get_string('jsnosave', 'block_accessibility')+' '+o.status+' '+o.statusText);
-				}
+				},
+				start: M.block_accessibility.show_loading
 			}
 		});
 	},
@@ -165,12 +168,12 @@ M.block_accessibility = {
 		var button = this.Y.one('#block_accessibility_'+id);
 		if (op == 'on') {
 			if (button.hasClass('disabled')) {
-				this.log('Enabling '+button);
+				//this.log('Enabling '+button);
 				button.removeClass('disabled');
 			}
 		} else if (op == 'off') {
 			if(!button.hasClass('disabled')) {
-				this.log('Disabling '+button);
+				//this.log('Disabling '+button);
 				button.addClass('disabled');
 			}
 		}
@@ -193,20 +196,26 @@ M.block_accessibility = {
 	 *
 	 */
 	changesize: function(button) {
+
 		Y = this.Y;
 
 		switch (button.get('id')) {
 			case "block_accessibility_inc":
-				this.log('Increasing size from '+this.defaultsize);
+				//this.log('Increasing size from '+this.defaultsize);
 				Y.io(M.cfg.wwwroot+'/blocks/accessibility/changesize.php', {
 					data: 'op=inc&cur='+this.defaultsize, // we need to find a default so we know where we're increasing/decreasing from, otherwise PHP will assume 100%
 					method: 'get',
 					on: {
 						success: function(id, o) {
+							
+							// if redirected to login page, or some other error...
+							if (o.response.length > 0) {
+								alert(M.util.get_string('jsnotloggedin', 'block_accessibility')+': '+o.status+' '+o.statusText);
+							}
 
 							// now that we updated user setting to the server, load updated stylesheet
 							M.block_accessibility.reload_stylesheet();  
-							var new_fontsize =  M.block_accessibility.get_current_fontsize('#page');
+							var new_fontsize =  M.block_accessibility.get_current_fontsize(M.block_accessibility.MAIN_SELECTOR);
 							M.block_accessibility.log('Increasing size to '+new_fontsize);
 
 							// Disable/enable buttons as necessary
@@ -219,32 +228,36 @@ M.block_accessibility = {
 							}
 							if (new_fontsize >= max_fontsize) {
 								M.block_accessibility.toggle_textsizer('inc', 'off');
-							} else if (new_fontsize <= min_fontsize) {
-								M.block_accessibility.toggle_textsizer('dec', 'on');
 							}
+							M.block_accessibility.toggle_textsizer('dec', 'on');
 							M.block_accessibility.toggle_textsizer('save', 'on');
 							
 						},
 						failure: function(o) {
 							alert(M.util.get_string('jsnosize', 'block_accessibility')+': '+o.status+' '+o.statusText);
-						}
+						},
+						start: M.block_accessibility.show_loading
 				   }
 				});
 				break;
 			case "block_accessibility_dec":
-				this.log('Decreasing size from '+this.defaultsize);
+				//this.log('Decreasing size from '+this.defaultsize);
 				Y.io(M.cfg.wwwroot+'/blocks/accessibility/changesize.php', {
 					data: 'op=dec&cur='+this.defaultsize,
 					method: 'get',
 					on: {
 						success: function(id, o) {
 
+							// if redirected to login page, or some other error...
+							if (o.response.length > 0) {
+								alert(M.util.get_string('jsnotloggedin', 'block_accessibility')+': '+o.status+' '+o.statusText);
+							}
+
 							// now that we updated user setting to the server, load updated stylesheet
 							M.block_accessibility.reload_stylesheet();
-							var new_fontsize =  M.block_accessibility.get_current_fontsize('#page');
+							var new_fontsize =  M.block_accessibility.get_current_fontsize(M.block_accessibility.MAIN_SELECTOR);
 							M.block_accessibility.log('Decreasing size to '+new_fontsize);
 
-							
 							// Disable/enable buttons as necessary
 							var min_fontsize = M.block_accessibility.MIN_PX_FONTSIZE;
 							var max_fontsize = M.block_accessibility.MAX_PX_FONTSIZE;
@@ -255,29 +268,34 @@ M.block_accessibility = {
 							}
 							if (new_fontsize <= min_fontsize) {
 								M.block_accessibility.toggle_textsizer('dec', 'off');
-							} else if (new_fontsize == max_fontsize) {
-								M.block_accessibility.toggle_textsizer('inc', 'on');
-							}
+							} 
+							M.block_accessibility.toggle_textsizer('inc', 'on');
 							M.block_accessibility.toggle_textsizer('save', 'on');
 							
 						},
 						failure: function(id, o) {
 							alert(M.util.get_string('jsnosize', 'block_accessibility')+': '+o.status+' '+o.statusText);
-						}
+						},
+						start: M.block_accessibility.show_loading
 				   }
 				});
 				break;
 			case "block_accessibility_reset":
-				this.log('Resetting size from '+this.defaultsize);
+				//this.log('Resetting size from '+this.defaultsize);
 				Y.io(M.cfg.wwwroot+'/blocks/accessibility/changesize.php', {
 					data: 'op=reset&cur='+this.defaultsize,
 					method: 'get',
 					on: {
 						success: function(id, o) {
 
+							// if redirected to login page, or some other error...
+							if (o.response.length > 0) {
+								alert(M.util.get_string('jsnotloggedin', 'block_accessibility')+': '+o.status+' '+o.statusText);
+							}
+
 							// now that we updated user setting to the server, load updated stylesheet
 							M.block_accessibility.reload_stylesheet();
-							var new_fontsize =  M.block_accessibility.get_current_fontsize('#page');
+							var new_fontsize =  M.block_accessibility.get_current_fontsize(M.block_accessibility.MAIN_SELECTOR);
 							M.block_accessibility.log('Resetting size to '+new_fontsize);
   
 							// Disable/enable buttons as necessary
@@ -295,12 +313,13 @@ M.block_accessibility = {
 						},
 						failure: function(id, o) {
 							alert(M.util.get_string('jsnosize', 'block_accessibility')+': '+o.status+' '+o.statusText);
-						}
+						},
+						start: M.block_accessibility.show_loading
 				   }
 				});
 				break;
 			case "block_accessibility_save":
-				this.log('Saving Size');
+				//this.log('Saving Size');
 				M.block_accessibility.savesize();
 				break;
 		}
@@ -329,13 +348,25 @@ M.block_accessibility = {
 			method: 'get',
 			on: {
 				success: function (id, o) {
+					// if redirected to login page, or some other error...
+					if (o.response.length > 0) {
+						alert(M.util.get_string('jsnotloggedin', 'block_accessibility')+': '+o.status+' '+o.statusText);
+					}
+					
 					M.block_accessibility.reload_stylesheet(); 
-					if(scheme == 1) M.block_accessibility.toggle_textsizer('save', 'off'); // reset
-					else M.block_accessibility.toggle_textsizer('save', 'on');
+					if(scheme == 1){
+						M.block_accessibility.toggle_textsizer('save', 'off'); // reset
+						M.block_accessibility.toggle_textsizer('colour1', 'off');
+					}
+					else{
+						M.block_accessibility.toggle_textsizer('save', 'on');
+						M.block_accessibility.toggle_textsizer('colour1', 'on');
+					} 
 				},
 				failure: function(id, o) {
 					alert(get_string('jsnocolour', 'block_accessibility')+': '+o.status+' '+o.statusText);
-				}
+				},
+				start: M.block_accessibility.show_loading
 			}
 		});
 	},
@@ -354,7 +385,8 @@ M.block_accessibility = {
 						if (o.status != '404') {
 							alert(M.util.get_string('jsnosave', 'block_accessibility')+': '+o.status+' '+o.statusText);
 						}
-					}
+					},
+					start: M.block_accessibility.show_loading
 			   }
 			});
 		} else if (op == 'off') {
@@ -370,7 +402,8 @@ M.block_accessibility = {
 						if (o.status != '404') {
 							alert(M.util.get_string('jsnoreset', 'block_accessibility')+': '+o.status+' '+o.statusText);
 						}
-					}
+					},
+					start: M.block_accessibility.show_loading
 			   }
 			});
 		}
@@ -379,10 +412,13 @@ M.block_accessibility = {
 	watch_atbar_for_close: function() {
 		Y = this.Y;
 		this.watch = setInterval(function() {
-			if (AtKit.isRendered()) {
-				Y.one('#block_accessibility_textresize').setStyle('display', 'block');
-				Y.one('#block_accessibility_changecolour').setStyle('display', 'block');
-				clearInterval(M.block_accessibility.watch);
+
+			if (typeof AtKit !== 'undefined') {
+				if (AtKit.isRendered()) {
+					Y.one('#block_accessibility_textresize').setStyle('display', 'block');
+					Y.one('#block_accessibility_changecolour').setStyle('display', 'block');
+					clearInterval(M.block_accessibility.watch);
+				}
 			}
 		}, 1000);
 	},
@@ -400,30 +436,53 @@ M.block_accessibility = {
 	 */
 	reload_stylesheet: function(){
 		var cache_prevention_salt = new Date().getTime();
-
-		/*
-			Why wouldn't we just set the href attribute insted of creating a new node? Because before the new stylesheet is loaded and while old one is deleted, the page loose all the styles and all the elements get unstyled for a some time
-		*/
 		var oldStylesheet = M.block_accessibility.sheetnode;
-		var newStylesheet = oldStylesheet.cloneNode(true);
-		newStylesheet.set(
-			'href', M.cfg.wwwroot+
+		var newStylesheet = null;
+		var cssURL = M.cfg.wwwroot+
 			'/blocks/accessibility/userstyles.php?instance_id='+
 			M.block_accessibility.instance_id+
 			'&v='+cache_prevention_salt
-		); 
-		this.Y.one('head').append(newStylesheet);
-		newStylesheet.getDOMNode().onload = function(){ oldStylesheet.remove() };
-		M.block_accessibility.sheetnode = newStylesheet;
-
-
-		//alert(M.block_accessibility.sheetnode + ' '+ clone);
-
 		
+		if (document.createStyleSheet) // only for IE < 11 and IE > 8
+		{
+			/* 
+				here we use href attribute change which makes some delay while reloading stylesheet
+
+				1. one another idea would be to load stylesheet using this.Y.io(.. and create <style> element
+				var styleSheet = document.createElement('STYLE');
+				document.documentElement.firstChild.appendChild(styleSheet);
+
+				2. initial idea was the same as for non-IE browsers but somehow doesn't work:
+				oldStylesheet.remove(true);
+				newStylesheet = document.createStyleSheet(cssURL);
+				// also keep in mind that createStyleSheet can create up to 31 stylesheets	
+				// http://msdn.microsoft.com/en-us/library/ie/ms531194(v=vs.85).aspx			
+			*/
+			
+			oldStylesheet.set('href', cssURL);
+		}
+		else
+		{
+			// IE 11 and non-IE browsers:
+			// creating new stylesheet and deleting old one makes more smooth transition
+			// Why wouldn't we just set the href attribute insted of creating another stylesheet node? Because before the new stylesheet is loaded and while old one is deleted, the page will lose all the styles and all the elements get unstyled for a some time (poor user experience)
+
+			newStylesheet = oldStylesheet.cloneNode(true);
+			newStylesheet.set('href', cssURL); 
+			this.Y.one('head').append(newStylesheet);
+			// remove old stylesheet
+			newStylesheet.getDOMNode().onload = function(){
+				oldStylesheet.remove(true);
+			};
+
+			M.block_accessibility.sheetnode = newStylesheet;
+		}
+
 
 	},
 
 	/**
+	 * Stripes px or % and gives value only
 	 * For improved user experience, only in JS-mode, we can set current font size as default font size
 	 * We would initially put 100%, but it doesn't have to be true for all themes
 	 * Also font-size value can be in % or in px, there is mapping defined in lib.php in the block
@@ -445,10 +504,10 @@ M.block_accessibility = {
 
 	show_loading: function(){
 		Y.one('#loader-icon').setStyle('display', 'block');
-		Y.one('#accessibility_controls').setStyle('opacity', '0.2');
+		Y.one('#accessibility_controls').setStyle('opacity', '0.2');	
 	},
 	hide_loading: function(){
 		Y.one('#loader-icon').setStyle('display', 'none');
 		Y.one('#accessibility_controls').setStyle('opacity', '1');
-	}
+	},
 }
