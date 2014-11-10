@@ -36,6 +36,7 @@ $string['coursereportspictures']  = 'with pictures';
 $string['backuptoggle']           = 'Course backup toggles';
 $string['second']                 = 'second';
 $string['module']                 = 'Module';
+$string['leapcorereport']         = 'LEAPCORE Report';
 
 // Server details strings.
 $string['serverdetailsheader']          = 'Server details';
