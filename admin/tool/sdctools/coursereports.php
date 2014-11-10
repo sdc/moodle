@@ -144,15 +144,16 @@ if ($cid) {
 
 
 
-$modinfo = get_fast_modinfo($course);
+//$modinfo = get_fast_modinfo($course);
+//echo '<pre>'; print_object($modinfo); echo '</pre>';
 //$coursesections = $modinfo->get_cms($modinfo);
-$coursesections = $modinfo->get_instances($modinfo);
-echo '<pre>'; print_object($coursesections); echo '</pre>';
+//$coursesections = $modinfo->get_instances($modinfo);
+//echo '<pre>'; print_object($coursesections); echo '</pre>';
 
 
 
 
-        $mods = unserialize($course->modinfo);
+        $mods = unserialize($modinfo);
         $cmods = count($mods);
         $modulebreakdown = array();
         $out = ' (';

@@ -33,22 +33,21 @@ define('BACKUPOFF_TIME', 2121212121);
 function sdctools_tableofcontents($highlight = false) {
     global $OUTPUT;
 
-    $out = '';
+    $out = '<ul>';
 
-    $out .= '<ul>';
-
-    if ($highlight == strtolower('index')) {
-        $out .= '<li><strong>'.html_writer::link(new moodle_url('index.php'), get_string('pluginname', 'tool_sdctools')).'</strong></li>';
-    } else {
-        $out .= '<li>'.html_writer::link(new moodle_url('index.php'), get_string('pluginname', 'tool_sdctools')).'</li>';
+    $pre = $suf = '';
+    if ( $highlight == strtolower( 'index' ) ) {
+        $pre = '<strong>';
+        $suf = '</strong>';
     }
+    $out .= '<li>'.$pre.html_writer::link(new moodle_url('index.php'), get_string('pluginname', 'tool_sdctools')).$suf.'</li>';
 
-
-    if ($highlight == strtolower('emails')) {
-        $out .= '<li><strong>'.html_writer::link(new moodle_url('emails.php'), get_string('emailchecks', 'tool_sdctools')).'</strong></li>';
-    } else {
-        $out .= '<li>'.html_writer::link(new moodle_url('emails.php'), get_string('emailchecks', 'tool_sdctools')).'</li>';
+    $pre = $suf = '';
+    if ( $highlight == strtolower( 'emails' ) ) {
+        $pre = '<strong>';
+        $suf = '</strong>';
     }
+    $out .= '<li>'.$pre.html_writer::link(new moodle_url('emails.php'), get_string('emailchecks', 'tool_sdctools')).$suf.'</li>';
 
     if ($highlight == strtolower('users')) {
         $out .= '<li><strong>'.html_writer::link(new moodle_url('users.php'), get_string('userchecks', 'tool_sdctools')).'</strong></li>';
@@ -56,24 +55,35 @@ function sdctools_tableofcontents($highlight = false) {
         $out .= '<li>'.html_writer::link(new moodle_url('users.php'), get_string('userchecks', 'tool_sdctools')).'</li>';
     }
 
-    if ($highlight == strtolower('coursereports')) {
-        $out .= '<li><strong>'.html_writer::link(new moodle_url('coursereports.php'), get_string('coursereports', 'tool_sdctools')).'</strong>';
-    } else {
-        $out .= '<li>'.html_writer::link(new moodle_url('coursereports.php'), get_string('coursereports', 'tool_sdctools'));
+    $pre = $suf = '';
+    if ( $highlight == strtolower( 'coursereports' ) ) {
+        $pre = '<strong>';
+        $suf = '</strong>';
     }
+    $out .= '<li>'.$pre.html_writer::link(new moodle_url('coursereports.php'), get_string('coursereports', 'tool_sdctools')).$suf;
 
-    if ($highlight == strtolower('coursereports_pictures')) {
-        $out .= ' (<strong>'.html_writer::link(new moodle_url('coursereports.php', array('pictures' => 1)), get_string('coursereportspictures', 'tool_sdctools')).'</strong>)</li>';
-    } else {
-        $out .= ' ('.html_writer::link(new moodle_url('coursereports.php', array('pictures' => 1)), get_string('coursereportspictures', 'tool_sdctools')).')</li>';
+    $pre = $suf = '';
+    if ( $highlight == strtolower( 'coursereports_pictures' ) ) {
+        $pre = '<strong>';
+        $suf = '</strong>';
     }
+    $out .= ' ('.$pre.html_writer::link(new moodle_url('coursereports.php', array('pictures' => 1)), get_string('coursereportspictures', 'tool_sdctools')).$suf.')</li>';
 
-    if ($highlight == strtolower('backuptoggle')) {
-        $out .= '<li><strong>'.html_writer::link(new moodle_url('backuptoggle.php'), get_string('backuptoggle', 'tool_sdctools')).'</strong></li>';
-    } else {
-        $out .= '<li>'.html_writer::link(new moodle_url('backuptoggle.php'), get_string('backuptoggle', 'tool_sdctools')).'</li>';
+    $pre = $suf = '';
+    if ( $highlight == strtolower( 'leapcorereport' ) ) {
+        $pre = '<strong>';
+        $suf = '</strong>';
     }
-    $out .= '<ul>';
+    $out .= '<li>'.$pre.html_writer::link(new moodle_url('leapcorereport.php'), get_string('leapcorereport', 'tool_sdctools')).$suf.'</li>';
+
+    $pre = $suf = '';
+    if ( $highlight == strtolower( 'backuptoggle' ) ) {
+        $pre = '<strong>';
+        $suf = '</strong>';
+    }
+    $out .= '<li>'.$pre.html_writer::link(new moodle_url('backuptoggle.php'), get_string('backuptoggle', 'tool_sdctools')).$suf.'</li>';
+
+    $out .= '</ul>';
 
     return $out;
 }

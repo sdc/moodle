@@ -25,15 +25,32 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
+
     // Add to development menu.
-    $ADMIN->add('development', new admin_externalpage('toolsdctools', get_string('pluginname', 'tool_sdctools'),
-        $CFG->wwwroot.'/'.$CFG->admin.'/tool/sdctools/index.php', 'moodle/site:config'));
+    $ADMIN->add( 'development', new admin_externalpage(
+        'toolsdctools',
+        get_string( 'pluginname', 'tool_sdctools' ),
+        $CFG->wwwroot . '/' . $CFG->admin . '/tool/sdctools/index.php',
+        'moodle/site:config'
+    ));
 
     // Add to reports menu with a different lang string.
     // $ADMIN->add('reports', new admin_externalpage('toolsdctoolsemail', get_string('emptyemailname', 'tool_sdctools'),
     //     $CFG->wwwroot.'/'.$CFG->admin.'/tool/sdctools/index.php', 'moodle/site:config'));
 
     // Add courses report to reports menu.
-    $ADMIN->add('reports', new admin_externalpage('toolsdctoolscourse', get_string('coursereportname', 'tool_sdctools'),
-        $CFG->wwwroot.'/'.$CFG->admin.'/tool/sdctools/coursereports.php', 'moodle/site:config'));
+    $ADMIN->add( 'reports', new admin_externalpage(
+        'toolsdctoolscourse',
+        get_string( 'coursereportname', 'tool_sdctools' ),
+        $CFG->wwwroot . '/' . $CFG->admin . '/tool/sdctools/coursereports.php',
+        'moodle/site:config'
+    ));
+
+    // Add LEAPCORE report to reports menu.
+    $ADMIN->add( 'reports', new admin_externalpage(
+        'toolsdctoolsleapcore',
+        get_string( 'leapcorereport', 'tool_sdctools' ),
+        $CFG->wwwroot . '/' . $CFG->admin . '/tool/sdctools/leapcorereport.php',
+        'moodle/site:config'
+    ));
 }
