@@ -216,10 +216,10 @@ function report_customsql_capability_options() {
 
 function report_customsql_runable_options($type = null) {
     if ($type === 'manual') {
-        return array('manual' => get_string('manually', 'report_customsql'));
+        return array('manual' => get_string('manual', 'report_customsql'));
     }
-    return array('manual' => get_string('manually', 'report_customsql'),
-                 'daily' => get_string('daily', 'report_customsql'),
+    return array('manual' => get_string('manual', 'report_customsql'),
+                 'daily' => get_string('automaticallydaily', 'report_customsql'),
                  'weekly' => get_string('automaticallyweekly', 'report_customsql'),
                  'monthly' => get_string('automaticallymonthly', 'report_customsql')
     );
@@ -249,26 +249,51 @@ function report_customsql_contains_bad_word($string) {
     return preg_match('/\b('.implode('|', report_customsql_bad_words_list()).')\b/i', $string);
 }
 
-function report_customsql_log_action($action, $relativeurl, $id) {
-    global $CFG;
-    add_to_log(0, 'admin', $action.' query',
-               '../report/customsql/'.$relativeurl, $id);
-}
-
 function report_customsql_log_delete($id) {
-    report_customsql_log_action('delete', 'index.php', $id);
+    $event = \report_customsql\event\query_deleted::create(
+            array('objectid' => $id, 'context' => context_system::instance()));
+    $event->trigger();
 }
 
 function report_customsql_log_edit($id) {
-    report_customsql_log_action('edit', 'view.php?id='.$id, $id);
+    $event = \report_customsql\event\query_edited::create(
+            array('objectid' => $id, 'context' => context_system::instance()));
+    $event->trigger();
 }
 
 function report_customsql_log_view($id) {
-    report_customsql_log_action('view', 'view.php?id='.$id, $id);
+    $event = \report_customsql\event\query_viewed::create(
+            array('objectid' => $id, 'context' => context_system::instance()));
+    $event->trigger();
 }
 
-function report_customsql_print_reports($reports) {
-    global $CFG, $OUTPUT;
+/**
+ * Returns all reports for a given type sorted by report 'displaname'
+ * @param int $categoryid
+ * @param string $type, type of report (manual, daily, weekly or monthly)
+ */
+function report_customsql_get_reports_for($categoryid, $type) {
+    global $DB;
+    return $DB->get_records('report_customsql_queries',
+        array('runable' => $type, 'categoryid' => $categoryid), 'displayname');
+}
+
+/**
+ * display the rports
+ * @param object $reports, the result of DB query
+ * @param string $type, type of report (manual, daily, weekly or monthly)
+ */
+function report_customsql_print_reports_for($reports, $type) {
+    global $OUTPUT;
+
+    if (empty($reports)) {
+        return;
+    }
+
+    if (!empty($type)) {
+        $help = html_writer::tag('span', $OUTPUT->help_icon($type . 'header', 'report_customsql'));
+        echo $OUTPUT->heading(get_string($type . 'header', 'report_customsql') . $help, 3);
+    }
 
     $context = context_system::instance();
     $canedit = has_capability('report/customsql:definequeries', $context);
