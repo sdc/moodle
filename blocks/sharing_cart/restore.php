@@ -14,7 +14,11 @@ $id            = required_param('id', PARAM_INT);
 $courseid      = required_param('course', PARAM_INT);
 $sectionnumber = required_param('section', PARAM_INT);
 
-$returnurl = new moodle_url('/course/view.php', array('id' => $courseid));
+if ($courseid == SITEID) {
+    $returnurl = new moodle_url('/');
+} else {
+    $returnurl = new moodle_url('/course/view.php', array('id' => $courseid));
+}
 
 try {
 	$controller = new sharing_cart\controller();

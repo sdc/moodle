@@ -13,12 +13,13 @@ class block_sharing_cart extends block_base
 	public function init()
 	{
 		$this->title   = get_string('pluginname', __CLASS__);
-		$this->version = 2014060600;
+		$this->version = 2014091200;
 	}
 
 	public function applicable_formats()
 	{
 		return array(
+			'site'            => true,
 			'course'          => true,
 			'course-category' => false,
 			'mod'             => false,
