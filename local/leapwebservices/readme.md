@@ -21,6 +21,8 @@ This local Moodle plugin has it's own repository located at [github.com/sdc/mood
 
 This plugin has been written to work with South Devon College's currently-in-production version of Moodle, which at this time is 2.7, but has been working in production with 2.6 and 2.5. This plugin also works in Moodle 2.4 except the `get_users_by_username` function, which requires a function not found in Moodle 2.4 or earlier.
 
+The badges functions `get_users_with_badges` and `get_badges_by_username` should work with any version of Moodle in which badges are found (2.5 onward) but have not been tested in versions earlier than 2.7.
+
 Earlier versions (2.0 to 2.3) have not been exhaustively tested with this plugin.
 
 
@@ -527,6 +529,8 @@ The above query should return the following data structure (data for example pur
     * course_total - course total score
     * course_total_display - course total score (for display)
     * course_total_modified - course total modification timestamp
+    * course_completion_total - the total number of configured course completion criteria
+    * course_completion_completed - the completed number of configured course completion criteria
 
 Use a URL with the following format:
 
@@ -580,6 +584,12 @@ The above query should return the following data structure (data for example pur
           </KEY>
           <KEY name="course_total_modified">
             <VALUE>1410555555</VALUE>
+          </KEY>
+          <KEY name="course_completion_total">
+            <VALUE>2</VALUE>
+          </KEY>
+          <KEY name="course_completion_completed">
+            <VALUE>1</VALUE>
           </KEY>
         </SINGLE>
       </MULTIPLE>
@@ -753,7 +763,9 @@ The above query should return the following data structure, which is identical t
 
 ## History
 
-* 2014-10-31, v0.7.1: Over-zealous pruning of unnecessary code removed necessary code; rounded numbers sent where no scale exists.
+* 2014-11-19, v0.8.0: Added course completion details (total/complete) to get_targets_by_username webservice.
+* 2014-11-03, v0.7.2: The course's last update time will be that of the most recently updated item, not just that of the course.
+* 2014-11-03, v0.7.1: Over-zealous pruning of unnecessary code removed necessary code; rounded numbers sent where no scale exists.
 * 2014-09-24, v0.7.0: Added a new webservice to retrieve all users who have been issued at least one (visible, not-expired) badge.
 * 2014-09-18, v0.6.0: Added a new webservice to retrieve all users who have a non-null, > 0 MAG grade in the gradebook, regardless of course.
 * 2014-09-17, v0.5.0: Added a new webservice to retrieve badges which have been issued to a user.
