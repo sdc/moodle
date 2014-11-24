@@ -585,7 +585,11 @@ class local_leapwebservices_external extends external_api {
 
                 $gs         = new grade_scale();
                 $gs_scale   = $gs::fetch( array( 'id' => $gi_item->scaleid ) );
-                if ( $gs_scale ) {
+                if ( $gi_item->display != 0 ) {
+                    // Check first for a non-zero 'display' variable, and run with that if found.
+                    $courses[$core]['course_total_display'] = grade_format_gradevalue( $gg_grade->finalgrade, $gi_item, true, $gi_item->display );
+                } else if ( $gs_scale ) {
+                    // See if we have a scale and use that if found.
                     $courses[$core]['course_total_display'] = $gs_scale->get_nearest_item( $gg_grade->finalgrade );
                 } else {
                     if ( is_numeric( $gg_grade->finalgrade ) ) {
@@ -666,6 +670,13 @@ class local_leapwebservices_external extends external_api {
 
                     $courses[$core]['course_completion_total']     = count( $completions );
                     $courses[$core]['course_completion_completed'] = $info->count_course_user_data( $user->id );
+
+                    // Loop through each timecompleted value, ignore if null, update if more recent.
+                    foreach ($completions as $completion) {
+                        if ( !is_null( $completion->timecompleted ) && $completion->timecompleted > $courses[$core]['course_total_modified'] ) {
+                            $courses[$core]['course_total_modified'] = $completion->timecompleted;
+                        }
+                    }
                 }
 
             } // END completion info enabled for site check.
