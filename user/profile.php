@@ -319,6 +319,12 @@ if (isset($identityfields['email']) and ($currentuser
     echo html_writer::tag('dd', obfuscate_mailto($user->email, ''));
 }
 
+
+$ebsid = explode( '@', $user->username );
+echo html_writer::tag( 'dt', 'Leap' );
+echo html_writer::tag( 'dd', html_writer::link('https://leap.southdevon.ac.uk/people/' . $ebsid[0] , 'Leap profile for ' . fullname($user), array( 'target' => '_blank' ) ) );
+
+
 if ($user->url && !isset($hiddenfields['webpage'])) {
     $url = $user->url;
     if (strpos($user->url, '://') === false) {
