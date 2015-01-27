@@ -1,1 +1,0 @@
-This folder will contain all of the PHP pages that are accessed and processed through AJAX
