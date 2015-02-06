@@ -23,6 +23,10 @@ text-transform:uppercase;
 
 }
 
+.block .content h3 {
+padding:0;
+}
+
 a {
     color: #3d3d3d;
     text-decoration: none;
@@ -31,6 +35,11 @@ a {
 a:hover, a:focus {
     color: [[setting:menuhovercolor]];
     text-decoration: none;
+}
+
+img {
+	max-width:100%;
+	height:auto;
 }
 
 #page-site-index h2.headingblock:before {
