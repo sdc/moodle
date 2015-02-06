@@ -1,6 +1,6 @@
 <?php
 
-/*  
+/* 
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -90,6 +90,55 @@ class theme_archaius_core_renderer extends core_renderer {
 
         $this->init_block_hider_js($bc);
 
+        return $output;
+    }
+
+    /**
+     * Output all the blocks in a particular region.
+     * NOTE: Here I allow to set user preference using JS, the
+     * preference have the following struture:
+     * theme_archaius_blocks_region_$regionname_context_$contextid_page_type_$pagetype_sub_$subpage
+     * @param string $region the name of a region on this page.
+     * @return string the HTML to be output.
+     */
+    public function blocks_for_region($region) {
+        $user_preference = '';
+        if(strcmp($region, "side-pre") == 0  || 
+            strcmp($region, "side-post") == 0 ){
+
+            $user_preference .= 
+                "theme_archaius_blocks_region_" . $region . 
+                "_context_". $this->page->context->id .
+                "_page_type_" . $this->page->pagetype;
+
+            if(! empty($this->page->subpage)){
+                $user_preference .= "_sub_" . $this->page->subpage;    
+            }
+        }
+        //Allow user preference update from javascript
+        user_preference_allow_ajax_update($user_preference, PARAM_INT);
+
+        $blockcontents = $this->page->blocks->get_content_for_region($region, $this);
+
+        $blocks = $this->page->blocks->get_blocks_for_region($region);
+        $lastblock = null;
+        $zones = array();
+        foreach ($blocks as $block) {
+            $zones[] = $block->title;
+        }
+        $output = '';
+
+        foreach ($blockcontents as $bc) {
+            if ($bc instanceof block_contents) {
+                $output .= $this->block($bc, $region);
+                $lastblock = $bc->title;
+            } else if ($bc instanceof block_move_target) {
+                $output .= $this->block_move_target($bc, $zones, $lastblock, $region);
+            } else {
+                throw new coding_exception('Unexpected type of thing (' . 
+                    get_class($bc) . ') found in list of block contents.');
+            }
+        }
         return $output;
     }
 

@@ -38,6 +38,16 @@ M.theme_archaius_loader = {
 
     slideshowTimeout : 4000,
 
+    pageType: "",
+
+    subpage: undefined,
+
+    contextId: 0,
+
+    showRegionPre:1,
+
+    showRegionPost:1,
+
     init: function (params) {
 
         this.activateAccordionBlocks =  parseInt(params.accordionBlocks,10);
@@ -55,6 +65,18 @@ M.theme_archaius_loader = {
         this.confirmationDeleteSlide = params.confirmationDeleteSlide;
 
         this.noSlides = params.noSlides;
+
+        this.contextId = params.contextId;
+
+        this.pageType = params.pageType;
+
+        if(params.subpage !== ""){
+            this.subpage = params.subpage;
+        }
+
+        this.showRegionPre = parseInt(params.showRegionPre,10);
+
+        this.showRegionPost = parseInt(params.showRegionPost,10);
 
         if(this.activateAccordionBlocks){
             this.accordionBlocks();
@@ -74,12 +96,7 @@ M.theme_archaius_loader = {
             );
         }
         this.topicsCourseMenu(this.activateTopicsCourseMenu);
-
-        if(Y.one("#adminsearchquery") !== null){
-            Y.one("#adminsearchquery").setAttribute("placeholder",params.search);
-        }
     },
-
     commonBlocks: function(){
         this.archaiusJSEffects.commonBlocks();
     },
@@ -93,7 +110,6 @@ M.theme_archaius_loader = {
        this.archaiusJSEffects.topicsCourseMenu(active);
     },
     startSlideshow: function(activatePausePlaySlideshow,timeout,confirmationDeleteSlide,noSlides){
-
         this.archaiusJSEffects
             .initSlideshow(
                 activatePausePlaySlideshow,
@@ -101,5 +117,17 @@ M.theme_archaius_loader = {
                 confirmationDeleteSlide,
                 noSlides
             );
+    },
+    getUserPreferenceName: function(region){
+        var userPreference = "theme_archaius_blocks_region_" + region + "_context_" 
+            + this.contextId + "_page_type_" + this.pageType;
+        if(this.subpage !== undefined){
+            userPreference += "_sub_" + this.subpage;
+        }
+        return userPreference;
+    },
+    setUserPreference: function(region,value){
+        var preferenceName = this.getUserPreferenceName(region);
+        M.util.set_user_preference(preferenceName, value);
     }
 };
