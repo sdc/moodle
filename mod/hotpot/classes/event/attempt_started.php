@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains an event for when a hotpot activity is viewed.
+ * mod/hotpot/classes/event/attempt_started.php
  *
  * @package    mod_hotpot
  * @copyright  2014 Gordon Bateson (gordon.bateson@gmail.com)
@@ -29,20 +29,30 @@ namespace mod_hotpot\event;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Event for when a hotpot activity is viewed.
+ * The attempt_started event class.
  *
  * @package    mod_hotpot
- * @copyright  2014 Gordon Bateson
+ * @copyright  2014 Gordon Bateson (gordon.bateson@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @since      Moodle 2.6
  */
-class course_module_viewed extends \core\event\course_module_viewed {
+class attempt_started extends base {
 
     /**
-     * Init method.
+     * Return the legacy event name
+     *
+     * @return array
+     */
+    public static function get_legacy_eventname() {
+        return 'attempt';
+    }
+
+    /**
+     * Init method
      */
     protected function init() {
-        $this->data['objecttable'] = 'hotpot';
-        $this->data['crud'] = 'r';
+        $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
+        $this->data['objecttable'] = 'hotpot';
     }
 }
