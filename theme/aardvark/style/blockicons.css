@@ -86,6 +86,7 @@
 
 
 .block_participants .header .title h2:before,
+.block_people .header .title h2:before,
 .block_online_users .header .title h2:before {
     background-color: #92499e;
     content:"\f0c0";
