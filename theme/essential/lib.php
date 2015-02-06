@@ -129,23 +129,6 @@ function theme_essential_edit_button($section) {
     }
 }
 
-// Moodle CSS file serving.
-function theme_essential_get_csswww() {
-    global $CFG;
-
-    if (right_to_left()) {
-        $moodlecss = 'essential-rtl.css';
-    } else {
-        $moodlecss = 'essential.css';
-    }
-
-    $syscontext = context_system::instance();
-    $itemid = theme_get_revision();
-    $url = moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php", "/$syscontext->id/theme_essential/style/$itemid/$moodlecss");
-    $url = preg_replace('|^https?://|i', '//', $url->out(false));
-    return $url;
-}
-
 /**
  * Serves any files associated with the theme settings.
  *
@@ -1029,14 +1012,18 @@ function theme_essential_render_slide_controls($left) {
     $prev = '<a class="left carousel-control" href="#essentialCarousel" data-slide="prev"><i class="fa fa-chevron-circle-' . $faleft . '"></i></a>';
     $next = '<a class="right carousel-control" href="#essentialCarousel" data-slide="next"><i class="fa fa-chevron-circle-' . $faright . '"></i></a>';
 
-    return $prev . $next;
+    if ($left) {
+        return $prev . $next;
+    } else {
+        return $next . $prev;
+    }
 }
 
 /**
  * States if the browser is not IE9 or less.
  */
 function theme_essential_not_lte_ie9() {
-    $properties = theme_essential_ie_properties();
+    $properties = core_useragent::check_ie_properties();; // In /lib/classes/useragent.php.
     if (!is_array($properties)) {
         return true;
     }
@@ -1044,23 +1031,14 @@ function theme_essential_not_lte_ie9() {
     return ($properties['version'] > 9.0);
 }
 
-/**
- * States if the browser is IE by returning properties, otherwise false.
- */
-function theme_essential_ie_properties() {
-    $properties = core_useragent::check_ie_properties(); // In /lib/classes/useragent.php.
-    if (!is_array($properties)) {
-        return false;
-    } else {
-        return $properties;
-    }
-}
-
 function theme_essential_page_init(moodle_page $page) {
     global $CFG;
     $page->requires->jquery();
-    $properties = theme_essential_ie_properties();
-    if ((is_array($properties)) && ($properties['version'] <= 8.0)) {
+    if (intval($CFG->version) >= 2013111800) {
+        if (core_useragent::check_ie_version() && !core_useragent::check_ie_version('9.0')) {
+            $page->requires->jquery_plugin('html5shiv', 'theme_essential');
+        }
+    } else if (check_browser_version('MSIE') && !check_browser_version('MSIE', '9.0')) {
         $page->requires->jquery_plugin('html5shiv', 'theme_essential');
     }
     $page->requires->jquery_plugin('bootstrap', 'theme_essential');
