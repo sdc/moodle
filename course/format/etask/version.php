@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2013122800;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2013111800;        // Requires this Moodle version.
+$plugin->version   = 2014111000;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires  = 2014110400;        // Requires this Moodle version.
 $plugin->component = 'format_etask';    // Full name of the plugin (used for diagnostics).
-$plugin->release = '2.6 (Build:  2013111800)';
+$plugin->release = '2.8.1 (Build: 20141113)';
