@@ -16,30 +16,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the version of hotpot
- *
- * This code fragment is called by moodle_needs_upgrading() and
- * /admin/index.php
+ * Review results of an attempt at a HotPot quiz
+ * Output format: hp_6_jmatch_html_sort
  *
  * @package   mod-hotpot
  * @copyright 2010 Gordon Bateson <gordon.bateson@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// prevent direct access to this script
 defined('MOODLE_INTERNAL') || die();
 
-if (floatval($GLOBALS['CFG']->release) <= 2.6) {
-    $plugin = new stdClass();
-}
+// get parent class
+require_once($CFG->dirroot.'/mod/hotpot/attempt/hp/6/jmatch/html/review.php');
 
-$plugin->cron      = 0;
-$plugin->component = 'mod_hotpot';
-$plugin->maturity  = MATURITY_STABLE; // ALPHA=50, BETA=100, RC=150, STABLE=200
-$plugin->requires  = 2010112400;      // Moodle 2.0
-$plugin->release   = '2015.01.26 (59)';
-$plugin->version   = 2015012659;
-
-if (floatval($GLOBALS['CFG']->release) <= 2.6) {
-    $module = clone($plugin);
+/**
+ * mod_hotpot_attempt_hp_6_jmatch_html_sort_review
+ *
+ * @copyright 2010 Gordon Bateson
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @since     Moodle 2.0
+ */
+class mod_hotpot_attempt_hp_6_jmatch_html_sort_review extends mod_hotpot_attempt_hp_6_jmatch_html_review {
 }
