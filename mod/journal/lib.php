@@ -733,31 +733,40 @@ function journal_print_user_entry($course, $user, $entry, $teachers, $grades) {
         $feedbackdisabledstr = '';
         $feedbacktext = $entry->entrycomment;
 
-        // If the grade was modified from the gradebook disable edition
+        // If the grade was modified from the gradebook disable edition also skip if journal is not graded.
         $grading_info = grade_get_grades($course->id, 'mod', 'journal', $entry->journal, array($user->id));
-        if ($gradingdisabled = $grading_info->items[0]->grades[$user->id]->locked || $grading_info->items[0]->grades[$user->id]->overridden) {
-            $attrs['disabled'] = 'disabled';
-            $hiddengradestr = '<input type="hidden" name="r'.$entry->id.'" value="'.$entry->rating.'"/>';
-            $gradebooklink = '<a href="'.$CFG->wwwroot.'/grade/report/grader/index.php?id='.$course->id.'">';
-            $gradebooklink.= $grading_info->items[0]->grades[$user->id]->str_long_grade.'</a>';
-            $gradebookgradestr = '<br/>'.get_string("gradeingradebook", "journal").':&nbsp;'.$gradebooklink;
+        if (!empty($grading_info->items[0]->grades[$entry->userid]->str_long_grade)) {
+            if ($gradingdisabled = $grading_info->items[0]->grades[$user->id]->locked || $grading_info->items[0]->grades[$user->id]->overridden) {
+                $attrs['disabled'] = 'disabled';
+                $hiddengradestr = '<input type="hidden" name="r'.$entry->id.'" value="'.$entry->rating.'"/>';
+                $gradebooklink = '<a href="'.$CFG->wwwroot.'/grade/report/grader/index.php?id='.$course->id.'">';
+                $gradebooklink.= $grading_info->items[0]->grades[$user->id]->str_long_grade.'</a>';
+                $gradebookgradestr = '<br/>'.get_string("gradeingradebook", "journal").':&nbsp;'.$gradebooklink;
 
-            $feedbackdisabledstr = 'disabled="disabled"';
-            $feedbacktext = $grading_info->items[0]->grades[$user->id]->str_feedback;
+                $feedbackdisabledstr = 'disabled="disabled"';
+                $feedbacktext = $grading_info->items[0]->grades[$user->id]->str_feedback;
+            }
         }
 
         // Grade selector
+        $attrs['id'] = 'r' . $entry->id;
+        echo html_writer::label(fullname($user) . " " . get_string('grade'), 'r' . $entry->id, true, array('class' => 'accesshide'));
         echo html_writer::select($grades, 'r'.$entry->id, $entry->rating, get_string("nograde").'...', $attrs);
         echo $hiddengradestr;
-        if ($entry->timemarked) {
+        // Rewrote next three lines to show entry needs to be regraded due to resubmission.
+        if (!empty($entry->timemarked) && $entry->modified > $entry->timemarked) {
+            echo " <span class=\"lastedit\">".get_string("needsregrade", "journal"). "</span>";
+        } else if ($entry->timemarked) {
             echo " <span class=\"lastedit\">".userdate($entry->timemarked)."</span>";
         }
         echo $gradebookgradestr;
 
         // Feedback text
-        echo "<p><textarea name=\"c$entry->id\" rows=\"12\" cols=\"60\" $feedbackdisabledstr>";
+        echo html_writer::label(fullname($user) . " " . get_string('feedback'), 'c' . $entry->id, true, array('class' => 'accesshide'));
+        echo "<p><textarea id=\"c$entry->id\" name=\"c$entry->id\" rows=\"12\" cols=\"60\" $feedbackdisabledstr>";
         p($feedbacktext);
         echo "</textarea></p>";
+
 
         if ($feedbackdisabledstr != '') {
             echo '<input type="hidden" name="c'.$entry->id.'" value="'.$feedbacktext.'"/>';
@@ -797,7 +806,8 @@ function journal_print_feedback($course, $entry, $grades) {
     echo '<div class="grade">';
 
     // Gradebook preference
-    if ($grading_info = grade_get_grades($course->id, 'mod', 'journal', $entry->journal, array($entry->userid))) {
+    $grading_info = grade_get_grades($course->id, 'mod', 'journal', $entry->journal, array($entry->userid));
+    if (!empty($grading_info->items[0]->grades[$entry->userid]->str_long_grade)) {
         echo get_string('grade').': ';
         echo $grading_info->items[0]->grades[$entry->userid]->str_long_grade;
     } else {
@@ -806,7 +816,7 @@ function journal_print_feedback($course, $entry, $grades) {
     echo '</div>';
 
     // Feedback text
-    echo format_text($entry->entrycomment);
+    echo format_text($entry->entrycomment, FORMAT_PLAIN);
     echo '</td></tr></table>';
 }
 
