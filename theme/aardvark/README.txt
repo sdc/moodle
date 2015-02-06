@@ -28,6 +28,9 @@
  *  Website: http://vle.newbury-college.ac.uk
  */
  
+ v2.8
+ - updated to fix image widths in version 2.8
+ 
  v2.6.4
  - updated config.php for gradebook compatibility in Moodle 2.6+ (Thank you Mary)
  - added Wikipedia to Social Network icons in footer
