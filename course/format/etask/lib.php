@@ -17,7 +17,7 @@
 /**
  * This file contains main class for the course format Topic
  *
- * @since     2.0
+ * @since     Moodle 2.0
  * @package   format_etask
  * @copyright 2009 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,6 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot. '/course/format/lib.php');
+
+// local lib functions
+require_once($CFG->dirroot . '/course/format/etask/locallib.php');
 
 /**
  * Main class for the eTask course format
@@ -115,14 +118,12 @@ class format_etask extends format_base {
      *
      * The returned object's property (boolean)capable indicates that
      * the course format supports Moodle course ajax features.
-     * The property (array)testedbrowsers can be used as a parameter for {@link ajaxenabled()}.
      *
      * @return stdClass
      */
     public function supports_ajax() {
         $ajaxsupport = new stdClass();
         $ajaxsupport->capable = true;
-        $ajaxsupport->testedbrowsers = array('MSIE' => 6.0, 'Gecko' => 20061111, 'Safari' => 531, 'Chrome' => 6.0);
         return $ajaxsupport;
     }
 
@@ -291,7 +292,7 @@ class format_etask extends format_base {
     /**
      * Updates format options for a course
      *
-     * In case if course format was changed to 'topics', we try to copy options
+     * In case if course format was changed to 'eTask', we try to copy options
      * 'coursedisplay', 'numsections' and 'hiddensections' from the previous format.
      * If previous course format did not have 'numsections' option, we populate it with the
      * current number of sections
@@ -328,6 +329,3 @@ class format_etask extends format_base {
         return $this->update_format_options($data);
     }
 }
-
-// local lib functions
-require_once($CFG->dirroot . '/course/format/etask/locallib.php');

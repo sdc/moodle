@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * eTask course format.  Display the whole course as "topics" made of modules.
+ * eTask course format.  Display the whole course as "eTask" made of modules.
  *
  * @package format_etask
  * @copyright 2006 The Open University
