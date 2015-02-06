@@ -1,7 +1,7 @@
 /*
  *  Aarvark
  *
- *  The original menubar based theme for Moodle rewritten for Moodle 2.6+ to draw
+ *  The original menubar based theme for Moodle rewritten for Moodle 2.8+ to draw
  *  its base from Bootstrap.
  *
  *  The theme features customised icons and a profile section in the menubar
@@ -24,10 +24,14 @@
  *
  *  Author - Shaun Daubney
  *  ------------------------------------------------------------------------------
- *  Twitter: http://twitter.com/superawesomeme
+ *  Twitter: http://twitter.com/newburycollege
  *  Website: http://vle.newbury-college.ac.uk
  */
  
+ v2.8.1
+ - replaced 'profileblock' with new 'User menu items' from Moodle Core.
+ - set Moodle 2.8+ as minimum specification
+
  v2.8
  - updated to fix image widths in version 2.8
  

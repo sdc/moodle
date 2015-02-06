@@ -58,22 +58,17 @@ $courseheader = $coursecontentheader = $coursecontentfooter = $coursefooter = ''
 
  else { ?><a class="brand" href="<?php echo $CFG->wwwroot;?>"><?php echo $SITE->shortname; }?></a>
 			
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <a class="btn btn-navbar" data-toggle="workaround-collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
+            <?php echo $OUTPUT->user_menu(); ?>
             <div class="nav-collapse collapse">
-          <?php  if ((!isloggedin()) && ($hashidemenu)){}
-
-		  else if ($hascustommenu) {
-                echo $custommenu;
-				
-            } ?>
-            <ul class="nav pull-right">
-            <li><?php echo $PAGE->headingmenu;
-			include('profileblock.php');?></li>
-            </ul>
+                <?php echo $OUTPUT->custom_menu(); ?>
+                <ul class="nav pull-right">
+                    <li><?php echo $OUTPUT->page_heading_menu(); ?></li>
+                </ul>
             </div>
         </div>
     </nav>
