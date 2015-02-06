@@ -18,7 +18,8 @@ Cool things to know about the theme.
  - The Theme uses [Google web fonts](http://www.google.com/fonts/) to give it that extra bit of shazam!
  - Social Network icons appear at the top of the page dynamically based on theme settings
  - The entire colour scheme can be modified with theme settings
- - The homepage main area is just a label. The theme will ship with custom classes that you can set for tables and links to modify their formatting. No knowledge of code is needed as you can use the text editor to do this. Documentation will be provided outlining what the additional classes are.
+ - The homepage main area is just a label. The theme will ship with custom classes that you can set for tables and links to modify their formatting.
+   No knowledge of code is needed as you can use the text editor to do this. Documentation will be provided outlining what the additional classes are.
 
 Original Author
 ===============
@@ -80,11 +81,11 @@ Guido Hornig, actXcellence http://actxcellence.de
 
 Required version of Moodle
 ==========================
-This version works with Moodle version 2014051200.00 release 2.7 (Build: 20140512) and above within the 2.7 branch until the
+This version works with Moodle version 2014111000.00 release 2.8 (Build: 20141110) and above within the 2.8 branch until the
 next release.
 
 Please ensure that your hardware and software complies with 'Requirements' in 'Installing Moodle' on
-'docs.moodle.org/27/en/Installing_Moodle'.
+'docs.moodle.org/28/en/Installing_Moodle'.
 
 Installation
 ============
@@ -163,16 +164,17 @@ It is essential that you provide as much information as possible, the critical i
 'version.php' file.  Other version information such as specific Moodle version, theme name and version also helps.  A screen shot
 can be really useful in visualising the issue along with any files you consider to be relevant.
 
-New in 2.7.9.5
-==============
+New in 2.8.1.1 - RC2
+====================
+- FIX: Issue #417: M2.8 Mail Settings page needs checking.
 - FIX: Issue #422: Regression from #179 in the core_renderer.php file.
 - FIX: Issue #423: Forum floating buttons.
 - FIX: Issue #425: Copyright date localization.
 - FIX: Issue #429: Front page content area set to "Show before login only" still paritally displays.
-- FIX: Issue #430: Book Module - Print (centred) - layout changed.
 - FIX: Issue #432: Adjusted lang string for 'oldnavbardesc'.  Thanks to Mathieu Pelletier (https://github.com/mkpelletier) for this.
 - FIX: Issue #434: Explain if a logo uploaded then no header title will be shown.
 - FIX: Issue #436: Header background colour setting.
+- FIX: Issue #441: Messages Screen when on mobile ( - 767px ) - background not filling area (region-main).
 - FIX: Apply MDL-46183.
 - FIX: Apply MDL-45930.
 - FIX: Apply MDL-44907.
@@ -182,31 +184,36 @@ New in 2.7.9.5
 - NEW: Added 'Essentials' child theme in 'essentials' sub-folder.  To use, read the 'Installation' instructions in 'essentials/README.txt'.
        The 'essentials' sub-folder is just a place to store and distribute the child theme.  It will NOT be available until you install it.
 - NEW: Code refactoring to make child theme creation easier.
+- NEW: LESS refactoring to make future transition to Bootstrap v3 easier.
 
-New in 2.7.9.4.3
-================
+New in 2.8.1
+============
+First stable release.
 - FIX: Issue #342: Essential Theme (version 2014101000 2.7.8 Build: 2014091804) issue with IE9 and earlier.
+- FIX: Issue #414: Slider not work properly in RTL.
 - FIX: Issue #416: Missing background colour in breadcrumb and footer.
 
-New in 2.7.9.4.2
-================
-- FIX: Issue #414: Slider not work properly in RTL.
-
-New in 2.7.9.4.1
-================
-- FIX: Issue #413: Maturity BETA wrong for STABLE version.
-
-New in 2.7.9.4
+New in 2.8.0.2
 ==============
-Attempt to see if html5shiv needs to be applied to IE9 to make it look ok.
 - FIX: Issue #348: Slider controls do not work in RTL.
 - FIX: Issue #403: Enroll button does not work with two or more self-enrollment options.
+- FIX: Issue #404: M2.8 Adding a question to a new Quiz needs checking.
 - FIX: Issue #405: Extension of blocks into Footer region with "Edit Settings" on.
 - FIX: Issue #406: Assignment types: Online Audio Recording.
 - FIX: Issue #408: Show text of question in list.
+- FIX: Issue #409: Single view in Grades references unknown block.
 - FIX: Issue #411: Atto editor causing horizontal scroll bar.
 - FIX: Issue #412: Drop down background should be themeurlcolour and not themetextcolour.
 - NEW: Issue #410: Use admin preference for 'My courses' menu sort order.  Thanks to Tony Butler for this.
+
+New in 2.8.0.1
+==============
+NOTE: Beta version - test servers only.  Use on production servers is not recommended or supported.
+- FIX: Issue #309: Moodle 2.8 file manager issue.
+- FIX: Issue #335: Sorting buttons on headings on gradebook in 2.8 overlap other cells
+- FIX: Issue #376: Grade report overflow in M2.8.
+- FIX: Issue #381: The grid exceeds limits of the central area of the forum.
+- FIX: Issue #392: Essential quiz - edit mode - action btns broken.
 
 New in 2.7.9.3
 ==============

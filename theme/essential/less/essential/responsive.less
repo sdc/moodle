@@ -5,15 +5,12 @@
     #page-login-index #region-main {
         width: 100% !important;
     }
-    #page-mod-quiz-edit {
-        .reorder div.question div.content {
-            width: 92%;
+    #page-mod-quiz-edit ul.slots {
+        li.section li.activity .activityinstance {
+            width: 90%;
         }
-        div.question div.content .questiontext {
-            max-width: 50%;
-        }
-        #categoryquestions .questiontext {
-            max-width: 60%;
+        .activityinstance span.instancename {
+            width: 94%;
         }
     }
 }
@@ -104,6 +101,19 @@
             }
         }
     }
+    #page-message-index {
+        #region-main {
+            float: left;
+            .message {
+                .contactselector, .messagearea {
+                    width: 100%;
+                }
+                .messagearea {
+                    border-left: transparent;
+                }
+            }
+        }
+    }
 }
 
 @media (min-width: 768px) and (max-width: 979px) {
@@ -122,48 +132,15 @@
     .row-fluid .desktop-first-column {
         margin-left: 0;
     }
-    #page-mod-quiz-edit .reorder div.question div.content {
-        width: 90%;
-    }
-}
-
-@media (max-width: 979px) {
-    // quiz.less in Essential and mod version.
-    #page-mod-quiz-edit {
-        .questionbankwindow.block {
-            width: 98%;
+    #page-mod-quiz-edit ul.slots {
+        li.section li.activity .activityinstance {
+            width: 80%;
         }
-        div.quizcontents {
-            width: 98%;
-        }
-        #categoryquestions .questiontext {
-            max-width: 80%;
-        }
-        div.question div.content {
-            min-height: 45px;
-            .questiontext {
-                max-width: 60%;
-            }
-            div.questioncontrols {
-                width: 20px;
-                a {
-                    display: block;
-                }
-            }
-            div.points {
-                width: 9.1em;
-                margin-right: 20px;
-            }
-            div.qorder {
-                right: 24px;
-            }
-            .questionname {
-                max-width: 16%;
-            }
+        .activityinstance span.instancename {
+            width: 90%;
         }
     }
 }
-
 
 @media (max-width: 767px) {
     body{
@@ -223,43 +200,30 @@
         display: none;
     }
 
+    // quiz.less in Essential and mod version.
+    #page-mod-quiz-edit ul.slots {
+        li.section li.activity .activityinstance {
+            width: 80%;
+        }
+        .activityinstance span.instancename {
+            width: 70%;
+        }
+    }
+
     // Docked blocks.
     body.has_dock #dockeditempanel .dockeditempanel_content {
         width: 300px;
-    }
-
-    // quiz.less in Essential and mod version.
-    #page-mod-quiz-edit {
-        div.question div.content {
-            .questiontext {
-                max-width: 50%;
-            }
-        }
     }
 }
 
 @media (max-width: 480px) {
     // quiz.less in Essential and mod version.
-    #page-mod-quiz-edit {
-        div.question {
-            div.questioncontainer {
-                background-color: #fff;
-            }
-            div.content {
-                .questionname {
-                    max-width: 16%;
-                }
-                .questiontext {
-                    max-width: 30%;
-                }
-            }
+    #page-mod-quiz-edit ul.slots {
+        li.section li.activity .activityinstance {
+            width: 80%;
         }
-        div.editq div.question div.content {
-            float: none;
-            margin: 0 auto;
-        }
-        #categoryquestions .questiontext {
-            max-width: 70%;
+        .activityinstance span.instancename {
+            width: 40%;
         }
     }
 }
