@@ -246,6 +246,9 @@ Known Issues
 
 History
 =============
+25th February 2015 Version 2.8.2.1
+  1. Fixed 'Arrows still show when editing is on.' - #13.
+
 21st December 2014 Version 2.8.2
   1. Revamped the arrows such that they are always visible.
   2. Arrow and close image size responsive to screen size.
