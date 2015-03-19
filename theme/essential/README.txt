@@ -1,5 +1,5 @@
 The "Essential" Moodle Theme
-======================
+============================
 
 With 2.5 now released Julian thought it time to take the opportunity to build a new theme that would push the new theme engine
 to it's limits a bit. With that in mind he introduced the new "Essential" theme.  Now Julian has left us for Canvassian
@@ -71,7 +71,7 @@ PayPal - Please contact me via my 'Moodle profile' (above) for details as I am a
 
 Flattr - https://flattr.com/profile/gjb2048
 
-Donations may allow me to provide you with more or better features in less time.
+Donations help to facilitate maintenance and allow me to provide you with more and better features.  Without your support the theme cannot be maintained.
 
 Donators
 ========
@@ -164,8 +164,31 @@ It is essential that you provide as much information as possible, the critical i
 'version.php' file.  Other version information such as specific Moodle version, theme name and version also helps.  A screen shot
 can be really useful in visualising the issue along with any files you consider to be relevant.
 
-New in 2.8.1.1 - RC2
-====================
+New in 2.8.1.4
+==============
+- FIX: Social icons when collapsed.
+- FIX: Default user pix as svg in IE.
+- FIX: Issue #466: Forum overflow.
+
+New in 2.8.1.3
+==============
+- FIX  : Adjust quiz report.
+- FIX  : Adjust assignment grading to have blocks underneath for more space.
+- REFIX: Issue #447: Essential overlapping of Admin Settings.
+- FIX  : Issue #459: Messages Screen.
+- FIX  : Issue #461: Missing function errors in 2.8.1.2 - upgrade now site is blank.
+- FIX  : Issue #463: Notification Time Stamp Issue.
+- FIX  : Issue #464: When 'layout' set then message screen is between 768px and 979px is broken.
+- FIX  : Apply MDL-49078.
+
+New in 2.8.1.2
+==============
+- FIX: Incredibly strange regression when changing theme to Essential.
+- FIX: Issue #458: Header logo pushing social icons off header - smaller sized screens.
+- FIX: Issue #460: jQuery instead of $.
+
+New in 2.8.1.1
+==============
 - FIX: Issue #417: M2.8 Mail Settings page needs checking.
 - FIX: Issue #422: Regression from #179 in the core_renderer.php file.
 - FIX: Issue #423: Forum floating buttons.
@@ -175,10 +198,20 @@ New in 2.8.1.1 - RC2
 - FIX: Issue #434: Explain if a logo uploaded then no header title will be shown.
 - FIX: Issue #436: Header background colour setting.
 - FIX: Issue #441: Messages Screen when on mobile ( - 767px ) - background not filling area (region-main).
+- FIX: Issue #447: Essential overlapping of Admin Settings.
+- FIX: Issue #449: Embedded question text alignment.
+- FIX: Issue #450: Undefined variable fontselect in embedded question preview.
+- FIX: Issue #451: Hidden categories not aligning correctly.
+- FIX: Issue #452: Messages Screen when on mobile still not quite correct.
+- FIX: Issue #454: Social icon hover text is odd with 'URL' postfix.
+- FIX: Issue #455: IE9 4096 selector limit.
 - FIX: Apply MDL-46183.
 - FIX: Apply MDL-45930.
 - FIX: Apply MDL-44907.
 - FIX: Improved custom font file detection and serving.
+- FIX: Serving of slide show images when the parent frontpage is used in a child theme.
+- FIX: doctype() warning when debugging.
+- FIX: Misc tweaks I spotted - look at the commit on 22/2/2015 for details.
 - NEW: Issue #428: Add setting to customise header background image.  Thanks to Jerome Charaoui (https://github.com/jcharaoui) for this.
 - NEW: Issue #433: Add a 'This Course' dropdown menu.  Thanks to ActionJONA (https://github.com/ActionJONA) for the ported BCU theme code.
 - NEW: Added 'Essentials' child theme in 'essentials' sub-folder.  To use, read the 'Installation' instructions in 'essentials/README.txt'.
