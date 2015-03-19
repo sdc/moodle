@@ -85,7 +85,7 @@ if (right_to_left()) {
 
 $fontselect = theme_essential_get_setting('fontselect');
 $fontcharacterset = '&subset=latin';
-if(theme_essential_get_setting('fontcharacterset')) {
+if (theme_essential_get_setting('fontcharacterset')) {
     $fontcharacterset = '&subset=latin,'.theme_essential_get_setting('fontcharacterset');
 }
 $headingfont = urlencode(theme_essential_get_setting('fontnameheading'));
@@ -112,7 +112,7 @@ $hasmobileapps = (theme_essential_get_setting('ios') ||
 
 $logoclass = 'ecol12';
 if ($hassocialnetworks || $hasmobileapps) {
-    $logoclass = 'ecol8';
+    $logoclass = 'ecol7';
 }
 
 $oldnavbar = theme_essential_get_setting('oldnavbar');
@@ -120,6 +120,9 @@ $haslogo = theme_essential_get_setting('logo');
 
 /* Group Content */
 $hasboringlayout = theme_essential_get_setting('layout');
+if ($hasboringlayout) {
+    $bodyclasses[] = 'hasboringlayout';
+}
 
 /* Group Report Page Title */
 function essential_report_page_has_title() {
@@ -144,6 +147,7 @@ function essential_has_footer_region() {
     switch ($PAGE->pagetype) {
         case 'admin-plugins':
         case 'course-management':
+        case 'mod-assign-view':
         case 'mod-quiz-edit':
             $hasregion = true;
             break;
