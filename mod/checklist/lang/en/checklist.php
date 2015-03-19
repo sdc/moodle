@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the Checklist plugin for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -78,6 +77,7 @@ $string['completionpercentgroup'] = 'Require checked-off';
 $string['completionpercent'] = 'Percentage of items that should be checked-off:';
 
 $string['configchecklistautoupdate'] = 'Before allowing this you must make a few changes to the core Moodle code, please see mod/checklist/README.txt for details';
+$string['configshowupdateablemymoodle'] = 'If this is checked then only updatable Checklists will be shown from the \'My Moodle\' page';
 $string['configshowcompletemymoodle'] = 'If this is unchecked then completed Checklists will be hidden from the \'My Moodle\' page';
 $string['configshowmymoodle'] = 'If this is unchecked then Checklist activities (with progress bars) will no longer appear on the \'My Moodle\' page';
 
@@ -153,7 +153,7 @@ $string['progress'] = 'Progress';
 
 $string['removeauto'] = 'Remove course module items';
 
-$string['report'] = 'View Progress';
+$string['report'] = 'View progress';
 $string['reporttablesummary'] = 'Table showing the items on the checklist that each student has completed';
 
 $string['requireditem'] = 'This item is required - it must be completed';
@@ -164,6 +164,7 @@ $string['savechecks'] = 'Save';
 
 $string['showcompletemymoodle'] = 'Show completed Checklists on \'My Moodle\' page';
 $string['showfulldetails'] = 'Show full details';
+$string['showupdateablemymoodle'] = 'Show only updatable Checklists on \'My Moodle\' page';
 $string['showmymoodle'] = 'Show Checklists on \'My Moodle\' page';
 $string['showprogressbars'] = 'Show progress bars';
 
