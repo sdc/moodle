@@ -29,7 +29,7 @@ if (empty($PAGE->layout_options['nofooter'])) {
 <!-- Essentials Footer -->
     <footer role="contentinfo" id="page-footer">
         <div class="container-fluid">
-            <?php echo theme_essential_edit_button('theme_essential_footer'); ?>
+            <?php echo $OUTPUT->essential_edit_button('theme_essential_footer'); ?>
             <div class="row-fluid footerblocks">
                 <div class="span4 pull-left">
                     <div class="column">
@@ -60,6 +60,9 @@ if (empty($PAGE->layout_options['nofooter'])) {
             <div class="footerperformance row-fluid">
                 <?php echo $OUTPUT->standard_footer_html(); ?>
             </div>
+            <div class="footercredit row-fluid">
+                <?php echo get_string('credit' ,'theme_essential'); ?><a href="//about.me/gjbarnard" target="_blank">Gareth J Barnard</a>
+            </div>
         </div>
     </footer>
     <a href="#top" class="back-to-top" ><i class="fa fa-angle-up "></i></a>
@@ -67,7 +70,7 @@ if (empty($PAGE->layout_options['nofooter'])) {
     <script type="text/javascript">
         jQuery(document).ready(function () {
             <?php
-            if (theme_essential_not_lte_ie9()) {
+            if ($OUTPUT->theme_essential_not_lte_ie9()) {
               echo "jQuery('#essentialnavbar').affix({";
               echo "offset: {";
               echo "top: $('#page-header').height()";
@@ -77,7 +80,7 @@ if (empty($PAGE->layout_options['nofooter'])) {
                   echo "$('.breadcrumb').jBreadCrumb();";
               }
             }
-            if (theme_essential_get_setting('fitvids')) {
+            if ($OUTPUT->get_setting('fitvids')) {
                 echo "$('#page').fitVids();";
             }
             ?>

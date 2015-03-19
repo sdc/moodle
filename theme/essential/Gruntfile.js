@@ -379,7 +379,20 @@ module.exports = function(grunt) {
                 dest: 'style/essential-rtl.css'
             }
         },
-        cssmin: {
+        bless: {
+            css: {
+                options: {
+                    cacheBuster: true,
+                    compress: true,
+                    logCount: true
+                },
+                files: {
+                    'style/essential_ie9.css': 'style/essential.css',
+                    'style/essential-rtl_ie9.css': 'style/essential-rtl.css'
+                }
+            }
+         },
+         cssmin: {
             essential_p: {
                 files: [{
                     expand: true,
@@ -388,6 +401,13 @@ module.exports = function(grunt) {
                     dest: 'style',
                     ext: '.css'
                 }]
+            }
+        },
+        cssmetrics: {
+            dist: {
+                src: [
+                    'style/*.css'
+                ]
             }
         },
         copy: {
@@ -455,9 +475,11 @@ module.exports = function(grunt) {
     // Load contrib tasks.
     grunt.loadNpmTasks("grunt-contrib-less");
     grunt.loadNpmTasks("grunt-contrib-watch");
+    grunt.loadNpmTasks('grunt-bless');
     grunt.loadNpmTasks("grunt-exec");
     grunt.loadNpmTasks("grunt-text-replace");
     grunt.loadNpmTasks("grunt-css-flip");
+    grunt.loadNpmTasks("grunt-css-metrics");
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-svgmin');
 
@@ -467,10 +489,10 @@ module.exports = function(grunt) {
 
     grunt.registerTask("css", ["less:essential_"+build, "less:editor_"+build, "less:moodle_rtl_"+build, "less:settings_"+build, "less:bootstrap_pix_"+build, "less:moodle_pix_"+build, "less:essential_pix_"+build, "less:fontawesome_"+build, "less:alternative_"+build]);
     if (build == 'd') {
-        grunt.registerTask("compile", ["css", "cssflip:rtl_"+build, "decache"]);
+        grunt.registerTask("compile", ["css", "cssflip:rtl_"+build, "bless", 'cssmetrics', "decache"]);
     } else {
         grunt.loadNpmTasks('grunt-contrib-cssmin');
-        grunt.registerTask("compile", ["css", "cssflip:rtl_"+build, "cssmin:essential_p", "decache"]);
+        grunt.registerTask("compile", ["css", "cssflip:rtl_"+build, "cssmin:essential_p", "bless", 'cssmetrics', "decache"]);
     }
     grunt.registerTask("copy:svg", ["copy:svg_core", "copy:svg_plugins"]);
     grunt.registerTask("replace:svg_colours", ["replace:svg_colours_core", "replace:svg_colours_plugins"]);
