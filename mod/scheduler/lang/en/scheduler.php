@@ -121,7 +121,7 @@ $string['enddate'] = 'Repeat time slots until';
 $string['endtime'] = 'End time';
 $string['exclusive'] = 'Exclusive';
 $string['exclusivity'] = 'Exclusivity';
-$string['exclusivitylockedto'] = 'You cannot change the slot mode when scheduling. The current limit of the destination slot will apply. If the slot is new, a default limit of 1 will apply.';
+$string['exclusivitypositive'] = 'The number of students per slot needs to be 1 or more.';
 $string['exclusivityoverload'] = 'The slot has {$a} appointed students, more than allowed by this setting.';
 $string['explaingeneralconfig'] = 'These options can only be setup at site level and will apply to all schedulers of this Moodle installation.';
 $string['exportinstructions'] = 'You should better save the generated export file on your hard drive before using it.';
@@ -134,6 +134,7 @@ $string['forcourses'] = 'Choose students in courses';
 $string['friday'] = 'Friday';
 $string['generalconfig'] = 'General configuration';
 $string['grade'] = 'Grade';
+$string['gradeingradebook'] = 'Grade in gradebook';
 $string['gradingstrategy'] = 'Grading strategy';
 $string['gradingstrategy_help'] = 'In a scheduler where students can have several appointments, select how grades are aggregated.
     The gradebook can show either <ul><li>the mean grade or</li><li>the maximum grade</li></ul> that the student has achieved.';
@@ -157,7 +158,7 @@ $string['isnonexclusive'] = 'Non-exclusive';
 $string['lengthbreakdown'] = 'By slot duration';
 $string['limited'] = 'Limited ({$a} left)';
 $string['location'] = 'Location';
-$string['markseen'] = 'After you have had an appointment with a student please mark them as "Seen" by clicking the appropriate checkbox in the table above.';
+$string['markseen'] = 'After you have had an appointment with a student please mark them as "Seen" by clicking the checkbox near to their user picture above.';
 $string['markasseennow'] = 'Mark as seen now';
 $string['maxgrade'] = 'Take the highest grade';
 $string['maxstudentsperslot'] = 'Maximum number of students per slot';
@@ -180,7 +181,6 @@ $string['modeoneatatime'] = 'at a time';
 $string['monday'] = 'Monday';
 $string['move'] = 'Change';
 $string['moveslot'] = 'Move slot';
-$string['multiplestudents'] = 'Allow multiple students per slot?';
 $string['myappointments'] = 'My appointments';
 $string['name'] = 'Scheduler name';
 $string['needteachers'] = 'Slots cannot be added as this course has no teachers';
@@ -209,6 +209,7 @@ $string['occurrences'] = 'Occurrences';
 $string['on'] = 'on';
 $string['oneslotadded'] = '1 slot added';
 $string['onthemorningofappointment'] = 'On the morning of the appointment';
+$string['options'] = 'Options';
 $string['otherstudents'] = 'Other participants';
 $string['overall'] = 'Overall';
 $string['overlappings'] = 'Some other slots are overlapping';
@@ -273,6 +274,7 @@ $string['tab-otherappointments'] = 'All appointments of this student';
 $string['tab-otherstudents'] = 'Students in this slot';
 $string['teacher'] = 'Teacher';
 $string['thursday'] = 'Thursday';
+$string['totalgrade'] = 'Total grade';
 $string['tuesday'] = 'Tuesday';
 $string['unattended'] = 'Unattended';
 $string['unlimited'] = 'Unlimited';
@@ -296,6 +298,7 @@ $string['xdaysbefore'] = '{$a} days before slot';
 $string['xweeksbefore'] = '{$a} weeks before slot';
 $string['yourappointmentnote'] = 'Comments for your eyes';
 $string['yourslotnotes'] = 'Comments on the meeting';
+$string['yourtotalgrade'] = 'Your total grade in this activity is <strong>{$a}</strong>.';
 
 
 /* ***********  Help strings from here on ************ */
@@ -328,10 +331,10 @@ $string['choosingslotstart_help']='Change (or choose) the appointment start time
 if this slot replaces all conflicting appointments. Note that the new slot parameters will override all previous
 settings.';
 
-$string['exclusivity_help']='<p>You can set a limit on the amount of students that can apply for a given slot. </p>
-<p>Setting a limit of 1 (default) will toggle the slot in exclusive mode.</p>
-<p>If the slot is set to unlimited number (0), this slot will never be considered in constraints evaluation, even if other slots are exclusive or limited in the same time range.
-</p>';
+$string['exclusivity_help']='<p>You can set a limit on the number of students that can apply for a given slot. </p>
+<p>Setting a limit of 1 (default) will mean that the slot is exclusive to a single student.</p>
+<p>Setting a limit of, e.g., 3  will mean that up to three students can book into the slot.</p>
+<p>If disabled, any number of students can book the slot; it will never be considered "full".</p>';
 
 $string['location_help']='Specify the scheduled location of the meeting.';
 
