@@ -13,13 +13,16 @@ Cool things to know about the theme.
  - It attempts to load as many as possible icons from a font
  - Most of what you think are "graphics" are actually the [Awesome font](http://fortawesome.github.io/Font-Awesome/)
  - The slider on the frontpage of the demo site is completely customisable through theme settings
- - I am really trying to push what [Bootstrap](http://twitter.github.io/bootstrap/) Grids can do. As such the theme is fully responsive.
- - The footer is all custom Moodle regions. This means blocks can be added. The footer of the demo site is full of HTML blocks in this instance
+ - I am really trying to push what [Bootstrap](http://twitter.github.io/bootstrap/) Grids can do. As such the theme is fully
+   responsive.
+ - The footer is all custom Moodle regions. This means blocks can be added. The footer of the demo site is full of HTML blocks in
+   this instance
  - The Theme uses [Google web fonts](http://www.google.com/fonts/) to give it that extra bit of shazam!
  - Social Network icons appear at the top of the page dynamically based on theme settings
  - The entire colour scheme can be modified with theme settings
- - The homepage main area is just a label. The theme will ship with custom classes that you can set for tables and links to modify their formatting.
-   No knowledge of code is needed as you can use the text editor to do this. Documentation will be provided outlining what the additional classes are.
+ - The homepage main area is just a label. The theme will ship with custom classes that you can set for tables and links to modify
+   their formatting.  No knowledge of code is needed as you can use the text editor to do this. Documentation will be provided
+   outlining what the additional classes are.
 
 Original Author
 ===============
@@ -63,35 +66,47 @@ As Essential is licensed under the GNU GPLv3 License it comes with NO support.  
 me then I'm happy to provide it for a fee (please see my contact details above).  Otherwise, the 'Themes' forum:
 moodle.org/mod/forum/view.php?id=46 is an excellent place to ask questions.
 
-Donations
-=========
-This theme is provided to you for free, and if you want to express your gratitude for using this theme, please consider donating by:
+Sponsorships
+============
+This theme is provided to you for free, and if you want to express your gratitude for using this theme, please consider sponsoring
+by:
 
-PayPal - Please contact me via my 'Moodle profile' (above) for details as I am an individual and therefore am unable to have 'donation' / 'buy me now' buttons under their terms.
+PayPal - Please contact me via my 'Moodle profile' (above) for details as I am an individual and therefore am unable to have
+'buy me now' buttons under their terms.
 
 Flattr - https://flattr.com/profile/gjb2048
 
-Donations help to facilitate maintenance and allow me to provide you with more and better features.  Without your support the theme cannot be maintained.
+Sponsorships help to facilitate maintenance and allow me to provide you with more and better features.  Without your support the theme
+cannot be maintained.
 
-Donators
+Sponsors
 ========
-Donations gratefully received with thanks from:
+Sponsorships gratefully received with thanks from:
 Mihai Bojonca, TCM International Institute.
 Guido Hornig, actXcellence http://actxcellence.de
+Delvon Forrester, Esparanza co uk
+iZone
+
+Customisation
+=============
+If you like this theme and would like me to customise it, transpose functionality to another theme or
+build a new theme from scratch, then I offer competitive rates.  Please contact me via 'www.gjbarnard.co.uk/contact/'
+or 'gjbarnard at gmail dot com' or 'about.me/gjbarnard' to discuss your requirements.
 
 Required version of Moodle
 ==========================
-This version works with Moodle version 2014111000.00 release 2.8 (Build: 20141110) and above within the 2.8 branch until the
+This version works with Moodle version 2015051100.00 release 2.9 (Build: 20150511) and above within the 2.9 branch until the
 next release.
 
 Please ensure that your hardware and software complies with 'Requirements' in 'Installing Moodle' on
-'docs.moodle.org/28/en/Installing_Moodle'.
+'docs.moodle.org/29/en/Installing_Moodle'.
 
 Installation
 ============
  1. Ensure you have the version of Moodle as stated above in 'Required version of Moodle'.  This is essential as the
     theme relies on underlying core code that is out of my control.
- 2. Login as an administrator and put Moodle in 'Maintenance Mode' so that there are no users using it bar you as the administrator.
+ 2. Login as an administrator and put Moodle in 'Maintenance Mode' so that there are no users using it bar you as the
+    administrator.
  3. Copy the extracted 'essential' folder to the '/theme/' folder.
  4. Go to 'Site administration' -> 'Notifications' and follow standard the 'plugin' update notification.
  5. Select as the theme for the site.
@@ -101,7 +116,8 @@ Upgrading
 =========
  1. Ensure you have the version of Moodle as stated above in 'Required version of Moodle'.  This is essential as the
     theme relies on underlying core code that is out of my control.
- 2. Login as an administrator and put Moodle in 'Maintenance Mode' so that there are no users using it bar you as the administrator.
+ 2. Login as an administrator and put Moodle in 'Maintenance Mode' so that there are no users using it bar you as the
+    administrator.
  3. Make a backup of your old 'essential' folder in '/theme/' and then delete the folder.
  4. Copy the replacement extracted 'essential' folder to the '/theme/' folder.
  5. Go to 'Site administration' -> 'Notifications' and follow standard the 'plugin' update notification.
@@ -118,27 +134,28 @@ Uninstallation
 
 Downgrading
 ===========
-If for any reason you wish to downgrade to a previous version of the theme (unsupported) then this procedure will inform you of how to
-do so:
+If for any reason you wish to downgrade to a previous version of the theme (unsupported) then this procedure will inform you of how
+to do so:
 1.  Ensure that you have a copy of the existing and older replacement theme files.
-2.  Put Moodle into 'Maintenance mode' under 'Home -> Administration -> Site administration -> Server -> Maintenance mode', so that there
-    are no users using it bar you as the administrator.
+2.  Put Moodle into 'Maintenance mode' under 'Home -> Administration -> Site administration -> Server -> Maintenance mode', so that
+    there are no users using it bar you as the administrator.
 3.  Switch to a core theme, 'Clean' for example, under 'Home -> Administration -> Site administration -> Appearance -> Themes ->
     Theme selector -> Default'.
 4.  In '/theme/' remove the folder 'essential' i.e. ALL of the contents - this is VITAL.
 5.  Put in the replacement 'essential' folder into '/theme/'.
-6.  In the database, remove the row with the 'plugin' of 'theme_essential' and 'name' of 'version' in the 'config_plugins' table, then
-    in the 'config' table find the 'name' with the value 'allversionhash' and clear its 'value' field.  Perform a 'Purge all caches'
-    under 'Home -> Site administration -> Development -> Purge all caches'.
+6.  In the database, remove the row with the 'plugin' of 'theme_essential' and 'name' of 'version' in the 'config_plugins' table,
+    then in the 'config' table find the 'name' with the value 'allversionhash' and clear its 'value' field.  Perform a
+    'Purge all caches' under 'Home -> Site administration -> Development -> Purge all caches'.
 7.  Go back in as an administrator and follow standard the 'plugin' update notification.  If needed, go to
     'Site administration' -> 'Notifications' if this does not happen.
-8.  Switch the theme back to 'Essential' under 'Home -> Administration -> Site administration -> Appearance -> Themes -> Theme selector ->
-    Default'.
+8.  Switch the theme back to 'Essential' under 'Home -> Administration -> Site administration -> Appearance -> Themes ->
+    Theme selector -> Default'.
 9.  Put Moodle out of 'Maintenance mode' under 'Home -> Administration -> Site administration -> Server -> Maintenance mode'.
 
 CSlider
 =======
-The original version of Essential used 'CSlider' - http://tympanus.net/codrops/2012/03/15/parallax-content-slider-with-css3-and-jquery/.
+The original version of Essential used 'CSlider' - 
+  http://tympanus.net/codrops/2012/03/15/parallax-content-slider-with-css3-and-jquery/.
 
 It has been removed because of licencing issues: https://github.com/gjb2048/moodle-theme_essential/issues/61
 
@@ -147,8 +164,14 @@ of or redistributed with the theme.
 
 Videos and FitVids
 ==================
-Essential uses FitVids.js - http://fitvidsjs.com/ - to make embedded videos responsive.  If you do not want this feature for a particular
-video, then please add the class 'fitvidsignore' to the video element.
+Essential uses FitVids.js - http://fitvidsjs.com/ - to make embedded videos responsive.  If you do not want this feature for a
+particular video, then please add the class 'fitvidsignore' to the video element.
+
+WOFF2 Font Support
+==================
+WOFF2 font support will automatically kick in if you are running Moodle 2.8.5+ (Build: 20150313) - 2014111005.01 or above.  If you
+are and the settings do not appear on the font setting page when using 'Custom font' for 'fontselect', then perform a
+'Purge all caches'.
 
 Reporting issues
 ================
@@ -164,11 +187,98 @@ It is essential that you provide as much information as possible, the critical i
 'version.php' file.  Other version information such as specific Moodle version, theme name and version also helps.  A screen shot
 can be really useful in visualising the issue along with any files you consider to be relevant.
 
+New in 2.9.0.6
+==============
+- FIX: Issue #514: Quiz feedback colours are not accessible.
+- FIX: Issue #515: Gradebook Tabs Not Left Justified.
+- FIX: Issue #517: Mobile nav button overflow.
+- FIX: Issue #517: Lesson table padding removed.
+- FIX: #adminsettings h3 colour in alternative colours.
+- FIX: Course drag and drop icon tricky to use.
+- FIX: Action menu hover text colour.
+- FIX: Navbar and dropdown adjustments to make cohesive with alternative colours.
+- FIX: Drag and Drop Image Qtype Drop Zones entry boxes too big.
+- FIX: Quiz navigation block preview icon not FontAwesome instance.
+- FIX: MDL-50869.
+- NEW: MDL-37832.
+- NEW: MDL-50711.
+
+New in 2.9.0.5
+==============
+- FIX: Forum submit area background colour for alternative colours.
+- FIX: More navbar, breadcrumb and block colour fixes.
+- NEW: Added new user preference link to 'Preferences' sub-menu.
+- NEW: Added alternative icon color setting.
+
+New in 2.9.0.4
+==============
+- FIX: Refactored Navbar and menu colours.
+- FIX: Improved CSS font code from Shoehorn.  Now font name only used if files are available when 'Font type selector'
+       is 'Custom font'.  Otherwise reverts to default font name.
+- FIX: Drop down menu colours when not used on a Navbar.
+- NEW: Implemented MDL-50497.
+- NEW: Add Composer support, issues #508 and #513.
+
+New in 2.9.0.3
+==============
+- NEW: Change to autoloaded static toolbox class to reduce duplication and uncertaincy on $OUTPUT being the correct class.
+
+New in 2.9.0.2
+==============
+- FIX: Form header icon repeated.
+- NEW: Implement class autoloading for renderers.
+
+New in 2.9.0.1
+==============
+- NEW: Update icons.
+- NEW: Update quiz LESS.
+- NEW: Update moodle LESS.
+- NEW: Convert jQuery from pluginfile.php to AMD.
+- NEW: Convert carousel to AMD.
+- NEW: Update 'Essentials' child theme for M2.9 changes above.
+
+New in 2.8.1.6
+==============
+- FIX: No 'loginas' URL when logged in as another user, ref: https://moodle.org/mod/forum/discuss.php?d=315453.
+- FIX: More colour adjustments to navigation menus with alternative colours.
+
+New in 2.8.1.5
+==============
+- FIX: Issue #469: Top menu bar message Update notifications messages blank.
+- FIX: Issue #473: Cloze answer fields overflow to the right on mobiles.
+- FIX: Issue #478: Unable to find CSS when themedir set but theme is in default dir.  Thanks to Tyler Bannister.
+- FIX: Issue #479: "This Course" menu only displays on course home page.
+- FIX: Issue #480: Calendar issues.
+- FIX: Issue #481: Drag and drop img handle shown on front page calendar when editing.
+- FIX: Issue #483: Colouring a heading in TinyMCE reverts back to paragraph / body font.
+- FIX: Issue #485: My courses not using correct context for view hidden courses capability.
+- FIX: Issue #490: Availability date selection dropdowns.
+- FIX: Issue #496: Category icons number of courses not shown on front page category list.
+- FIX: Issue #504: Essentials child theme will not inherit parent settings.  Thanks to Brendan Anderson.
+- FIX: Issue #506: Essential Summary error.
+- FIX: Tidy up alternative colours.
+- FIX: Carousel control icons slightly clipped.
+- FIX: Enrol users icon -> FontAwesome one.
+- FIX: Slight tweak to floating headers in gradebook.
+- FIX: Production LESS -> CSS issues when generating 'background:' attributes for colours, resulting in 'background:0 0;'.
+- FIX: Responsive form issues as reported here: https://moodle.org/mod/forum/discuss.php?d=315157.
+- FIX: Alternative colours in dock.
+- FIX: Removed out of date 'bootstrapcdn' setting.
+- NEW: Issue #503: Use Alternate Name in user menu as the main name.  Gratefully funded by Mark Whitington.
+- NEW: Styled 'Exit Activity' link for SCORM activities.
+
 New in 2.8.1.4
 ==============
 - FIX: Social icons when collapsed.
 - FIX: Default user pix as svg in IE.
+- FIX: Print adjustments.
 - FIX: Issue #466: Forum overflow.
+- FIX: Issue #471: Descriptions on profile page truncated.
+- FIX: Issue #475: Popup layout does not get all settings for fonts.php.
+- FIX: Issue #476: Essential hidden category headings.
+- NEW: Updated to FontAwesome 4.3.0 with WOFF2 font support.  Requires 2.8.5+ (Build: 20150313) - 
+       https://moodle.org/mod/forum/discuss.php?d=307270
+- NEW: Dynamic WOFF2 support based upon Moodle version - see: MDL-49074.
 
 New in 2.8.1.3
 ==============
@@ -194,7 +304,8 @@ New in 2.8.1.1
 - FIX: Issue #423: Forum floating buttons.
 - FIX: Issue #425: Copyright date localization.
 - FIX: Issue #429: Front page content area set to "Show before login only" still paritally displays.
-- FIX: Issue #432: Adjusted lang string for 'oldnavbardesc'.  Thanks to Mathieu Pelletier (https://github.com/mkpelletier) for this.
+- FIX: Issue #432: Adjusted lang string for 'oldnavbardesc'.  Thanks to Mathieu Pelletier (https://github.com/mkpelletier) for
+                   this.
 - FIX: Issue #434: Explain if a logo uploaded then no header title will be shown.
 - FIX: Issue #436: Header background colour setting.
 - FIX: Issue #441: Messages Screen when on mobile ( - 767px ) - background not filling area (region-main).
@@ -212,10 +323,13 @@ New in 2.8.1.1
 - FIX: Serving of slide show images when the parent frontpage is used in a child theme.
 - FIX: doctype() warning when debugging.
 - FIX: Misc tweaks I spotted - look at the commit on 22/2/2015 for details.
-- NEW: Issue #428: Add setting to customise header background image.  Thanks to Jerome Charaoui (https://github.com/jcharaoui) for this.
-- NEW: Issue #433: Add a 'This Course' dropdown menu.  Thanks to ActionJONA (https://github.com/ActionJONA) for the ported BCU theme code.
-- NEW: Added 'Essentials' child theme in 'essentials' sub-folder.  To use, read the 'Installation' instructions in 'essentials/README.txt'.
-       The 'essentials' sub-folder is just a place to store and distribute the child theme.  It will NOT be available until you install it.
+- NEW: Issue #428: Add setting to customise header background image.  Thanks to Jerome Charaoui (https://github.com/jcharaoui) for
+                   this.
+- NEW: Issue #433: Add a 'This Course' dropdown menu.  Thanks to ActionJONA (https://github.com/ActionJONA) for the ported BCU
+                   theme code.
+- NEW: Added 'Essentials' child theme in 'essentials' sub-folder.  To use, read the 'Installation' instructions in
+       'essentials/README.txt'.  The 'essentials' sub-folder is just a place to store and distribute the child theme.  It will NOT
+       be available until you install it.
 - NEW: Code refactoring to make child theme creation easier.
 - NEW: LESS refactoring to make future transition to Bootstrap v3 easier.
 
@@ -476,7 +590,8 @@ New in 2.7.4
 - FIX: Issue #85.  Header logo location in RTL.
 - FIX: Reverted icons back to #999.
 - FIX: Alternative colour sets all now have the same CSS, docking fixed and consistent with settings.
-- FIX: Moved all RTL to separate sheet from main CSS.  Sheet 'essential-rtl' uses 'flipped' technology ('grunt-css-flip') whilst 'rtl' sheet has manual styles.
+- FIX: Moved all RTL to separate sheet from main CSS.  Sheet 'essential-rtl' uses 'flipped' technology ('grunt-css-flip') whilst
+       'rtl' sheet has manual styles.
 - FIX: Issue #78.  Category icon issue in RTL.
 - FIX: Issue #90.  XML Editor last used.
 - FIX: Issue #88.  XML editor contrast issues.
@@ -490,9 +605,9 @@ New in 2.7.4
 - NEW: Warning about IE8 as M2.6 does not support it - http://docs.moodle.org/dev/Moodle_2.6_release_notes#Requirements.
 - NEW: If the page width setting is narrow and there are custom menu items the navigation bar and page adjusts to cope.
 - NEW: Optimised colour setting code in lib.php.
-- NOTE: If you are using an RTL language then please read the instructions in the config.php file to swap to the RTL styles manually.  As
-        a code solution to swapping files does not work at the moment and combining all possible CSS into one file leads to a big file with
-        lots of redundant CSS.  This presents problems when it comes to portable devices and bandwidth.
+- NOTE: If you are using an RTL language then please read the instructions in the config.php file to swap to the RTL styles
+        manually.  As a code solution to swapping files does not work at the moment and combining all possible CSS into one file
+        leads to a big file with lots of redundant CSS.  This presents problems when it comes to portable devices and bandwidth.
 
 New in 2.7.3
 ============
@@ -594,7 +709,8 @@ New in 2.5.4
 - iOS home screen icons now built in. Can upload your own via settings.
 - Alerts for users can be added to the frontpage. (Originally dreamed up by Shaun Daubney and re-coded by me).
 - Theme options to connect to Google Analytics.
-- Advanced Google Analytics function allowing Clean URL's for better reporting. Contributed by @basbrands and @ghenrick. More info on this feature can be found in [this blog post](http://www.somerandomthoughts.com/blog/2012/04/18/ireland-uk-moodlemoot-analytics-to-the-front/)
+- Advanced Google Analytics function allowing Clean URL's for better reporting. Contributed by @basbrands and @ghenrick. More info
+  on this feature can be found on http://www.somerandomthoughts.com/blog/2012/04/18/ireland-uk-moodlemoot-analytics-to-the-front/
 - Significantly improved gradebook formatting.
 - Toggle in Theme settings determines if FontAwesome is loaded from the theme or from the netdna.bootstrapcdn.com source.
 - Back to top button for course pages.
@@ -637,7 +753,8 @@ New in  2.5.2
  
 See the theme in Action
 =======================
-A video showing many of the core features is available for viewing at http://vimeo.com/69683774
+A video showing many of the core features is available for viewing at http://vimeo.com/69683774 and
+https://www.youtube.com/watch?v=grhmR5PmWtA
 
 Documentation
 =============

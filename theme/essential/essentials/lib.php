@@ -24,15 +24,22 @@
  */
 
 function theme_essentials_process_css($css, $theme) {
-    // Change to 'true' if you want to use Essential's settings after removing the '$THEME->parents_exclude_sheets' in config.php.
+    /* Change to 'true' if you want to use Essential's settings after removing the '$THEME->parents_exclude_sheets' in config.php.
+       Then to get the alternive colours back, renove the overridden method 'custom_menu_themecolours' in the 'theme_essentials_core_renderer'
+       class in the 'core_renderer.php' file in the 'classes' folder. */
     $usingessentialsettings = false;
 
     if ($usingessentialsettings) {
-        require_once(dirname(__FILE__) . '/../essential/lib.php');
-        $css = theme_essential_process_css($css, $theme);
-    } else {
-        // Set FontAwesome font loading path as we have not excluded the Essential 'style/fontawesome.css' file.
-        $css = theme_essentials_set_fontwww($css);
+        if (file_exists("$CFG->dirroot/theme/essential/lib.php")) {
+            require_once("$CFG->dirroot/theme/essential/lib.php");
+        } else if (!empty($CFG->themedir) and file_exists("$CFG->themedir/essential/lib.php")) {
+            require_once("$CFG->themedir/essential/lib.php");
+        } // else will just fail when cannot find theme_essential_process_css!
+        static $parenttheme;
+        if (empty($parenttheme)) {
+            $parenttheme = theme_config::load('essential'); 
+        }
+        $css = theme_essential_process_css($css, $parenttheme);
     }
 
     // If you have your own settings, then add them here.
@@ -47,15 +54,5 @@ function theme_essentials_set_fontwww($css) {
 
     $tag = '[[setting:fontwww]]';
 
-    if (theme_essential_get_setting('bootstrapcdn')) {
-        $css = str_replace($tag, '//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/fonts/', $css);
-    } else {
-        $css = str_replace($tag, $fontwww, $css);
-    }
     return $css;
-}
-
-function theme_essentials_page_init(moodle_page $page) {
-    require_once(dirname(__FILE__) . '/../essential/lib.php');
-    theme_essential_page_init($page);
 }

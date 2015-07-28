@@ -24,7 +24,17 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$fontselect = $OUTPUT->get_setting('fontselect');
+require_once(\theme_essential\toolbox::get_include_file('additionaljs'));
+$fontselect = \theme_essential\toolbox::get_setting('fontselect');
+if ($fontselect === '2') {
+    $fontcharacterset = '&subset=latin';
+    if (\theme_essential\toolbox::get_setting('fontcharacterset')) {
+        $fontcharacterset = '&subset=latin,'.\theme_essential\toolbox::get_setting('fontcharacterset');
+    }
+    $headingfont = urlencode(\theme_essential\toolbox::get_setting('fontnameheading'));
+    $bodyfont = urlencode(\theme_essential\toolbox::get_setting('fontnamebody'));
+}
+
 echo $OUTPUT->doctype();
 ?>
 <html <?php echo $OUTPUT->htmlattributes(); ?>>
@@ -32,7 +42,7 @@ echo $OUTPUT->doctype();
     <title><?php echo $OUTPUT->page_title(); ?></title>
     <link rel="shortcut icon" href="<?php echo $OUTPUT->favicon(); ?>" />
     <?php 
-    echo $OUTPUT->get_csswww();
+    echo \theme_essential\toolbox::get_csswww();
     echo $OUTPUT->standard_head_html();
     ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
