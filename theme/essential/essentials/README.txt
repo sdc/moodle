@@ -32,23 +32,29 @@ If you make improvements or bug fixes then I would appreciate if you would send 
 https://github.com/gjb2048/moodle-theme_essential and doing a 'Pull Request' so that the rest of the
 Moodle community benefits.
 
-Donations
-=========
-This theme is provided to you for free, and if you want to express your gratitude for using this theme, please consider donating by:
+Sponsoring
+==========
+This theme is provided to you for free, and if you want to express your gratitude for using this theme, please consider sponsoring by:
 
-PayPal - Please contact me via my 'Moodle profile' (above) for details as I am an individual and therefore am unable to have 'donation' / 'buy me now' buttons under their terms.
+PayPal - Please contact me via my 'Moodle profile' (above) for details as I am an individual and therefore am unable to have 'buy me now' buttons under their terms.
 
 Flattr - https://flattr.com/profile/gjb2048
 
-Donations may allow me to provide you with more or better features in less time.
+Sponsorships may allow me to provide you with more or better features in less time.
+
+Customisation
+=============
+If you would like this theme customised or build a new theme from scratch, then I offer competitive rates.
+Please contact me via 'www.gjbarnard.co.uk/contact/' or 'gjbarnard at gmail dot com' or 'about.me/gjbarnard'
+to discuss your requirements.
 
 Required version of Moodle
 ==========================
-This version works with Moodle version 2014111000.00 release 2.8 (Build: 20141110) and above within the 2.8 branch until the
+This version works with Moodle version 2015051100.00 release 2.9 (Build: 20150511) and above within the 2.9 branch until the
 next release.
 
 Please ensure that your hardware and software complies with 'Requirements' in 'Installing Moodle' on
-'docs.moodle.org/28/en/Installing_Moodle'.
+'docs.moodle.org/29/en/Installing_Moodle'.
 
 Installation
 ============
@@ -113,11 +119,7 @@ It is essential that you provide as much information as possible, the critical i
 'version.php' file.  Other version information such as specific Moodle version, theme name and version also helps.  A screen shot
 can be really useful in visualising the issue along with any files you consider to be relevant.
 
-New in 2.8.0.3
-==============
-- UPD: Update layout include code.
-
-New in 2.8.0.1
+New in 2.9.0.1
 ==============
 - NEW: First version.
 

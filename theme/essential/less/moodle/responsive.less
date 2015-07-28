@@ -57,11 +57,9 @@
         text-align: left;
     }
 
-
     .fp-repo-items .fp-navbar {
         border-top: 1px solid rgb(187, 187, 187);
     }
-
 
     .fp-formset div {
         height: auto;
@@ -106,7 +104,6 @@
         padding-left: @horizontalComponentOffset1200;
     }
 
-
     // Core empty block regions.
     .fluid-span (@columns) {
         .fluid-span-full(@columns, @fluidGridColumnWidth1200, @fluidGridGutterWidth1200);
@@ -114,11 +111,11 @@
     .empty-region-side-post.used-region-side-pre, // Post region is empty and pre region is in use.
     .jsenabled.docked-region-side-post.used-region-side-pre { // All post blocks docked and pre region is in use.
         #region-main.span8 {
-            /** increase the span size by 1 **/
+            // Increase the span size by 1.
             .fluid-span(9);
         }
         #block-region-side-pre.span4 {
-            /** decrease the span size by 1 **/
+            // Decrease the span size by 1.
             .fluid-span(3);
         }
     }
@@ -152,11 +149,11 @@
     .empty-region-side-post.used-region-side-pre, // Post region is empty and pre region is in use.
     .jsenabled.docked-region-side-post.used-region-side-pre { // All post blocks docked and pre region is in use.
         #region-main.span8 {
-            /** increase the span size by 1 **/
+            // Increase the span size by 1.
             .fluid-span(9);
         }
         #block-region-side-pre.span4 {
-            /** decrease the span size by 1 **/
+            // Decrease the span size by 1.
             .fluid-span(3);
         }
     }
@@ -275,7 +272,7 @@
 }
 @media (max-width : 767px) {
   .row-fluid .desktop-first-column {
-      clear: right;
+      clear: both;
   }
 }
 // Forms
@@ -352,6 +349,18 @@
     }
     .nav-collapse.active {
         height: auto;
+        .usermenu .moodle-actionmenu[data-enhanced] {
+            .toggle-display {
+                display: none;
+            }
+            .menu {
+                display: block;
+
+                li {
+                    margin: 0 0.5em;
+                }
+            }
+        }
     }
     .path-mod-data .box > table > tbody > tr > td {
         display: block;
@@ -384,12 +393,12 @@
                 // Add padding to first-level links.
                 > li > a {
                     padding-left: 20px;
-                    border-radius: 0px;
+                    border-radius: 0;
                 }
                 .dropdown-menu {
-                    margin: 0px 0px 0px 15px;
+                    margin: 0 0 0 15px;
                     li > a {
-                        border-radius: 0px;
+                        border-radius: 0;
                     }
                 }
             }
@@ -420,7 +429,7 @@
                         }
                         &.open {
                             > a {
-                                background: @navbarBackground;
+                                background-color: @navbarBackground;
                             }
                             > .dropdown-menu,
                             .open > .dropdown-menu {
@@ -429,33 +438,52 @@
                         }
                     }
                 }
+                .divider {
+                    width: auto;
+                    display: block;
+                    height: 0;
+                    margin: 4px 1px;
+                    border-left: 0 none;
+                    border-right: 0 none;
+                    border-top: 1px solid @navbarBorder;
+                    border-bottom: 1px solid @navbarBackgroundHighlight;
+                }
             }
         }
-        &.navbar-inverse {
-            .nav-collapse.active {
-                border-top-color: @navbarInverseBorder;
-                .nav,
-                .nav .dropdown-menu {
-                    .dropdown-submenu {
-                        .dropdown-toggle {
-                            &:after {
-                                border-top-color: @navbarInverseBorder;
-                            }
+    }
+
+    .navbar-inverse {
+        .nav-collapse.active {
+            border-top-color: @navbarInverseBorder;
+            .nav,
+            .nav .dropdown-menu {
+                .dropdown-submenu {
+                    .dropdown-toggle {
+                        &:after {
+                            border-top-color: @navbarInverseBorder;
                         }
+                    }
+                    &.open {
+                        > a {
+                            background-color: @navbarInverseBackground;
+                        }
+                    }
+
+                    &:hover {
                         &.open {
                             > a {
                                 background-color: @navbarInverseBackground;
                             }
                         }
-
-                        &:hover {
-                            &.open {
-                                > a {
-                                    background: @navbarInverseBackground;
-                                }
-                            }
-                        }
                     }
+                }
+                .divider {
+                    width: auto;
+                    display: block;
+                    height: 0;
+                    margin: 4px 1px;
+                    border-top: 1px solid @navbarInverseBackground;
+                    border-bottom: 1px solid lighten(@navbarInverseBackground, 25%);
                 }
             }
         }

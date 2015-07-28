@@ -13,9 +13,20 @@
   }
 }
 
+.breadcrumb-button {
+  a:not(.btn), a:visited:not(.btn) {
+    .btn;
+    .btn-primary;
+  }
+}
+
 /* @end */
 
 /* @group Breadcrumb */
+
+.breadcrumb {
+  background-color: transparent;
+}
 
 .breadcrumb-nav {
   width: 65%;
@@ -40,7 +51,7 @@
     word-wrap: break-word;
     text-overflow: clip;
     margin-top: 0px;
-    background: none;
+    background-color: none;
     li {
       padding: 0 0 0 45px;
       position: relative;
@@ -68,7 +79,7 @@
       display: block;
       width: 0;
       height: 0;
-      border-top: 50px solid transparent; /* Go big on the size, and let overflow hide */
+      border-top: 50px solid transparent; // Go big on the size, and let overflow hide.
       border-bottom: 50px solid transparent;
       position: absolute;
       top: 50%;
@@ -136,7 +147,7 @@
     width: 100%;
     padding: 0px;
     display: block;
-    background: transparent;
+    background-color: transparent;
     overflow: hidden;
     word-wrap: break-word;
     text-overflow: clip;
@@ -182,7 +193,7 @@
   ul.breadcrumb.style3 {
     width: 100%;
     display: block;
-    background: transparent;
+    background-color: transparent;
     padding: 0px;
     overflow: hidden;
     word-wrap: break-word;
@@ -194,7 +205,7 @@
       float: left;
       text-transform: uppercase;
       font-size: 12px;
-      background: transparent;
+      background-color: transparent;
     }
     li:after {
       font-family: FontAwesome;

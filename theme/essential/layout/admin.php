@@ -24,7 +24,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($OUTPUT->get_include_file('header'));
+require_once(\theme_essential\toolbox::get_include_file('additionaljs'));
+require_once(\theme_essential\toolbox::get_include_file('header'));
 
 $footerregion = essential_has_footer_region(); // In pagesettings.php.
 ?>
@@ -49,7 +50,7 @@ $footerregion = essential_has_footer_region(); // In pagesettings.php.
                         <section id="region-main" class="span9 desktop-first-column">
                     <?php }
                             if ($COURSE->id > 1) {
-                                echo $OUTPUT->heading(format_string($COURSE->fullname), 1, 'coursetitle');
+                                echo \theme_essential\toolbox::get_setting(format_string($COURSE->fullname), 1, 'coursetitle');
                                 echo '<div class="bor"></div>';
                             }
                             echo $OUTPUT->course_content_header();
@@ -80,7 +81,7 @@ $footerregion = essential_has_footer_region(); // In pagesettings.php.
     </section>
 </div>
 
-<?php require_once($OUTPUT->get_include_file('footer')); ?>
+<?php require_once(\theme_essential\toolbox::get_include_file('footer')); ?>
 
 </body>
 </html>

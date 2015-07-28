@@ -34,14 +34,14 @@ if (is_siteadmin()) {
     /* Generic Settings */
     $temp = new admin_settingpage('theme_essential_generic', get_string('genericsettings', 'theme_essential'));
 
-    $donate = new moodle_url('http://moodle.org/user/profile.php?id=442195');
-    $donate = html_writer::link($donate, get_string('paypal_click', 'theme_essential'), array('target' => '_blank'));
+    $sponsor = new moodle_url('http://moodle.org/user/profile.php?id=442195');
+    $sponsor = html_writer::link($sponsor, get_string('paypal_click', 'theme_essential'), array('target' => '_blank'));
 
     $flattr = new moodle_url('https://flattr.com/profile/gjb2048');
     $flattr = html_writer::link($flattr, get_string('flattr_click', 'theme_essential'), array('target' => '_blank'));
 
-    $temp->add(new admin_setting_heading('theme_essential_generaldonate', get_string('donate_title', 'theme_essential'),
-        get_string('donate_desc', 'theme_essential').get_string('paypal_desc', 'theme_essential', array('url' => $donate)).get_string('flattr_desc', 'theme_essential', array('url' => $flattr)).get_string('donate_desc2', 'theme_essential')));
+    $temp->add(new admin_setting_heading('theme_essential_generalsponsor', get_string('sponsor_title', 'theme_essential'),
+        get_string('sponsor_desc', 'theme_essential').get_string('paypal_desc', 'theme_essential', array('url' => $sponsor)).get_string('flattr_desc', 'theme_essential', array('url' => $flattr)).get_string('sponsor_desc2', 'theme_essential')));
 
     $temp->add(new admin_setting_heading('theme_essential_generalheading', get_string('generalheadingsub', 'theme_essential'),
         format_text(get_string('generalheadingdesc', 'theme_essential'), FORMAT_MARKDOWN)));
@@ -133,8 +133,8 @@ if (is_siteadmin()) {
 
 
     /* Colour Settings */
-    $temp = new admin_settingpage('theme_essential_color', get_string('colorheading', 'theme_essential'));
-    $temp->add(new admin_setting_heading('theme_essential_color', get_string('colorheadingsub', 'theme_essential'),
+    $temp = new admin_settingpage('theme_essential_colour', get_string('colorheading', 'theme_essential'));
+    $temp->add(new admin_setting_heading('theme_essential_colour', get_string('colorheadingsub', 'theme_essential'),
         format_text(get_string('colordesc', 'theme_essential'), FORMAT_MARKDOWN)));
 
     // Main theme colour setting.
@@ -316,9 +316,29 @@ if (is_siteadmin()) {
 
         // Alternative theme link colour setting.
         $name = 'theme_essential/alternativethemeurlcolor' . $alternativethemenumber;
-        $title = get_string('alternativethemehovercolor', 'theme_essential', $alternativethemenumber);
-        $description = get_string('alternativethemehovercolordesc', 'theme_essential', $alternativethemenumber);
+        $title = get_string('alternativethemeurlcolor', 'theme_essential', $alternativethemenumber);
+        $description = get_string('alternativethemeurlcolordesc', 'theme_essential', $alternativethemenumber);
         $default = $defaultalternativethemecolors[$alternativethemenumber - 1];
+        $previewconfig = null;
+        $setting = new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig);
+        $setting->set_updatedcallback('theme_reset_all_caches');
+        $temp->add($setting);
+
+        // Icon colour setting.
+        $name = 'theme_essential/alternativethemeiconcolor' . $alternativethemenumber;
+        $title = get_string('alternativethemeiconcolor', 'theme_essential', $alternativethemenumber);
+        $description = get_string('alternativethemeiconcolordesc', 'theme_essential', $alternativethemenumber);
+        $default = '#30add1';
+        $previewconfig = null;
+        $setting = new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig);
+        $setting->set_updatedcallback('theme_reset_all_caches');
+        $temp->add($setting);
+
+        // Alternative theme nav colour setting.
+        $name = 'theme_essential/alternativethemenavcolor' . $alternativethemenumber;
+        $title = get_string('alternativethemenavcolor', 'theme_essential', $alternativethemenumber);
+        $description = get_string('alternativethemenavcolordesc', 'theme_essential', $alternativethemenumber);
+        $default = '#ffffff';
         $previewconfig = null;
         $setting = new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig);
         $setting->set_updatedcallback('theme_reset_all_caches');
@@ -711,6 +731,12 @@ if (is_siteadmin()) {
 
     } else if(get_config('theme_essential', 'fontselect') === "3") {
 
+        if (floatval($CFG->version) >= 2014111005.01) { // 2.8.5+ (Build: 20150313) which has MDL-49074 integrated into it.
+            $woff2 = true;
+        } else {
+            $woff2 = false;
+        }
+
         // This is the descriptor for the font files
         $name = 'theme_essential/fontfiles';
         $heading = get_string('fontfiles', 'theme_essential');
@@ -743,13 +769,15 @@ if (is_siteadmin()) {
         $setting->set_updatedcallback('theme_reset_all_caches');
         $temp->add($setting);
 
-        // WOFF2 Font.
-        $name = 'theme_essential/fontfilewofftwoheading';
-        $title = get_string('fontfilewofftwoheading', 'theme_essential');
-        $description = '';
-        $setting = new admin_setting_configstoredfile($name, $title, $description, 'fontfilewofftwoheading');
-        $setting->set_updatedcallback('theme_reset_all_caches');
-        $temp->add($setting);
+        if ($woff2) {
+            // WOFF2 Font.
+            $name = 'theme_essential/fontfilewofftwoheading';
+            $title = get_string('fontfilewofftwoheading', 'theme_essential');
+            $description = '';
+            $setting = new admin_setting_configstoredfile($name, $title, $description, 'fontfilewofftwoheading');
+            $setting->set_updatedcallback('theme_reset_all_caches');
+            $temp->add($setting);
+        }
 
         // EOT Font.
         $name = 'theme_essential/fontfileeotheading';
@@ -792,13 +820,15 @@ if (is_siteadmin()) {
         $setting->set_updatedcallback('theme_reset_all_caches');
         $temp->add($setting);
 
-        // WOFF2 Font.
-        $name = 'theme_essential/fontfilewofftwobody';
-        $title = get_string('fontfilewofftwobody', 'theme_essential');
-        $description = '';
-        $setting = new admin_setting_configstoredfile($name, $title, $description, 'fontfilewofftwobody');
-        $setting->set_updatedcallback('theme_reset_all_caches');
-        $temp->add($setting);
+        if ($woff2) {
+            // WOFF2 Font.
+            $name = 'theme_essential/fontfilewofftwobody';
+            $title = get_string('fontfilewofftwobody', 'theme_essential');
+            $description = '';
+            $setting = new admin_setting_configstoredfile($name, $title, $description, 'fontfilewofftwobody');
+            $setting->set_updatedcallback('theme_reset_all_caches');
+            $temp->add($setting);
+        }
 
         // EOT Font.
         $name = 'theme_essential/fontfileeotbody';
@@ -817,16 +847,7 @@ if (is_siteadmin()) {
         $temp->add($setting);
     }
 
-    // Include Awesome Font from Bootstrapcdn
-    $name = 'theme_essential/bootstrapcdn';
-    $title = get_string('bootstrapcdn', 'theme_essential');
-    $description = get_string('bootstrapcdndesc', 'theme_essential');
-    $setting = new admin_setting_configcheckbox($name, $title, $description, 0);
-    $setting->set_updatedcallback('theme_reset_all_caches');
-    $temp->add($setting);
-
     $ADMIN->add('theme_essential', $temp);
-
 
     /* Footer Settings */
     $temp = new admin_settingpage('theme_essential_footer', get_string('footerheading', 'theme_essential'));

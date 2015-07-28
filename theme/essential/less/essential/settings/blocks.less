@@ -24,17 +24,47 @@
   color: ~"[[setting:themetextcolor]]";
 }
 
-.tree_item.branch {
-  &.branch:before {
-    color: @icon-colour;
+p.tree_item {
+  &.leaf a {
+    > i {
+      color: ~"[[setting:themeiconcolor]]";
+    }
+    &:hover, &:focus {
+      color: ~"[[setting:themehovercolor]]";
+      > i {
+        color: inherit;
+      }
+    }
   }
-  &.emptybranch:before {
-    color: @icon-colour;
+  &.branch {
+    color: ~"[[setting:themeurlcolor]]";
+    &:before {
+      color: ~"[[setting:themeiconcolor]]";
+    }
+    &:hover, &:focus {
+      color: ~"[[setting:themehovercolor]]";
+      &:before {
+        color: inherit;
+      }
+      a {
+        color: inherit;
+      }
+    }
+    &.emptybranch {
+      &:before {
+        color: ~"[[setting:themeiconcolor]]";
+      }
+      &:hover, &:focus {
+        &:before {
+          color: ~"[[setting:themehovercolor]]";
+        }
+      }
+    }
   }
 }
 
 .collapsed .tree_item.branch:before {
-  color: @icon-colour;
+  color: ~"[[setting:themeiconcolor]]";
 }
 
 /* @group Block Icons */

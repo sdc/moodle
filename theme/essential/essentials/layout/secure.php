@@ -23,14 +23,15 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($OUTPUT->get_include_file('pagesettings'));
+require_once(\theme_essential\toolbox::get_include_file('additionaljs'));
+require_once(\theme_essential\toolbox::get_include_file('pagesettings'));
 
 echo $OUTPUT->doctype() ?>
 <html <?php echo $OUTPUT->htmlattributes(); ?>>
 <head>
     <title><?php echo $OUTPUT->page_title(); ?></title>
     <link rel="shortcut icon" href="<?php echo $OUTPUT->favicon(); ?>"/>
-    <?php echo $OUTPUT->get_csswww(); ?>
+    <?php echo \theme_essential\toolbox::get_csswww(); ?>
     <?php echo $OUTPUT->standard_head_html() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -68,7 +69,7 @@ echo $OUTPUT->doctype() ?>
     <script type="text/javascript">
         jQuery(document).ready(function () {
             <?php
-            if ($OUTPUT->theme_essential_not_lte_ie9()) {
+            if (\theme_essential\toolbox::not_lte_ie9()) {
               echo "jQuery('#essentialnavbar').affix({";
               echo "offset: {";
               echo "top: $('#page-header').height()";
@@ -78,7 +79,7 @@ echo $OUTPUT->doctype() ?>
                   echo "$('.breadcrumb').jBreadCrumb();";
               }
             }
-            if ($OUTPUT->get_setting('fitvids')) {
+            if (\theme_essential\toolbox::get_setting('fitvids')) {
                 echo "$('#page').fitVids();";
             }
             ?>
