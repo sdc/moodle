@@ -1,0 +1,148 @@
+/**
+ * Columns Information
+ *
+ * A topic based format that allows the topics to be arranged in columns except 0.
+ * Full installation instructions, code adaptions and credits are included in the 'Readme.txt' file.
+ *
+ * @package    course/format
+ * @subpackage columns
+ * @version    See the value of '$plugin->version' in version.php.
+ * @copyright  &copy; 2012-onwards G J Barnard in respect to modifications of standard topics format.
+ * @author     G J Barnard - gjbarnard at gmail dot com and {@link http://moodle.org/user/profile.php?id=442195}
+ * @author     Based on code originally written by Dan Poltawski.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+.course-content ul.cntopics {
+    margin:0;
+}
+
+.course-content ul.cnlayout {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.course-content ul.cntopics li.section.main, .course-content ul.cntopics li.cnsection {
+    list-style: none;
+    margin: 1px 1px 1px 1px;
+    padding: 0px;
+}
+
+.course-content ul.cntopics li.section.main .content, .course-content ul.cntopics li.cnsection .content {
+    margin: 0 10px;
+    padding: 0px;
+}
+
+.course-content ul.cntopics li.section.main .content .section {
+    margin: 0 0 0 5px;
+    padding: 0px;
+}
+
+/* Left in as MyMobile is now a contributed plugin. */
+#mymobile .course-content ul.cntopics li.cnsection .content, #mymobile .course-content ul.cntopics li.section.main .content{
+    margin: 0;
+}
+
+.course-content ul.cntopics #section-0 .content{
+    padding: 10px;
+}
+
+.course-content ul.cntopics li.section.main .side, .course-content ul.cntopics li.cnsection .side {
+    width: 10px;
+    text-align: center;
+    padding: 0px;
+}
+
+.course-content ul.cntopics li.section .left, .course-content ul.cntopics li.cnsection .left {
+    float:left;
+}
+
+.course-content ul.cntopics li.section.main .left {
+    padding: 10px 0px 0px 0px;
+}
+
+.course-content ul.cntopics li.current.main .right {
+    padding: 0px 0px 0px 0px; /* Cancel out effect of above when having to use 'left' side selector for getting the correct text colour on the right for the current section.  This is because the selector '.course-content .current .left' defines the colour in the theme and therefore any CT specific 'right' implementation would not work for all themes. */
+}
+
+.course-content ul.cntopics li.section .right, .course-content ul.cntopics li.cnsection .right {
+    float:right;
+}
+
+.course-content ul.cntopics li.section .right {
+    line-height: 1.3;
+}
+
+.course-content ul.cntopics li.section .right .cneditsection {
+    float: left;
+}
+
+/* -- Size of the spacer row -- */
+.section .spacer {
+    height:0.5em;
+}
+
+/* Assist the layout. */
+body.format-columns .cntopics .section .activity .mod-indent-outer, 
+body.format-columns.editing.dir-rtl .cntopics .section .activity .mod-indent-outer {
+    padding-left: 0px;
+}
+
+body.format-columns.editing .cntopics .section .activity .mod-indent-outer {
+    padding-left: 32px;
+}
+
+body.format-columns.dir-rtl .cntopics .section .activity .mod-indent-outer {
+    padding-right: 0px;
+}
+
+body.format-columns.editing.dir-rtl .cntopics .section .activity .mod-indent-outer {
+    padding-right: 32px;
+}
+
+body.format-columns .cntopics .section  {
+    margin: 1em 0em;
+}
+
+body.format-columns .course-content ul.cntopics li.section .summary {
+    margin-left: 0px;
+}
+
+body.format-columns.dir-rtl .course-content ul.cntopics li.section .summary {
+    margin-right: 0px;
+}
+
+body.format-columns.editing .section .activity .contentwithoutlink, body.format-columns.editing .section .activity .activityinstance {
+    padding-right: 0px;
+    display: inline;
+}
+
+body.format-columns.editing.dir-rtl .section .activity .contentwithoutlink, body.format-columns.editing.dir-rtl .section .activity .activityinstance {
+    padding-left: 0px;
+}
+
+body.format-columns.editing .section .activity .actions {
+    position: relative;
+}
+
+body.format-columns.editing .moodle-actionmenu ul.menubar {
+    display: none;
+}
+
+body.format-columns.editing.jsenabled .moodle-actionmenu[data-enhance] ul.menubar {
+    display: inline-block;
+}
+
