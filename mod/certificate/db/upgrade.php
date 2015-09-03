@@ -473,7 +473,7 @@ function xmldb_certificate_upgrade($oldversion=0) {
         upgrade_mod_savepoint(true, 2012090901, 'certificate');
     }
 
-    if ($oldversion < 2014051201) {
+    if ($oldversion < 2014081901) {
         // Fix previous upgrades.
 
         $table = new xmldb_table('certificate');
@@ -494,7 +494,7 @@ function xmldb_certificate_upgrade($oldversion=0) {
         $dbman->change_field_default($table, $field);
 
         // Certificate savepoint reached.
-        upgrade_mod_savepoint(true, 2014051201, 'certificate');
+        upgrade_mod_savepoint(true, 2014081901, 'certificate');
     }
 
     return true;
