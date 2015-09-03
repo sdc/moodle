@@ -86,6 +86,7 @@ Mihai Bojonca, TCM International Institute.
 Guido Hornig, actXcellence http://actxcellence.de
 Delvon Forrester, Esparanza co uk
 iZone
+Anis Jradah
 
 Customisation
 =============
@@ -187,12 +188,28 @@ It is essential that you provide as much information as possible, the critical i
 'version.php' file.  Other version information such as specific Moodle version, theme name and version also helps.  A screen shot
 can be really useful in visualising the issue along with any files you consider to be relevant.
 
+New in 2.9.0.7
+==============
+- FIX: Issue #523: Forum grids do not wrap.
+- NEW: Issue #524: MDL-48202.
+- NEW: Issue #525: MDL-46860.
+- NEW: Issue #526: MDL-50533.
+- FIX: Issue #528: Repeated show / hide of custom menu fails when small screen.
+- FIX: Misplaced CSS attribute with no selector.
+- FIX: Removed redundant maintenance selector.
+- FIX: Removed login page selector.
+- FIX: JavaScript tidy up and remove html5shiv support for IE8.
+- FIX: Regression of initital fix for issue 517 whereby dropdown menus cannot be seen over the carousel when screen width is less
+       than the @navbarCollapseWidth, see: https://moodle.org/mod/forum/discuss.php?d=317306#p1272655.
+- NEW: Update to FontAwesome 4.4.0.
+- NEW: Version alert on admin pages if installed on wrong Moodle version as per 'Required version of Moodle' above.
+
 New in 2.9.0.6
 ==============
 - FIX: Issue #514: Quiz feedback colours are not accessible.
 - FIX: Issue #515: Gradebook Tabs Not Left Justified.
 - FIX: Issue #517: Mobile nav button overflow.
-- FIX: Issue #517: Lesson table padding removed.
+- FIX: Issue #518: Lesson table padding removed.
 - FIX: #adminsettings h3 colour in alternative colours.
 - FIX: Course drag and drop icon tricky to use.
 - FIX: Action menu hover text colour.
