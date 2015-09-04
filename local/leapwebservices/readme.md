@@ -19,16 +19,20 @@ This local Moodle plugin has it's own repository located at [github.com/sdc/mood
 
 ## Moodle versions
 
-This plugin has been written to work with South Devon College's currently-in-production version of Moodle, which at this time is 2.7, but has been working in production with 2.6 and 2.5. This plugin also works in Moodle 2.4 except the `get_users_by_username` function, which requires a function not found in Moodle 2.4 or earlier.
+This plugin works with Moodle version 2.4 (build 2012120300) or later, but please read the following:
+
+This plugin has been written to work with South Devon College's currently-in-production version of Moodle, which at this time is 2.9. This plugin still works in Moodle 2.4 except the `get_users_by_username` function, which requires a function not found in Moodle 2.4 or earlier.
 
 The badges functions `get_users_with_badges` and `get_badges_by_username` should work with any version of Moodle in which badges are found (2.5 onward) but have not been tested in versions earlier than 2.7.
 
-Earlier versions (2.0 to 2.3) have not been exhaustively tested with this plugin.
+Earlier versions (2.0 to 2.3) have not been tested with this plugin.
+
+Moodle 2.7 is a long-term support version and is being supported for security issues until May 2017, twice as long as other Moodle releases: [docs.moodle.org/dev/Releases#Moodle_2.7](https://docs.moodle.org/dev/Releases#Moodle_2.7). As such we will ensure this plugin remains working on Moodle 2.7 (alongside whichever version of Moodle South Devon College are using in production) until this time.
 
 
 ## Licence
 
-Copyright &copy; 2011-2014 South Devon College.
+Copyright &copy; 2011-2015 South Devon College.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -65,11 +69,13 @@ Before installation, please check you have the following files and structure:
 
 ## Configuration
 
-(**Note:** This guide has been written using Moodle 2.5, and added to over time using Moodles 2.6 and 2.7. If you are using a different version of Moodle, your mileage may vary.)
+(**Note:** This guide has been written using Moodle 2.4, and added to over time using every released version of Moodle.  It has been most recently edited to take into account changes in Moodle 2.9, and any changes have been marked as such.  (Any changes in Moodle 2.7 will be similarly marked.)  If you are using a different version of Moodle, your mileage may vary.)
 
 This plugin has no configuration itself, however your Moodle installation will require configuration to correctly use web services. 
 
 1.  Log in to your Moodle as administrator. Click on **Administration (block) &rarr; Site Administration &rarr; Plugins &rarr; Web services &rarr; Overview**.
+
+    We are specifically concerned with links and information in the section titled **Allow an external system to control Moodle**.
 
     (**Note:** *This page shows an overview of Moodle's current web service configuration. You may wish to keep this page open, and open any links in a new tab or window, refreshing this page on your return.*)
 
@@ -89,7 +95,7 @@ This plugin has no configuration itself, however your Moodle installation will r
 
 5.  Create a new role ("web services") with appropriate protocol capabilities allowed (**webservice/rest:use**). Click on **Administration (block) &rarr; Site Administration &rarr; Users &rarr; Permissions &rarr; Define roles**, and click on **Add role**.
 
-    **TODO: This has changed slightly in Moodle 2.7, with the addition of an extra step (page) and some expanded options. Edit and amend appropriately.**
+    **Moodle 2.7:** In Moodle 2.7 you are presented with a page with the option *Use role or archetype* and some others, which you do not get in Moodle 2.6. Simply ignore these options and click **Continue**.
 
     Type in a relevant short (internal) name and a full (human readable) name, as well as a description (will only be seen by admins).  Ignore *Role archetype*. Check only the **system** check box. Search for and **allow** the following capabilities:
 
@@ -126,21 +132,23 @@ This plugin has no configuration itself, however your Moodle installation will r
 
     (**Note:** the best way is to use your web browser's search feature and search for the text exactly as it appears: it will get you to the exact capability or very close.)
 
-6.  Assign the new *web services role* to the *web services user* as a system role: click on **Administration (block) &rarr; Site Administration &rarr; Users &rarr; Permissions &rarr; Assign system roles**.  Click on *webservices* (or whatever you have named your new role), then search in the box on the right for the new *Leap user*, then **add** the new user so the name appears in the box on the right.  It should be the only name in that box.  Return to the **Web services &rarr; Overview** screen.
+6.  Assign the new *web services role* to the *web services user* as a system role: click on **Administration (block) &rarr; Site Administration &rarr; Users &rarr; Permissions &rarr; Assign system roles**.  Click on *webservices* (or whatever you have named your new role), then search in the box on the right for the new *Leap user*, then **add** the new user so the name appears in the box on the left.  It should be the only name in that box.  Return to the **Web services &rarr; Overview** screen.
 
 7.  Click **4. Check user capability**.  Search for the user just created, then click on the name, then click **Show this user's permissions**.
 
-    The results page should show the user as assigned to the *web service* role (what appears on-screen will be whatever you called the web service) and *authenticated user* in *system* context.
+    The results page should show the user as assigned to the *web service* role (what appears on-screen will be whatever you called the web service) in *system* context, and *authenticated user* in *system* context.
 
     Check that the list of capabilities in *5, above*, is set to **yes** (possibly highlighted in green, depending on your theme).  When done, return to the **Web services &rarr; Overview** screen.
 
 8.  Click **5. Select a service**.  In the **Built-in services** section you should see an entry for *Leap*, and probably also an entry for the *Moodle mobile web service*, which will be greyed out if this is not turned on via the checkbox at the top of the page. (*Moodle mobile web services* are not required to be turned on for Leap web services to work.)
 
-    **TODO: This has changed slightly in Moodle 2.7: the list of authorised users did not show the already-authorised Leap User. Double-check this is not a bug or mistake following this procedure, and then edit and amend appropriately.**
+    Clicking on **Authorised users** next to *Leap* will show you a list of users authorised to use the Leap web services. 
 
-    Clicking on **Authorised users** next to *Leap* will show you a list of users authorised to use the Leap web services. It should show only the user you have assigned, but at the bottom of the page is a section titled **Change settings for the authorised users**: if there are any problems with the assigned user (lacking a particular context) they will be listed here in orange, and will need to be fixed before progressing further. Clicking on the user's name or email address will show some further security options, such as *IP restriction* (so a user can access the web service only from one or a range of IP addresses, blank by default) and a *Valid until* date when the access will cease (off by default). If you change any settings here, click **Update** to save them.
+    In the box on the right, **search for and click on** the name of the "Leap user" you created in step 4 (ours is, literally, "Leap User"), then **add** the new user so the name appears in the box on the left.
 
-    Clicking the **Edit** button allows you to rename the web service (not recommended) and enable/disable the service. It is enabled as default.
+    At the bottom of the page is a section titled **Change settings for the authorised users**: if there are any problems with the assigned user (for example, the user lacks a required context) they will be listed here in orange, and will need to be fixed before progressing further. Clicking on the user's name or email address will show some further security options, such as *IP restriction* (so a user can access the web service only from one or a range of IP addresses, blank by default) and a *Valid until* date when the access will cease (off by default). If you change any settings here, click **Update** to save them.
+
+    Back on the *External Services* page, clicking the **Edit** button next to Leap allows you to rename the web service (not recommended) and enable/disable the service. It is enabled as default.
 
     When done, return to the **Web services &rarr; Overview** screen.
 
@@ -148,11 +156,7 @@ This plugin has no configuration itself, however your Moodle installation will r
 
 10. Click **8. Create a token for a user**.
 
-    **TODO: This first step has changed slightly in Moodle 2.7: instead of typing in the name of a user, you can choose from a list. Edit and amend appropriately.**
-
-    In the *Username / user id*  box, type in the exact username of the user created / selected in **step 4**, above.  This is a required field.
-
-    (**Note:** For us, our authentication system [Shibboleth](http://shibboleth.net/) uses usernames in the form of an email address (e.g. username@example.com) but your system may be different and will most likely use only the *username* part.)
+    In the box, **search for and click on** the name of the "Leap user" you created in step 4. 
 
     Select *Leap* from the *Service* drop-down list, if it is not already chosen. (If you have Moodle mobile web services enabled, then they will appear also and I believe are the default option.) This is also a required option.
 
@@ -162,7 +166,7 @@ This plugin has no configuration itself, however your Moodle installation will r
 
     Click **Save changes** when done. You will be taken back to the **Manage tokens** screen, which will now show an alphanumeric token next to the name of your user. Your token will look something like *a180245560982a0e48e43577238c0198*. Treat this token like a password, keeping it secret and known only to those who absolutely need it, as anyone who has this token potentially has full access to all the webservices you selected earlier.
 
-    (**Note:** This admin screen, and therefore the token, is available to anyone who is an *Administrator* on your Moodle.)
+    **Note:** If you ever need to see tokens for authorised users, click on **Administration (block) &rarr; Site Administration &rarr; Plugins &rarr; Web Services &rarr; Manage Tokens**. This admin screen, and therefore all tokens, are available to anyone who is an *Administrator* on your Moodle.
 
     When done, return to the **Web services &rarr; Overview** screen.
 
@@ -174,9 +178,9 @@ This plugin has no configuration itself, however your Moodle installation will r
 
     Log in to your **Leap** installation as an administrative user.  Click on the **Admin** dropdown menu at the top on the right, next to your name. If you cannot see this menu, you do not have administrative rights on your Leap installation.  Select **Settings**.
     
-    Scroll down the screen until you see a section called **Old settings**. (This may change in the future as the settings aspect of Leap is improved.)  Find a field called **Moodle token** and paste into this field the token Moodle generated in step 10, above.
+    Scroll down the screen until you see a section called **Moodle Integration**. Find a field in this section called **Moodle token** and paste into this field the token Moodle generated in step 10, above.
     
-    Scroll down and click *Save changes*.
+    Scroll down to the bottom of the page and click *Save changes*.
     
     Accessing any student's information on Leap should now also show all courses they are enrolled on in Moodle.
 
@@ -608,6 +612,7 @@ The above query should return the following data structure (data for example pur
     * details_link - full URL to the badge details page on Moodle
     * image_url - full URL to the image
     * name - badge name
+    * leapcore - which kind of Leap tracker this course is tagged with (in the new Leap block).
 
 Use a URL with the following format:
 
@@ -641,6 +646,9 @@ The above query should return the following data structure (data for example pur
           <KEY name="name">
             <VALUE>Achievement Get: Logging In</VALUE>
           </KEY>
+          <KEY name="leapcore">
+            <VALUE>ppd</VALUE>
+          </KEY>
         </SINGLE>
         <SINGLE>
           <KEY name="course_id">
@@ -660,6 +668,9 @@ The above query should return the following data structure (data for example pur
           </KEY>
           <KEY name="name">
             <VALUE>Creeperlicious</VALUE>
+          </KEY>
+          <KEY name="leapcore">
+            <VALUE>maths</VALUE>
           </KEY>
         </SINGLE>
       </MULTIPLE>
@@ -758,11 +769,13 @@ The above query should return the following data structure, which is identical t
 
 ## To Do
 
-* After the 2.7 upgrade, check and test all web services thoroughly on a fresh 2.7 instance, rewriting the documentation if necessary.
+* After the 2.9 upgrade, check and test all web services thoroughly on a fresh 2.9 instance, rewriting the documentation if necessary.
 
 
 ## History
 
+* 2015-06-25, v0.8.4: Change to webservice 'get_badges_by_username': added 'leapcore' flag from course Leap block instance configuration. Added dependency to new Leap block.
+* 2015-02-05, v0.8.3: Documentation update; added Moodle 2.4 (2012120300) as a minimum requirement.
 * 2014-11-24, v0.8.2: Look for a non-zero 'display' variable for a course and if found, use that to format the output.
 * 2014-11-20, v0.8.1: If a course completion has happened, check it's time against the course's timemodified and if newer, update.
 * 2014-11-19, v0.8.0: Added course completion details (total/complete) to get_targets_by_username webservice.
