@@ -188,12 +188,32 @@ It is essential that you provide as much information as possible, the critical i
 'version.php' file.  Other version information such as specific Moodle version, theme name and version also helps.  A screen shot
 can be really useful in visualising the issue along with any files you consider to be relevant.
 
+New in 2.9.0.8
+==============
+- FIX: Issue #529: Divider does not show.
+- FIX: MDL-42634.
+- FIX: MDL-50323.
+- FIX: MDL-51194.
+- FIX: MDL-51229.
+- FIX: Issue #520: Alternative carousel colours not working.
+- FIX: Issue #535: Group mode icons not different.
+- NEW: Issue #533: PIWIK Analytics and IP addresses.
+- NEW: Improved PIWIK document title.
+- NEW: Reduced size of floating button area.
+- NEW: Added slider caption opacity when 'on top' slide caption option.
+- UPD: Issue #530: Essential Custom Menu Hamburger Behaviour - Unable to fix, help wanted.
+- UPD: Updated bootstrap.js such that all modules are included as discovered that 'modals' were missing.
+- UPD: Tidy up icon colours and in alternatives.
+- UPD: Changed course icon to colourable Font Awesome alternative.
+- UPD: Refactor marketing spot settings in settings.php.
+
 New in 2.9.0.7
 ==============
 - FIX: Issue #523: Forum grids do not wrap.
 - NEW: Issue #524: MDL-48202.
 - NEW: Issue #525: MDL-46860.
 - NEW: Issue #526: MDL-50533.
+- FIX: Issue #527: ###### are not converted to dividers.
 - FIX: Issue #528: Repeated show / hide of custom menu fails when small screen.
 - FIX: Misplaced CSS attribute with no selector.
 - FIX: Removed redundant maintenance selector.

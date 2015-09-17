@@ -200,6 +200,9 @@ p.tree_item.branch.emptybranch:focus:before {
   color: [[setting:themecolor]];
   background-color: [[setting:themehovercolor]];
 }
+.breadcrumb-button i {
+  color: inherit;
+}
 /* @end */
 /* @group Breadcrumb */
 .breadcrumb-nav {
@@ -255,14 +258,14 @@ ul.breadcrumb.style2 li a:hover {
 /* @end */
 /* @group Carousel */
 #essentialCarousel.carousel .carousel-inner .carousel-caption {
-  background-color: [[setting:carouselcolor]];
+  background-color: [[setting:slidecaptionbackgroundcolor]];
 }
 #essentialCarousel.carousel .carousel-inner .carousel-caption .carousel-caption-inner {
   max-width: [[setting:pagewidth]];
 }
 #essentialCarousel.carousel .carousel-inner .carousel-caption h4,
 #essentialCarousel.carousel .carousel-inner .carousel-caption p {
-  color: [[setting:slidecolor]];
+  color: [[setting:slidecaptiontextcolor]];
 }
 #essentialCarousel.carousel .carousel-control {
   color: [[setting:slidebuttoncolor]];
@@ -271,14 +274,18 @@ ul.breadcrumb.style2 li a:hover {
 #essentialCarousel.carousel .carousel-control:focus {
   color: [[setting:slidebuttonhovercolor]];
 }
+#essentialCarousel.carousel .carousel-control:hover i,
+#essentialCarousel.carousel .carousel-control:focus i {
+  color: [[setting:slidebuttonhovercolor]];
+}
 #essentialCarousel.carousel .carousel-indicators {
-  box-shadow: 0px 0px 8px [[setting:carouselcolor]];
+  box-shadow: 0px 0px 8px [[setting:slidebuttoncolor]];
 }
 #essentialCarousel.carousel .carousel-indicators li {
-  background-color: [[setting:carouselcolor]];
+  background-color: [[setting:slidebuttoncolor]];
 }
 #essentialCarousel.carousel .carousel-indicators .active {
-  background-color: [[setting:carouselactivecolor]];
+  background-color: [[setting:slidebuttonhovercolor]];
 }
 /* @end */
 /*
@@ -612,6 +619,10 @@ input[type="color"],
     color: [[setting:themenavcolor]];
     background-color: [[setting:themecolor]];
   }
+  .navbar .navbar-inner .nav-collapse .nav > li.dropdown ul.dropdown-menu > li > a:hover .fa,
+  .navbar .navbar-inner .nav-collapse .nav > li.dropdown ul.dropdown-menu > li > a.open .fa {
+    color: inherit;
+  }
   .navbar .navbar-inner .nav-collapse .nav li.dropdown ul.dropdown-menu {
     background-color: [[setting:themenavcolor]];
     color: [[setting:themecolor]];
@@ -631,6 +642,12 @@ body {
   background-attachment: [[setting:backgroundattach]];
   background-repeat: [[setting:backgroundrepeat]];
   background-size: [[setting:backgroundsize]];
+}
+body i {
+  color: [[setting:themeiconcolor]];
+}
+body i:hover {
+  color: [[setting:themehovercolor]];
 }
 .container-fluid {
   max-width: [[setting:pagewidth]];
@@ -658,6 +675,9 @@ a:before {
   color: [[setting:themeiconcolor]];
   display: inline-block;
   text-decoration: none;
+}
+a:before:hover {
+  color: [[setting:themehovercolor]];
 }
 .color {
   color: [[setting:themecolor]];
@@ -1053,3 +1073,4 @@ body {
 }
 /* @end Scrollbar */
 /* @end Custom */
+/*# sourceMappingURL=/theme/essential/style/essential-settings.treasure.map */
