@@ -49,12 +49,16 @@
                 vertical-align: top;
                 float: left;
                 clear: both;
+                width: 100%;
             }
-            &[shown~="yes"] {
-                overflow-y: visible;
+            &.collapse.in[style*="height: auto"] {
+                min-height: 768px;
+                //overflow: visible;  // Definitely killing the complete() function (line: 157 in bootstrap.js) being fired at the end of the transition.
             }
-            &[shown~="no"] {
-                overflow-y: hidden;
+            &.in .nav {
+                .divider {
+                    width: 100%;
+                }
             }
             .nav > li > a {
                 margin-bottom: 0px;
@@ -99,6 +103,7 @@
             }
         }
     }
+
     #page-message-index {
         #region-main {
             float: left;
