@@ -18,19 +18,19 @@
  * Link to SDC Tools admin page
  *
  * @package    tool_sdctools
- * @copyright  2013 Paul Vaughan {@link http://commoodle.southdevon.ac.uk}
+ * @copyright  2013-2015 Paul Vaughan {@link http://commoodle.southdevon.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+defined( 'MOODLE_INTERNAL' ) || die;
 
 // Define the variable for the 'off' state. 'Off' is defined as "Sat, 21 Mar 2037 01:35:21 GMT".
-define('BACKUPOFF_TIME', 2121212121);
+define( 'BACKUPOFF_TIME', 2121212121 );
 
 /**
  * Draw a common table of contents.
  */
-function sdctools_tableofcontents($highlight = false) {
+function sdctools_tableofcontents( $highlight = false ) {
     global $OUTPUT;
 
     $out = '<ul>';
@@ -69,12 +69,22 @@ function sdctools_tableofcontents($highlight = false) {
     }
     $out .= ' ('.$pre.html_writer::link(new moodle_url('coursereports.php', array('pictures' => 1)), get_string('coursereportspictures', 'tool_sdctools')).$suf.')</li>';
 
+    // Course code search in the Leap block.
     $pre = $suf = '';
-    if ( $highlight == strtolower( 'leapcorereport' ) ) {
+    if ( $highlight == strtolower( 'leapblockcoursecodes' ) ) {
         $pre = '<strong>';
         $suf = '</strong>';
     }
-    $out .= '<li>'.$pre.html_writer::link(new moodle_url('leapcorereport.php'), get_string('leapcorereport', 'tool_sdctools')).$suf.'</li>';
+    $out .= '<li>'.$pre.html_writer::link(new moodle_url('leapblockcoursecodes.php'), get_string('leapblockcoursecodes', 'tool_sdctools')).$suf.'</li>';
+
+    $out .= '<li>' . html_writer::link( new moodle_url('leapcorereport.php'), get_string('leapcorereport', 'tool_sdctools') . ' (deprecated)', array( 'class' => 'dimmed' ) ) . '</li>';
+
+    $pre = $suf = '';
+    if ( $highlight == strtolower( 'leapchecks' ) ) {
+        $pre = '<strong>';
+        $suf = '</strong>';
+    }
+    $out .= '<li>' . $pre . html_writer::link( new moodle_url( 'leapchecks.php' ), get_string( 'leapchecks', 'tool_sdctools' ) ) . $suf . '</li>';
 
     $pre = $suf = '';
     if ( $highlight == strtolower( 'backuptoggle' ) ) {

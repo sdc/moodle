@@ -22,37 +22,109 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define('NO_OUTPUT_BUFFERING', true);
+define( 'NO_OUTPUT_BUFFERING', true );
 
-require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
-require_once($CFG->dirroot.'/course/lib.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once( dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/config.php' );
+require_once( $CFG->dirroot . '/course/lib.php');
+require_once( $CFG->libdir . '/adminlib.php');
 
-require_once('locallib.php');
+require_once( 'locallib.php' );
 
-admin_externalpage_setup('toolsdctoolscourse');
+admin_externalpage_setup( 'toolsdctoolscourse' );
 
-$cid = optional_param('id', 0, PARAM_INT);
-$pictures = optional_param('pictures', 0, PARAM_INT);
+//$cid = optional_param( 'id', 0, PARAM_INT );
+//$pictures = optional_param( 'pictures', 0, PARAM_INT );
+//$cc = optional_param( 'coursecode', '', PARAM_ALPHANUM );
 
-if (empty($CFG->loginhttps)) {
-    $securewwwroot = $CFG->wwwroot;
-} else {
-    $securewwwroot = str_replace('http:', 'https:', $CFG->wwwroot);
-}
+$securewwwroot = ( empty( $CFG->loginhttps ) ) ? $CFG->wwwroot : str_replace( 'http:', 'https:', $CFG->wwwroot );
 
 echo $OUTPUT->header();
+echo $OUTPUT->heading( get_string( 'pageheader', 'tool_sdctools' ) );
 
-echo $OUTPUT->heading(get_string('pageheader', 'tool_sdctools'));
+echo sdctools_tableofcontents( 'leapblockcoursecodes' );
 
-if ($pictures) {
-    echo sdctools_tableofcontents('coursereports_pictures');
-} else {
-    echo sdctools_tableofcontents('coursereports');
+echo $OUTPUT->box_start();
+echo $OUTPUT->heading( get_string( 'leapblockcoursecodes', 'tool_sdctools' ) );
+
+// Iterate through every course in the database, checking for a Leap block (checking it's installed
+// first?) and extracting the course codes out of it.
+
+// Get all courses.
+$courses = $DB->get_records( 'course', null, 'id ASC', 'id,shortname,fullname' );
+$courses_num = count( $courses );
+
+// Iterate through each course.
+foreach ( $courses as $course ) {
+    
+    if ( $course->id == 1 ) {
+        continue;
+    }
+
+    //echo '<h3>' . $course->fullname . ' (' . number_format( $course->id ) . ')</h3>';
+    echo '<h3>' . $course->fullname . ' (' . html_writer::link(new moodle_url( '/course/view.php', array( 'id' => $course->id ) ), number_format( $course->id ) ) . ')</h3>';
+
+    $coursecontext = context_course::instance( $course->id );
+    if ( !$blockrecord = $DB->get_record( 'block_instances', array( 'blockname' => 'leap', 'parentcontextid' => $coursecontext->id ) ) ) {
+        echo '<p>No Leap block found for course "' . $course->id . '" (' . $course->shortname . ').</p>';
+        continue;
+    }
+
+    if ( !$blockinstance = block_instance( 'leap', $blockrecord ) ) {
+        echo '<p>No Leap block instance found for course "' . $course->id . '" (' . $course->shortname . ').</p>';
+        continue;
+    }
+
+    // Tracker setting, if set.
+    if ( isset( $blockinstance->config->trackertype ) && !empty( $blockinstance->config->trackertype ) ) {
+        $gt = $blockinstance->config->trackertype;
+        if ( $gt == 'english' || $gt == 'maths' || $gt == 'core' || $gt == 'test' ) {
+            $gt = ucfirst( $gt );
+        } else if ( $gt == 'ppd' ) {
+            $gt = strtoupper( $gt );
+        }
+        echo '<p>Grade Tracker type found: ' . $gt . '.</p>' . "\n";
+    }
+
+    // Course codes, if set, warning if not.
+    if ( isset( $blockinstance->config->coursecodes ) && !empty( $blockinstance->config->coursecodes ) ) {
+        echo '<p>Course codes found:</p>' . "\n";
+        $codes = explode( ',', $blockinstance->config->coursecodes );
+        foreach ( $codes as $key => $value ) {
+            $codes[ $key ] = strtoupper( trim( $value ) );
+        }
+        sort( $codes );
+
+        echo '<ul>';
+        foreach ( $codes as $code ) {
+            echo '<li>' . $code . '</li>';
+        }
+        echo '</ul>';
+
+    } else {
+        echo '<p>No course codes found. This is probably an oversight...</p>';
+    }
+
+
+
 }
 
-/* If we have a course ID, print a nice report about that course. */
-if ($cid) {
+
+
+
+
+
+
+
+
+
+
+echo $OUTPUT->box_end();
+
+echo $OUTPUT->footer();
+
+/*
+// If we have a course code, go search for it.
+if ( isset( $cc ) && !empty( $cc ) ) {
 
     // If that course ID is -1 or -2, loop through ALL courses in different orders.
     $allcid = array();
@@ -347,59 +419,7 @@ if ($cid) {
     // $_SERVER["REQUEST_TIME_FLOAT"] is only available in PHP 5.4 and newer.
     echo '<p>Report took '.(microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"]).' seconds to generate.</p>';
 
-} else { // If we don't have the $cid, print a nice form.
-
-    if ($ccc = $DB->get_records('course', null, 'fullname', 'id, shortname, fullname, category')) {
-        foreach ($ccc as $cc) {
-            if ($cc->category) {
-                $courses[$cc->id] = format_string(get_course_display_name_for_list($cc));
-            } else {
-                $courses[$cc->id] = format_string($cc->fullname) . ' ('.get_string('site').')';
-            }
-        }
-    }
-
-    // Courses in alphanumeric order by name.
-    $coursesalpha = $courses;
-    asort($coursesalpha);
-    $coursesalpha = array(0 => get_string('select').'...', -1 => get_string('fulllistofcourses')) + sdctools_idprefix($coursesalpha);
-
-    // Courses in numeric order by course ID.
-    $coursesnumeric = sdctools_idprefix($courses);
-    ksort($coursesnumeric);
-    $coursesnumeric = array(0 => get_string('select').'...', -2 => get_string('fulllistofcourses')) + $coursesnumeric;
-
-    unset($courses);
-
-    // Choose a course from a list in course name order.
-    echo $OUTPUT->box_start();
-    echo $OUTPUT->heading(get_string('coursereportname', 'tool_sdctools'));
-    echo '<p>'.get_string('timewarning', 'tool_sdctools').'</p>';
-    if ($pictures) {
-        echo '<p>'.get_string('picturewarning', 'tool_sdctools').'</p>';
-    }
-    echo '<p>'.get_string('byname', 'tool_sdctools').'</p>';
-    echo '<form class="courseselectalphaform" action="coursereports.php" method="get">'."\n";
-    echo "  <div>\n";
-    echo html_writer::label(get_string('selectacourse'), 'menuid', false, array('class' => 'accesshide'));
-    echo html_writer::select($coursesalpha, 'id', $cid, false);
-    echo '  <input type="hidden" name="pictures" value="'.$pictures.'">';
-    echo '  <input type="submit" value="'.get_string('getcoursereport', 'tool_sdctools').'">';
-    echo '  </div>';
-    echo '</form>';
-
-    // Choose a course from a list in course name order.
-    echo '<p>&nbsp;</p><p>'.get_string('byid', 'tool_sdctools').'</p>';
-    echo '<form class="courseselectnumericform" action="coursereports.php" method="get">'."\n";
-    echo "  <div>\n";
-    echo html_writer::label(get_string('selectacourse'), 'menuid', false, array('class' => 'accesshide'));
-    echo html_writer::select($coursesnumeric, 'id', $cid, false);
-    echo '  <input type="hidden" name="pictures" value="'.$pictures.'">';
-    echo '  <input type="submit" value="'.get_string('getcoursereport', 'tool_sdctools').'">';
-    echo '  </div>';
-    echo '</form>';
-    echo $OUTPUT->box_end();
 
 } // end if $cid
 
-echo $OUTPUT->footer();
+*/
