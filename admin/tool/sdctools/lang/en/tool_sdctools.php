@@ -18,7 +18,7 @@
  * Strings for component 'tool_sdctools', language 'en'.
  *
  * @package    tool_sdctools
- * @copyright  2013 Paul Vaughan {@link http://commoodle.southdevon.ac.uk}
+ * @copyright  2013-2015 Paul Vaughan {@link http://commoodle.southdevon.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,15 +28,17 @@ $string['pluginname']       = 'SDC Tools';
 $string['pageheader']       = 'South Devon College Admin Tools';
 
 // Table of contents strings.
-$string['tableofcontents']        = 'Table of Contents';
-$string['emailchecks']            = 'Email Checks';
-$string['userchecks']             = 'User Checks';
-$string['coursereports']          = 'Course Reports';
-$string['coursereportspictures']  = 'with pictures';
-$string['backuptoggle']           = 'Course backup toggles';
-$string['second']                 = 'second';
-$string['module']                 = 'Module';
-$string['leapcorereport']         = 'LEAPCORE Report';
+$string['tableofcontents']              = 'Table of Contents';
+$string['emailchecks']                  = 'Email Checks';
+$string['userchecks']                   = 'User Checks';
+$string['coursereports']                = 'Course Reports';
+$string['coursereportspictures']        = 'with pictures';
+$string['leapchecks']                   = 'Leap Checks and Reports';
+$string['backuptoggle']                 = 'Course backup toggles';
+$string['second']                       = 'second';
+$string['module']                       = 'Module';
+$string['leapblockcoursecodes']         = 'Leap block course codes';
+$string['leapcorereport']               = 'LEAPCORE Report';
 
 // Server details strings.
 $string['serverdetailsheader']          = 'Server details';
@@ -145,6 +147,7 @@ $string['sixmonths']            = '6m';
 $string['oneyear']              = '1y';
 $string['twoyears']             = '2y';
 $string['threeyears']           = '3y';
+$string['fouryears']            = '4y';
 
 // User-checking strings.
 $string['restoredusersheader']    = 'Restored users';
@@ -182,3 +185,11 @@ $string['turnoffheader']        = 'Turn backups off';
 $string['turnonheader']         = 'Turn backups back on';
 $string['turnoff']              = 'Turn off';
 $string['turnon']               = 'Turn on';
+
+$string['leapdetailsheader']    = 'Leap plugin details';
+
+// Leap block course code search strings
+$string['leapblockcoursecodeheader']    = 'Search Leap blocks for a course code';
+$string['leapblockcoursecode']          = 'Enter a course code here';
+$string['leapblockcoursecodego']        = 'Search';
+
