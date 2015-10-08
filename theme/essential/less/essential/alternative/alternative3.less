@@ -45,7 +45,7 @@
           }
         }
         &:after {
-          border-left: 30px solid ~"[[setting:alternativethemecolor3]]";;
+          border-left-color: ~"[[setting:alternativethemecolor3]]";;
         }
         &:hover {
           color: ~"[[setting:alternativethemenavcolor3]]";
@@ -75,6 +75,19 @@
       }
     }
   }
+  &.dir-rtl .breadcrumb-nav {
+    ul.breadcrumb.style1 {
+      li {
+        &:after {
+          border-right-color: ~"[[setting:alternativethemecolor3]]";;
+        }
+        &:hover:after {
+          border-right-color: ~"[[setting:alternativethemehovercolor3]]";
+        }
+      }
+    }
+  }
+
   a,
   a:visited {
     color: ~"[[setting:alternativethemeurlcolor3]]";
@@ -113,8 +126,18 @@
   #headerlogo {
     border-right-color: ~"[[setting:alternativethemecolor3]]";
   }
+  &.dir-rtl #headerlogo {
+    border-left-color: ~"[[setting:alternativethemecolor3]]";
+  }
 
   .breadcrumb-button {
+    i {
+      vertical-align: middle;
+      color: inherit;
+      &:hover {
+        color: inherit;
+      }
+    }
     input[type="submit"] {
       color: ~"[[setting:alternativethemenavcolor3]]";
       background-color: ~"[[setting:alternativethemecolor3]]";
@@ -138,6 +161,10 @@
       border-top-color: ~"[[setting:alternativethemecolor3]]" !important;
       border-bottom: 1px solid ~"[[setting:alternativethemecolor3]]" !important;
       background-color: ~"[[setting:alternativethemecolor3]]" !important;
+
+      .dropdown-menu {
+        border: 1px solid ~"[[setting:alternativethemecolor3]]";
+      }
 
       .nav > li.dropdown a,
       .nav > li > a {
@@ -218,8 +245,19 @@
         }
       }
     }
-    .nav > li > a {
-      border-left-color: ~"[[setting:alternativethemehovercolor3]]";
+
+    .navbar-inner .usermenu {
+      .dropdown {
+        img.userpicture {
+          border: 1px solid ~"[[setting:alternativethemenavcolor3]]";
+        }
+        ul.dropdown-menu {
+          border: 1px solid ~"[[setting:alternativethemecolor3]]";
+          hr.sep {
+            border-bottom: 1px dotted ~"[[setting:alternativethemecolor3]]";
+          }
+        }
+      }
     }
 
     .navbar-inner .messagemenu {
@@ -244,6 +282,16 @@
       }
     }
   }
+  &.dir-rtl .navbar {
+    .navbar-inner {
+      .nav {
+        border-left-color: ~"[[setting:alternativethemecolor3]]";
+        > li > a {
+          border-right-color: ~"[[setting:alternativethemecolor3]]";
+        }
+      }
+    }
+  }
 
   .course-content ul.topics li.section.main.clearfix.current {
     box-shadow: 0 0 10px ~"[[setting:alternativethemecolor3]]";
@@ -263,6 +311,15 @@
     }
   }
 
+  button,
+  input.form-submit,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  #notice .singlebutton+.singlebutton input,
+  .submit.buttons input[name=cancel] {
+    color: ~"[[setting:alternativethemetextcolor3]]";
+  }
   .button {
     a, a:visited {
       background-color: ~"[[setting:alternativethemecolor3]]";
@@ -447,31 +504,39 @@
     }
   }
 
-  .nav-tabs > li > a {
-    background-color: ~"[[setting:alternativethemecolor3]]";
-    &:hover {
-      background-color: ~"[[setting:alternativethemehovercolor3]]";
+  .nav-tabs > li {
+    > a {
+      color: ~"[[setting:alternativethemenavcolor3]]";
+      background-color: ~"[[setting:alternativethemecolor3]]";
+      &:hover, &:focus {
+        color: ~"[[setting:alternativethemecolor3]]";
+        background-color: ~"[[setting:alternativethemenavcolor3]]";
+      }
+    }
+    &.active > a {
+      color: ~"[[setting:alternativethemetextcolor3]]";
+      background-color: #fff;  // TODO: Pagecolour.
     }
   }
 
   .performanceinfo {
-    border-color: ~"[[setting:themeiconcolor]]";
+    border-color: ~"[[setting:alternativethemeiconcolor3]]";
     var {
       background-color: ~"[[setting:alternativethemecolor3]]";
       color: ~"[[setting:alternativethemenavcolor3]]";
     }
     h2 {
       color: ~"[[setting:alternativethemetextcolor3]]";
-      border-bottom-color: ~"[[setting:themeiconcolor]]";
+      border-bottom-color: ~"[[setting:alternativethemeiconcolor3]]";
       &:before {
-        color: ~"[[setting:themeiconcolor]]";
+        color: ~"[[setting:alternativethemeiconcolor3]]";
       }
     }
     span {
       color: ~"[[setting:alternativethemetextcolor3]]";
     }
     #cache:before, #load:before, #memory:before, #peakmemory:before, #session:before, #included:before, #dbqueries:before, #dbtime:before {
-      color: ~"[[setting:themeiconcolor]]";
+      color: ~"[[setting:alternativethemeiconcolor3]]";
     }
   }
 
@@ -494,17 +559,23 @@
   .path-grade-report-grader table#fixed_column th {
     border-right-color: ~"[[setting:alternativethemecolor3]]";
   }
+  &.dir-rtl .path-grade-report-grader table#fixed_column th {
+    border-left-color: ~"[[setting:alternativethemecolor3]]";
+  }
 
   .back-to-top {
     color: ~"[[setting:alternativethemecolor3]]";
   }
 
-  .course_category_tree .category[data-categoryid] {
+  &.categoryicons .course_category_tree .category[data-categoryid] {
     &:hover {
       background-color: ~"[[setting:alternativethemecolor3]]";
-    }
-    > .info > .categoryname a:before {
-      color: ~"[[setting:alternativethemecolor3]]";
+      > .info > .categoryname a {
+        color: ~"[[setting:alternativethemenavcolor3]]";
+        i {
+          color: inherit;
+        }
+      }
     }
   }
 
