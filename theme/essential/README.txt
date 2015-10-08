@@ -188,6 +188,36 @@ It is essential that you provide as much information as possible, the critical i
 'version.php' file.  Other version information such as specific Moodle version, theme name and version also helps.  A screen shot
 can be really useful in visualising the issue along with any files you consider to be relevant.
 
+New in 2.9.1
+============
+- FIX: Issue #552: Alternative colors: layer in mobile layout with wrong color.
+- NEW: Stable version based upon 2.9.0.10.
+
+New in 2.9.0.10
+===============
+- FIX: Issue #541: PHP Fatal error: Class 'theme_essential\\theme_config' not found in /classes/toolbox.php on line 447.
+- FIX: Issue #543: Alternative colors: box borders remain in standard color.
+- FIX: Issue #544: Alternative colors: background hover always black in standard color scheme.
+- FIX: Issue #547: Alternative colors: background hover on the frontpage.
+- FIX: Issue #548: Slideshow: slidebuttoncolor does not have an effect.
+- FIX: Issue #550: Breadcrumb menu "eaten away" when tighter window.
+- FIX: Tweak collapsed navbar menu.
+- FIX: Availability dialogue messed up.
+- FIX: Editing button icon.
+- FIX: RTL fixes in alternative colours.
+- FIX: Tab colour fixes for default and alternative colours.
+- FIX: Button colour fixes for default and alternative colours.
+- FIX: Collapsed menu layout.
+- NEW: Fourth alternative colour scheme.  Thanks to Christian Niemczik for supporting and funding the work on the Essential Theme.
+
+New in 2.9.0.9
+==============
+- FIX: Issue #536: FitVids targets players with mp3 files.
+- FIX: Issue #537: Activities and resources in 'stealth section' are shown in the course menu.  Partial fix, see: MDL-51465.
+- FIX: Issue #538: Problem in core_renderer when outputs the messages menu containing HTML special chars.
+- FIX: Issue #539: Incorrect path found in thirdpartylibs.
+- FIX: Incorrect path in get_include_file(). 
+
 New in 2.9.0.8
 ==============
 - FIX: Issue #529: Divider does not show.
