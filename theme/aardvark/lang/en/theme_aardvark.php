@@ -2,7 +2,7 @@
 $string['pluginname'] = 'Aardvark';
 $string['region-side-post'] = 'Right';
 $string['region-side-pre'] = 'Left';
-$string['choosereadme'] = 'Aardvark is a three column theme for Moodle 2.5+ originally created by Shaun Daubney for <a href="http://www.newbury-college.ac.uk">Newbury College</a> based on Bootstrap';
+$string['choosereadme'] = 'Aardvark is a three column theme for Moodle 2.9+ originally created by Shaun Daubney for <a href="http://www.newbury-college.ac.uk">Newbury College</a> based on Bootstrap. Older versions are available for Moodle 2.8 and below.';
 
 $string['configtitle'] = 'Aardvark';
 
@@ -21,36 +21,17 @@ $string['footeroptdesc'] = 'Customise basic elements of the theme\'s footer.';
 $string['socialiconsheading'] = 'Social Icons';
 $string['socialiconsheadingdesc'] = 'Customise social network icons.';
 
-$string['hidemenu'] = 'Hide Menu when Logged Out';
-$string['hidemenudesc'] = 'Force users to log in before accessing the menu. If YES then menu options are hidden from users before they log in.';
-
-$string['backimage'] = 'Background Image';
-$string['backimagedesc'] = 'Change the background image in the graphic wrap. It\'s currently a cloud blue blur, but if that\'s making you a bit light headed then paste the URL of the image you want to use in here or clear it for a blank background.';
-
-$string['backposition'] = 'Background Image Position';
-$string['backpositiondesc'] = 'Choose between a centred image or a tiled image.';
-$string['backpositioncentred'] = 'Centred';
-$string['backpositionfixed'] = 'Centred (Fixed)';
-$string['backpositiontiled'] = 'Repeat (Tiled)';
-$string['backpositionrepeat'] = 'Repeat (Horizonal)';
-
-$string['backcolor'] = 'Background Colour';
-$string['backcolordesc'] = 'Change the colour of the background. (This is the area either side of the main content and does not affect the main content area)';
-
 $string['logo'] = 'Logo';
 $string['logodesc'] = 'Change the logo of this theme by entering the URL to a new one (i.e., http://www.somesite/logo.png). Ideally a transparent .png with a maximium height of 38px will work best.';
 
-$string['menuhovercolor'] = 'Menu Hover Colour';
-$string['menuhovercolordesc'] = 'Change the colour of linked items on the menu bar.';
+$string['maincolor'] = 'Main colour';
+$string['maincolordesc'] = 'Change the main colour of the theme. This includes menu hover, url hover and buttons.';
 
-$string['titledate'] = 'Frontpage Date';
-$string['titledatedesc'] = 'Display today&apos;s date on the frontpage.';
+$string['shortname'] = 'Short Name';
+$string['shortnamedesc'] = 'Display the site short name in the menu bar.';
 
 $string['generalalert'] = 'General Alert';
 $string['generalalertdesc'] = 'This will display an alert on your frontpage to advise users of a particular event/situation.';
-
-$string['snowalert'] = 'Snow Alert';
-$string['snowalertdesc'] = 'This will display an alert on your frontpage to advise users of closures or information regarding inclement weather.';
 
 $string['disclaimer'] = 'Disclaimer';
 $string['disclaimerdesc'] = 'The content from this textarea will be displayed in the footer of every page.';
@@ -63,10 +44,6 @@ $string['ceopdesc'] = 'Enable CEOP reporting.';
 $string['ceopnone'] = 'Disabled';
 $string['ceopaus'] = 'Enable Australia';
 $string['ceopuk'] = 'Enable United Kingdom';
-
-$string['email'] = 'Email';
-$string['emailurl'] = 'Email URL';
-$string['emailurldesc'] = 'Enter the URL of your email service. (i.e http://mail.mycollege.ac.uk or http://www.mycollege.edu/mail)';
 
 $string['website'] = 'Website URL';
 $string['websitedesc'] = 'Enter the URL of your main website. (i.e http://www.mycollege.ac.uk)';

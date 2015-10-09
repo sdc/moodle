@@ -28,20 +28,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$THEME->doctype = 'html5';
-
-$THEME->yuicssmodules = array();
-
 $THEME->name = 'aardvark';
-
+$THEME->doctype = 'html5';
 $THEME->parents = array('bootstrapbase');
-
-$THEME->sheets = array('custom', 'blockicons', 'profilebar', 'font-awesome', 'settings');
-
+$THEME->sheets = array('custom', 'blockicons', 'profilebar', 'font-awesome.min', 'settings');
+$THEME->yuicssmodules = array();
 $THEME->supportscssoptimisation = false;
-
 $THEME->editor_sheets = array('editor');
-
 $THEME->rendererfactory = 'theme_overridden_renderer_factory';
 
 $THEME->layouts = array(
@@ -153,12 +146,6 @@ $THEME->layouts = array(
         'regions' => array('side-pre', 'side-post'),
         'defaultregion' => 'side-pre'
     ),
-);
-
-$THEME->javascripts = array(
-);
-$THEME->javascripts_footer = array(
-    'moodlebootstrap',
 );
 
 $THEME->csspostprocess = 'aardvark_process_css';

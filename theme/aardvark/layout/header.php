@@ -19,6 +19,8 @@
  * @package   theme_aardvark
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+ 
+global $CFG;
 
 $hasheading = ($PAGE->heading);
 $hasnavbar = (empty($PAGE->layout_options['nonavbar']) && $PAGE->has_navbar());
@@ -32,39 +34,41 @@ $showsidepre = ($hassidepre && !$PAGE->blocks->region_completely_docked('side-pr
 $showsidepost = ($hassidepost && !$PAGE->blocks->region_completely_docked('side-post', $OUTPUT));
 
 $isfrontpage = $PAGE->bodyid == "page-site-index";
+$iscoursepage = $PAGE->pagelayout == "course";
 
 $haslogo = (!empty($PAGE->theme->settings->logo));
-$hastitledate = (!empty($PAGE->theme->settings->titledate));
-$hasemailurl = (!empty($PAGE->theme->settings->emailurl));
-
+$hasshortname = (!empty($PAGE->theme->settings->shortname));
 $hasgeneralalert = (!empty($PAGE->theme->settings->generalalert));
-$hassnowalert = (!empty($PAGE->theme->settings->snowalert));
-
 
 $custommenu = $OUTPUT->custom_menu();
 $hascustommenu = (empty($PAGE->layout_options['nocustommenu']) && !empty($custommenu));
-$hashidemenu = (!empty($PAGE->theme->settings->hidemenu));
-
-$courseheader = $coursecontentheader = $coursecontentfooter = $coursefooter = '';
 
 ?>
 
-<header role="banner" class="navbar navbar-fixed-top">
+<header role="banner" class="navbar navbar-fixed-top<?php echo $html->navbarclass ?>">
     <nav role="navigation" class="navbar-inner">
-        <div class="container-fluid">
-		
-            <a href="<?php echo $CFG->wwwroot;?>"><?php if ($haslogo) {
+        <div class="container-fluid" >
+		<div class="logo">
+            <a href="<?php echo $CFG->wwwroot;?>"> 
+			
+			 <?php if ($haslogo) {
  echo html_writer::empty_tag('img', array('src'=>$PAGE->theme->settings->logo, 'class'=>'logo')); }
 
- else { ?><a class="brand" href="<?php echo $CFG->wwwroot;?>"><?php echo $SITE->shortname; }?></a>
-			
-            <a class="btn btn-navbar" data-toggle="workaround-collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
+ else {} ?>
+ 
+ </div>
+ <?php if ($hasshortname) {?>
+<a class="brand" href="<?php echo $CFG->wwwroot;?>"><?php echo
+                format_string($SITE->shortname, true, array('context' => context_course::instance(SITEID)));
+                ?></a>
+ <?php }		 else {} ?>
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+			    <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
             <?php echo $OUTPUT->user_menu(); ?>
-            <div class="nav-collapse collapse">
+            <div class="nav-collapse collapse navbar-responsive-collapse">
                 <?php echo $OUTPUT->custom_menu(); ?>
                 <ul class="nav pull-right">
                     <li><?php echo $OUTPUT->page_heading_menu(); ?></li>
@@ -72,34 +76,24 @@ $courseheader = $coursecontentheader = $coursecontentfooter = $coursefooter = ''
             </div>
         </div>
     </nav>
-</header>
+ 
+	</header>
 
-<div id="page" class="container-fluid">
 
-<header id="page-header" class="clearfix">
+
+<div class="container-fluid clearfix">
+
     <?php if ($hasnavbar) { ?>
         <nav class="breadcrumb-button"><?php echo $PAGE->button; ?></nav>
         <?php echo $OUTPUT->navbar(); ?>
     <?php } ?>
-    <h1><?php echo $PAGE->heading ?></h1>
-
-    <?php if (!empty($courseheader)) { ?>
-        <div id="course-header"><?php echo $courseheader; ?></div>
-    <?php } ?>
-	
-<?php  if (($isfrontpage) && ($hastitledate)) {?>
-	<div id="page-header-date"><h1><?php echo strftime("%A %d %B %Y"); ?></h1></div>
+	<?php if ($iscoursepage) {?>
+    <h1 id="courseheader"><?php echo $PAGE->heading ?></h1>
 	<?php } ?>
-	<?php if (($isfrontpage) && $hasgeneralalert) {?>
+	<?php if (($isfrontpage) && ($hasgeneralalert)) {?>
 	<div id="page-header-generalalert">
 	<?php echo $PAGE->theme->settings->generalalert; ?>
 	</div>
 	<?php } ?>
-	
-		<?php if (($isfrontpage) && $hassnowalert) {?>
-	<div id="page-header-snowalert">
-	<?php echo $PAGE->theme->settings->snowalert; ?>
-	</div>
-	<?php } ?>
-
-</header>
+</div>
+<div id="page" class="container-fluid clearfix">

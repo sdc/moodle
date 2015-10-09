@@ -36,7 +36,6 @@ $haslinkedin = (!empty($PAGE->theme->settings->linkedin));
 $hasyoutube = (!empty($PAGE->theme->settings->youtube));
 $haswikipedia = (!empty($PAGE->theme->settings->wikipedia));
 ?>
-<hr>
 	<div class="row-fluid">
     	<!-- Widget 1 -->
     	<div class="span4">
@@ -103,7 +102,7 @@ $haswikipedia = (!empty($PAGE->theme->settings->wikipedia));
     	</div>
 	</div>
 
-	<div class="footerlinks row-fluid">
+	<div class="footerlinks">
 	<p>
 	
 	<?php  

@@ -17,6 +17,15 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_heading($name, $heading, $information);
     $settings->add($setting);
 	
+	// Main colour setting
+	$name = 'theme_aardvark/maincolor';
+	$title = get_string('maincolor','theme_aardvark');
+	$description = get_string('maincolordesc', 'theme_aardvark');
+	$default = '#f98012';
+	$previewconfig = NULL;
+	$setting = new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig);
+	$settings->add($setting);	
+	
 	// Logo file setting
 	$name = 'theme_aardvark/logo';
 	$title = get_string('logo','theme_aardvark');
@@ -24,43 +33,10 @@ if ($ADMIN->fulltree) {
 	$setting = new admin_setting_configtext($name, $title, $description, '', PARAM_URL);
 	$settings->add($setting);	
 
-	// Hide Menu
-	$name = 'theme_aardvark/hidemenu';
-	$title = get_string('hidemenu','theme_aardvark');
-	$description = get_string('hidemenudesc', 'theme_aardvark');
-	$default = 1;
-	$choices = array(1=>get_string('yes',''), 0=>get_string('no',''));
-	$setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
-	$settings->add($setting);
-
-	// Email url setting
-	$name = 'theme_aardvark/emailurl';
-	$title = get_string('emailurl','theme_aardvark');
-	$description = get_string('emailurldesc', 'theme_aardvark');
-	$default = '';
-	$setting = new admin_setting_configtext($name, $title, $description, $default);
-	$settings->add($setting);
-
-	// Custom CSS file
-	$name = 'theme_aardvark/customcss';
-	$title = get_string('customcss','theme_aardvark');
-	$description = get_string('customcssdesc', 'theme_aardvark');
-	$default = '';
-	$setting = new admin_setting_configtextarea($name, $title, $description, $default);
-	$setting->set_updatedcallback('theme_reset_all_caches');
-	$settings->add($setting);
-
-	// Frontpage Heading
-    $name = 'theme_aardvark/frontpageheading';
-    $heading = get_string('frontpageheading', 'theme_aardvark');
-    $information = get_string('frontpageheadingdesc', 'theme_aardvark');
-    $setting = new admin_setting_heading($name, $heading, $information);
-    $settings->add($setting);
-
-	// Title Date setting
-	$name = 'theme_aardvark/titledate';
-	$title = get_string('titledate','theme_aardvark');
-	$description = get_string('titledatedesc', 'theme_aardvark');
+	// Short Name setting
+	$name = 'theme_aardvark/shortname';
+	$title = get_string('shortname','theme_aardvark');
+	$description = get_string('shortnamedesc', 'theme_aardvark');
 	$default = 1;
 	$choices = array(1=>get_string('yes',''), 0=>get_string('no',''));
 	$setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
@@ -73,56 +49,15 @@ if ($ADMIN->fulltree) {
 	$default = '';
 	$setting = new admin_setting_configtext($name, $title, $description, $default);
 	$settings->add($setting);
-
-	// Snow Alert setting
-	$name = 'theme_aardvark/snowalert';
-	$title = get_string('snowalert','theme_aardvark');
-	$description = get_string('snowalertdesc', 'theme_aardvark');
-	$default = '';
-	$setting = new admin_setting_configtext($name, $title, $description, $default);
-	$settings->add($setting);
-
-    // Colour Heading
-    $name = 'theme_aardvark/colourheading';
-    $heading = get_string('colourheading', 'theme_aardvark');
-    $information = get_string('colourheadingdesc', 'theme_aardvark');
-    $setting = new admin_setting_heading($name, $heading, $information);
-    $settings->add($setting);
 	
-	// Background colour setting
-	$name = 'theme_aardvark/backcolor';
-	$title = get_string('backcolor','theme_aardvark');
-	$description = get_string('backcolordesc', 'theme_aardvark');
-	$default = '#fafafa';
-	$previewconfig = NULL;
-	$setting = new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig);
-	$settings->add($setting);
-
-	// Graphic Wrap (Background Image)
-	$name = 'theme_aardvark/backimage';
-	$title=get_string('backimage','theme_aardvark');
-	$description = get_string('backimagedesc', 'theme_aardvark');
+	// Custom CSS file
+	$name = 'theme_aardvark/customcss';
+	$title = get_string('customcss','theme_aardvark');
+	$description = get_string('customcssdesc', 'theme_aardvark');
 	$default = '';
-	$setting = new admin_setting_configtext($name, $title, $description, '', PARAM_URL);
+	$setting = new admin_setting_configtextarea($name, $title, $description, $default);
+	$setting->set_updatedcallback('theme_reset_all_caches');
 	$settings->add($setting);
-
-	// Graphic Wrap (Background Position)
-	$name = 'theme_aardvark/backposition';
-	$title = get_string('backposition','theme_aardvark');
-	$description = get_string('backpositiondesc', 'theme_aardvark');
-	$default = 'no-repeat';
-	$choices = array('no-repeat'=>get_string('backpositioncentred','theme_aardvark'), 'no-repeat fixed'=>get_string('backpositionfixed','theme_aardvark'), 'repeat'=>get_string('backpositiontiled','theme_aardvark'), 'repeat-x'=>get_string('backpositionrepeat','theme_aardvark'));
-	$setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
-	$settings->add($setting);
-
-	// Menu hover background colour setting
-	$name = 'theme_aardvark/menuhovercolor';
-	$title = get_string('menuhovercolor','theme_aardvark');
-	$description = get_string('menuhovercolordesc', 'theme_aardvark');
-	$default = '#f42941';
-	$previewconfig = NULL;
-	$setting = new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig);
-	$settings->add($setting);	
 	
 	// Footer Options Heading
     $name = 'theme_aardvark/footeroptheading';

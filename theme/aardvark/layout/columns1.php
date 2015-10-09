@@ -33,13 +33,13 @@ echo $OUTPUT->doctype() ?>
             ?>
         </section>
     </div>
-
+</div>
     <footer id="page-footer">
         <?php require('footer.php'); ?>
     </footer>
 
     <?php echo $OUTPUT->standard_end_of_body_html() ?>
 
-</div>
+
 </body>
 </html>
