@@ -188,6 +188,13 @@ It is essential that you provide as much information as possible, the critical i
 'version.php' file.  Other version information such as specific Moodle version, theme name and version also helps.  A screen shot
 can be really useful in visualising the issue along with any files you consider to be relevant.
 
+New in 2.9.1.1
+==============
+- FIX: Issue #553: Section highlighter in topic course format.
+- FIX: Issue #554: Slide interval: settings are ignored.
+- FIX: Issue #556: Course management: course (sub-)categories are not indented.
+- FIX: Editing pages legend text colour.
+
 New in 2.9.1
 ============
 - FIX: Issue #552: Alternative colors: layer in mobile layout with wrong color.

@@ -504,7 +504,8 @@ input[type="color"],
 .uneditable-input,
 .form-item .form-description,
 .form-defaultinfo,
-.form-label .form-shortname {
+.form-label .form-shortname,
+.mform legend a {
   color: [[setting:themetextcolor]];
 }
 #page form .form-buttons #fgroup_id_buttonar,
@@ -800,9 +801,10 @@ a .colours-alternative4 {
 .course-content ul li.section.main {
   background: url([[pix:theme|bg/dot]]) bottom repeat-x;
 }
-.course-content ul li.section.main.clearfix.current .content {
-  box-shadow: 0px 0px 6px 2px [[setting:themecolor]];
-  border-radius: 10px;
+.course-content ul li.section.main.clearfix.current {
+  box-shadow: 4px 4px 8px 2px [[setting:themecolor]];
+  border-style: solid;
+  border-width: 1px;
 }
 h2.pagetitle {
   background: url([[pix:theme|bg/dot]]) left center repeat-x;
