@@ -15,22 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Leap enrolment plugin version specification.
+ * Task definitions.
  *
- * @package    enrol_leap
- * @copyright  2010 Petr Skoda {@link http://skodak.org}
+ * @package    block_leap
+ * @copyright  2014, 2015 Paul Vaughan {@link http://commoodle.southdevon.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version        = 2015100900;
-$plugin->requires       = 2014051200;       // Requires Moodle 2.7 or newer.
-$plugin->component      = 'enrol_leap';
-$plugin->maturity       = MATURITY_BETA;
-$plugin->release        = '3.0.0';
-$plugin->dependencies   = array (
-    'local_leapwebservices' => 2014112400,  // Needs the Leap web services local plugin.
-    'block_leap'            => 2015062500,  // Needs this version or later of the Leap block.
+$tasks = array(
+    array(
+        'classname' => 'block_leap\task\overnight',
+        'blocking'  => 0,
+
+        // Testing
+        'minute'    => '*/30',
+        'hour'      => '*',
+
+        // Production.
+        //'minute'    => '*/5',
+        //'hour'      => '*',
+
+        'day'       => '*',
+        'dayofweek' => '*',
+        'month'     => '*'
+    )
 );
-$plugin->cron           = 600;
