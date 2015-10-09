@@ -862,7 +862,7 @@ class enrol_leap_plugin extends enrol_plugin {
                         // Course and role enrolment all in one go.
                         $this->enrol_user( $enrolinstance, $user->id, $this->get_config( 'roleid' ), time(), time() + $this->get_config( 'enrolperiod' ), ENROL_USER_ACTIVE, true);
                         if ( $this->logging ) {
-                            error_log( $this->errorlogtag . '  Leap-enrolled ' . $user->id . ' onto course ' . $enrolme->id ' (probably)' );
+                            error_log( $this->errorlogtag . '  Leap-enrolled ' . $user->id . ' onto course ' . $enrolme->id . ' (probably)' );
                         }
                     } else {
 
