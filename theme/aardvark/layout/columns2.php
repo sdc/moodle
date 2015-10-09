@@ -41,13 +41,13 @@ echo $OUTPUT->doctype() ?>
         echo $OUTPUT->blocks('side-pre', 'span3'.$classextra);
         ?>
     </div>
-
+</div>
     <footer id="page-footer">
         <?php require('footer.php'); ?>
     </footer>
 
     <?php echo $OUTPUT->standard_end_of_body_html() ?>
 
-</div>
+
 </body>
 </html>

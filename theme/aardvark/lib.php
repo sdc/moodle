@@ -8,48 +8,15 @@
 
 function aardvark_process_css($css, $theme) {
 	
-    // Set the menu background color
-    if (!empty($theme->settings->menubackcolor)) {
-        $menubackcolor = $theme->settings->menubackcolor;
+	// Set the main colour
+    if (!empty($theme->settings->maincolor)) {
+        $maincolor = $theme->settings->maincolor;
     } else {
-        $menubackcolor = null;
+        $maincolor = null;
     }
-    $css = aardvark_set_menubackcolor($css, $menubackcolor);
+    $css = aardvark_set_maincolor($css, $maincolor);
 	
-	    // Set the menu hover color
-    if (!empty($theme->settings->menuhovercolor)) {
-        $menuhovercolor = $theme->settings->menuhovercolor;
-    } else {
-        $menuhovercolor = null;
-    }
-    $css = aardvark_set_menuhovercolor($css, $menuhovercolor);
-
-    
-	// Set the background image for the graphic wrap 
-    if (!empty($theme->settings->backimage)) {
-        $backimage = $theme->settings->backimage;
-    } else {
-        $backimage = null;
-    }
-    $css = aardvark_set_backimage($css, $backimage);
-	
-	// Set the graphic position
-    if (!empty($theme->settings->backposition)) {
-       $backposition = $theme->settings->backposition;
-    } else {
-       $backposition = null;
-    }
-    $css = aardvark_set_backposition($css,$backposition);
-	
-	// Set the background color
-    if (!empty($theme->settings->backcolor)) {
-        $backcolor = $theme->settings->backcolor;
-    } else {
-        $backcolor = null;
-    }
-    $css = aardvark_set_backcolor($css, $backcolor);
-	
-	// Set the background image for the logo 
+	// Set the image for the logo 
     if (!empty($theme->settings->logo)) {
         $logo = $theme->settings->logo;
     } else {
@@ -68,49 +35,11 @@ function aardvark_process_css($css, $theme) {
     return $css;
 }
 
-function aardvark_set_menubackcolor($css, $menubackcolor) {
-    $tag = '[[setting:menubackcolor]]';
-    $replacement = $menubackcolor;
+function aardvark_set_maincolor($css, $maincolor) {
+    $tag = '[[setting:maincolor]]';
+    $replacement = $maincolor;
     if (is_null($replacement)) {
-        $replacement = '#333333';
-    }
-    $css = str_replace($tag, $replacement, $css);
-    return $css;
-}
-
-function aardvark_set_menuhovercolor($css, $menuhovercolor) {
-    $tag = '[[setting:menuhovercolor]]';
-    $replacement = $menuhovercolor;
-    if (is_null($replacement)) {
-        $replacement = '#f42941';
-    }
-    $css = str_replace($tag, $replacement, $css);
-    return $css;
-}
-
-function aardvark_set_backimage($css, $backimage) {
-	global $OUTPUT;  
-	$tag = '[[setting:backimage]]';
-	$replacement = $backimage;
-	if (is_null($replacement)) {
- 		$replacement = '';
- 	}
-	$css = str_replace($tag, $replacement, $css);
-	return $css;
-}
-
-function aardvark_set_backposition($css, $backposition = 'no-repeat', $tag = '[[setting:backposition]]'){
-if($backposition == "no-repeat" || $backposition == "no-repeat fixed" || $backposition == "repeat" || $backposition == "repeat-x"){
-$css = str_replace($tag, $backposition, $css);
-}
-return $css;
-}
-
-function aardvark_set_backcolor($css, $backcolor) {
-    $tag = '[[setting:backcolor]]';
-    $replacement = $backcolor;
-    if (is_null($replacement)) {
-        $replacement = '#ffffff';
+        $replacement = '#f98012';
     }
     $css = str_replace($tag, $replacement, $css);
     return $css;
