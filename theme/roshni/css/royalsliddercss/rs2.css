@@ -1,0 +1,39 @@
+      #slider-in-laptop {
+  width: 100%;
+  height: 200px;
+  background: none;
+}
+#slider-in-laptop .rsOverflow,
+#slider-in-laptop .rsSlide,
+#slider-in-laptop .rsVideoFrameHolder,
+#slider-in-laptop .rsThumbs {
+}
+.imgBg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto;
+}
+#slider-in-laptop .rsBullets {
+  bottom: -25px;
+}
+.laptopBg {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+#slider-in-laptop .rsBullets {
+    bottom: -30px;
+}
+.slider-in-laptop .rs-inner {
+  position: absolute;
+  top: 0;
+}
+
+.slider-in-laptop .rs-inner .content-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 0;
+}

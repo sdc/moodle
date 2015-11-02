@@ -1,0 +1,64 @@
+/* BEGIN of Img Thum ---------------------------------------------------------- */
+
+.clearout {
+	height:20px;
+	clear:both;
+}
+
+#flexiselDemo3 {
+	display:none;
+}
+
+.nbs-flexisel-container {
+    position:relative;
+    max-width:100%;
+}
+
+.nbs-flexisel-ul {
+    position:relative;
+    width:9999px;
+    padding:0px;
+    list-style-type:none;   
+    text-align:center;
+}
+
+.nbs-flexisel-inner {
+    overflow:hidden;
+    float:left;
+    width:100%;
+}
+
+.nbs-flexisel-item {
+    float:left;
+    margin:0px;
+    padding:0px;
+    position:relative;
+    line-height:0px;
+}
+
+.nbs-flexisel-item img {
+    cursor: pointer;
+    position: relative;
+	background:none;
+}
+
+/*** Navigation ***/
+
+.nbs-flexisel-nav-left,
+.nbs-flexisel-nav-right {
+    width: 26px;
+    height: 33px; 
+    position: absolute;
+    z-index: 100;
+    cursor:pointer;
+}
+
+.nbs-flexisel-nav-left {
+    left: 10px;
+}
+
+.nbs-flexisel-nav-right {
+    right: 10px;
+}
+
+/* ----------------------------------------------------------------------------------- */
