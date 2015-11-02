@@ -21,6 +21,7 @@
  * @package     theme_essential
  * @copyright   2013 Julian Ridden
  * @copyright   2014 Gareth J Barnard, David Bezemer
+ * @copyright   2015 Gareth J Barnard
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class theme_essential_core_renderer extends core_renderer {
@@ -177,16 +178,24 @@ class theme_essential_core_renderer extends core_renderer {
             }
             $content .= '</ul>';
         } else {
-            $content = '<li>';
-            // The node doesn't have children so produce a final menuitem.
-            $class = '';
-            if ($menunode->get_url() !== null) {
-                $url = $menunode->get_url();
-                $class = $url->get_param('essentialcolours');
+            // Also, if the node's text matches '####', add a class so we can treat it as a divider.
+            $content = '';
+            if (preg_match("/^#+$/", $menunode->get_text())) {
+                // This is a divider.
+                $content = html_writer::start_tag('li', array('class' => 'divider'));
             } else {
-                $url = '#';
+                $content = html_writer::start_tag('li');
+                // The node doesn't have children so produce a final menuitem.
+                $class = '';
+                if ($menunode->get_url() !== null) {
+                    $url = $menunode->get_url();
+                    $class = $url->get_param('essentialcolours');
+                } else {
+                    $url = '#';
+                }
+                $content .= html_writer::link($url, $menunode->get_text(), array('title' => $menunode->get_title(), 'class' => $class));
             }
-            $content .= html_writer::link($url, $menunode->get_text(), array('title' => $menunode->get_title(), 'class' => $class));
+            $content .= html_writer::end_tag('li');
         }
         return $content;
     }
@@ -293,7 +302,7 @@ class theme_essential_core_renderer extends core_renderer {
 
         if (!isguestuser()) {
             $alternativethemes = array();
-            foreach (range(1, 3) as $alternativethemenumber) {
+            foreach (range(1, 4) as $alternativethemenumber) {
                 if (\theme_essential\toolbox::get_setting('enablealternativethemecolors' . $alternativethemenumber)) {
                     $alternativethemes[] = $alternativethemenumber;
                 }
@@ -368,25 +377,34 @@ class theme_essential_core_renderer extends core_renderer {
         $course = $this->page->course;
         $content = new stdClass();
         $modinfo = get_fast_modinfo($course);
+        $course = course_get_format($course)->get_course();
         $modfullnames = array();
         $archetypes = array();
-        foreach ($modinfo->cms as $cm) {
-            // Exclude activities which are not visible or have no link (=label).
-            if (!$cm->uservisible or !$cm->has_view()) {
+
+        foreach ($modinfo->get_section_info_all() as $section => $thissection) {
+            if (($section > $course->numsections) or (empty($modinfo->sections[$section]))) {
+                // This is a stealth section or is empty.
                 continue;
             }
-            if (array_key_exists($cm->modname, $modfullnames)) {
-                continue;
-            }
-            if (!array_key_exists($cm->modname, $archetypes)) {
-                $archetypes[$cm->modname] = plugin_supports('mod', $cm->modname, FEATURE_MOD_ARCHETYPE, MOD_ARCHETYPE_OTHER);
-            }
-            if ($archetypes[$cm->modname] == MOD_ARCHETYPE_RESOURCE) {
-                if (!array_key_exists('resources', $modfullnames)) {
-                    $modfullnames['resources'] = get_string('resources');
+            foreach ($modinfo->sections[$thissection->section] as $modnumber) {
+                $cm = $modinfo->cms[$modnumber];
+                // Exclude activities which are not visible or have no link (=label).
+                if (!$cm->uservisible or !$cm->has_view()) {
+                    continue;
                 }
-            } else {
-                $modfullnames[$cm->modname] = $cm->modplural;
+                if (array_key_exists($cm->modname, $modfullnames)) {
+                    continue;
+                }
+                if (!array_key_exists($cm->modname, $archetypes)) {
+                    $archetypes[$cm->modname] = plugin_supports('mod', $cm->modname, FEATURE_MOD_ARCHETYPE, MOD_ARCHETYPE_OTHER);
+                }
+                if ($archetypes[$cm->modname] == MOD_ARCHETYPE_RESOURCE) {
+                    if (!array_key_exists('resources', $modfullnames)) {
+                        $modfullnames['resources'] = get_string('resources');
+                    }
+                } else {
+                    $modfullnames[$cm->modname] = $cm->modplural;
+                }
             }
         }
         core_collator::asort($modfullnames);
@@ -451,7 +469,7 @@ class theme_essential_core_renderer extends core_renderer {
                     $messagecontent .= html_writer::tag('i', '', array('class' => 'fa fa-comment' . $iconadd));
                     $messagecontent .= $this->get_time_difference($message->date);
                     $messagecontent .= html_writer::end_span();
-                    $messagecontent .= html_writer::span($message->text, 'notification-text');
+                    $messagecontent .= html_writer::span(htmlspecialchars($message->text, ENT_COMPAT | ENT_HTML401, 'UTF-8'), 'notification-text');
                     $messagecontent .= html_writer::end_div();
                 } else {
                     if (!is_object($message->from) || !empty($message->from->deleted)) {
@@ -469,12 +487,12 @@ class theme_essential_core_renderer extends core_renderer {
                     $messagecontent .= $this->get_time_difference($message->date);
                     $messagecontent .= html_writer::end_span();
                     $messagecontent .= html_writer::span($message->from->firstname, 'msg-sender');
-                    $messagecontent .= html_writer::span($message->text, 'msg-text');
+                    $messagecontent .= html_writer::span(htmlspecialchars($message->text, ENT_COMPAT | ENT_HTML401, 'UTF-8'), 'msg-text');
                     $messagecontent .= html_writer::end_span();
                     $messagecontent .= html_writer::end_div();
                 }
 
-                $messagesubmenu->add($messagecontent, $message->url, $message->text);
+                $messagesubmenu->add($messagecontent, $message->url, htmlspecialchars($message->text, ENT_COMPAT | ENT_HTML401, 'UTF-8'));
             }
         }
         return $this->render_custom_menu($messagemenu);
@@ -966,9 +984,9 @@ class theme_essential_core_renderer extends core_renderer {
             'i/filter' => 'filter',
             'i/grades' => 'table',
             'i/group' => 'group',
-            'i/groupn' => 'group',
-            'i/groupv' => 'group',
-            'i/groups' => 'group',
+            'i/groupn' => 'user',
+            'i/groupv' => 'user-plus',
+            'i/groups' => 'user-secret',
             'i/hide' => 'eye',
             'i/import' => 'upload',
             'i/move_2d' => 'arrows',
@@ -1404,5 +1422,33 @@ class theme_essential_core_renderer extends core_renderer {
         $html .= html_writer::end_tag('div');
 
         return $html;
+    }
+
+    /**
+     * Returns the alert markup if outside of the Moodle version supported as can cause issues.
+     */
+    public function version_alert() {
+        global $CFG;
+        $result = '';
+
+        if (($CFG->version < 2015051100.00) || ($CFG->version >= 2015060200.00)) {
+            $result = '<div class="useralerts alert alert-error">';
+            $result .= '<a class="close" data-dismiss="alert" href="#"><i class="fa fa-times-circle"></i></a>';
+            $result .= '<span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-warning fa-stack-1x fa-inverse"></i></span>';
+            $result .= '<span class="title">'.get_string('versionalerttitle', 'theme_essential').'</span><br />'.
+                       get_string('versionalerttext1', 'theme_essential').'<br />'.get_string('versionalerttext2', 'theme_essential');
+            $result .= '</div>';
+        }
+
+        // Remove when production version.
+        /*
+        $result .= '<div class="useralerts alert alert-error">';
+        $result .= '<a class="close" data-dismiss="alert" href="#"><i class="fa fa-times-circle"></i></a>';
+        $result .= '<span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-warning fa-stack-1x fa-inverse"></i></span>';
+        $result .= '<span class="title">Beta version</span><br />Development beta version for testing only, do not use on a production server.';
+        $result .= '</div>';
+        */
+
+        return $result;
     }
 }

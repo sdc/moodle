@@ -48,7 +48,8 @@ $THEME->sheets[] = 'fontawesome';
 
 if ((get_config('theme_essential', 'enablealternativethemecolors1')) ||
     (get_config('theme_essential', 'enablealternativethemecolors2')) ||
-    (get_config('theme_essential', 'enablealternativethemecolors3'))
+    (get_config('theme_essential', 'enablealternativethemecolors3')) ||
+    (get_config('theme_essential', 'enablealternativethemecolors4'))
 ) {
     $THEME->sheets[] = 'essential-alternative';
 }
@@ -100,9 +101,9 @@ $THEME->layouts = array(
     ),
     // Main course page.
     'course' => array(
-        'file' => 'columns2.php',
-        'regions' => array('side-pre', 'footer-left', 'footer-middle', 'footer-right'),
-        'defaultregion' => 'side-pre',
+        'file' => 'columns3.php',
+        'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right'),
+        'defaultregion' => 'side-post',
     ),
     'coursecategory' => array(
         'file' => 'columns2.php',
@@ -192,10 +193,6 @@ $THEME->layouts = array(
         'defaultregion' => 'side-pre'
     ),
 );
-
-if (core_useragent::is_ie() && !core_useragent::check_ie_version('9.0')) {
-    $THEME->javascripts[] = 'html5shiv';
-}
 
 $THEME->rendererfactory = 'theme_overridden_renderer_factory';
 $THEME->csspostprocess = 'theme_essential_process_css';

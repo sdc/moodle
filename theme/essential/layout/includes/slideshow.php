@@ -24,16 +24,26 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$data = array('data' => array('slideinterval' => '5000'));
-$PAGE->requires->js_call_amd('theme_essential/carousel', 'init', $data);
-
 $numberofslides = \theme_essential\toolbox::showslider();
 
 if ($numberofslides) {
     $slideinterval  = \theme_essential\toolbox::get_setting('slideinterval');
+    $data = array('data' => array('slideinterval' => $slideinterval));
+    $PAGE->requires->js_call_amd('theme_essential/carousel', 'init', $data);
+
     $captionscenter = (\theme_essential\toolbox::get_setting('slidecaptioncentred'))? ' centred' : '';
     $captionoptions = \theme_essential\toolbox::get_setting('slidecaptionoptions');
-    $captionsbelowclass  = ($captionoptions == 2) ? ' below' : '';
+
+    switch($captionoptions) {
+        case 1:
+            $captionsbelowclass = ' ontop';
+        break;
+        case 2:
+            $captionsbelowclass = ' below';
+        break;
+        default:
+            $captionsbelowclass = '';
+    }
     ?>
     <div class="row-fluid">
         <div class="span12">

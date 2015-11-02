@@ -86,6 +86,7 @@ Mihai Bojonca, TCM International Institute.
 Guido Hornig, actXcellence http://actxcellence.de
 Delvon Forrester, Esparanza co uk
 iZone
+Anis Jradah
 
 Customisation
 =============
@@ -187,12 +188,85 @@ It is essential that you provide as much information as possible, the critical i
 'version.php' file.  Other version information such as specific Moodle version, theme name and version also helps.  A screen shot
 can be really useful in visualising the issue along with any files you consider to be relevant.
 
+New in 2.9.1.1
+==============
+- FIX: Issue #553: Section highlighter in topic course format.
+- FIX: Issue #554: Slide interval: settings are ignored.
+- FIX: Issue #556: Course management: course (sub-)categories are not indented.
+- FIX: Editing pages legend text colour.
+
+New in 2.9.1
+============
+- FIX: Issue #552: Alternative colors: layer in mobile layout with wrong color.
+- NEW: Stable version based upon 2.9.0.10.
+
+New in 2.9.0.10
+===============
+- FIX: Issue #541: PHP Fatal error: Class 'theme_essential\\theme_config' not found in /classes/toolbox.php on line 447.
+- FIX: Issue #543: Alternative colors: box borders remain in standard color.
+- FIX: Issue #544: Alternative colors: background hover always black in standard color scheme.
+- FIX: Issue #547: Alternative colors: background hover on the frontpage.
+- FIX: Issue #548: Slideshow: slidebuttoncolor does not have an effect.
+- FIX: Issue #550: Breadcrumb menu "eaten away" when tighter window.
+- FIX: Tweak collapsed navbar menu.
+- FIX: Availability dialogue messed up.
+- FIX: Editing button icon.
+- FIX: RTL fixes in alternative colours.
+- FIX: Tab colour fixes for default and alternative colours.
+- FIX: Button colour fixes for default and alternative colours.
+- FIX: Collapsed menu layout.
+- NEW: Fourth alternative colour scheme.  Thanks to Christian Niemczik for supporting and funding the work on the Essential Theme.
+
+New in 2.9.0.9
+==============
+- FIX: Issue #536: FitVids targets players with mp3 files.
+- FIX: Issue #537: Activities and resources in 'stealth section' are shown in the course menu.  Partial fix, see: MDL-51465.
+- FIX: Issue #538: Problem in core_renderer when outputs the messages menu containing HTML special chars.
+- FIX: Issue #539: Incorrect path found in thirdpartylibs.
+- FIX: Incorrect path in get_include_file(). 
+
+New in 2.9.0.8
+==============
+- FIX: Issue #529: Divider does not show.
+- FIX: MDL-42634.
+- FIX: MDL-50323.
+- FIX: MDL-51194.
+- FIX: MDL-51229.
+- FIX: Issue #520: Alternative carousel colours not working.
+- FIX: Issue #535: Group mode icons not different.
+- NEW: Issue #533: PIWIK Analytics and IP addresses.
+- NEW: Improved PIWIK document title.
+- NEW: Reduced size of floating button area.
+- NEW: Added slider caption opacity when 'on top' slide caption option.
+- UPD: Issue #530: Essential Custom Menu Hamburger Behaviour - Unable to fix, help wanted.
+- UPD: Updated bootstrap.js such that all modules are included as discovered that 'modals' were missing.
+- UPD: Tidy up icon colours and in alternatives.
+- UPD: Changed course icon to colourable Font Awesome alternative.
+- UPD: Refactor marketing spot settings in settings.php.
+
+New in 2.9.0.7
+==============
+- FIX: Issue #523: Forum grids do not wrap.
+- NEW: Issue #524: MDL-48202.
+- NEW: Issue #525: MDL-46860.
+- NEW: Issue #526: MDL-50533.
+- FIX: Issue #527: ###### are not converted to dividers.
+- FIX: Issue #528: Repeated show / hide of custom menu fails when small screen.
+- FIX: Misplaced CSS attribute with no selector.
+- FIX: Removed redundant maintenance selector.
+- FIX: Removed login page selector.
+- FIX: JavaScript tidy up and remove html5shiv support for IE8.
+- FIX: Regression of initital fix for issue 517 whereby dropdown menus cannot be seen over the carousel when screen width is less
+       than the @navbarCollapseWidth, see: https://moodle.org/mod/forum/discuss.php?d=317306#p1272655.
+- NEW: Update to FontAwesome 4.4.0.
+- NEW: Version alert on admin pages if installed on wrong Moodle version as per 'Required version of Moodle' above.
+
 New in 2.9.0.6
 ==============
 - FIX: Issue #514: Quiz feedback colours are not accessible.
 - FIX: Issue #515: Gradebook Tabs Not Left Justified.
 - FIX: Issue #517: Mobile nav button overflow.
-- FIX: Issue #517: Lesson table padding removed.
+- FIX: Issue #518: Lesson table padding removed.
 - FIX: #adminsettings h3 colour in alternative colours.
 - FIX: Course drag and drop icon tricky to use.
 - FIX: Action menu hover text colour.

@@ -46,6 +46,7 @@ After installation, you should see a new option 'SDC Tools' in the Site Administ
 
 ## History
 
+* 2015-09-xx, version 0.4.0:	Some changes didn't get written down and v0.3 is lost to the ether. 
 * 2014-03-26, version 0.2.0:    Changes to the way course module info ($course->modinfo) is stored mean this plugin requires Moodle 2.6 as a minimum. There's a 2.5 (and earlier) version in a separate branch of the code on GitHub if required.
 * 2014-03-06, version 0.1.4:    Added number of modules (visible, hidden, total and average across courses) and blocks (total and average across courses).
 * 2013-07-18, version 0.1.3:    Added many new features and changed to a multi-page format.
@@ -55,4 +56,4 @@ After installation, you should see a new option 'SDC Tools' in the Site Administ
 
 ## Author / Contact
 
-&copy; 2013, 2014 Paul Vaughan, South Devon College. paulvaughan@southdevon.ac.uk
+&copy; 2013-2015 Paul Vaughan, South Devon College. paulvaughan@southdevon.ac.uk

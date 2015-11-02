@@ -60,7 +60,7 @@ class local_leapwebservices_external extends external_api {
             header($_SERVER["SERVER_PROTOCOL"].' 422 Unprocessable Entity ($params[\'username\'] empty.)', true, 422);
         }
 
-         $courses = $DB->get_records_sql("SELECT DISTINCT c.id AS id, c.fullname, c.shortname, c.idnumber, c.visible
+        $courses = $DB->get_records_sql("SELECT DISTINCT c.id AS id, c.fullname, c.shortname, c.idnumber, c.visible
             FROM {role_assignments} ra, {user} u,
                 {course} c, {context} cxt, {role} r
             WHERE ra.userid = u.id
@@ -68,7 +68,7 @@ class local_leapwebservices_external extends external_api {
             AND cxt.contextlevel = 50
             AND cxt.instanceid = c.id
             AND ra.roleid = r.id
-            AND u.username = ?
+            AND u.username LIKE ?
             ORDER BY fullname ASC;", $params);
 
         $coursesinfo = array();
@@ -274,7 +274,7 @@ class local_leapwebservices_external extends external_api {
      * @return array An array of arrays describing users
      */
     public static function get_users_by_username($usernames) {
-        global $CFG;
+        global $CFG, $DB;
         require_once($CFG->dirroot . "/user/lib.php");
         require_once($CFG->dirroot . "/user/profile/lib.php");
         require_once($CFG->dirroot . "/user/externallib.php");
@@ -286,47 +286,42 @@ class local_leapwebservices_external extends external_api {
             header($_SERVER["SERVER_PROTOCOL"].' 422 Unprocessable Entity ($params[\'usernames\'] empty.)', true, 422);
         }
 
-        // Changing out deprecated core function for new one.
-        // get_users_by_field ONLY EXISTS IN MOODLE 2.5 AND ONWARDS!
-        // TODO: Check if this is going to work, and fail gracefully if not.
-        $users = core_user_external::get_users_by_field('username', $params['usernames']);
-
         $result = array();
-        foreach ($users as $user) {
+        foreach ( $params['usernames'] as $uname ) {
+            if ( $user = $DB->get_record( 'user', array( 'username' => $uname ), '*', 'id,username,firstname,lastname,email,deleted' ) ) {
 
-            $context = context_user::instance($user['id']);
-            try {
-                self::validate_context($context);
-            } catch (Exception $e) {
-                $exceptionparam             = new stdClass();
-                $exceptionparam->message    = $e->getMessage();
-                $exceptionparam->userid     = $user['id'];
-                throw new moodle_exception(
-                    get_string('errorusercontextnotvalid', 'local_leapwebservices', $exceptionparam));
-            }
-            require_capability('moodle/user:viewalldetails', $context);
+                $context = context_user::instance($user->id);
+                try {
+                    self::validate_context($context);
+                } catch (Exception $e) {
+                    $exceptionparam             = new stdClass();
+                    $exceptionparam->message    = $e->getMessage();
+                    $exceptionparam->userid     = $user->id;
+                    throw new moodle_exception(
+                        get_string('errorusercontextnotvalid', 'local_leapwebservices', $exceptionparam));
+                }
+                require_capability('moodle/user:viewalldetails', $context);
 
-            if (empty($user->deleted)) {
+                if ( empty( $user->deleted ) ) {
 
-                $userarray = array();
-                $userarray['id']                    = $user['id'];
-                $userarray['username']              = $user['username'];
-                $userarray['firstname']             = $user['firstname'];
-                $userarray['lastname']              = $user['lastname'];
-                $userarray['email']                 = $user['email'];
+                    $userarray = array();
+                    $userarray['id']                    = $user->id;
+                    $userarray['username']              = $user->username;
+                    $userarray['firstname']             = $user->firstname;
+                    $userarray['lastname']              = $user->lastname;
+                    $userarray['email']                 = $user->email;
 
-                //$userarray['customfields']      = array();
-                //$customfields                   = profile_user_record($user->id);
-                //$customfields                   = (array) $customfields;
-                //foreach ($customfields as $key => $value) {
-                //    $userarray['customfields'][] = array('type' => $key, 'value' => $value);
-                //}
-
-                $result[] = $userarray;
+                    $result[] = $userarray;
+                }
             }
         }
 
-        return $result;
+        if ( count( $result ) == 0 ) {
+            return array();
+        } else {
+            return $result;
+        }
+
     }
 
     /**
@@ -385,7 +380,7 @@ class local_leapwebservices_external extends external_api {
             exit;
         }
 
-        $user = $DB->get_record('user', array('username' => $params['username']));
+        $user = $DB->get_record('user', array('username' => $params['username'] ));
         $courses = enrol_get_users_courses($user->id, false, '*');
         if (!empty($courses)) {
 
@@ -488,6 +483,9 @@ class local_leapwebservices_external extends external_api {
             exit(1);
         }
 
+        /**
+         * TODO: This information is now stored in a course's Leap block instance configuration. See get_badges_by_username() for code.
+         */
         $cores = array(
             'core'              => 'leapcore_core',
             'english'           => 'leapcore_english',
@@ -527,7 +525,8 @@ class local_leapwebservices_external extends external_api {
         );
 
         // Define the target's names.
-        $targets = array( 'TAG', 'L3VA', 'MAG' );
+        //$targets = array( 'TAG', 'L3VA', 'MAG' );
+        $targets = array( 'TAG' );
 
         $courses = array();
         foreach ( $cores as $core => $coresql ) {
@@ -695,9 +694,9 @@ class local_leapwebservices_external extends external_api {
         } // END foreach $courses.
 
         if ( !empty( $courses ) ) {
-
             return $courses;
-
+        } else {
+            return array();
         }
 
     } // END function.
@@ -753,6 +752,9 @@ class local_leapwebservices_external extends external_api {
      * @param string $username EBS username, could be 8-digit int or string.
      * @return array An array describing targets (and metadata) for that user for all leapcore_* courses.
      */
+    /**
+     * TODO: add 'leapcore' tag from this course's Leap block instance configuraion into the output.
+     */
     public static function get_badges_by_username( $username ) {
         global $CFG, $DB;
 
@@ -793,6 +795,15 @@ class local_leapwebservices_external extends external_api {
                 $output[$count]['image_url']    = (string) badges_bake( $hash, $ubadge->id );
                 $output[$count]['name']         = $ubadge->name;
 
+                // Gets the 'leapcore' tag associated with the course associated with this badge.
+                $coursecontext  = context_course::instance( $ubadge->courseid );
+                $blockrecord    = $DB->get_record( 'block_instances', array(
+                    'blockname'         => 'leap',
+                    'parentcontextid'   => $coursecontext->id
+                ), '*', MUST_EXIST );
+                $blockinstance  = block_instance( 'leap', $blockrecord );
+                $output[$count]['leapcore']     = $blockinstance->config->trackertype;
+
             }
 
         }
@@ -815,6 +826,7 @@ class local_leapwebservices_external extends external_api {
                     'details_link'  => new external_value( PARAM_TEXT,  'Full URL to the issued page on Moodle.' ),
                     'image_url'     => new external_value( PARAM_TEXT,  'Full URL to the image.' ),
                     'name'          => new external_value( PARAM_TEXT,  'Badge name.' ),
+                    'leapcore'      => new external_value( PARAM_TEXT,  'The type of core course found.' ),
 
                 )
             )

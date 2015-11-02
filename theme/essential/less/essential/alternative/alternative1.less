@@ -25,7 +25,8 @@
   .uneditable-input,
   .form-item .form-description,
   .form-defaultinfo,
-  .form-label .form-shortname {
+  .form-label .form-shortname,
+  .mform legend a {
     color: ~"[[setting:alternativethemetextcolor1]]";
   }
 
@@ -45,7 +46,7 @@
           }
         }
         &:after {
-          border-left: 30px solid ~"[[setting:alternativethemecolor1]]";;
+          border-left-color: ~"[[setting:alternativethemecolor1]]";;
         }
         &:hover {
           color: ~"[[setting:alternativethemenavcolor1]]";
@@ -75,12 +76,42 @@
       }
     }
   }
+  &.dir-rtl .breadcrumb-nav {
+    ul.breadcrumb.style1 {
+      li {
+        &:after {
+          border-right-color: ~"[[setting:alternativethemecolor1]]";;
+        }
+        &:hover:after {
+          border-right-color: ~"[[setting:alternativethemehovercolor1]]";
+        }
+      }
+    }
+  }
+
   a,
   a:visited {
     color: ~"[[setting:alternativethemeurlcolor1]]";
   }
 
   a:hover {
+    color: ~"[[setting:alternativethemehovercolor1]]";
+  }
+
+  i {
+    color: ~"[[setting:alternativethemeiconcolor1]]";
+    &:hover {
+      color: ~"[[setting:alternativethemehovercolor1]]";
+    }
+    &.fa-warning {
+      color: inherit;
+    }
+  }
+
+  a:before {
+    color: ~"[[setting:alternativethemeiconcolor1]]";
+  }
+  a:hover:before {
     color: ~"[[setting:alternativethemehovercolor1]]";
   }
 
@@ -96,8 +127,18 @@
   #headerlogo {
     border-right-color: ~"[[setting:alternativethemecolor1]]";
   }
+  &.dir-rtl #headerlogo {
+    border-left-color: ~"[[setting:alternativethemecolor1]]";
+  }
 
   .breadcrumb-button {
+    i {
+      vertical-align: middle;
+      color: inherit;
+      &:hover {
+        color: inherit;
+      }
+    }
     input[type="submit"] {
       color: ~"[[setting:alternativethemenavcolor1]]";
       background-color: ~"[[setting:alternativethemecolor1]]";
@@ -121,6 +162,10 @@
       border-top-color: ~"[[setting:alternativethemecolor1]]" !important;
       border-bottom: 1px solid ~"[[setting:alternativethemecolor1]]" !important;
       background-color: ~"[[setting:alternativethemecolor1]]" !important;
+
+      .dropdown-menu {
+        border: 1px solid ~"[[setting:alternativethemecolor1]]";
+      }
 
       .nav > li.dropdown a,
       .nav > li > a {
@@ -201,8 +246,19 @@
         }
       }
     }
-    .nav > li > a {
-      border-left-color: ~"[[setting:alternativethemehovercolor1]]";
+
+    .navbar-inner .usermenu {
+      .dropdown {
+        img.userpicture {
+          border: 1px solid ~"[[setting:alternativethemenavcolor1]]";
+        }
+        ul.dropdown-menu {
+          border: 1px solid ~"[[setting:alternativethemecolor1]]";
+          hr.sep {
+            border-bottom: 1px dotted ~"[[setting:alternativethemecolor1]]";
+          }
+        }
+      }
     }
 
     .navbar-inner .messagemenu {
@@ -227,9 +283,19 @@
       }
     }
   }
+  &.dir-rtl .navbar {
+    .navbar-inner {
+      .nav {
+        border-left-color: ~"[[setting:alternativethemecolor1]]";
+        > li > a {
+          border-right-color: ~"[[setting:alternativethemecolor1]]";
+        }
+      }
+    }
+  }
 
-  .course-content ul.topics li.section.main.clearfix.current {
-    box-shadow: 0 0 10px ~"[[setting:alternativethemecolor1]]";
+  .course-content ul.topics li.section.main.current {
+    box-shadow: 4px 4px 8px 2px ~"[[setting:alternativethemecolor1]]";
   }
 
   .firstword {
@@ -246,6 +312,15 @@
     }
   }
 
+  button,
+  input.form-submit,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  #notice .singlebutton+.singlebutton input,
+  .submit.buttons input[name=cancel] {
+    color: ~"[[setting:alternativethemetextcolor1]]";
+  }
   .button {
     a, a:visited {
       background-color: ~"[[setting:alternativethemecolor1]]";
@@ -265,32 +340,40 @@
     .carousel-inner {
       // Caption for text below images.
       .carousel-caption {
-        background-color: ~"[[setting:alternativethemecolor1]]";
+        background-color: ~"[[setting:alternativethemeslidecaptionbackgroundcolor1]]";
         .opacity(75);
         h4, p {
-          color: #eee; // TODO in settings.
+          color: ~"[[setting:alternativethemeslidecaptiontextcolor1]]";
         }
       }
     }
     // Left/right controls for nav.
     .carousel-control {
-      color: ~"[[setting:alternativethemecolor1]]";
+      color: ~"[[setting:alternativethemeslidebuttoncolor1]]";
 
       // Hover/focus state.
       &:hover,
       &:focus {
-        color: ~"[[setting:alternativethemehovercolor1]]";
+        color: ~"[[setting:alternativethemeslidebuttonhovercolor1]]";
+      }
+      i {
+        color: ~"[[setting:alternativethemeslidebuttoncolor1]]";
+        &:hover,
+        &:focus {
+          color: ~"[[setting:alternativethemeslidebuttonhovercolor1]]";
+        }
       }
     }
 
     // Carousel indicator pips.
     .carousel-indicators {
+      box-shadow: 0px 0px 8px ~"[[setting:alternativethemeslidebuttoncolor1]]";
       li {
-        background-color: ~"[[setting:alternativethemecolor1]]";
+        background-color: ~"[[setting:alternativethemeslidebuttoncolor1]]";
         .opacity(75);
       }
       .active {
-        background-color: ~"[[setting:alternativethemehovercolor1]]";
+        background-color: ~"[[setting:alternativethemeslidebuttonhovercolor1]]";
       }
     }
   }
@@ -422,31 +505,39 @@
     }
   }
 
-  .nav-tabs > li > a {
-    background-color: ~"[[setting:alternativethemecolor1]]";
-    &:hover {
-      background-color: ~"[[setting:alternativethemehovercolor1]]";
+  .nav-tabs > li {
+    > a {
+      color: ~"[[setting:alternativethemenavcolor1]]";
+      background-color: ~"[[setting:alternativethemecolor1]]";
+      &:hover, &:focus {
+        color: ~"[[setting:alternativethemecolor1]]";
+        background-color: ~"[[setting:alternativethemenavcolor1]]";
+      }
+    }
+    &.active > a {
+      color: ~"[[setting:alternativethemetextcolor1]]";
+      background-color: #fff;  // TODO: Pagecolour.
     }
   }
 
   .performanceinfo {
-    border-color: ~"[[setting:themeiconcolor]]";
+    border-color: ~"[[setting:alternativethemeiconcolor1]]";
     var {
       background-color: ~"[[setting:alternativethemecolor1]]";
       color: ~"[[setting:alternativethemenavcolor1]]";
     }
     h2 {
       color: ~"[[setting:alternativethemetextcolor1]]";
-      border-bottom-color: ~"[[setting:themeiconcolor]]";
+      border-bottom-color: ~"[[setting:alternativethemeiconcolor1]]";
       &:before {
-        color: ~"[[setting:themeiconcolor]]";
+        color: ~"[[setting:alternativethemeiconcolor1]]";
       }
     }
     span {
       color: ~"[[setting:alternativethemetextcolor1]]";
     }
     #cache:before, #load:before, #memory:before, #peakmemory:before, #session:before, #included:before, #dbqueries:before, #dbtime:before {
-      color: ~"[[setting:themeiconcolor]]";
+      color: ~"[[setting:alternativethemeiconcolor1]]";
     }
   }
 
@@ -469,17 +560,23 @@
   .path-grade-report-grader table#fixed_column th {
     border-right-color: ~"[[setting:alternativethemecolor1]]";
   }
+  &.dir-rtl .path-grade-report-grader table#fixed_column th {
+    border-left-color: ~"[[setting:alternativethemecolor1]]";
+  }
 
   .back-to-top {
     color: ~"[[setting:alternativethemecolor1]]";
   }
 
-  .course_category_tree .category[data-categoryid] {
+  &.categoryicons .course_category_tree .category[data-categoryid] {
     &:hover {
       background-color: ~"[[setting:alternativethemecolor1]]";
-    }
-    > .info > .categoryname a:before {
-      color: ~"[[setting:alternativethemecolor1]]";
+      > .info > .categoryname a {
+        color: ~"[[setting:alternativethemenavcolor1]]";
+        i {
+          color: inherit;
+        }
+      }
     }
   }
 

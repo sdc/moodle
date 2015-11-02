@@ -1,10 +1,6 @@
 /* @group Responsive */
 
 @media (min-width: 1200px) {
-    .maintenance #region-main,
-    #page-login-index #region-main {
-        width: 100% !important;
-    }
     #page-mod-quiz-edit ul.slots {
         li.section li.activity .activityinstance {
             width: 90%;
@@ -16,7 +12,6 @@
 }
 
 @media (max-width: @navbarCollapseWidth) {
-    font-size: 13px !important;
     h1#title {
         font-size: 2.5em;
         line-height: 35px;
@@ -52,8 +47,17 @@
             #custom_menu_activitystream,
             #custom_menu {
                 vertical-align: top;
-                float: left;
                 clear: both;
+                width: 100%;
+            }
+            &.collapse.in[style*="height: auto"] {
+                min-height: 768px;
+                //overflow: visible;  // Definitely killing the complete() function (line: 157 in bootstrap.js) being fired at the end of the transition.
+            }
+            &.in .nav {
+                .divider {
+                    width: 100%;
+                }
             }
             .nav > li > a {
                 margin-bottom: 0px;
@@ -98,6 +102,7 @@
             }
         }
     }
+
     #page-message-index {
         #region-main {
             float: left;

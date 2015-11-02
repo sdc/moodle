@@ -13,6 +13,12 @@ body {
   background-attachment: ~"[[setting:backgroundattach]]";
   background-repeat: ~"[[setting:backgroundrepeat]]";
   background-size: ~"[[setting:backgroundsize]]";
+  i {
+    color: ~"[[setting:themeiconcolor]]";
+    &:hover {
+      color: ~"[[setting:themehovercolor]]";
+    }
+  }
 }
 
 .container-fluid {
@@ -35,9 +41,12 @@ a:hover {
 }
 
 a:before {
-  color: @icon-colour;
+  color: ~"[[setting:themeiconcolor]]";
   display: inline-block;
   text-decoration: none;
+  &:hover {
+    color: ~"[[setting:themehovercolor]]";
+  }
 }
 
 .color {
@@ -101,6 +110,9 @@ a {
   .colours-alternative3 {
     color: ~"[[setting:alternativethemecolor3]]" !important;
   }
+  .colours-alternative4 {
+    color: ~"[[setting:alternativethemecolor4]]" !important;
+  }
 }
 /* @end */
 
@@ -118,9 +130,10 @@ a {
 
 .course-content ul li.section.main {
   background: url(~"[[pix:theme|bg/dot]]") bottom repeat-x;
-  &.clearfix.current .content {
-    box-shadow: 0px 0px 6px 2px ~"[[setting:themecolor]]";
-    border-radius: 10px;
+  &.clearfix.current {
+    box-shadow: 4px 4px 8px 2px ~"[[setting:themecolor]]";
+    border-style: solid;
+    border-width: 1px;
   }
 }
 
@@ -325,12 +338,22 @@ a.marketing-button:hover {
 
 /* @group Tabs */
 
-.nav-tabs > li > a {
-  color: ~"[[setting:themenavcolor]]";
-  background-color: ~"[[setting:themecolor]]";
-  &:hover, &:focus {
-    color: ~"[[setting:themecolor]]";
-    background-color: ~"[[setting:themenavcolor]]";
+.nav-tabs > li {
+  > a {
+    color: ~"[[setting:themenavcolor]]";
+    background-color: ~"[[setting:themecolor]]";
+    &:hover, &:focus {
+      color: ~"[[setting:themecolor]]";
+      background-color: ~"[[setting:themenavcolor]]";
+    }
+  }
+  &.active > a {
+    color: ~"[[setting:themetextcolor]]";
+    background-color: #fff;  // TODO: Pagecolour.
+    &:hover, &:focus {
+      color: inherit;
+      background-color: inherit;
+    }
   }
 }
 

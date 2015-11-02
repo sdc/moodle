@@ -4,8 +4,21 @@
   border-bottom: 0px none;
 }
 
-#course-category-listings .item-actions.show .menu a {
-  padding: 0px 5px;
+#course-category-listings {
+  .item-actions.show .menu a {
+    padding: 0px 5px;
+  }
+  li {
+    // Tree item indenting to represent depth.
+    i.icon {margin-left:0;}
+    li i.icon {margin-left:1em;}
+    li li i.icon {margin-left:2em;}
+    li li li i.icon {margin-left:3em;}
+    li li li li i.icon {margin-left:4em;}
+    li li li li li i.icon {margin-left:4.5em;}
+    li li li li li li i.icon {margin-left:5em;}
+    li li li li li li li i.icon {margin-left:5.5em;}
+  }
 }
 
 div.mdl-align.title {
@@ -26,6 +39,18 @@ body {  // Inside a body tag so will be more specific and override core plugin s
             margin-right: 20px;
         }
     }
+}
+
+.coursebox > .info > .coursename a {
+  background-position: left 0;
+  padding-left: 0;
+  &:before {
+    display: inline-block;
+    font-family: FontAwesome;
+    content: "\f278";
+    margin-right: 5px;
+    text-decoration: none;
+  }
 }
 
 .listitem-category {
@@ -56,13 +81,6 @@ body {  // Inside a body tag so will be more specific and override core plugin s
       }
     }
   }
-}
-
-// This drives me nuts!
-#page-course-index.pagelayout-coursecategory .category .coursebox, #page-course-index-category.pagelayout-coursecategory .coursebox.collapsed, #frontpage-category-combo .coursebox {
-    > .info > .coursename a {
-        background-position: left 0.2em;
-    }
 }
 
 .coursebox .content {

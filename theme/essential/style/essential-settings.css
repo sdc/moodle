@@ -200,6 +200,9 @@ p.tree_item.branch.emptybranch:focus:before {
   color: [[setting:themecolor]];
   background-color: [[setting:themehovercolor]];
 }
+.breadcrumb-button i {
+  color: inherit;
+}
 /* @end */
 /* @group Breadcrumb */
 .breadcrumb-nav {
@@ -253,32 +256,73 @@ ul.breadcrumb.style2 li a:hover {
 }
 /* @end */
 /* @end */
+/* @group Buttons */
+button,
+input.form-submit,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+#notice .singlebutton + .singlebutton input,
+.submit.buttons input[name=cancel] {
+  color: [[setting:themetextcolor]];
+}
+button:focus,
+input.form-submit:focus,
+input[type="button"]:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+#notice .singlebutton + .singlebutton input:focus,
+.submit.buttons input[name=cancel]:focus,
+button:hover,
+input.form-submit:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+#notice .singlebutton + .singlebutton input:hover,
+.submit.buttons input[name=cancel]:hover,
+button:active,
+input.form-submit:active,
+input[type="button"]:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
+#notice .singlebutton + .singlebutton input:active,
+.submit.buttons input[name=cancel]:active {
+  color: inherit;
+}
+/* @end */
 /* @group Carousel */
 #essentialCarousel.carousel .carousel-inner .carousel-caption {
-  background-color: [[setting:carouselcolor]];
+  background-color: [[setting:slidecaptionbackgroundcolor]];
 }
 #essentialCarousel.carousel .carousel-inner .carousel-caption .carousel-caption-inner {
   max-width: [[setting:pagewidth]];
 }
 #essentialCarousel.carousel .carousel-inner .carousel-caption h4,
 #essentialCarousel.carousel .carousel-inner .carousel-caption p {
-  color: [[setting:slidecolor]];
+  color: [[setting:slidecaptiontextcolor]];
 }
 #essentialCarousel.carousel .carousel-control {
   color: [[setting:slidebuttoncolor]];
+}
+#essentialCarousel.carousel .carousel-control i {
+  color: inherit;
 }
 #essentialCarousel.carousel .carousel-control:hover,
 #essentialCarousel.carousel .carousel-control:focus {
   color: [[setting:slidebuttonhovercolor]];
 }
+#essentialCarousel.carousel .carousel-control:hover i,
+#essentialCarousel.carousel .carousel-control:focus i {
+  color: inherit;
+}
 #essentialCarousel.carousel .carousel-indicators {
-  box-shadow: 0px 0px 8px [[setting:carouselcolor]];
+  box-shadow: 0px 0px 8px [[setting:slidebuttoncolor]];
 }
 #essentialCarousel.carousel .carousel-indicators li {
-  background-color: [[setting:carouselcolor]];
+  background-color: [[setting:slidebuttoncolor]];
 }
 #essentialCarousel.carousel .carousel-indicators .active {
-  background-color: [[setting:carouselactivecolor]];
+  background-color: [[setting:slidebuttonhovercolor]];
 }
 /* @end */
 /*
@@ -292,8 +336,11 @@ ul.breadcrumb.style2 li a:hover {
 .categoryicons .course_category_tree .category[data-categoryid]:hover {
   background-color: [[setting:themecolor]];
 }
-.categoryicons .course_category_tree .category[data-categoryid] > .info > .categoryname a:hover {
+.categoryicons .course_category_tree .category[data-categoryid]:hover > .info > .categoryname a {
   color: [[setting:themenavcolor]];
+}
+.categoryicons .course_category_tree .category[data-categoryid]:hover > .info > .categoryname a i {
+  color: inherit;
 }
 /* @end */
 /* @group Core */
@@ -402,6 +449,25 @@ body.has_dock.essential-colours-alternative3 #dock .dockedtitle.disabled,
 body.has_dock.essential-colours-alternative3 #dock .dockedtitle[disabled] {
   background-color: [[setting:alternativethemehovercolor3]];
 }
+body.has_dock.essential-colours-alternative4 #dock {
+  background-color: [[setting:alternativethemecolor4]];
+}
+body.has_dock.essential-colours-alternative4 #dock .dockedtitle h2,
+body.has_dock.essential-colours-alternative4 #dock .dockeditempanel_hd h2 {
+  color: [[setting:alternativethemetextcolor4]];
+}
+body.has_dock.essential-colours-alternative4 #dock .dockedtitle h2:before,
+body.has_dock.essential-colours-alternative4 #dock .dockeditempanel_hd h2:before {
+  color: [[setting:alternativethemecolor4]];
+}
+body.has_dock.essential-colours-alternative4 #dock .dockedtitle:hover,
+body.has_dock.essential-colours-alternative4 #dock .dockedtitle:focus,
+body.has_dock.essential-colours-alternative4 #dock .dockedtitle:active,
+body.has_dock.essential-colours-alternative4 #dock .dockedtitle.active,
+body.has_dock.essential-colours-alternative4 #dock .dockedtitle.disabled,
+body.has_dock.essential-colours-alternative4 #dock .dockedtitle[disabled] {
+  background-color: [[setting:alternativethemehovercolor4]];
+}
 /* @end */
 /* @group Edit Buttons */
 .menu a.menu-action > i,
@@ -438,7 +504,8 @@ input[type="color"],
 .uneditable-input,
 .form-item .form-description,
 .form-defaultinfo,
-.form-label .form-shortname {
+.form-label .form-shortname,
+.mform legend a {
   color: [[setting:themetextcolor]];
 }
 #page form .form-buttons #fgroup_id_buttonar,
@@ -612,6 +679,10 @@ input[type="color"],
     color: [[setting:themenavcolor]];
     background-color: [[setting:themecolor]];
   }
+  .navbar .navbar-inner .nav-collapse .nav > li.dropdown ul.dropdown-menu > li > a:hover .fa,
+  .navbar .navbar-inner .nav-collapse .nav > li.dropdown ul.dropdown-menu > li > a.open .fa {
+    color: inherit;
+  }
   .navbar .navbar-inner .nav-collapse .nav li.dropdown ul.dropdown-menu {
     background-color: [[setting:themenavcolor]];
     color: [[setting:themecolor]];
@@ -631,6 +702,12 @@ body {
   background-attachment: [[setting:backgroundattach]];
   background-repeat: [[setting:backgroundrepeat]];
   background-size: [[setting:backgroundsize]];
+}
+body i {
+  color: [[setting:themeiconcolor]];
+}
+body i:hover {
+  color: [[setting:themehovercolor]];
 }
 .container-fluid {
   max-width: [[setting:pagewidth]];
@@ -658,6 +735,9 @@ a:before {
   color: [[setting:themeiconcolor]];
   display: inline-block;
   text-decoration: none;
+}
+a:before:hover {
+  color: [[setting:themehovercolor]];
 }
 .color {
   color: [[setting:themecolor]];
@@ -705,6 +785,9 @@ a .colours-alternative2 {
 a .colours-alternative3 {
   color: [[setting:alternativethemecolor3]] !important;
 }
+a .colours-alternative4 {
+  color: [[setting:alternativethemecolor4]] !important;
+}
 /* @end */
 /* @group Navbar
  */
@@ -718,9 +801,10 @@ a .colours-alternative3 {
 .course-content ul li.section.main {
   background: url([[pix:theme|bg/dot]]) bottom repeat-x;
 }
-.course-content ul li.section.main.clearfix.current .content {
-  box-shadow: 0px 0px 6px 2px [[setting:themecolor]];
-  border-radius: 10px;
+.course-content ul li.section.main.clearfix.current {
+  box-shadow: 4px 4px 8px 2px [[setting:themecolor]];
+  border-style: solid;
+  border-width: 1px;
 }
 h2.pagetitle {
   background: url([[pix:theme|bg/dot]]) left center repeat-x;
@@ -883,6 +967,15 @@ a.marketing-button:hover {
 .nav-tabs > li > a:focus {
   color: [[setting:themecolor]];
   background-color: [[setting:themenavcolor]];
+}
+.nav-tabs > li.active > a {
+  color: [[setting:themetextcolor]];
+  background-color: #fff;
+}
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  color: inherit;
+  background-color: inherit;
 }
 @media (max-width: 979px) {
   .nav-collapse {
@@ -1053,4 +1146,3 @@ body {
 }
 /* @end Scrollbar */
 /* @end Custom */
-/*# sourceMappingURL=/theme/essential/style/essential-settings.treasure.map */
