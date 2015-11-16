@@ -100,7 +100,7 @@ echo $OUTPUT->doctype() ?>
     	<div class="row-fluid">
         	<h4><?php echo get_string('visibleadminonly', 'theme_lambda') ?></h4>
             <?php
-                echo $OUTPUT->essentialblocks('hidden-dock');
+                echo $OUTPUT->blocks('hidden-dock');
             ?>
     	</div>
 	</div>
@@ -118,7 +118,7 @@ echo $OUTPUT->doctype() ?>
 
 
 <!--[if lte IE 9]>
-<script src="<?php echo $CFG->wwwroot;?>/theme/lambda/javascript/ie/matchMedia.js"></script>
+<script src="<?php echo $CFG->wwwroot;?>/theme/lambda/javascript/ie/iefix.js"></script>
 <![endif]-->
 
 

@@ -105,7 +105,7 @@ echo $OUTPUT->doctype() ?>
 
 
 <!--[if lte IE 9]>
-<script src="<?php echo $CFG->wwwroot;?>/theme/lambda/javascript/ie/matchMedia.js"></script>
+<script src="<?php echo $CFG->wwwroot;?>/theme/lambda/javascript/ie/iefix.js"></script>
 <![endif]-->
 
 

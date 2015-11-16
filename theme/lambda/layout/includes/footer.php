@@ -35,11 +35,11 @@ $hasfooterright = (empty($PAGE->layout_options['noblocks']) && $PAGE->blocks->re
 ?>
 	<div class="row-fluid">
 		<?php
-            		echo $OUTPUT->essentialblocks($footerl, 'span4');
+            		echo $OUTPUT->footerblocks($footerl, 'span4');
 
-            		echo $OUTPUT->essentialblocks($footerm, 'span4');
+            		echo $OUTPUT->footerblocks($footerm, 'span4');
 
-            		echo $OUTPUT->essentialblocks($footerr, 'span4');
+            		echo $OUTPUT->footerblocks($footerr, 'span4');
 		?>
  	</div>
 

@@ -1,32 +1,3 @@
-<style type="text/css">
-	@font-face {
-	font-family:'FontAwesome';
-	src: url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/fontawesome-webfont.eot');
-	src: url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype'), url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/fontawesome-webfont.woff') format('woff'), url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/fontawesome-webfont.ttf') format('truetype'), url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/fontawesome-webfont.svg#fontawesomeregular') format('svg');
-	font-weight:normal;
-	font-style:normal;
-	}
-</style>
-
-<?php if($PAGE->theme->settings->font_body == 1 || $PAGE->theme->settings->font_heading == 1) { ?>
-<style type="text/css">
-	@font-face {
-	font-family:'open_sansregular';
-	src:url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/OpenSans-Regular-webfont.eot');
-	src:url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/OpenSans-Regular-webfont.woff') format('woff'),url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/OpenSans-Regular-webfont.ttf') format('truetype'),url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/OpenSans-Regular-webfont.svg#open_sansregular') format('svg');
-	font-weight:normal;
-	font-style:normal;
-	}
-	@font-face {
-	font-family:'open_sansbold';
-	src:url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/OpenSans-Bold-webfont.eot');
-	src:url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/OpenSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/OpenSans-Bold-webfont.woff') format('woff'),url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/OpenSans-Bold-webfont.ttf') format('truetype'),url('<?php echo $CFG->wwwroot ?>/theme/lambda/fonts/OpenSans-Bold-webfont.svg#open_sansbold') format('svg');
-	font-weight:normal;
-	font-style:normal;
-	}
-</style>
-<?php } ?>
-
 <?php if($PAGE->theme->settings->font_heading == 2) { ?>
 	<link href="//fonts.googleapis.com/css?family=Abril+Fatface" rel="stylesheet" type="text/css">
 <?php } ?>
