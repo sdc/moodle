@@ -37,7 +37,7 @@ $string['choosereadme'] = '
 </div>
 <h4>Theme Summary</h4>
 <div style="color: #888; text-transform: uppercase; margin-bottom:20px;">
-<p>Compatibility: Moodle 2.5/2.6/2.7/2.8/2.9<br />Theme Version: 1.43<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
+<p>Compatibility: Moodle 2.5/2.6/2.7/2.8/2.9/3.0<br />Theme Version: 1.44<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
 </div>
 <hr />
 <p style="text-align:center;"><img class="img-polaroid" src="lambda/pix/redPIthemes.jpg" /></p>';
@@ -46,6 +46,8 @@ $string['choosereadme'] = '
 $string['settings_general'] = 'General';
 $string['logo'] = 'Logo';
 $string['logodesc'] = 'Please upload your custom logo here. If you upload a logo it will appear in the header.';
+$string['logo_res'] = 'Standard logo dimension';
+$string['logo_res_desc'] = 'Sets the dimension of your logo to a maximum height of 100px. Using this setting, your logo will always correspond to the height of the login container and you can also use a @2x version for high-res screens.';
 $string['pagewidth'] = 'Set Page Width';
 $string['pagewidthdesc'] = 'Choose from the list of availble page layouts.';
 $string['boxed_wide'] = 'Boxed - fixed width wide';
@@ -54,6 +56,8 @@ $string['boxed_variable'] = 'Boxed - variable width';
 $string['full_wide'] = 'Wide - variable width';
 $string['layout'] = 'Use standard block layout';
 $string['layoutdesc'] = 'This theme is designed to put both block columns on the side. If you prefer the standard Moodle course layout you can check to use the standard three column layout.';
+$string['mycourses_dropdown'] = 'MyCourses dropdown menu';
+$string['mycourses_dropdown_desc'] = 'Shows the enrolled courses for a user as a dropdown entry in the Custom Menu.';
 $string['footnote'] = 'Footnote';
 $string['footnotedesc'] = 'Whatever you add to this textarea will be displayed in the footer throughout your Moodle site, e.g. Copyright and the name of your organisation.';
 $string['customcss'] = 'Custom CSS';

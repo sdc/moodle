@@ -48,7 +48,7 @@ h3 {
 h6 {
 	text-transform:uppercase;
 }
-a, a:visited, a.active, a:focus{
+a, a:visited, a.active, a:focus, #page-mod-scorm-player .breadcrumb-button a {
     color: [[setting:linkcolor]];
 	text-decoration: none;
 }
@@ -172,7 +172,7 @@ img.logo {
 #page-navbar {
 	margin-top: -30px;
 	position:relative;
-	z-index:2;
+	z-index:0;
 }
 .breadcrumb-button input[type="submit"]{
 	background: [[setting:maincolor]];
@@ -259,6 +259,9 @@ input{padding-left:40px;}
 .jsenabled .moodle-actionmenu[data-enhance] .toggle-display.textmenu {
     margin-left: 0;
 }
+.jsenabled .usermenu .moodle-actionmenu.show .menu {
+    padding: 4px;
+}
 .moodle-actionmenu.show[data-enhanced] .menu.align-tr-br {
     top: 90%;
 }
@@ -266,6 +269,7 @@ input{padding-left:40px;}
     border: 1px solid #dedede;
     border-radius: 2px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	padding: 5px;
 }
 .moodle-actionmenu.show[data-enhanced] .menu a {
     color: #444;
@@ -306,6 +310,7 @@ input{padding-left:40px;}
     font-size: 1.35em;
     font-weight: bold;
     line-height: 1.15em;
+	word-wrap: break-word;
 }
 .jsenabled .usermenu .moodle-actionmenu.show {
     background-color: initial;
@@ -515,7 +520,7 @@ ul.breadcrumb li:last-child:after {
     max-width: 100%;
     vertical-align: middle;
 	position:relative;
-	z-index:1;
+	z-index:0;
 }
 .navbar .nav-divider-right {
 	height:50px;
@@ -549,6 +554,12 @@ Course
 	background-image:none;
 	padding:0;
 	color:#444;
+}
+.coursebox > .info > .coursename a.dimmed {
+    color: #999;
+}
+.coursebox.collapsed > .info > .coursename a {
+    line-height: 1em;
 }
 .coursebox > .info > .coursename a:before, .coursebox > .info > .name a:before {
     background-color: [[setting:maincolor]];
@@ -631,13 +642,9 @@ table.flexible th, .generaltable th, table.flexible td, .generaltable td {
 }
 .path-grade-report-grader .gradeparent {
     line-height: 1.4em;
-    overflow: auto;
 }
 .path-grade-report-grader .gradeparent .floating {
     display: block !important;
-}
-.path-grade-report-grader .floater.avg.floating {
-    margin-bottom: 2.1em;
 }
 .path-grade-report-grader .gradeparent .floater {
     display: none;
@@ -704,7 +711,7 @@ td.ygtvcell {
     float: left;
 }
 .fa-chevron-circle-left:before, .fa-chevron-circle-right:before {
-    color: #e2a500;
+    color: [[setting:maincolor]];
     font-size: 1.5em;
 }
 
@@ -781,6 +788,12 @@ Blocks
 	padding-bottom: 5px;
 	background: url([[pix:theme|bg/block-divider]]) repeat-x scroll left bottom;
 }
+.block .header .block_action {
+    padding: 1px;
+}
+.block .header .block_action input {
+    padding-left: 0;
+}
 .block.hidden .header .title h2,
 .block.hidden h3.main,
 .block.hidden .header .title {
@@ -798,13 +811,23 @@ Blocks
 .block_rss_client .content {
 	padding: 0px;
 }
-.block_rss_client .content li {
-	border-bottom: 1px bg/dotted #E1E1E1;
-	padding: 5px;
-}
 .block_rss_client .footer {
 	text-align: right;
 	padding-top: 5px;
+}
+.block_rss_client .content ul.list {
+    margin-top: 10px !important;
+}
+.block_rss_client .content ul.list li {
+    background: rgba(255, 255, 255, 0.5) none repeat scroll 0 0;
+}
+#page-footer .block_rss_client .content ul.list li {
+    margin-top: 10px;
+}
+#page-footer .block_rss_client .content ul.list li {
+    background: rgba(255, 255, 255, 0.2) none repeat scroll 0 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px 10px;
 }
 .block_login input[type="text"],
 .block_login input[type="password"] {
@@ -987,26 +1010,18 @@ Quiz
     position: static;
     max-width: 100%;
 }
-#page-mod-quiz-edit div.question div.content .questiontext, #categoryquestions .questiontext {
-    display: none !important;
-}
 #page-mod-quiz-edit div.question div.content .questionname, #categoryquestions .questionname {
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-#page-mod-quiz-edit .questionbankwindow.block div.header {
-	background: [[setting:maincolor]];
-	margin: 0px;
-	border-radius: 3px;
+#categoryquestions .questiontext p {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-.questionbankwindow.block .header .title h2:before {
-	color: #fff;
-	content: "\f128";
-}
-#page-mod-quiz-edit div.container div.generalbox {
-    padding: 0;
+#categoryquestions .checkbox {
+    padding-left: 10px;
 }
 #categoryquestions .radio input[type="radio"], #categoryquestions .checkbox input[type="checkbox"] {
     float: inherit;
@@ -1018,27 +1033,6 @@ Quiz
 #categoryquestions .qtype {
     text-align: left;
     width: 20px;
-}
-.questionbankwindow.block {
-    background: white;
-    padding: 0px, 12px;
-    border-radius: 3px;
-    border: 1px solid #E1E1E1;
-    margin-bottom: 10px;
-	width: 28%;
-}
-.questionbankwindow.block .header .title {
-	border-bottom: 0px none;
-}
-#page-mod-quiz-edit .questionbankwindow div.header .title {
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
-    color: #fff;
-    padding: 0;
-}
-#page-mod-quiz-edit .questionbankwindow a#showbankcmd:hover, #page-mod-quiz-edit .questionbankwindow a#hidebankcmd:hover {
-    background-color: [[setting:maincolor]];
-    color: [[setting:mainhovercolor]];
-    text-decoration: none;
 }
 
 /* =========================================================== *
@@ -1549,6 +1543,19 @@ Responsive & General Adjustments
     padding-left: 0;
     width: 70%;
 }
+body.ie7 #block-login input[type=text], body.ie7 #block-login input[type=password] {
+	font-family: sans-serif !important;
+	width:157px !important;
+}
+body.ie8 #block-login input[type=text], body.ie8 #block-login input[type=password] {
+	font-family: sans-serif !important;
+}
+body#page-mod-feedback-print #page {
+    background: #fff none repeat scroll 0 0;
+    margin: 0 auto;
+    max-width: 95%;
+    padding: 0 15px;
+}
 @media(max-width:979px){
 	.navbar .nav-divider-left, .navbar .nav-divider-right {display:none;}
 	.navbar .nav > li > a {border:none;}
@@ -1644,6 +1651,8 @@ Additional CSS for RTL Support
 @media(max-width:767px){
 	.dir-rtl .spotlight-full {margin-left: -17px !important;margin-right: -45px !important;}
 }
+
+[[setting:logo_res]]
 
 [[setting:pagewidth_wide]]
 

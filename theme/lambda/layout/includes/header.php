@@ -42,14 +42,7 @@ if (strpos($checkuseragent, 'MSIE 8')) {$username = str_replace("'", "&prime;", 
 <?php
 } ?>
 
-<?php
-if (strpos($checkuseragent, 'MSIE 8') || strpos($checkuseragent, 'MSIE 7')) {?>
-    <header id="page-header-IE7-8" class="clearfix">
-<?php
-} else { ?>
     <header id="page-header" class="clearfix">
-<?php
-} ?>
        
     <div class="container-fluid">    
     <div class="row-fluid">
@@ -84,73 +77,16 @@ if (strpos($checkuseragent, 'MSIE 8') || strpos($checkuseragent, 'MSIE 7')) {?>
 		$wwwroot = str_replace("http://", "https://", $CFG->wwwroot);
 	}
 
-	if (!isloggedin() or isguestuser()) { ?>
+		if (!isloggedin() or isguestuser()) { ?>
 		<form class="navbar-form pull-right" method="post" action="<?php echo $wwwroot; ?>/login/index.php?authldap_skipntlmsso=1">
 		<div id="block-login">
 		<label id="user"><i class="fa fa-user"></i></label>	
-		<input class="span2" type="text" name="username" onFocus="if(this.value =='<?php echo $username; ?>' ) this.value=''" value="<?php echo $username; ?>" style="margin-bottom:10px;">
-		<label id="pass"><i class="fa fa-key"></i></label>
-		<input class="span2" type="text" name="password" id="password" value="<?php echo get_string('password'); ?>">
+		<input id="inputName" class="span2" type="text" name="username" placeholder="<?php echo $username; ?>" style="margin-bottom:10px;">
+		<label id="pass"><i class="fa fa-key"></i></label>        
+		<input id="inputPassword" class="span2" type="password" name="password" id="password" placeholder="<?php echo get_string('password'); ?>">        
 		<input type="submit" id="submit" name="submit" value=""/>
 		</div>
 		</form>
-        
-        <script type="text/javascript">
-        	if (window.addEventListener)
-			addEvent = function(ob, type, fn ) {
-				ob.addEventListener(type, fn, false );
-			};
-			else if (document.attachEvent)
-			addEvent = function(ob, type, fn ) {
-				var eProp = type + fn;
-				ob['e'+eProp] = fn;
-				ob[eProp] = function(){ob['e'+eProp]( window.event );};
-				ob.attachEvent( 'on'+type, ob[eProp]);
-			};
- 
-			(function() {
-				var p = document.getElementById('password');
-				/*@cc_on
-				  @if (@_jscript)
-				  @if (@_jscript_version < 9)
-				  var inp = document.createElement("<input name='password'>");
-				  inp.id = 'password1';
-				  inp.type = 'text';
-				  inp.value = '<?php echo get_string('password'); ?>';
-				  p.parentNode.replaceChild(inp,p);
-				  p = document.getElementById('password1');
-				  @else
-				  p.type = 'text';
-				  p.value = '<?php echo get_string('password'); ?>';
-				  @end
-				@else */
-				  p.type = 'text';
-				  p.value = '<?php echo get_string('password'); ?>';
-				/* @end @*/
-				passFocus = function() {
-				if ('text' === this.type) {
-				  /*@cc_on
-				    @if (@_jscript)
-				      @if (@_jscript_version < 9)
-				  var inp = document.createElement("<input name='password'>");
-				    inp.id = 'password';
-				    inp.type = 'password';
-				    inp.value = '';
-				    this.parentNode.replaceChild(inp,this);
-				    setTimeout(inp.focus,5);
-				      @else
-					  p.type = 'password';
-				  p.value = '';
-				  @end
-				  @else */
-				    this.value = '';
-				    this.type = 'password';
-				  /* @end @*/
-				}
-			}
-			addEvent(p, 'focus', passFocus);
-			}());
-        </script>
         
 	<?php } else { 
 

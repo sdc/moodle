@@ -111,6 +111,12 @@ $THEME->layouts = array(
         'defaultregion' => 'footer-right',
         'options' => array('nofooter'=>true, 'nonavbar'=>true, 'noheader'=>true),
     ),
+	// The pagelayout used for reports.
+    'report' => array(
+        'file' => 'report.php',
+        'regions' => array('side-pre', 'footer-left', 'footer-middle', 'footer-right'),
+        'defaultregion' => 'side-pre',
+    ),
 	// TOTARA Grade report
 	'noblocks' => array(
         'file' => 'columns1.php',
@@ -148,12 +154,6 @@ $THEME->layouts = array(
     'redirect' => array(
         'file' => 'embedded.php',
         'regions' => array(),
-    ),
-    // The pagelayout used for reports.
-    'report' => array(
-        'file' => 'columns2.php',
-        'regions' => array('side-pre', 'footer-left', 'footer-middle', 'footer-right'),
-        'defaultregion' => 'side-pre',
     ),
     // The pagelayout used for safebrowser and securewindow.
     'secure' => array(

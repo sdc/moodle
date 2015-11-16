@@ -61,24 +61,20 @@ echo $OUTPUT->doctype() ?>
 
 
     <div id="page-content" class="row-fluid">
-        <section id="region-main" class="span9<?php if ($left) { echo ' pull-left'; } ?><?php if ($standardlayout) { echo ' pull-right'; } ?>">
-            <?php
-            echo $OUTPUT->course_content_header();
-            echo $OUTPUT->main_content();
-            echo $OUTPUT->course_content_footer();
-            ?>
-        </section>
-        <?php
-        $classextra1 = '';
-		$classextra2 = '';
-		if (!$standardlayout) {
-            $classextra1 = ' pull-right';
-        }
-        if ($left or (!$left and $standardlayout)) {
-            $classextra2 = ' desktop-first-column';
-        }
-        echo $OUTPUT->blocks('side-pre', 'span3'.$classextra1.$classextra2);
-        ?>
+    	<div id="<?php echo $regionbsid ?>" class="span12">
+        	<div class="row-fluid">
+        		<section id="region-main" class="span12">
+            		<?php
+            			echo $OUTPUT->course_content_header();
+            			echo $OUTPUT->main_content();
+            			echo $OUTPUT->course_content_footer();
+            		?>
+        		</section>
+            </div>
+        	<?php
+        		echo $OUTPUT->blocks('side-pre', 'report-blocks');
+        	?>
+    	</div>
     </div>
 
     <a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><p><?php print_string('backtotop', 'theme_lambda'); ?></p></a>
@@ -95,7 +91,7 @@ echo $OUTPUT->doctype() ?>
 
 
 <!--[if lte IE 9]>
-<script src="<?php echo $CFG->wwwroot;?>/theme/lambda/javascript/ie/iefix.js"></script>
+<script src="<?php echo $CFG->wwwroot;?>/theme/lambda/javascript/ie/iefix1.js"></script>
 <![endif]-->
 
 

@@ -40,6 +40,14 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	
+	// Logo resolution.
+	$name = 'theme_lambda/logo_res';
+    $title = get_string('logo_res', 'theme_lambda');
+    $description = get_string('logo_res_desc', 'theme_lambda');
+    $setting = new admin_setting_configcheckbox($name, $title, $description, 0);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
 	// Fixed or Variable Width.
     $name = 'theme_lambda/pagewidth';
     $title = get_string('pagewidth', 'theme_lambda');
@@ -54,6 +62,15 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $name = 'theme_lambda/layout';
     $title = get_string('layout', 'theme_lambda');
     $description = get_string('layoutdesc', 'theme_lambda');
+    $default = false;
+    $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+    // Show MyCourses dropdown in custommenu.
+    $name = 'theme_lambda/mycourses_dropdown';
+    $title = get_string('mycourses_dropdown', 'theme_lambda');
+    $description = get_string('mycourses_dropdown_desc', 'theme_lambda');
     $default = false;
     $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
     $setting->set_updatedcallback('theme_reset_all_caches');

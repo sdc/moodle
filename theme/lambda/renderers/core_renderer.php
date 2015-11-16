@@ -24,25 +24,37 @@
  */
  
  class theme_lambda_core_renderer extends theme_bootstrapbase_core_renderer {
- 	
-    public function notification($message, $classes = 'notifyproblem') {
-        $message = clean_text($message);
-        $type = '';
+  
+    protected function render_custom_menu(custom_menu $menu) {
+ 		
+		global $CFG;
 
-        if ($classes == 'notifyproblem') {
-            $type = 'alert alert-error';
+        $hasdisplaymycourses = theme_lambda_get_setting('mycourses_dropdown');
+		
+        if (isloggedin() && !isguestuser()  && $hasdisplaymycourses) { 
+ 
+            $branchlabel = get_string('mycourses') ;
+            $branchurl   = new moodle_url('#');
+            $branchtitle = $branchlabel;
+            $branchsort  = 10000 ; 
+            $branch = $menu->add($branchlabel, $branchurl, $branchtitle, $branchsort);
+ 
+ 			if ($mycourses = enrol_get_my_courses(NULL, 'visible DESC, fullname ASC')) {
+				foreach ($mycourses as $mycourse) {
+                	$branch->add($mycourse->shortname, new moodle_url('/course/view.php', array('id' => $mycourse->id)), $mycourse->fullname);
+            	}
+			}
+			else {
+				$hometext = get_string('myhome');
+            	$homelabel = $hometext;
+            	$branch->add($homelabel, new moodle_url('/my/index.php'), $hometext);
+			}
         }
-        if ($classes == 'notifysuccess') {
-            $type = 'alert alert-success';
-        }
-        if ($classes == 'notifymessage') {
-            $type = 'alert alert-info';
-        }
-        if ($classes == 'redirectmessage') {
-            $type = 'alert alert-block alert-info';
-        }
-        return "<div class=\"$type\">$message</div>";
-    } 
+        return parent::render_custom_menu($menu);
+    }
+
+	
+
     
     public function footer() {
         global $CFG, $DB, $USER;
@@ -66,7 +78,7 @@
         return $output . $footer;
     }
    
-    public function essentialblocks($region, $classes = array(), $tag = 'aside') {
+    public function footerblocks($region, $classes = array(), $tag = 'aside') {
         $classes = (array)$classes;
         $classes[] = 'block-region';
         $attributes = array(
