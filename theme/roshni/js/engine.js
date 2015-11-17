@@ -7,10 +7,10 @@
 	    _minSlides = 1;
 	    _minSlides2 = 1;
 	} else if (_width > 550 && _width <= 760) {
-	    _minSlides = 1;
+	    _minSlides = 1;/*dc*/
 	    _minSlides2 = 2;
 	} else if (_width > 760 && _width <= 1200) {
-	    _minSlides = 2;
+	    _minSlides = 2;/*dc */
 	    _minSlides2 = 2;
 	} else {	
 	    _minSlides = 4;
@@ -55,6 +55,22 @@
 		infiniteLoop: false,
 	});
 
+	
+	/**************  For accordian **************/
+	
+	
+/*	$(".block> div.content").show();
+	$(".block> div.header").each(function(){
+		$(this).click(function(){
+		//$(".content").slideUp("slow");
+		$(this).next().slideToggle("slow");
+		//$(this).$("p").css("color", "red");
+		
+		});
+	}); */
+	
+	
+	/******************************************/
 
 
 	$('.tabs-nav a').click(function(){
@@ -83,4 +99,10 @@
 		$(this).parents('.upload-img-text').find('input[type="text"]').val(filename);
 	});
   // END script for upload image text
+	
+	
+	
+	
+
+
 });

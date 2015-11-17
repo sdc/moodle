@@ -78,7 +78,7 @@
 						<div class="about-item-img-wr">
 							<?php if(!empty($addblockArray_Value["blockicon"])) { ?>
 							<div class="about-item-img">
-								<a href="javascript:void(0);"><i class="fa <?php echo $addblockArray_Value["blockicon"]; ?>"></i></a>
+								<a href="<?php echo $addblockArray_Value["blocklink"]; ?>"><i class="fa <?php echo $addblockArray_Value["blockicon"]; ?>"></i></a>
 							</div>
 							<?php } else {?>
 							<div class="about-item-img">

@@ -34,15 +34,15 @@
 			} else { ?>
 				<div class="contact-items">
 					<div class="contact-item">
-						<i><img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-label.png" alt=""></i>
+						<i><img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-label.png" alt=""></i>
 						<p>Kolkata, India</p>
 					</div>
 					<div class="contact-item">
-						<i><img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-email.png" alt=""></i>
+						<i><img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-email.png" alt=""></i>
 						<p>roshni@dualcube.com</p>
 					</div>
 					<div class="contact-item">
-						<i><img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-phone.png" alt=""></i>
+						<i><img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-phone.png" alt=""></i>
 						<p>+ 91 33 64578322</p>
 					</div>
 				</div>
@@ -56,15 +56,15 @@
 	} else { ?>
 		<div class="contact-items">
 			<div class="contact-item">
-				<i><img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-label.png" alt=""></i>
+				<i><img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-label.png" alt=""></i>
 				<p>Kolkata, India</p>
 			</div>
 			<div class="contact-item">
-				<i><img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-email.png" alt=""></i>
+				<i><img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-email.png" alt=""></i>
 				<p>roshni@dualcube.com</p>
 			</div>
 			<div class="contact-item">
-				<i><img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-phone.png" alt=""></i>
+				<i><img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-phone.png" alt=""></i>
 				<p>+ 91 33 64578322</p>
 			</div>
 		</div>

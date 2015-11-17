@@ -1,4 +1,4 @@
-<script src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/js/homescript.js"></script>
+<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/homescript.js"></script>
 <?php
 	$pluginname = 'theme_roshni';
 		$aboutsite = 'partners';
@@ -27,7 +27,7 @@
 							<?php if(!empty($partnerArrayvalue)) { ?>
 								<img src="<?php echo $partnerArrayvalue; ?>">
 							<?php } else { ?>
-								<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/lg_1.png">
+								<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/lg_1.png">
 							<?php } ?>
 						</li> 
 					<?php } ?>
@@ -39,16 +39,16 @@
 				<input type = "hidden" class = "countpart" value = "4"/>
 				<ul id="autoplay-image" class="blocks-1">
 					<li class="clnimg">
-						<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/lg_1.png" alt>
+						<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/lg_1.png" alt>
 					</li>                                                                                         
 					<li class="clnimg">                                                                           
-						<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/lg_2.png" alt>
+						<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/lg_2.png" alt>
 					</li>                                                                                         
 					<li class="clnimg">                                                                           
-						<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/lg_3.png" alt>
+						<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/lg_3.png" alt>
 					</li>                                                                                         
 					<li class="clnimg">                                                                           
-						<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/lg_4.png" alt>
+						<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/lg_4.png" alt>
 					</li>
 				</ul>
 			</div> 

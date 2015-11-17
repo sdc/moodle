@@ -14,7 +14,7 @@ Administration > Site Administration > Appearance > Themes > Roshni
 from the list of theme names that appear at this point in the side block.
 
 For any further assistance, please check the full documentation or feel free to contact Roshni.
-Documentation  Link:   http://wip.dualcube.com/html/roshni-doc/
+Online Documentation  Link:   http://roshni.dualcube.com/documentation/
 
 
 

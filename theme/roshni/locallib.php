@@ -2,11 +2,11 @@
 
 function getFontAwesomeIconArray(){
    $pattern = '/\.(fa-(?:\w+(?:-)?)+):before\s+{\s*content:\s*"(.+)";\s+}/';
-
+   GLOBAL $CFG;
    if( ini_get('allow_url_fopen') ) {
-     $subject = file_get_contents( 'http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css' );
+     $subject = file_get_contents( $CFG->wwwroot.'/theme/roshni/css/font-awesome.css' );
    } else {
-     $subject = file_get_contents_curl( 'http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css' );
+     $subject = file_get_contents_curl( $CFG->wwwroot.'/theme/roshni/css/font-awesome.css' );
    }
    preg_match_all($pattern, $subject, $matches, PREG_SET_ORDER);
 

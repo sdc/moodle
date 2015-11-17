@@ -8,7 +8,7 @@ $logosetting = json_decode($logosettings, true);
 if ($favicon != "") {
     $favicondetails = trim(stripcslashes($favicon),'"');
 } else {
-    $favicondetails = $CFG->wwwroot . '/theme/' . $CFG->theme . '/favicon.ico';
+    $favicondetails = $CFG->wwwroot . '/theme/roshni/favicon.ico';
 }
 // Set default (LTR) layout mark-up for a three column page.
 $regionmainbox = 'span9';

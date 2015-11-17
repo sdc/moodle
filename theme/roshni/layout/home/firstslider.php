@@ -21,7 +21,7 @@
 				<?php if(!empty($fslide["link"])) { ?>
 					<img src="<?php echo $fslide["link"][$slidercount]; ?>" alt="">
 				<?php } else {?>
-					<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/sl-1.jpg" alt="">
+					<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/sl-1.jpg" alt="">
 				<?php } ?>
 				<div class="top-slide-content">
 					<div class="customslider">
@@ -41,7 +41,7 @@
 	<?php } else { ?>
 		<ul class="top-slider"> 
 			<li class="content-wrap">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/sl-1.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/sl-1.jpg" alt="">
 				<div class="top-slide-content">
 					<h2>THE TASK OF THE</h2>
 					<h1>MODERN EDUCATOR</h1>
@@ -50,7 +50,7 @@
 				</div>
 			</li>
 			<li class="content-wrap">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/sl-1.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/sl-1.jpg" alt="">
 				<div class="top-slide-content">
 					<h2>THE TASK OF THE</h2>
 					<h1>MODERN EDUCATOR</h1>
@@ -59,7 +59,7 @@
 				</div>
 			</li>
 			<li class="content-wrap">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/sl-1.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/sl-1.jpg" alt="">
 				<div class="top-slide-content">
 					<h2>THE TASK OF THE</h2>
 					<h1>MODERN EDUCATOR</h1>
@@ -78,7 +78,7 @@
     			<?php if(!empty($fslide["link"])) { ?>
 					<img src="<?php echo $fslide["link"][$slidercount]; ?>" alt="" class="rsImg" />
 				<?php } else {?>
-					<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/sl-1.jpg" class="rsImg" />
+					<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/sl-1.jpg" class="rsImg" />
 				<?php } ?>
 				<div class="ban35 rs-inner"> 
 					<div class="ban35bl content-wrap"> 
@@ -108,7 +108,7 @@
   <div class="royalSlider-preview">
     <div class="royalSlider rsDefaultInv slider-in-laptop">
     		<div class="showpic rsContent">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/sl-1.jpg" class="rsImg" />
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/sl-1.jpg" class="rsImg" />
 				<div class="ban35 rs-inner"> 
 					<div class="ban35bl content-wrap"> 
 						<div class="ban35bltxt">
@@ -123,7 +123,7 @@
 				</div>
 			</div>
 			<div class="showpic rsContent">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/sl-1.jpg" class="rsImg" />
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/sl-1.jpg" class="rsImg" />
 				<div class="ban35 rs-inner"> 
 					<div class="ban35bl content-wrap"> 
 						<div class="ban35bltxt">
@@ -138,7 +138,7 @@
 				</div>
 			</div>
 			<div class="showpic rsContent">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/sl-1.jpg" class="rsImg" />
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/sl-1.jpg" class="rsImg" />
 				<div class="ban35 rs-inner"> 
 					<div class="ban35bl content-wrap"> 
 						<div class="ban35bltxt">
@@ -160,7 +160,7 @@
 } else { ?>
 	<ul class="top-slider"> 
 			<li class="content-wrap">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/sl-1.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/sl-1.jpg" alt="">
 				<div class="top-slide-content">
 					<h2>THE TASK OF THE</h2>
 					<h1>MODERN EDUCATOR</h1>
@@ -169,7 +169,7 @@
 				</div>
 			</li>
 			<li class="content-wrap">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/sl-1.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/sl-1.jpg" alt="">
 				<div class="top-slide-content">
 					<h2>THE TASK OF THE</h2>
 					<h1>MODERN EDUCATOR</h1>
@@ -178,7 +178,7 @@
 				</div>
 			</li>
 			<li class="content-wrap">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/sl-1.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/sl-1.jpg" alt="">
 				<div class="top-slide-content">
 					<h2>THE TASK OF THE</h2>
 					<h1>MODERN EDUCATOR</h1>

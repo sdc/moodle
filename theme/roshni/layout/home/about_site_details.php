@@ -1,6 +1,10 @@
 <div class="about">
 	<div class="container">
+		<?php if(!empty(get_config('theme_roshni', 'sitedetailshrading'))) { ?>
+		<h2 class="header-b-2"><?php echo  json_decode(get_config('theme_roshni', 'sitedetailshrading')); ?></h2>
+		<?php } else { ?>
 		<h2 class="header-b-2">About University Of Utopia</h2>
+		<?php } ?>
 		<!-- site details part -->		
 		<?php
 		$pluginname = 'theme_roshni';

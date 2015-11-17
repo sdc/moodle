@@ -491,7 +491,7 @@ form.innerpage-login {
 
 .top-slide-content .customslider {
     margin-top: -78px;
-	text-align:left;
+	/*text-align:left;*/
 }
 
 header .bx-wrapper {
@@ -1630,10 +1630,6 @@ div#page-navbar {
 	box-shadow: none;
 }
 
-#dockeditempanel .dockeditempanel_content {
-    z-index:11111;
-}
-
 .block .header {
 	padding: 0 0 15px;
 }
@@ -2316,7 +2312,14 @@ button.atto_title_button img.icon:last-child {
 .custom-article {
 	padding:0 0 0 10px;
 	line-height:26px;
-	width:146%;
+}
+
+#page .custom-article a.btn {
+	color: #222!important;
+}
+
+#page .custom-article a.btn-info {
+	color: #fff!important;
 }
 
 .custom-article p {
@@ -3556,3 +3559,15 @@ body.has_dock #page {
 }
 
 /* * - END of @media ---------------------------------------------------------- */
+.loginpanel {
+    max-width: 460px;
+}
+
+.loginbox input[type="submit"] {   
+    margin: 0 0 0 130px;
+}
+
+.guestform input[type="submit"] {
+      margin: 31px 0 0 130px;
+
+}

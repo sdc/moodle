@@ -58,13 +58,13 @@
 					<?php if(!empty($avl_courseArray_value["image"])) { ?> 
 					<img src="<?php echo $avl_courseArray_value["image"]; ?>" alt="">
 					<?php } else { ?>
-					<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/c-1.jpg" alt="">
+					<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/c-1.jpg" alt="">
 					<?php } ?>
 					
 					<?php if(!empty($avl_courseArray_value["textone"]) && !empty($avl_courseArray_value["texttwo"])) { ?> 
 						<div class="mask"></div>
 						<div class="av-course-item-cont">
-							<h2><a href="javascript:void(0);"><?php echo $avl_courseArray_value["textone"]; ?></a></h2>
+							<h2><a href="<?php echo $avl_courseArray_value["pagelink"];?>"><?php echo $avl_courseArray_value["textone"]; ?></a></h2>
 							<p><?php echo $avl_courseArray_value["texttwo"]; ?></p>
 						</div>
 					<?php } else { ?>
@@ -81,35 +81,35 @@
 	} else { ?>
 		<ul class="av-courses-slider">
 			<li>
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/c-1.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/c-1.jpg" alt="">
 				<div class="av-course-item-cont">
 					<h2><a href="javascript:void(0);">Architecture</a></h2>
 					<p>School of Planning and Architecture</p>
 				</div>
 			</li>
 			<li>
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/c-2.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/c-2.jpg" alt="">
 				<div class="av-course-item-cont">
 					<h2><a href="javascript:void(0);">Humanities & Arts</a></h2>
 					<p>School of Humanities, Social Sciences and Arts</p>
 				</div>
 			</li>
 			<li>
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/c-3.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/c-3.jpg" alt="">
 				<div class="av-course-item-cont">
 					<h2><a href="javascript:void(0);">Basic Sciences</a></h2>
 					<p>School of Basic Sciences</p>
 				</div>
 			</li>
 			<li>
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/c-4.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/c-4.jpg" alt="">
 				<div class="av-course-item-cont">
 					<h2><a href="javascript:void(0);">Entrepreneurship</a></h2>
 					<p>School of Entrepreneurship and Business</p>
 				</div>
 			</li>
 			<li>
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/c-5.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/c-5.jpg" alt="">
 				<div class="av-course-item-cont">
 					<h2><a href="javascript:void(0);">Multidisciplinary</a></h2>
 					<p>Multidisciplinary Courses</p>
@@ -123,4 +123,3 @@
 		<a href="<?php if($availablecourselink) { echo $availablecourselink; } else { ?><?php echo $CFG->wwwroot ?>/course/index.php<?php } ?>" class="btn-view-all"><?php if(!empty($availablecourselinktitle)) { echo trim($availablecourselinktitle ,'"'); } else { ?>View All Courses<?php } ?></a>
 	</div>
 </div><!-- END of .av-courses -->
-
