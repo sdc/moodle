@@ -54,7 +54,7 @@
 		} else {
 			$course_category = '';
 		}
-		//print_r($course_category);
+		
 		if(!empty($category_heading) && $category_heading["catmhead"][0] != null) {
 			$course_categoryArray = array();
 			foreach ($course_category as $course_categorykey => $course_categoryval) {
@@ -62,14 +62,13 @@
 					$course_categoryArray[$course_categoryvalKey][$course_categorykey] = $course_categoryvalValue;
 				} 
 			}
-			//print_r($course_categoryArray);
 			foreach($course_categoryArray as $course_categoryArraydetails) {
 			?>
 			<div class="categories-item view fourth-effect">
 			<?php if(!empty($course_categoryArraydetails["catimage"])) { ?>
 			<img src="<?php echo $course_categoryArraydetails["catimage"]; ?>" alt="">
 			<?php } else { ?>
-			<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/cat-1.jpg" alt="">
+			<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/cat-1.jpg" alt="">
 			<?php } ?>
 			<div class="mask"></div>
 			<div class="categories-item-cont">
@@ -92,7 +91,7 @@
 		<?php
 		} else { ?>
 			<div class="categories-item view fourth-effect">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/cat-1.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/cat-1.jpg" alt="">
 				<div class="mask"></div>
 				<div class="categories-item-cont">
 					<h5><a href="javascript:void(0);">Egronomics</a></h5>
@@ -100,7 +99,7 @@
 				</div>
 			</div><!-- END of .categories-item -->
 			<div class="categories-item view fourth-effect">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/cat-2.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/cat-2.jpg" alt="">
 				<div class="mask"></div>
 				<div class="categories-item-cont">
 					<h5><a href="javascript:void(0);">History</a></h5>
@@ -108,7 +107,7 @@
 				</div>
 			</div><!-- END of .categories-item -->
 			<div class="categories-item view fourth-effect">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/cat-3.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/cat-3.jpg" alt="">
 				<div class="mask"></div>
 				<div class="categories-item-cont">
 					<h5><a href="javascript:void(0);">Cell Biology</a></h5>
@@ -116,7 +115,7 @@
 				</div>
 			</div><!-- END of .categories-item -->
 			<div class="categories-item view fourth-effect">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/cat-4.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/cat-4.jpg" alt="">
 				<div class="mask"></div>
 				<div class="categories-item-cont">
 					<h5><a href="javascript:void(0);">Structural Engineering</a></h5>
@@ -124,7 +123,7 @@
 				</div>
 			</div><!-- END of .categories-item -->
 			<div class="categories-item view fourth-effect">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/cat-5.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/cat-5.jpg" alt="">
 				<div class="mask"></div>
 				<div class="categories-item-cont">
 					<h5><a href="javascript:void(0);">Automotive Engineering</a></h5>
@@ -132,7 +131,7 @@
 				</div>
 			</div><!-- END of .categories-item -->
 			<div class="categories-item view fourth-effect">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/cat-6.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/cat-6.jpg" alt="">
 				<div class="mask"></div>
 				<div class="categories-item-cont">
 					<h5><a href="javascript:void(0);">Social Sciences</a></h5>
@@ -140,7 +139,7 @@
 				</div>
 			</div><!-- END of .categories-item -->
 			<div class="categories-item view fourth-effect">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/cat-7.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/cat-7.jpg" alt="">
 				<div class="mask"></div>
 				<div class="categories-item-cont">
 					<h5><a href="javascript:void(0);">Petrology</a></h5>
@@ -148,7 +147,7 @@
 				</div>
 			</div><!-- END of .categories-item -->
 			<div class="categories-item view fourth-effect">
-				<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/cat-8.jpg" alt="">
+				<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/cat-8.jpg" alt="">
 				<div class="mask"></div>
 				<div class="categories-item-cont">
 					<h5><a href="javascript:void(0);">Urban and City Planning</a></h5>

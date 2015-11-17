@@ -1,5 +1,5 @@
 <?php
-include($CFG->dirroot. '/theme/' . $CFG->theme . '/config.php'); 
+include($CFG->dirroot. '/theme/roshni/config.php'); 
 
 // Get the HTML for the settings bits.
 $html = theme_roshni_get_html_for_settings($OUTPUT, $PAGE);

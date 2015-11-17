@@ -14,7 +14,7 @@
     if ($favicon != '""') {
         $favicondetails = $favicon;
     } else {
-        $favicondetails = $CFG->wwwroot . '/theme/' . $CFG->theme . '/favicon.ico';
+        $favicondetails = $CFG->wwwroot . '/theme/roshni/favicon.ico';
     }
     ?>
     <?php

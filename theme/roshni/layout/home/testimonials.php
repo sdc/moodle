@@ -70,7 +70,7 @@
 									<img src="<?php echo $testimonialslideArray_Value["imageleft"];?>" alt="">
 									<h4><?php echo $testimonialslideArray_Value["userleft"];?></h4>
 									<?php } else { ?>
-									<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-user-1.png" alt="">
+									<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-user-1.png" alt="">
 									<h4>Laali Debi, Director, University of Utopia</h4>
 									<?php } ?>
 								</div>
@@ -89,7 +89,7 @@
 						<p>While this is a testimonial block, you may also use it as "faculty speak", student testimonials or even parent feedback. Wonderful!</p>
 					</div>
 					<div class="feedback-item-user">
-						<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-user-1.png" alt="">
+						<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-user-1.png" alt="">
 						<h4>Laali Debi, Director, University of Utopia</h4>
 						
 					</div>
@@ -101,7 +101,7 @@
 						<p>The customary John Doe testimonial. Let this block content all the beautiful words your stakeholders have about you.</p>
 					</div>
 					<div class="feedback-item-user">
-						<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-user-2.png" alt="">
+						<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-user-2.png" alt="">
 						<h4>John Doe, Electrical Engineering, Class of 2015</h4>
 						
 					</div>
@@ -113,7 +113,7 @@
 						<p>While this is a testimonial block, you may also use it as "faculty speak", student testimonials or even parent feedback. Wonderful!</p>
 					</div>
 					<div class="feedback-item-user">
-						<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-user-1.png" alt="">
+						<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-user-1.png" alt="">
 						<h4>Laali Debi, Director, University of Utopia</h4>
 						
 					</div>
@@ -125,7 +125,7 @@
 						<p>The customary John Doe testimonial. Let this block content all the beautiful words your stakeholders have about you.</p>
 					</div>
 					<div class="feedback-item-user">
-						<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-user-1.png" alt="">
+						<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-user-1.png" alt="">
 						<h4>John Doe, Electrical Engineering, Class of 2015</h4>
 						
 					</div>
@@ -137,7 +137,7 @@
 						<p>While this is a testimonial block, you may also use it as "faculty speak", student testimonials or even parent feedback. Wonderful!</p>
 					</div>
 					<div class="feedback-item-user">
-						<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-user-2.png" alt="">
+						<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-user-2.png" alt="">
 						<h4>Laali Debi, Director, University of Utopia</h4>
 						
 					</div>
@@ -150,7 +150,7 @@
 					</div>
 					<div class="feedback-item-user">
 						
-						<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/img/i-user-2.png" alt="">
+						<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/css/img/i-user-2.png" alt="">
 						<h4>John Doe, Electrical Engineering, Class of 2015</h4>
 						
 					</div>

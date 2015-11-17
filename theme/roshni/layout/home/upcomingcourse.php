@@ -39,7 +39,7 @@
 						<?php if(!empty($upcomingcourseArrayvalue['upcimage'])) { ?>
 							<img src="<?php echo $upcomingcourseArrayvalue['upcimage']; ?>" alt="" <?php if($viewimage == "right") {?>style="float: right;"<?php } ?>>
 						<?php } else { ?>	
-							<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/u-1.jpg" alt="">
+							<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/u-1.jpg" alt="">
 						<?php } ?>	
 						
 						<?php if(!empty($upcomingcourseArrayvalue['upcdetails'])) { ?>
@@ -68,7 +68,7 @@
 			<ul class="feedback-slider-upcomingcourse">
 				<li>
 				<div class="upcoming-courses-item">
-					<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/upcoming-course-2.jpg" alt="">
+					<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/upcoming-course-2.jpg" alt="">
 					<div class="upcoming-courses-item-cont">
 						<p>This is a image + text box and feel free to use this feature to showcase the best thing of your school, university, organization or test prep site. It is very important that choose the right set of information to highlight. If you highlight too many sections, importance of the individual sections will be diluted. On the other hand, trying to focus on too few points may mean you will miss out on leveraging some solid marketing platforms.</p>
 						<p>You may use it to showcase your upcoming courses, your top faculties, your student success details, research grants. In case you are looking to build a short and sweet website, you may choose to altogether uncheck this section. In case you uncheck this section, it will no more be visible in the front end. You may find more description about the features of this block in the next block.</p>
@@ -78,7 +78,7 @@
 				</li>
 				<li>
 				<div class="upcoming-courses-item">
-					<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/u-1.jpg" alt="">
+					<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/u-1.jpg" alt="">
 					<div class="upcoming-courses-item-cont">
 						<p>You can use it as a slider(multiple boxes), or a single static content + image box. The best thing is, there is a TinyMCE editor at the back end. So, you can format it to your heart's content - you can add your own styling, including but not limited to, font size, font color etc. As it is the case with all the other sections of this theme, this section is completely customizable from the settings panel in the backend.</p>
 						<p>Future plans - we plan to add a whole lot of features in future updates. For example, we will let you upload video files rather than just images, and let you decide if you want the text on the left side, or on the right side. With all these upcoming features, you can use Roshni for almost all kind of e-learning sites. Heck, Roshni will give most of the WordPress themes for it elegance and list of features.</p>
@@ -89,7 +89,7 @@
 				</li>
 				<li>
 				<div class="upcoming-courses-item">
-					<img src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/data/upcoming-course3.jpg" alt="">
+					<img src="<?php echo $CFG->wwwroot ?>/theme/roshni/data/upcoming-course3.jpg" alt="">
 					<div class="upcoming-courses-item-cont">
 						<p>A slider with 3 slides looks more beautiful than 2 slides, so we thought we will add another slide. As they say, it adds to the symmetry.</p>
 						<p>Interestingly, you can also change the location of this block. You can move it up, or down, or keep it in the same place.</p>

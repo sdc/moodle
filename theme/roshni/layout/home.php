@@ -1,6 +1,6 @@
 <?php
  
-include($CFG->dirroot. '/theme/' . $CFG->theme . '/config.php'); 
+include($CFG->dirroot. '/theme/roshni/config.php'); 
 // Get the HTML for the settings bits.
 $html = theme_roshni_get_html_for_settings($OUTPUT, $PAGE);
  global $DB, $USER, $CFG;
@@ -15,7 +15,7 @@ $favicon = get_config("theme_roshni","faviconimg");
 if ($favicon != "") {
     $favicondetails = trim(stripslashes($favicon),'"');
 } else {
-    $favicondetails = $CFG->wwwroot . '/theme/' . $CFG->theme . '/favicon.ico';
+    $favicondetails = $CFG->wwwroot . '/theme/roshni/favicon.ico';
 }
 $menunav = get_config("theme_roshni","nav");
 $menunavs = json_decode($menunav, true);
@@ -39,24 +39,24 @@ if(!empty($menunavs)) {
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title><?php echo $OUTPUT->page_title(); ?></title>
 		<link type="image/x-icon" rel="shortcut icon" href="<?php echo $favicondetails;?>">
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-		<link type="text/css" rel="Stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/styles.css"> 
+		<link rel="stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/font-awesome.css">
+		<link type="text/css" rel="Stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/styles.css"> 
 	
-		<script src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/js/jquery-1.11.1.min.js"></script>
-		<script src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/js/bootstrap.min.js"></script>
-		<script src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/js/jquery.bxslider.min.js"></script>
-		<script src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/js/jquery.scroll.js"></script>
-		<script src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/js/engine.js"></script>
-		<script src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/js/backtop.js"></script>
-		<script src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/js/jquery.flexisel.js"></script>
-		<script src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/js/jquery.royalslider.min.js"></script>
-		<script src="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/js/banbox.js"></script>
-		<link href="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/imgthum.css" rel="stylesheet">
-		<link href="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/royalsliddercss/royalslider.css" rel="stylesheet">
-    	<link href="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/royalsliddercss/rs-default-inverted.css" rel="stylesheet">
-    	<link href="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/royalsliddercss/rs2.css" rel="stylesheet">
-    	<link href="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/banbox.css" rel="stylesheet">
-    	<link href="<?php echo $CFG->wwwroot ?>/theme/<?php echo $CFG->theme ?>/css/autoplaypartner.css" rel="stylesheet">
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery-1.11.1.min.js"></script>
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/bootstrap.min.js"></script>
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.bxslider.min.js"></script>
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.scroll.js"></script>
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/engine.js"></script>
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/backtop.js"></script>
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.flexisel.js"></script>
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.royalslider.min.js"></script>
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/banbox.js"></script>
+		<link href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/imgthum.css" rel="stylesheet">
+		<link href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/royalsliddercss/royalslider.css" rel="stylesheet">
+    	<link href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/royalsliddercss/rs-default-inverted.css" rel="stylesheet">
+    	<link href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/royalsliddercss/rs2.css" rel="stylesheet">
+    	<link href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/banbox.css" rel="stylesheet">
+    	<link href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/autoplaypartner.css" rel="stylesheet">
 	    <?php
 	      include($CFG->dirroot . '/theme/roshni/settings/themecolor.php');
 	      include($CFG->dirroot . '/theme/roshni/settings/hovereffect.php');
@@ -70,7 +70,7 @@ if(!empty($menunavs)) {
 	</head>
 	
 	<body <?php echo $OUTPUT->body_attributes(); ?>>
-		<?php include $CFG->dirroot . '/theme/' . $CFG->theme .'/analyticstracking.php';
+		<?php include $CFG->dirroot . '/theme/roshni/analyticstracking.php';
 		echo $OUTPUT->standard_top_of_body_html() ?>
 		
 				<header id="header">
@@ -152,11 +152,11 @@ if(!empty($menunavs)) {
 					 $ifenablesection = ''; 
 					}
 					if(!empty($ifenablesection) && $ifenablesection !="none") {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/'. $ifenablesection. '.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/'. $ifenablesection. '.php');
 					} else if(!empty($ifenablesection) && $ifenablesection =="none") {
-						//include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/firstslider.php');
+						//include($CFG->dirroot.'/theme/roshni/layout/home/firstslider.php');
 					} else {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/firstslider.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/firstslider.php');
 					}  // End of slider.
 					
 					/*************************************************/
@@ -225,11 +225,11 @@ if(!empty($menunavs)) {
 					
 					
 					if(!empty($ifenablesection) && $ifenablesection !="none") {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/'. $ifenablesection. '.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/'. $ifenablesection. '.php');
 					} else if(!empty($ifenablesection) && $ifenablesection =="none") {
-						//include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/aboutsite.php');
+						//include($CFG->dirroot.'/theme/roshni/layout/home/aboutsite.php');
 					} else {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/aboutsite.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/aboutsite.php');
 					}
 					
 					/**********************************************/
@@ -252,11 +252,11 @@ if(!empty($menunavs)) {
 					}
 					
 					if(!empty($ifenablesection) && $ifenablesection !="none") {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/'. $ifenablesection. '.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/'. $ifenablesection. '.php');
 					} else if(!empty($ifenablesection) && $ifenablesection =="none") {
-						//include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/availablecourse.php');
+						//include($CFG->dirroot.'/theme/roshni/layout/home/availablecourse.php');
 					} else {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/availablecourse.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/availablecourse.php');
 					}
 					
 					/**********************************************/
@@ -274,11 +274,11 @@ if(!empty($menunavs)) {
 					}
 					
 					if(!empty($ifenablesection) && $ifenablesection !="none") {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/'. $ifenablesection. '.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/'. $ifenablesection. '.php');
 					} else if(!empty($ifenablesection) && $ifenablesection =="none") {
-						//include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/upcomingcourse.php');
+						//include($CFG->dirroot.'/theme/roshni/layout/home/upcomingcourse.php');
 					} else {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/upcomingcourse.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/upcomingcourse.php');
 					}
 					
 					/**********************************************/
@@ -297,11 +297,11 @@ if(!empty($menunavs)) {
 					}
 					
 					if(!empty($ifenablesection) && $ifenablesection !="none") {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/'. $ifenablesection. '.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/'. $ifenablesection. '.php');
 					} else if(!empty($ifenablesection) && $ifenablesection =="none") {
-						//include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/about_site_details.php');
+						//include($CFG->dirroot.'/theme/roshni/layout/home/about_site_details.php');
 					} else {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/about_site_details.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/about_site_details.php');
 					}
 					
 					/**********************************************/
@@ -320,11 +320,11 @@ if(!empty($menunavs)) {
 					}
 					
 					if(!empty($ifenablesection) && $ifenablesection !="none") {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/'. $ifenablesection. '.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/'. $ifenablesection. '.php');
 					} else if(!empty($ifenablesection) && $ifenablesection =="none") {
-						//include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/partners.php');
+						//include($CFG->dirroot.'/theme/roshni/layout/home/partners.php');
 					} else {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/partners.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/partners.php');
 					}
 					
 					/**********************************************/
@@ -343,11 +343,11 @@ if(!empty($menunavs)) {
 					}
 					
 					if(!empty($ifenablesection) && $ifenablesection !="none") {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/'. $ifenablesection. '.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/'. $ifenablesection. '.php');
 					} else if(!empty($ifenablesection) && $ifenablesection =="none") {
-						//include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/categories.php');
+						//include($CFG->dirroot.'/theme/roshni/layout/home/categories.php');
 					} else {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/categories.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/categories.php');
 					}
 					
 					/**********************************************/
@@ -365,11 +365,11 @@ if(!empty($menunavs)) {
 					}
 					
 					if(!empty($ifenablesection) && $ifenablesection !="none") {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/'. $ifenablesection. '.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/'. $ifenablesection. '.php');
 					} else if(!empty($ifenablesection) && $ifenablesection =="none") {
-						//include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/testimonials.php');
+						//include($CFG->dirroot.'/theme/roshni/layout/home/testimonials.php');
 					} else {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/testimonials.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/testimonials.php');
 					}
 					
 					/**********************************************/
@@ -390,11 +390,11 @@ if(!empty($menunavs)) {
 					
 					
 					if(!empty($ifenablesection) && $ifenablesection !="none") {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/'. $ifenablesection. '.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/'. $ifenablesection. '.php');
 					} else if(!empty($ifenablesection) && $ifenablesection =="none") {
-						//include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/social_network.php');
+						//include($CFG->dirroot.'/theme/roshni/layout/home/social_network.php');
 					} else {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/social_network.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/social_network.php');
 					}
 					/**********************************************/
 					?>
@@ -410,11 +410,11 @@ if(!empty($menunavs)) {
 					}
 					
 					if(!empty($ifenablesection) && $ifenablesection !="none") {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/'. $ifenablesection. '.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/'. $ifenablesection. '.php');
 					} else if(!empty($ifenablesection) && $ifenablesection =="none") {
-						//include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/contacts.php');
+						//include($CFG->dirroot.'/theme/roshni/layout/home/contacts.php');
 					} else {
-						include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/contacts.php');
+						include($CFG->dirroot.'/theme/roshni/layout/home/contacts.php');
 					}
 					
 					/**********************************************/

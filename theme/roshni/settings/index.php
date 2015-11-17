@@ -70,7 +70,7 @@ $fslides = json_decode($fslide);
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/settingsstyles.css"/>
-<script src="http://tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+<script src="<?php echo $CFG->wwwroot; ?>/theme/roshni/js/tinymce/tinymce.min.js"></script>
 <script src="<?php echo $CFG->wwwroot; ?>/theme/roshni/settings/jscolor/jscolor.js"></script>
 <script src="<?php echo $CFG->wwwroot; ?>/theme/roshni/settings/addremove.js"></script>
 
@@ -1352,7 +1352,7 @@ if(!empty($sections)) {
 							</div>
 							<div class="clearfix"></div>
 							<div class="clearfix"></div>
-							<div>Menu Link :-<?php echo $CFG->wwwroot."/theme/".$CFG->theme."/page.php?page=".str_replace(" ", "_", $dynamic_page["text"][$i-1]);?></div>
+							<div>Menu Link :-<?php echo $CFG->wwwroot."/theme/roshni/page.php?page=".str_replace(" ", "_", $dynamic_page["text"][$i-1]);?></div>
 						</div>
 						<?php
 					}
