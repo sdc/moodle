@@ -157,7 +157,7 @@ function block_progress_monitorable_modules() {
             'defaultAction' => 'submitted'
         ),
         'bigbluebuttonbn' => array(
-            'defaultTime' => 'timedue',
+            'defaultTime' => 'openingtime',
             'actions' => array(
                 'viewed' => array (
                     'logstore_legacy'     => "SELECT id
@@ -270,6 +270,27 @@ function block_progress_monitorable_modules() {
             ),
             'defaultAction' => 'viewed'
         ),
+        'equella' => array(
+            'actions' => array(
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'equella'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_equella'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
+            ),
+            'defaultAction' => 'viewed'
+        ),
         'feedback' => array(
             'defaultTime' => 'timeclose',
             'actions' => array(
@@ -344,7 +365,6 @@ function block_progress_monitorable_modules() {
             'defaultAction' => 'viewed'
         ),
         'forum' => array(
-            'defaultTime' => 'assesstimefinish',
             'actions' => array(
                 'posted_to'    => "SELECT id
                                      FROM {forum_posts}
@@ -500,6 +520,27 @@ function block_progress_monitorable_modules() {
             ),
             'defaultAction' => 'graded'
         ),
+        'ouwiki' => array(
+            'actions' => array(
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'ouwiki'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_ouwiki'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
+            ),
+            'defaultAction' => 'viewed'
+        ),
         'page' => array(
             'actions' => array(
                 'viewed' => array (
@@ -626,6 +667,17 @@ function block_progress_monitorable_modules() {
             ),
             'defaultAction' => 'submitted'
         ),
+        'turnitintooltwo' => array(
+            'defaultTime' => 'defaultdtdue',
+            'actions' => array(
+                'submitted'     => "SELECT id
+                                      FROM {turnitintooltwo_submissions}
+                                     WHERE turnitintooltwoid = :eventid
+                                       AND userid = :userid
+                                       AND submission_score IS NOT NULL"
+            ),
+            'defaultAction' => 'submitted'
+        ),
         'url' => array(
             'actions' => array(
                 'viewed' => array (
@@ -646,6 +698,59 @@ function block_progress_monitorable_modules() {
                 ),
             ),
             'defaultAction' => 'viewed'
+        ),
+        'video' => array(
+            'actions' => array(
+                'viewed' => array (
+                    'logstore_legacy'     => "SELECT id
+                                                FROM {log}
+                                               WHERE course = :courseid
+                                                 AND module = 'video'
+                                                 AND action = 'view'
+                                                 AND cmid = :cmid
+                                                 AND userid = :userid",
+                    'sql_internal_reader' => "SELECT id
+                                                FROM {log}
+                                               WHERE courseid = :courseid
+                                                 AND component = 'mod_video'
+                                                 AND action = 'viewed'
+                                                 AND objectid = :eventid
+                                                 AND userid = :userid",
+                ),
+            ),
+            'defaultAction' => 'viewed'
+        ),
+        'vpl' => array(
+            'defaultTime' => 'duedate',
+            'actions' => array(
+                'attempted'    => "SELECT id
+                                     FROM {vpl_submissions}
+                                    WHERE vpl = :eventid
+                                      AND userid = :userid",
+                'marked'       => "SELECT g.rawgrade
+                                     FROM {grade_grades} g, {grade_items} i
+                                    WHERE i.itemmodule = 'vpl'
+                                      AND i.iteminstance = :eventid
+                                      AND i.id = g.itemid
+                                      AND g.userid = :userid
+                                      AND (g.finalgrade IS NOT NULL OR g.excluded <> 0)",
+                'passed'       => "SELECT g.finalgrade, i.gradepass
+                                     FROM {grade_grades} g, {grade_items} i
+                                    WHERE i.itemmodule = 'vpl'
+                                      AND i.iteminstance = :eventid
+                                      AND i.id = g.itemid
+                                      AND g.userid = :userid
+                                      AND (g.finalgrade IS NOT NULL OR g.excluded <> 0)",
+                'passedby'     => "SELECT g.finalgrade, i.gradepass
+                                     FROM {grade_grades} g, {grade_items} i
+                                    WHERE i.itemmodule = 'vpl'
+                                      AND i.iteminstance = :eventid
+                                      AND i.id = g.itemid
+                                      AND g.userid = :userid
+                                      AND (g.finalgrade IS NOT NULL OR g.excluded <> 0)
+                                      AND g.finalgrade >= i.gradepass",
+            ),
+            'defaultAction' => 'marked'
         ),
         'wiki' => array(
             'actions' => array(
@@ -702,7 +807,7 @@ function block_progress_monitorable_modules() {
  * @return string
  */
 function progress_default_value(&$var, $def = null) {
-    return isset($var)?$var:$def;
+    return isset($var) ? $var : $def;
 }
 
 /**
@@ -742,6 +847,8 @@ function block_progress_modules_in_use($course) {
  */
 function block_progress_event_information($config, $modules, $course, $userid = 0) {
     global $DB, $USER;
+
+    $dbmanager = $DB->get_manager(); // Used to check if fields exist.
     $events = array();
     $numevents = 0;
     $numeventsconfigured = 0;
@@ -756,7 +863,10 @@ function block_progress_event_information($config, $modules, $course, $userid = 
     // Check each known module (described in lib.php).
     foreach ($modules as $module => $details) {
         $fields = 'id, name';
-        if (array_key_exists('defaultTime', $details)) {
+        if (
+            array_key_exists('defaultTime', $details) &&
+            $dbmanager->field_exists($module, $details['defaultTime'])
+        ) {
             $fields .= ', '.$details['defaultTime'].' as due';
         }
 
@@ -916,11 +1026,9 @@ function block_progress_attempts($modules, $config, $events, $userid, $course) {
                         ) {
                             $logtable = '{'.$reader->get_internal_log_table_name().'}';
                             $query = preg_replace('/\{log\}/', $logtable, $module['actions']['viewed']['sql_internal_reader']);
-                        }
-                        else if ($reader instanceof logstore_legacy\log\store) {
+                        } else if ($reader instanceof logstore_legacy\log\store) {
                             $query = $module['actions']['viewed']['logstore_legacy'];
-                        }
-                        else {
+                        } else {
                             // No logs available.
                             continue;
                         }
@@ -953,13 +1061,13 @@ function block_progress_attempts($modules, $config, $events, $userid, $course) {
 
             // Determine the set action and develop a query.
             else {
-                $action = isset($config->{'action_'.$uniqueid})?
-                          $config->{'action_'.$uniqueid}:
+                $action = isset($config->{'action_'.$uniqueid}) ?
+                          $config->{'action_'.$uniqueid} :
                           $module['defaultAction'];
                 $query = $module['actions'][$action];
             }
 
-             // Check if the user has attempted the module.
+            // Check if the user has attempted the module.
             $attempts[$uniqueid] = $DB->record_exists_sql($query, $parameters) ? true : false;
         }
     }
@@ -1057,8 +1165,8 @@ function block_progress_bar($modules, $config, $events, $userid, $instance, $att
     $counter = 1;
     foreach ($events as $event) {
         $attempted = $attempts[$event['type'].$event['id']];
-        $action = isset($config->{'action_'.$event['type'].$event['id']})?
-                  $config->{'action_'.$event['type'].$event['id']}:
+        $action = isset($config->{'action_'.$event['type'].$event['id']}) ?
+                  $config->{'action_'.$event['type'].$event['id']} :
                   $modules[$event['type']]['defaultAction'];
 
         // A cell in the progress bar.
@@ -1073,15 +1181,15 @@ function block_progress_bar($modules, $config, $events, $userid, $instance, $att
             $cellcontent = $OUTPUT->pix_icon(
                                isset($config->progressBarIcons) && $config->progressBarIcons == 1 ?
                                'tick' : 'blank', '', 'block_progress');
-        }
-        else if (((!isset($config->orderby) || $config->orderby == 'orderbytime') && $event['expected'] < $now) ||
+
+        } else if (((!isset($config->orderby) || $config->orderby == 'orderbytime') && $event['expected'] < $now) ||
                  ($attempted === 'failed')) {
             $celloptions['style'] .= $colours['notattempted_colour'].';';
             $cellcontent = $OUTPUT->pix_icon(
                                isset($config->progressBarIcons) && $config->progressBarIcons == 1 ?
-                               'cross':'blank', '', 'block_progress');
-        }
-        else {
+                               'cross' : 'blank', '', 'block_progress');
+
+        } else {
             $celloptions['style'] .= $colours['futurenotattempted_colour'].';';
             $cellcontent = $OUTPUT->pix_icon('blank', '', 'block_progress');
         }
@@ -1101,16 +1209,19 @@ function block_progress_bar($modules, $config, $events, $userid, $instance, $att
     $content .= HTML_WRITER::end_tag('tr');
     $content .= HTML_WRITER::end_tag('table');
 
+    // Add the percentage below the progress bar.
+    if (isset($config->showpercentage) && $config->showpercentage == 1) {
+        $progress = block_progress_percentage($events, $attempts);
+        $percentagecontent = get_string('progress', 'block_progress').': '.$progress.'%';
+        $percentageoptions = array('class' => 'progressPercentage');
+        $content .= HTML_WRITER::tag('div', $percentagecontent, $percentageoptions);
+    }
+
     // Add the info box below the table.
     $divoptions = array('class' => 'progressEventInfo',
                         'id' => 'progressBarInfo'.$instance.'-'.$userid.'-info');
     $content .= HTML_WRITER::start_tag('div', $divoptions);
     if (!$simple) {
-        if (isset($config->showpercentage) && $config->showpercentage == 1) {
-            $progress = block_progress_percentage($events, $attempts);
-            $content .= get_string('progress', 'block_progress').': ';
-            $content .= $progress.'%'.HTML_WRITER::empty_tag('br');
-        }
         $content .= get_string('mouse_over_prompt', 'block_progress');
     }
     $content .= HTML_WRITER::end_tag('div');
@@ -1120,15 +1231,23 @@ function block_progress_bar($modules, $config, $events, $userid, $instance, $att
                    (!isset($config->displayNow) || $config->displayNow == 1);
     foreach ($events as $event) {
         $attempted = $attempts[$event['type'].$event['id']];
-        $action = isset($config->{'action_'.$event['type'].$event['id']})?
-                  $config->{'action_'.$event['type'].$event['id']}:
+        $action = isset($config->{'action_'.$event['type'].$event['id']}) ?
+                  $config->{'action_'.$event['type'].$event['id']} :
                   $modules[$event['type']]['defaultAction'];
         $divoptions = array('class' => 'progressEventInfo',
                             'id' => 'progressBarInfo'.$instance.'-'.$userid.'-'.$event['cm']->id,
                             'style' => 'display: none;');
         $content .= HTML_WRITER::start_tag('div', $divoptions);
         $link = '/mod/'.$event['type'].'/view.php?id='.$event['cm']->id;
-        $text = $OUTPUT->pix_icon('icon', '', $event['type'], array('class' => 'moduleIcon')).s($event['name']);
+        $text = '';
+        if (method_exists($event['cm'], 'get_icon_url')) {
+            $activityicon = $event['cm']->get_icon_url();
+            $text .= html_writer::empty_tag('img',
+                array('src' => $activityicon, 'class' => 'moduleIcon', 'alt' => '', 'role' => 'presentation'));
+        } else {
+            $text .= $OUTPUT->pix_icon('icon', '', $event['type'], array('class' => 'moduleIcon'));
+        }
+        $text .= s($event['name']);
         if (!empty($event['cm']->available)) {
             $content .= $OUTPUT->action_link($link, $text);
         } else {
@@ -1137,7 +1256,7 @@ function block_progress_bar($modules, $config, $events, $userid, $instance, $att
         $content .= HTML_WRITER::empty_tag('br');
         $content .= get_string($action, 'block_progress').'&nbsp;';
         $icon = ($attempted && $attempted !== 'failed' ? 'tick' : 'cross');
-        $content .= $OUTPUT->pix_icon($icon, '', 'block_progress');
+        $content .= $OUTPUT->pix_icon($icon, '', 'block_progress', array('class' => 'iconInInfo'));
         $content .= HTML_WRITER::empty_tag('br');
         if ($displaydate) {
             $content .= HTML_WRITER::start_tag('div', array('class' => 'expectedBy'));
@@ -1184,8 +1303,7 @@ function block_progress_course_sections($course) {
     foreach ($sections as $key => $section) {
         if ($section->sequence != '') {
             $sections[$key]->sequence = explode(',', $section->sequence);
-        }
-        else {
+        } else {
             $sections[$key]->sequence = null;
         }
     }
@@ -1220,8 +1338,7 @@ function block_progress_filter_visibility($events, $userid, $coursecontext, $cou
         // Determine the correct user info to check.
         if ($userid == $USER->id) {
             $coursemodule = $event['cm'];
-        }
-        else {
+        } else {
             $coursemodule = block_progress_get_coursemodule($event['type'], $event['id'], $course->id, $userid);
         }
 
@@ -1245,8 +1362,7 @@ function block_progress_filter_visibility($events, $userid, $coursecontext, $cou
                 if ($coursemodule->uservisible != 1 && empty($coursemodule->availableinfo)) {
                     continue;
                 }
-            }
-            else if (!groups_course_module_visible($coursemodule, $userid)) {
+            } else if (!groups_course_module_visible($coursemodule, $userid)) {
                 continue;
             }
         }
@@ -1262,10 +1378,10 @@ function block_progress_filter_visibility($events, $userid, $coursecontext, $cou
  *
  * @return bool True when on the My home page.
  */
-function block_progress_on_my_page() {
-    global $SCRIPT;
+function block_progress_on_site_page() {
+    global $SCRIPT, $COURSE;
 
-    return $SCRIPT === '/my/index.php';
+    return $SCRIPT === '/my/index.php' || $COURSE->id == 1;
 }
 
 /**
@@ -1307,7 +1423,7 @@ function block_progress_get_block_context($blockid) {
 function block_progress_get_coursemodule($module, $recordid, $courseid, $userid = 0) {
     global $CFG;
 
-    if ($CFG->version >= 2012120300) {
+    if (function_exists('get_fast_modinfo')) {
         return get_fast_modinfo($courseid, $userid)->instances[$module][$recordid];
     }
     else {
