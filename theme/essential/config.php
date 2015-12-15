@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -23,7 +24,6 @@
  * @copyright   2014 Gareth J Barnard, David Bezemer
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 $THEME->name = 'essential';
 
 // The only thing you need to change in this file when copying it to
@@ -47,11 +47,15 @@ if (floatval($CFG->version) >= 2014111005.01) { // 2.8.5+ (Build: 20150313) whic
 $THEME->sheets[] = 'fontawesome';
 
 if ((get_config('theme_essential', 'enablealternativethemecolors1')) ||
-    (get_config('theme_essential', 'enablealternativethemecolors2')) ||
-    (get_config('theme_essential', 'enablealternativethemecolors3')) ||
-    (get_config('theme_essential', 'enablealternativethemecolors4'))
+        (get_config('theme_essential', 'enablealternativethemecolors2')) ||
+        (get_config('theme_essential', 'enablealternativethemecolors3')) ||
+        (get_config('theme_essential', 'enablealternativethemecolors4'))
 ) {
     $THEME->sheets[] = 'essential-alternative';
+}
+
+if(get_config('theme_essential', 'customscrollbars')) {
+    $THEME->sheets[] = 'essential-scrollbars';
 }
 
 $THEME->sheets[] = 'custom';
@@ -84,7 +88,8 @@ $THEME->layouts = array(
     // Front page.
     'frontpage' => array(
         'file' => 'frontpage.php',
-        'regions' => array_merge(array('side-pre', 'footer-left', 'footer-middle', 'footer-right', 'hidden-dock'), $addregions),
+        'regions' => array_merge(array('side-pre', 'footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
+                $addregions),
         'defaultregion' => 'side-pre',
     ),
     // Standard layout with blocks, this is recommended for most pages with general information.
@@ -101,9 +106,9 @@ $THEME->layouts = array(
     ),
     // Main course page.
     'course' => array(
-        'file' => 'columns2.php',
-        'regions' => array('side-pre', 'footer-left', 'footer-middle', 'footer-right'),
-        'defaultregion' => 'side-pre',
+        'file' => 'columns3.php',
+        'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right'),
+        'defaultregion' => 'side-post',
     ),
     'coursecategory' => array(
         'file' => 'columns2.php',
@@ -139,7 +144,6 @@ $THEME->layouts = array(
         'regions' => array('footer-left', 'footer-middle', 'footer-right'),
         'defaultregion' => '',
     ),
-
     // Pages that appear in pop-up windows - no navigation, no blocks, no header.
     'popup' => array(
         'file' => 'popup.php',

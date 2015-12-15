@@ -2,11 +2,11 @@
 
 .block {
   .icon {
-    color: @icon-colour;
+    color: ~"[[setting:themeiconcolor]]";
   }
   .moodle-core-dragdrop-draghandle {
     &:before {
-      color: @icon-colour;
+      color: ~"[[setting:themeiconcolor]]";
     }
   }
   .menu {
@@ -26,12 +26,12 @@
 
 p.tree_item {
   &.leaf a {
-    > i {
+    > i.fa {
       color: ~"[[setting:themeiconcolor]]";
     }
     &:hover, &:focus {
       color: ~"[[setting:themehovercolor]]";
-      > i {
+      > i.fa {
         color: inherit;
       }
     }

@@ -13,7 +13,7 @@ body {
   background-attachment: ~"[[setting:backgroundattach]]";
   background-repeat: ~"[[setting:backgroundrepeat]]";
   background-size: ~"[[setting:backgroundsize]]";
-  i {
+  i.fa {
     color: ~"[[setting:themeiconcolor]]";
     &:hover {
       color: ~"[[setting:themehovercolor]]";
@@ -72,18 +72,18 @@ img.profilepicture {
 
 #page-header {
   background: url(~"'[[setting:headerbackground]]'") repeat;
-}
-
-a.logo {
-  background-image: ~"[[setting:logo]]";
+  a.logo {
+    background-image: ~"[[setting:logo]]";
+    height: ~"[[setting:logoheight]]";
+  }
 }
 
 h1#title {
   color: ~"[[setting:themetextcolor]]";
 }
 
-#headerlogo {
-  border-right: 1px dotted ~"[[setting:themecolor]]";
+#page-header div.titlearea {
+  border-left: 1px dotted ~"[[setting:themecolor]]";
 }
 
 /* @group Social Buttons */
@@ -130,7 +130,7 @@ a {
 
 .course-content ul li.section.main {
   background: url(~"[[pix:theme|bg/dot]]") bottom repeat-x;
-  &.clearfix.current {
+  &.current {
     box-shadow: 4px 4px 8px 2px ~"[[setting:themecolor]]";
     border-style: solid;
     border-width: 1px;
@@ -167,10 +167,12 @@ h2.pagetitle {
 
 a.marketing-button,
 a.marketing-button:visited, {
+  color: ~"[[setting:themenavcolor]]";
   background-color: ~"[[setting:themecolor]]";
 }
 
 a.marketing-button:hover {
+  color: ~"[[setting:themenavcolor]]";
   background-color: ~"[[setting:themehovercolor]]";
 }
 
@@ -188,6 +190,10 @@ a.marketing-button:hover {
   .header .title h2:before, &.block_iconic_html .header .title h2 span.fa:before {
     color: ~"[[setting:themeiconcolor]]";
   }
+}
+
+.jsenabled .block_settings .block_tree .tree_item.branch.loadingbranch:before {
+    color: ~"[[setting:themeiconcolor]]";
 }
 
 .block_rss_client .footer a {
@@ -231,7 +237,7 @@ a.marketing-button:hover {
 
 /* @group Home News Boxes */
 
-.service i {
+.service i.fa {
   color: ~"[[setting:themecolor]]";
 }
 
@@ -244,19 +250,19 @@ a.marketing-button:hover {
   color: ~"[[setting:footertextcolor]]";
   border-top: 2px solid ~"[[setting:themecolor]]";
   border-bottom: 3px solid ~"[[setting:themecolor]]";
-  a, a > i {
+  a, a > i.fa {
     color: ~"[[setting:footerurlcolor]]";
   }
-  a:hover, a:hover > i {
+  a:hover, a:hover > i.fa {
     color: ~"[[setting:footerhovercolor]]";
   }
   .footnote {
     color: ~"[[setting:footertextcolor]]";
     a, a:visited {
-      color: ~"[[setting:footerurlcolor]]" !important;
+      color: ~"[[setting:footerurlcolor]]";
     }
     a:hover {
-      color: ~"[[setting:footerhovercolor]]" !important;
+      color: ~"[[setting:footerhovercolor]]";
     }
   }
   hr {
@@ -271,24 +277,39 @@ a.marketing-button:hover {
   }
 }
 
-#page-footer .block_html ul li:before,
-#greyboxright ul li:before {
-  background-color: ~"[[setting:themecolor]]";
-}
-
 /* @group Footer Block Formatting */
 
 #page-footer {
-  .block .header {
-    border-bottom: 1px solid ~"[[setting:footersepcolor]]";
-    .title {
-      h2 {
-        color: ~"[[setting:footerheadingcolor]]";
-        &:before {
-          color: ~"[[setting:themecolor]]";
-        }
+  .block {
+    background-color: ~"[[setting:footerblockbackgroundcolour]]";
+    color: ~"[[setting:footerblocktextcolour]]";
+    a, a > i.fa {
+      color: ~"[[setting:footerblockurlcolour]]";
+    }
+    a:hover, a:hover > i.fa {
+      color: ~"[[setting:footerblockhovercolour]]";
+    }
+    .icon {
+      color: ~"[[setting:footerblockurlcolour]]";
+    }
+    .moodle-core-dragdrop-draghandle {
+      &:before {
+        color: ~"[[setting:footerblockurlcolour]]";
       }
     }
+  }
+  .block .header {
+    border-bottom: 1px solid ~"[[setting:footersepcolor]]";
+    h2 {
+      color: inherit;
+    }
+  }
+  .header .title h2:before, &.block_iconic_html .header .title h2 span.fa:before {
+    color: inherit;
+  }
+  .block_html ul li:before,
+  #greyboxright ul li:before {
+    background-color: ~"[[setting:themecolor]]";
   }
   .block_login input[type="submit"] {
     background-color: ~"[[setting:themecolor]]";
@@ -302,29 +323,6 @@ a.marketing-button:hover {
 }
 
 /* @end */
-
-/* @end */
-
-/* @group Marketing Spots */
-
-#marketing-image1 {
-  background-image: ~"[[setting:marketing1image]]";
-  background-repeat: no-repeat;
-}
-
-#marketing-image2 {
-  background-image: ~"[[setting:marketing2image]]";
-  background-repeat: no-repeat;
-}
-
-#marketing-image3 {
-  background-image: ~"[[setting:marketing3image]]";
-  background-repeat: no-repeat;
-}
-
-.marketing-image {
-  height: ~"[[setting:marketingheight]]";
-}
 
 /* @end */
 
@@ -349,7 +347,7 @@ a.marketing-button:hover {
   }
   &.active > a {
     color: ~"[[setting:themetextcolor]]";
-    background-color: #fff;  // TODO: Pagecolour.
+    background-color: @white;  // TODO: Pagecolour.
     &:hover, &:focus {
       color: inherit;
       background-color: inherit;
@@ -437,7 +435,7 @@ table#user-grades {
     border-right-color: ~"[[setting:themecolor]]";
   }
   .grade_icons img {
-    background-color: #fff;
+    background-color: @white;
     padding: 3px;
     border-radius: 3px;
   }
