@@ -27,7 +27,7 @@ div.mdl-align.title {
   margin-bottom: 15px;
 }
 
-.course-content ul.topics li.section.main.clearfix.current {
+.course-content ul li.section.main.current {
   border-radius: 5px;
 }
 
@@ -68,6 +68,12 @@ body {  // Inside a body tag so will be more specific and override core plugin s
       }
       .contentwithoutlink {
         padding-right: 100px;
+      }
+      .editing_hide .fa-eye-slash:before {
+        content: "\f06e";
+      }
+      .editing_show .fa-eye:before {
+        content: "\f070";
       }
     }
   }

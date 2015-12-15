@@ -60,21 +60,21 @@ echo $OUTPUT->doctype();
                     <?php if (!$haslogo) { ?>
                         <a class="textlogo" href="<?php echo preg_replace("(https?:)", "", $CFG->wwwroot); ?>">
                             <i id="headerlogo" class="fa fa-<?php echo \theme_essential\toolbox::get_setting('siteicon'); ?>"></i>
-                            <?php echo $OUTPUT->get_title('header'); ?>
+                            <div class="titlearea"><?php echo $OUTPUT->get_title('header'); ?></div>
                         </a>
                     <?php } else { ?>
                         <a class="logo" href="<?php echo preg_replace("(https?:)", "", $CFG->wwwroot); ?>" title="<?php print_string('home'); ?>"></a>
                     <?php } ?>
                 </div>
                 <?php if ($hassocialnetworks || $hasmobileapps) { ?>
-                <a class="btn btn-icon" data-toggle="collapse" data-target=".icon-collapse">
+                <a class="btn btn-icon" data-toggle="collapse" data-target="#essentialicons">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </a>
 
-                <div class="icon-collapse collapse pull-<?php echo ($left) ? 'right' : 'left'; ?>">
+                <div id='essentialicons' class="collapse pull-<?php echo ($left) ? 'right' : 'left'; ?>">
                     <?php
                     }
                     // If true, displays the heading and available social links; displays nothing if false.
@@ -143,6 +143,9 @@ echo $OUTPUT->doctype();
                         </div>
                         <div class="gotobottommenu">
                             <?php echo $OUTPUT->custom_menu_goto_bottom(); ?>
+                        </div>
+                        <div id="custom_menu_editing" class="editingmenu">
+                            <?php echo $OUTPUT->custom_menu_editing(); ?>
                         </div>
                     </div>
                         <div id='essentialmenus' class="nav-collapse collapse pull-<?php echo ($left) ? 'left' : 'right'; ?>">

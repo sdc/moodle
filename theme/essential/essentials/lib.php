@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,37 +23,74 @@
  * @copyright   2015 Gareth J Barnard
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 function theme_essentials_process_css($css, $theme) {
-    /* Change to 'true' if you want to use Essential's settings after removing the '$THEME->parents_exclude_sheets' in config.php.
-       Then to get the alternive colours back, renove the overridden method 'custom_menu_themecolours' in the 'theme_essentials_core_renderer'
-       class in the 'core_renderer.php' file in the 'classes' folder. */
-    $usingessentialsettings = false;
+    global $PAGE;
+    $outputus = $PAGE->get_renderer('theme_essentials', 'core');
+    \theme_essential\toolbox::set_core_renderer($outputus);
 
+    /* Change to 'false' if you don't want to use Essential's settings and remove '$THEME->parents_exclude_sheets' in config.php.
+     *
+     * If you want to override any Essential setting with a separate version in this child theme, then define it in 'settings.php' with the
+     * same name bar the theme name prefix and 'theme_essential_process_css' will do the rest via 'toolbox.php'.  Please look at the examples
+     * already coded in 'settings.php'.
+     *  
+     * If you want the alternative colours, then remove the overridden method 'custom_menu_themecolours' in the 'theme_essentials_core_renderer'
+     * class in the 'core_renderer.php' file in the 'classes' folder. */
+
+    $usingessentialsettings = true;
     if ($usingessentialsettings) {
+        global $CFG;
         if (file_exists("$CFG->dirroot/theme/essential/lib.php")) {
             require_once("$CFG->dirroot/theme/essential/lib.php");
         } else if (!empty($CFG->themedir) and file_exists("$CFG->themedir/essential/lib.php")) {
             require_once("$CFG->themedir/essential/lib.php");
         } // else will just fail when cannot find theme_essential_process_css!
-        static $parenttheme;
-        if (empty($parenttheme)) {
-            $parenttheme = theme_config::load('essential'); 
-        }
-        $css = theme_essential_process_css($css, $parenttheme);
+        $css = theme_essential_process_css($css, $theme);
     }
 
-    // If you have your own settings, then add them here.
+    // If you have your own additional settings, then add them here.
+    $css = essentials_set_frontpagetitlestyle($css, \theme_essential\toolbox::get_setting('frontpagetitlestyle'));
 
     // Finally return processed CSS
     return $css;
 }
-
-function theme_essentials_set_fontwww($css) {
-    global $CFG;
-    $fontwww = preg_replace("(https?:)", "", $CFG->wwwroot . '/theme/essential/fonts/');
-
-    $tag = '[[setting:fontwww]]';
-
+function essentials_set_frontpagetitlestyle($css, $frontpagetitlestyle) {
+    $tag = '[[setting:frontpagetitlestyle]]';
+    if (!$frontpagetitlestyle) {
+        $replacement = 'inherit';
+    } else {
+        $replacement = $frontpagetitlestyle;
+    }
+    $css = str_replace($tag, $replacement, $css);
     return $css;
+}
+
+/**
+ * Serves any files associated with the theme settings.
+ *
+ * @param stdClass $course.
+ * @param stdClass $cm.
+ * @param context $context.
+ * @param string $filearea.
+ * @param array $args.
+ * @param bool $forcedownload.
+ * @param array $options.
+ * @return bool.
+ */
+function theme_essentials_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+    static $theme;
+    if (empty($theme)) {
+        $theme = theme_config::load('essentials');
+    }
+    if ($context->contextlevel == CONTEXT_SYSTEM) {
+        if ($filearea === 'logo') {
+            return $theme->setting_file_serve('logo', $args, $forcedownload, $options);
+        } else if (preg_match("/^(marketing|slide)[1-9][0-9]*image$/", $filearea)) {
+            return $theme->setting_file_serve($filearea, $args, $forcedownload, $options);
+        } else {
+            send_file_not_found();
+        }
+    } else {
+        send_file_not_found();
+    }
 }

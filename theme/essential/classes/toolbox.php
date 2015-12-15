@@ -4,7 +4,14 @@ namespace theme_essential;
 
 class toolbox {
 
-    static protected $theme;
+    static protected $corerenderer = null;
+
+    static public function set_core_renderer($core) {
+        // Set only once from the initial calling lib.php process_css function.  Must happen before parents.
+        if (null === self::$corerenderer) {
+            self::$corerenderer = $core;
+        }
+    }
 
     // Moodle CSS file serving.
     static public function get_csswww() {
@@ -19,9 +26,10 @@ class toolbox {
 
             $syscontext = \context_system::instance();
             $itemid = \theme_get_revision();
-            $url = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php", "/$syscontext->id/theme_essential/style/$itemid/$moodlecss");
+            $url = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
+                            "/$syscontext->id/theme_essential/style/$itemid/$moodlecss");
             $url = preg_replace('|^https?://|i', '//', $url->out(false));
-            return '<link rel="stylesheet" href="'.$url.'">';
+            return '<link rel="stylesheet" href="' . $url . '">';
         } else {
             if (\right_to_left()) {
                 $moodlecssone = 'essential-rtl_ie9-blessed1.css';
@@ -33,34 +41,58 @@ class toolbox {
 
             $syscontext = \context_system::instance();
             $itemid = \theme_get_revision();
-            $urlone = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php", "/$syscontext->id/theme_essential/style/$itemid/$moodlecssone");
+            $urlone = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
+                            "/$syscontext->id/theme_essential/style/$itemid/$moodlecssone");
             $urlone = preg_replace('|^https?://|i', '//', $urlone->out(false));
-            $urltwo = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php", "/$syscontext->id/theme_essential/style/$itemid/$moodlecsstwo");
+            $urltwo = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
+                            "/$syscontext->id/theme_essential/style/$itemid/$moodlecsstwo");
             $urltwo = preg_replace('|^https?://|i', '//', $urltwo->out(false));
-            return '<link rel="stylesheet" href="'.$urlone.'"><link rel="stylesheet" href="'.$urltwo.'">';
+            return '<link rel="stylesheet" href="' . $urlone . '"><link rel="stylesheet" href="' . $urltwo . '">';
         }
     }
 
-    static public function get_setting($setting, $format = false, $theme = null) {
-        if (empty($theme)) {
-            if (empty(self::$theme)) {
-                self::$theme = \theme_config::load('essential');
-            }
-            $theme = self::$theme;
-        }
+    /**
+     * Finds the given setting in the theme from the themes' configuration object.
+     * @param string $setting Setting name.
+     * @param string $format false|'format_text'|'format_html'.
+     * @param theme_config $theme null|theme_config object.
+     * @return any false|value of setting.
+     */
+    static public function get_setting($setting, $format = false) {
+        self::check_corerenderer();
+        $settingvalue = self::$corerenderer->get_setting($setting);
 
         global $CFG;
         require_once($CFG->dirroot . '/lib/weblib.php');
-        if (empty($theme->settings->$setting)) {
+        if (empty($settingvalue)) {
             return false;
         } else if (!$format) {
-            return $theme->settings->$setting;
+            return $settingvalue;
         } else if ($format === 'format_text') {
-            return format_text($theme->settings->$setting, FORMAT_PLAIN);
+            return format_text($settingvalue, FORMAT_PLAIN);
         } else if ($format === 'format_html') {
-            return format_text($theme->settings->$setting, FORMAT_HTML, array('trusted' => true, 'noclean' => true));
+            return format_text($settingvalue, FORMAT_HTML, array('trusted' => true, 'noclean' => true));
         } else {
-            return format_string($theme->settings->$setting);
+            return format_string($settingvalue);
+        }
+    }
+
+    static public function setting_file_url($setting, $filearea, $theme = null) {
+        self::check_corerenderer();
+
+        return self::$corerenderer->setting_file_url($setting, $filearea);
+    }
+
+    static public function pix_url($imagename, $component) {
+        self::check_corerenderer();
+        return self::$corerenderer->pix_url($imagename, $component);
+    }
+
+    static private function check_corerenderer() {
+        if (empty(self::$corerenderer)) {
+            // Use $OUTPUT.
+            global $OUTPUT;
+            self::$corerenderer = $OUTPUT;
         }
     }
 
@@ -90,7 +122,7 @@ class toolbox {
         } else if (!empty($CFG->themedir) and file_exists("$CFG->themedir/essential/layout/includes/$filename")) {
             return "$CFG->themedir/essential/layout/includes/$filename";
         } else {
-            return dirname(__FILE__)."$filename";
+            return dirname(__FILE__) . "$filename";
         }
     }
 
@@ -122,10 +154,10 @@ class toolbox {
             } else if (!empty($CFG->themedir) and file_exists("$CFG->themedir/essential/$folder")) {
                 $thefolder = "$CFG->themedir/essential/$folder";
             } else {
-                $thefolder = dirname(__FILE__)."$folder";
+                $thefolder = dirname(__FILE__) . "$folder";
             }
         }
-        foreach (glob($thefolder.'/*.php') as $filename) {
+        foreach (glob($thefolder . '/*.php') as $filename) {
             require_once $filename;
         }
     }
@@ -144,83 +176,90 @@ class toolbox {
         return $noslides;
     }
 
-    static public function render_slide($i, $captionoptions, $theme = null) {
-
-        if (empty($theme)) {
-            if (empty(self::$theme)) {
-                self::$theme = \theme_config::load('essential');
-            }
-            $theme = self::$theme;
+    static public function render_indicators($numberofslides) {
+        $indicators = '';
+        for ($indicatorslideindex = 0; $indicatorslideindex < $numberofslides; $indicatorslideindex++) {
+            $indicators .= '<li data-target="#essentialCarousel" data-slide-to="'.$indicatorslideindex.'"';
+                if ($indicatorslideindex == 0) {
+                    $indicators .= ' class="active"';
+                }
+            $indicators .= '></li>';
         }
+        return $indicators;
+    }
 
-        $slideurl = self::get_setting('slide' . $i . 'url', false, $theme);
-        $slideurltarget = self::get_setting('slide' . $i . 'target', false, $theme);
-        $slidetitle = self::get_setting('slide' . $i, true, $theme);
-        $slidecaption = self::get_setting('slide' . $i . 'caption', true, $theme);
+    static public function render_slide($slideno, $captionoptions) {
+        $slideurl = self::get_setting('slide' . $slideno . 'url');
+        $slideurltarget = self::get_setting('slide' . $slideno . 'target');
+        $slidetitle = self::get_setting('slide' . $slideno);
+        $slidecaption = self::get_setting('slide' . $slideno . 'caption', 'format_html');
+        if ($slideurl) {
+            // Strip links from the caption to prevent link in a link.
+            $slidecaption = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $slidecaption);
+        }
         if ($captionoptions == 0) {
             $slideextraclass = ' side-caption';
         } else {
             $slideextraclass = '';
         }
-        $slideextraclass .= ($i === 1) ? ' active' : '';
+        $slideextraclass .= ($slideno === 1) ? ' active' : '';
         $slideimagealt = strip_tags($slidetitle);
 
         // Get slide image or fallback to default.
-        $slideimage = self::get_setting('slide' . $i . 'image', false, $theme);
+        $slideimage = self::get_setting('slide' . $slideno . 'image');
         if ($slideimage) {
-            $slideimage = $theme->setting_file_url('slide' . $i . 'image', 'slide' . $i . 'image');
+            $slideimage = self::setting_file_url('slide' . $slideno . 'image', 'slide' . $slideno . 'image');
         } else {
-            global $OUTPUT;
-            $slideimage = $OUTPUT->pix_url('default_slide', 'theme');
+            $slideimage = self::pix_url('default_slide', 'theme');
         }
 
         if ($slideurl) {
-            $slide = '<a href="' . $slideurl . '" target="' . $slideurltarget . '" class="item' . $slideextraclass . '">';
+            $slidecontent = '<a href="' . $slideurl . '" target="' . $slideurltarget . '" class="item' . $slideextraclass . '">';
         } else {
-            $slide = '<div class="item' . $slideextraclass . '">';
+            $slidecontent = '<div class="item' . $slideextraclass . '">';
         }
 
         if ($captionoptions == 0) {
-            $slide .= '<div class="container-fluid">';
-            $slide .= '<div class="row-fluid">';
-        
-            if ($slidetitle || $slidecaption) {
-                $slide .= '<div class="span5 the-side-caption">';
-                $slide .= '<div class="the-side-caption-content">';
-                $slide .= '<h4>' . $slidetitle . '</h4>';
-                $slide .= '<p>' . $slidecaption . '</p>';
-                $slide .= '</div>';
-                $slide .= '</div>';
-                $slide .= '<div class="span7">';
-            } else {
-                $slide .= '<div class="span10 offset1 nocaption">';
-            }
-            $slide .= '<div class="carousel-image-container">';
-            $slide .= '<img src="' . $slideimage . '" alt="' . $slideimagealt . '" class="carousel-image"/>';
-            $slide .= '</div>';
-            $slide .= '</div>';
+            $slidecontent .= '<div class="container-fluid">';
+            $slidecontent .= '<div class="row-fluid">';
 
-            $slide .= '</div>';
-            $slide .= '</div>';
+            if ($slidetitle || $slidecaption) {
+                $slidecontent .= '<div class="span5 the-side-caption">';
+                $slidecontent .= '<div class="the-side-caption-content">';
+                $slidecontent .= '<h4>' . $slidetitle . '</h4>';
+                $slidecontent .= '<div>' . $slidecaption . '</div>';
+                $slidecontent .= '</div>';
+                $slidecontent .= '</div>';
+                $slidecontent .= '<div class="span7">';
+            } else {
+                $slidecontent .= '<div class="span10 offset1 nocaption">';
+            }
+            $slidecontent .= '<div class="carousel-image-container">';
+            $slidecontent .= '<img src="' . $slideimage . '" alt="' . $slideimagealt . '" class="carousel-image">';
+            $slidecontent .= '</div>';
+            $slidecontent .= '</div>';
+
+            $slidecontent .= '</div>';
+            $slidecontent .= '</div>';
         } else {
             $nocaption = (!($slidetitle || $slidecaption)) ? ' nocaption' : '';
-            $slide .= '<div class="carousel-image-container'.$nocaption.'">';
-            $slide .= '<img src="' . $slideimage . '" alt="' . $slideimagealt . '" class="carousel-image"/>';
-            $slide .= '</div>';
+            $slidecontent .= '<div class="carousel-image-container' . $nocaption . '">';
+            $slidecontent .= '<img src="' . $slideimage . '" alt="' . $slideimagealt . '" class="carousel-image">';
+            $slidecontent .= '</div>';
 
             // Output title and caption if either is present
             if ($slidetitle || $slidecaption) {
-                $slide .= '<div class="carousel-caption">';
-                $slide .= '<div class="carousel-caption-inner">';
-                $slide .= '<h4>' . $slidetitle . '</h4>';
-                $slide .= '<p>' . $slidecaption . '</p>';
-                $slide .= '</div>';
-                $slide .= '</div>';
+                $slidecontent .= '<div class="carousel-caption">';
+                $slidecontent .= '<div class="carousel-caption-inner">';
+                $slidecontent .= '<h4>' . $slidetitle . '</h4>';
+                $slidecontent .= '<div>' . $slidecaption . '</div>';
+                $slidecontent .= '</div>';
+                $slidecontent .= '</div>';
             }
         }
-        $slide .= ($slideurl) ? '</a>' : '</div>';
+        $slidecontent .= ($slideurl) ? '</a>' : '</div>';
 
-        return $slide;
+        return $slidecontent;
     }
 
     static public function render_slide_controls($left) {
@@ -255,7 +294,7 @@ class toolbox {
         $links = array('previous' => '', 'next' => '');
         $back = $sectionno - 1;
         while ($back > 0 and empty($links['previous'])) {
-           if ($canviewhidden || $sections[$back]->uservisible) {
+            if ($canviewhidden || $sections[$back]->uservisible) {
                 $params = array('id' => 'previous_section');
                 if (!$sections[$back]->visible) {
                     $params['class'] = 'dimmed_text';
@@ -300,8 +339,8 @@ class toolbox {
         return $links;
     }
 
-    static public function print_single_section_page(&$that, &$courserenderer, $course, $sections, $mods, $modnames, $modnamesused,
-        $displaysection) {
+    static public function print_single_section_page(&$that, &$courserenderer, $course, $sections, $mods, $modnames,
+            $modnamesused, $displaysection) {
         global $PAGE;
 
         $modinfo = \get_fast_modinfo($course);
@@ -436,47 +475,43 @@ class toolbox {
     }
 
     static public function set_font($css, $type, $fontname) {
-        $familytag = '[[setting:' . $type .'font]]';
+        $familytag = '[[setting:' . $type . 'font]]';
         $facetag = '[[setting:fontfiles' . $type . ']]';
         if (empty($fontname)) {
             $familyreplacement = 'Verdana';
             $facereplacement = '';
         } else if (\theme_essential\toolbox::get_setting('fontselect') === '3') {
-            static $theme;
-            if (empty($theme)) {
-                $theme = \theme_config::load('essential');  // $theme needs to be us for child themes.
-            }
 
             $fontfiles = array();
-            $fontfileeot = $theme->setting_file_url('fontfileeot' . $type, 'fontfileeot' . $type);
+            $fontfileeot = self::setting_file_url('fontfileeot' . $type, 'fontfileeot' . $type);
             if (!empty($fontfileeot)) {
                 $fontfiles[] = "url('" . $fontfileeot . "?#iefix') format('embedded-opentype')";
             }
-            $fontfilewoff = $theme->setting_file_url('fontfilewoff' . $type, 'fontfilewoff' . $type);
+            $fontfilewoff = self::setting_file_url('fontfilewoff' . $type, 'fontfilewoff' . $type);
             if (!empty($fontfilewoff)) {
                 $fontfiles[] = "url('" . $fontfilewoff . "') format('woff')";
             }
-            $fontfilewofftwo = $theme->setting_file_url('fontfilewofftwo' . $type, 'fontfilewofftwo' . $type);
+            $fontfilewofftwo = self::setting_file_url('fontfilewofftwo' . $type, 'fontfilewofftwo' . $type);
             if (!empty($fontfilewofftwo)) {
                 $fontfiles[] = "url('" . $fontfilewofftwo . "') format('woff2')";
             }
-            $fontfileotf = $theme->setting_file_url('fontfileotf' . $type, 'fontfileotf' . $type);
+            $fontfileotf = self::setting_file_url('fontfileotf' . $type, 'fontfileotf' . $type);
             if (!empty($fontfileotf)) {
                 $fontfiles[] = "url('" . $fontfileotf . "') format('opentype')";
             }
-            $fontfilettf = $theme->setting_file_url('fontfilettf' . $type, 'fontfilettf' . $type);
+            $fontfilettf = self::setting_file_url('fontfilettf' . $type, 'fontfilettf' . $type);
             if (!empty($fontfilettf)) {
                 $fontfiles[] = "url('" . $fontfilettf . "') format('truetype')";
             }
-            $fontfilesvg = $theme->setting_file_url('fontfilesvg' . $type, 'fontfilesvg' . $type);
+            $fontfilesvg = self::setting_file_url('fontfilesvg' . $type, 'fontfilesvg' . $type);
             if (!empty($fontfilesvg)) {
                 $fontfiles[] = "url('" . $fontfilesvg . "') format('svg')";
             }
 
             if (!empty($fontfiles)) {
-                $familyreplacement = '"'.$fontname.'"';
+                $familyreplacement = '"' . $fontname . '"';
                 $facereplacement = '@font-face {' . PHP_EOL . 'font-family: "' . $fontname . '";' . PHP_EOL;
-                $facereplacement .= !empty($fontfileeot) ? "src: url('" . $fontfileeot . "');" . PHP_EOL : '';
+                $facereplacement .=!empty($fontfileeot) ? "src: url('" . $fontfileeot . "');" . PHP_EOL : '';
                 $facereplacement .= "src: ";
                 $facereplacement .= implode("," . PHP_EOL . " ", $fontfiles);
                 $facereplacement .= ";";
@@ -487,7 +522,7 @@ class toolbox {
                 $facereplacement = '';
             }
         } else {
-            $familyreplacement = '"'.$fontname.'"';
+            $familyreplacement = '"' . $fontname . '"';
             $facereplacement = '';
         }
 
@@ -519,12 +554,11 @@ class toolbox {
     }
 
     static public function set_headerbackground($css, $headerbackground) {
-        global $OUTPUT;
         $tag = '[[setting:headerbackground]]';
         if ($headerbackground) {
             $replacement = $headerbackground;
         } else {
-            $replacement = $OUTPUT->pix_url('bg/header', 'theme');
+            $replacement = self::pix_url('bg/header', 'theme');
         }
         $css = str_replace($tag, $replacement, $css);
         return $css;
@@ -561,13 +595,34 @@ class toolbox {
         return $css;
     }
 
-    static public function set_marketingheight($css, $marketingheight) {
+    static public function set_marketingheight($css, $marketingheight, $marketingimageheight) {
         $tag = '[[setting:marketingheight]]';
-        $replacement = $marketingheight;
+        $mhreplacement = $marketingheight;
+        if (!($mhreplacement)) {
+            $mhreplacement = 100;
+        }
+        $css = str_replace($tag, $mhreplacement . 'px', $css);
+        $tag = '[[setting:marketingheightwithbutton]]';
+        $mhreplacement += 32;
+        $css = str_replace($tag, $mhreplacement . 'px', $css);
+
+        $tag = '[[setting:marketingimageheight]]';
+        $mihreplacement = $marketingimageheight;
+        if (!($mihreplacement)) {
+            $mihreplacement = 100;
+        }
+        $css = str_replace($tag, $mihreplacement . 'px', $css);
+
+        $tag = '[[setting:marketingheightwithimage]]';
+        $replacement = $mhreplacement + $mihreplacement;
         if (!($replacement)) {
-            $replacement = 100;
+            $replacement = 200;
         }
         $css = str_replace($tag, $replacement . 'px', $css);
+        $tag = '[[setting:marketingheightwithimagewithbutton]]';
+        $replacement += 32;
+        $css = str_replace($tag, $replacement . 'px', $css);
+
         return $css;
     }
 
@@ -584,7 +639,6 @@ class toolbox {
 
     static public function set_customcss($css, $customcss) {
         $tag = '[[setting:customcss]]';
-        $customcss = str_replace('themecredit', 'themepagefooter', $customcss);
         $replacement = $customcss;
         $css = str_replace($tag, $replacement, $css);
         return $css;
@@ -596,6 +650,17 @@ class toolbox {
             $replacement = 'none';
         } else {
             $replacement = 'url(\'' . $logo . '\')';
+        }
+        $css = str_replace($tag, $replacement, $css);
+        return $css;
+    }
+
+    static public function set_logoheight($css, $logoheight) {
+        $tag = '[[setting:logoheight]]';
+        if (!($logoheight)) {
+            $replacement = '65px';
+        } else {
+            $replacement = $logoheight;
         }
         $css = str_replace($tag, $replacement, $css);
         return $css;
@@ -675,4 +740,5 @@ class toolbox {
             return $properties;
         }
     }
+
 }

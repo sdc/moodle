@@ -19,8 +19,9 @@
  * Moodle's new Bootstrap theme engine
  *
  * @package     theme_essential
- * @copyright   2013 Julian Ridden
+ * @copyright   2015 Gareth J Barnard
  * @copyright   2014 Gareth J Barnard, David Bezemer
+ * @copyright   2013 Julian Ridden
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -69,91 +70,8 @@ click here to sponsor.
 </div></div>';
 
 // General.
-$string['genericsettings'] = 'General';
-$string['generalheadingsub'] = 'General settings';
-$string['generalheadingdesc'] = 'Configure the general settings for the theme here.';
-
-$string['customcss'] = 'Custom CSS';
-$string['customcssdesc'] = 'Whatever CSS rules you add to this text area will be reflected in every page, making for easier customization of this theme.';
-
-$string['footnote'] = 'Footnote';
-$string['footnotedesc'] = 'Whatever you add to this textarea will be displayed in the footer throughout your Moodle site.';
-
-$string['logo'] = 'Logo';
-$string['logodesc'] = 'Please upload your custom logo here if you want to add it to the header.
-                       <br>The image should be 65px high and any reasonable width that suits.
-                       <br>If you upload a logo it will replace the standard icon and name that was displayed by default.';
-$string['credit'] = 'The Essential theme is developed, enhanced and maintained by ';
-
-// Font settings.
-$string['fontsettings'] = 'Font';
-$string['fontheadingsub'] = 'Font settings';
-$string['fontheadingdesc'] = 'Select and enter the fonts that you want to use in your Moodle environment.';
-$string['fontselect'] = 'Font type selector';
-$string['fontselectdesc'] = 'Choose from the list of available font types. Please save to show the options for your choice.';
-$string['fonttypestandard'] = 'Standard fonts';
-$string['fonttypegoogle'] = 'Google web fonts';
-$string['fonttypecustom'] = 'Custom font';
-$string['fontnameheading'] = 'Heading font';
-$string['fontnameheadingdesc'] = 'Enter the exact name of the font to use for headings.';
-$string['fontnamebody'] = 'Text font';
-$string['fontnamebodydesc'] = 'Enter the exact name of the font to use for all other text.';
-
-// Font files.
-$string['fontfiles'] = 'Font files';
-$string['fontfilesdesc'] = 'Upload your font files here.';
-$string['fontfilettfheading'] = 'Heading TTF font file';
-$string['fontfileotfheading'] = 'Heading OTF font file';
-$string['fontfilewoffheading'] = 'Heading WOFF font file';
-$string['fontfilewofftwoheading'] = 'Heading WOFF2 font file';
-$string['fontfileeotheading'] = 'Heading EOT font file';
-$string['fontfilesvgheading'] = 'Heading SVG font file';
-$string['fontfilettfbody'] = 'Body TTF font file';
-$string['fontfileotfbody'] = 'Body OTF font file';
-$string['fontfilewoffbody'] = 'Body WOFF font file';
-$string['fontfilewofftwobody'] = 'Body WOFF2 font file';
-$string['fontfileeotbody'] = 'Body EOT font file';
-$string['fontfilesvgbody'] = 'Body SVG font file';
-
-
-$string['fontcharacterset'] = 'Google font additional character set';
-$string['fontcharactersetdesc'] = 'Pick additional character sets for different languages.
-                                   Using many character sets can slow down your Moodle, so only select the character sets that you actually need.';
-$string['fontcharactersetlatinext'] = 'Latin Extended';
-$string['fontcharactersetcyrillic'] = 'Cyrillic';
-$string['fontcharactersetcyrillicext'] = 'Cyrillic Extended';
-$string['fontcharactersetgreek'] = 'Greek';
-$string['fontcharactersetgreekext'] = 'Greek Extended';
-$string['fontcharactersetvietnamese'] = 'Vietnamese';
-
-$string['copyright'] = 'Copyright';
-$string['copyrightdesc'] = 'The name of your organisation.';
-
-$string['profilebarcustomtitle'] = 'Profile bar custom block title';
-$string['profilebarcustomtitledesc'] = 'Title for custom profile bar block.';
-
-$string['contactinfo'] = 'Contact information';
-$string['contactinfodesc'] = 'Enter your contact information';
-
-$string['siteicon'] = 'Site icon';
-$string['siteicondesc'] = 'Do not have a logo? Enter the name of the icon you wish to use.  List is <a href="http://fortawesome.github.io/Font-Awesome/cheatsheet/" target="_new">here</a>. Just enter what is after the "fa-". ';
-
-$string['layout'] = 'Use a standard course layout';
-$string['layoutdesc'] = 'This theme is designed to put both block columns on the side.  If you prefer the standard Moodle course layout you can check this box and be returned to the boring old three column layout.';
-
-$string['oldnavbar'] = 'Use the old navbar position';
-$string['oldnavbardesc'] = 'Enable this option to use the old navbar position, placing it below the header.';
-
-$string['fitvids'] = 'Use FitVids';
-$string['fitvidsdesc'] = 'Enable FitVids (fitvidsjs.com) to make your embedded videos responsive.  If FitVids is on and you want a video to be excluded then add \'class="fitvidsignore"\' to the \'iframe\' tag in the HTML mode of the editor.  For example: \'iframe class="fitvidsignore" width="420" height="315" src="//www.youtube.com/embed/enmEmym85xc" frameborder="0" allowfullscreen=""></iframe\'.';
-
 $string['left'] = 'Left';
 $string['right'] = 'Right';
-
-$string['perfinfo'] = 'Performance information mode';
-$string['perfinfodesc'] = 'Many sites don\'t need the fully detailed performance info.  Especially when viewed by users.  When enabled, this shows a cleaned up minimal form with basic page load information.';
-$string['perf_max'] = 'Detailed';
-$string['perf_min'] = 'Minimal';
 
 $string['perfinfoheading'] = 'Performance Information';
 $string['extperfinfoheading'] = 'Extended Performance Information';
@@ -199,6 +117,50 @@ $string['readme_title'] = 'Essential read-me';
 $string['readme_desc'] = 'Please {$a->url} containing more information about the Essential theme.';
 $string['readme_click'] = 'click for README.txt';
 
+// General settings.
+$string['genericsettings'] = 'General';
+$string['generalheadingsub'] = 'General settings';
+$string['generalheadingdesc'] = 'Configure the general settings for the theme here.';
+
+$string['customcss'] = 'Custom CSS';
+$string['customcssdesc'] = 'Whatever CSS rules you add to this text area will be reflected in every page, making for easier customisation of this theme.';
+
+$string['logo'] = 'Logo';
+$string['logodesc'] = 'Please upload your custom logo here if you want to add it to the header.
+                       <br>The image should be the same height as the Logo height setting below and any reasonable width that suits.
+                       <br>If you upload a logo it will replace the standard icon and name that was displayed by default.';
+
+$string['logoheight'] = 'Logo height';
+$string['logoheightdesc'] = 'The height of the logo image. This can be specified in px or em.';
+
+$string['credit'] = 'The Essential theme is developed, enhanced and maintained by ';
+
+$string['profilebarcustomtitle'] = 'Profile bar custom block title';
+$string['profilebarcustomtitledesc'] = 'Title for custom profile bar block.';
+
+$string['contactinfo'] = 'Contact information';
+$string['contactinfodesc'] = 'Enter your contact information';
+
+$string['siteicon'] = 'Site icon';
+$string['siteicondesc'] = 'Do not have a logo? Enter the name of the icon you wish to use.  List is <a href="http://fortawesome.github.io/Font-Awesome/cheatsheet/" target="_new">here</a>. Just enter what is after the "fa-". ';
+
+$string['layout'] = 'Use a standard course layout';
+$string['layoutdesc'] = 'This theme is designed to put both block columns on the side.  If you prefer the standard Moodle course layout you can check this box and be returned to the boring old three column layout.';
+
+$string['floatingsubmitbuttons'] = 'Floating submit buttons';
+$string['floatingsubmitbuttonsdesc'] = 'Have a \'floating\' area that contains the buttons used when submitting a form on desktop devices.  This helps to reduce scrolling on some pages.  Not used on course enrolment or forum posts.';
+
+$string['oldnavbar'] = 'Use the old navbar position';
+$string['oldnavbardesc'] = 'Enable this option to use the old navbar position, placing it below the header.';
+
+$string['fitvids'] = 'Use FitVids';
+$string['fitvidsdesc'] = 'Enable FitVids (fitvidsjs.com) to make your embedded videos responsive.  If FitVids is on and you want a video to be excluded then add \'class="fitvidsignore"\' to the \'iframe\' tag in the HTML mode of the editor.  For example: \'iframe class="fitvidsignore" width="420" height="315" src="//www.youtube.com/embed/enmEmym85xc" frameborder="0" allowfullscreen=""></iframe\'.';
+
+$string['favicon'] = 'Custom favicon';
+$string['favicondesc'] = 'Upload your own favicon.  It should be an .ico file.';
+
+$string['customscrollbars'] = 'Custom scrollbars';
+$string['customscrollbarsdesc'] = 'Use custom scrollbars. This will replace the standard browser scrollbars.';
 
 // Custom Menu.
 $string['mycoursesinfo'] = 'Enrolled courses menu';
@@ -260,7 +222,7 @@ $string['colorheadingsub'] = 'Set the colours used in your theme';
 $string['colordesc'] = 'Here you can find various settings to change many of the colours found in this theme.';
 
 $string['footercolors'] = 'Footer colours';
-$string['footercolorsdesc'] = 'Change the colours on the page footers';
+$string['footercolorsdesc'] = 'Change the colours on the page footer.';
 
 $string['themecolor'] = 'Theme colour';
 $string['themecolordesc'] = 'What colour should your theme be.  This will change multiple components to produce the colour you wish across the Moodle site';
@@ -286,8 +248,16 @@ $string['footerurlcolor'] = 'Footer link colour';
 $string['footerurlcolordesc'] = 'Set the colour for your linked text in the footer.';
 $string['footerhovercolor'] = 'Footer link hover colour';
 $string['footerhovercolordesc'] = 'Set the colour for your linked text when hovered over in the footer.';
+$string['footerblockbackgroundcolour'] = 'Footer block background colour';
+$string['footerblockbackgroundcolourdesc'] = 'Set the colour for the block background in the footer.';
 $string['footerheadingcolor'] = 'Footer heading colour';
-$string['footerheadingcolordesc'] = 'Set the colour for block headings in the footer.';
+$string['footerheadingcolordesc'] = 'Set the colour for headings in the footer.';
+$string['footerblocktextcolour'] = 'Footer block text colour';
+$string['footerblocktextcolourdesc'] = 'Set the colour you want your block text to be in the footer.';
+$string['footerblockurlcolour'] = 'Footer block link colour';
+$string['footerblockurlcolourdesc'] = 'Set the colour for your linked block text in the footer.';
+$string['footerblockhovercolour'] = 'Footer block link hover colour';
+$string['footerblockhovercolourdesc'] = 'Set the colour for your linked block text when hovered over in the footer.';
 
 $string['headerbackground'] = 'Header background image';
 $string['headerbackgrounddesc'] = 'Upload your own background image.';
@@ -323,6 +293,28 @@ $string['alternativethemenavcolor'] = 'Navigation text colour {$a}';
 $string['alternativethemenavcolordesc'] = 'Set the alternative {$a} text colour for navigation.  Being the navigation bar and the breadcrumb fancy style.';
 $string['alternativethemehovercolor'] = 'Alternative theme hover colour {$a}';
 $string['alternativethemehovercolordesc'] = 'What colour should your theme hovers be for the alternative theme colours {$a}.';
+
+$string['alternativethemefootercolor'] = 'Footer background colour for the alternative theme colours {$a}';
+$string['alternativethemefootercolordesc'] = 'Set what colour the background of the Footer box should be for the alternative theme colours {$a}.';
+$string['alternativethemefootersepcolor'] = 'Footer separator colour for the alternative theme colours {$a}';
+$string['alternativethemefootersepcolordesc'] = 'Separators are lines used to separate content.  Set their colour here for the alternative theme colours {$a}.';
+$string['alternativethemefootertextcolor'] = 'Footer text colour for the alternative theme colours {$a}';
+$string['alternativethemefootertextcolordesc'] = 'Set the colour you want your text to be in the footer for the alternative theme colours {$a}.';
+$string['alternativethemefooterheadingcolor'] = 'Footer heading colour for the alternative theme colours {$a}';
+$string['alternativethemefooterheadingcolordesc'] = 'Set the colour for headings in the footer for the alternative theme colours {$a}.';
+$string['alternativethemefooterurlcolor'] = 'Footer link colour for the alternative theme colours {$a}';
+$string['alternativethemefooterurlcolordesc'] = 'Set the colour for your linked text in the footer for the alternative theme colours {$a}.';
+$string['alternativethemefooterhovercolor'] = 'Footer link hover colour for the alternative theme colours {$a}';
+$string['alternativethemefooterhovercolordesc'] = 'Set the colour for your linked text when hovered over in the footer for the alternative theme colours {$a}.';
+$string['alternativethemefooterblockbackgroundcolour'] = 'Footer block background colour for the alternative theme colours {$a}';
+$string['alternativethemefooterblockbackgroundcolourdesc'] = 'Set the colour for the block background in the footer for the alternative theme colours {$a}.';
+$string['alternativethemefooterblocktextcolour'] = 'Footer block text colour for the alternative theme colours {$a}';
+$string['alternativethemefooterblocktextcolourdesc'] = 'Set the colour you want your block text to be in the footer for the alternative theme colours {$a}.';
+$string['alternativethemefooterblockurlcolour'] = 'Footer block link colour for the alternative theme colours {$a}';
+$string['alternativethemefooterblockurlcolourdesc'] = 'Set the colour for your linked block text in the footer for the alternative theme colours {$a}.';
+$string['alternativethemefooterblockhovercolour'] = 'Footer block link hover colour for the alternative theme colours {$a}';
+$string['alternativethemefooterblockhovercolourdesc'] = 'Set the colour for your linked block text when hovered over in the footer for the alternative theme colours {$a}.';
+
 $string['alternativethemeslidecolors'] = 'Alternative theme slide colours';
 $string['alternativethemeslidecolorsdesc'] = 'Defines alternative theme slide colours that the user may select.';
 $string['alternativethemeslidecaptiontextcolor'] = 'Alternative theme slide caption text colour {$a}';
@@ -427,8 +419,10 @@ $string['marketingheading'] = 'Marketing spots';
 $string['marketinginfodesc'] = 'Enter the settings for your marketing spot.';
 $string['marketingheadingsub'] = 'Three locations on the front page to add information and links';
 
-$string['marketingheight'] = 'Height of marketing images';
-$string['marketingheightdesc'] = 'If you want to display images in the Marketing boxes you can specify their height here.';
+$string['marketingheight'] = 'Height of marketing spot container (px)';
+$string['marketingheightdesc'] = 'Specify the height of the marketing spot container in pixels.  Adjust this to suit your content.  If any spot has an image or link, then that will be added to this for all spots.';
+$string['marketingimageheight'] = 'Height of marketing images (px)';
+$string['marketingimageheightdesc'] = 'If you want to display images in the marketing boxes you can specify their height in pixels here.';
 $string['marketingdesc'] = 'This theme provides the option of enabling three "marketing" or "ad" spots just under the slide show.  These allow you to easily identify core information to your users and provide direct links.';
 
 $string['togglemarketing'] = 'Toggle marketing spot display';
@@ -539,8 +533,66 @@ $string['shortname'] = 'Site short name';
 $string['fullnamesummary'] = 'Full name and summary';
 $string['shortnamesummary'] = 'Short name and summary';
 
+$string['editingmenu'] = 'Page editing switch';
+$string['editingmenudesc'] = 'Displays a button to switch the editing of the current page on/off if the user is allowed to edit the page.  The same functionality as the normal page editing button.';
+$string['displayeditingmenu'] = 'Display editing button';
+$string['displayeditingmenudesc'] = 'Displays a button with the same functionality as the default page editing button on the header.';
+$string['hidedefaulteditingbutton'] = 'Hide default page editing button';
+$string['hidedefaulteditingbuttondesc'] = 'Hides the default page editing button from any page.  This setting only takes effect if the "Display editing button" setting is enabled.';
+
+// Font settings.
+$string['fontsettings'] = 'Font';
+$string['fontheadingsub'] = 'Font settings';
+$string['fontheadingdesc'] = 'Select and enter the fonts that you want to use in your Moodle environment.';
+$string['fontselect'] = 'Font type selector';
+$string['fontselectdesc'] = 'Choose from the list of available font types. Please save to show the options for your choice.';
+$string['fonttypestandard'] = 'Standard fonts';
+$string['fonttypegoogle'] = 'Google web fonts';
+$string['fonttypecustom'] = 'Custom font';
+$string['fontnameheading'] = 'Heading font';
+$string['fontnameheadingdesc'] = 'Enter the exact name of the font to use for headings.';
+$string['fontnamebody'] = 'Text font';
+$string['fontnamebodydesc'] = 'Enter the exact name of the font to use for all other text.';
+
+// Font files.
+$string['fontfiles'] = 'Font files';
+$string['fontfilesdesc'] = 'Upload your font files here.';
+$string['fontfilettfheading'] = 'Heading TTF font file';
+$string['fontfileotfheading'] = 'Heading OTF font file';
+$string['fontfilewoffheading'] = 'Heading WOFF font file';
+$string['fontfilewofftwoheading'] = 'Heading WOFF2 font file';
+$string['fontfileeotheading'] = 'Heading EOT font file';
+$string['fontfilesvgheading'] = 'Heading SVG font file';
+$string['fontfilettfbody'] = 'Body TTF font file';
+$string['fontfileotfbody'] = 'Body OTF font file';
+$string['fontfilewoffbody'] = 'Body WOFF font file';
+$string['fontfilewofftwobody'] = 'Body WOFF2 font file';
+$string['fontfileeotbody'] = 'Body EOT font file';
+$string['fontfilesvgbody'] = 'Body SVG font file';
+
+$string['fontcharacterset'] = 'Google font additional character set';
+$string['fontcharactersetdesc'] = 'Pick additional character sets for different languages.
+                                   Using many character sets can slow down your Moodle, so only select the character sets that you actually need.';
+$string['fontcharactersetlatinext'] = 'Latin Extended';
+$string['fontcharactersetcyrillic'] = 'Cyrillic';
+$string['fontcharactersetcyrillicext'] = 'Cyrillic Extended';
+$string['fontcharactersetgreek'] = 'Greek';
+$string['fontcharactersetgreekext'] = 'Greek Extended';
+$string['fontcharactersetvietnamese'] = 'Vietnamese';
+
 // Footer Settings.
 $string['footerheading'] = 'Footer';
+
+$string['copyright'] = 'Copyright';
+$string['copyrightdesc'] = 'The name of your organisation.';
+
+$string['footnote'] = 'Footnote';
+$string['footnotedesc'] = 'Whatever you add to this textarea will be displayed in the footer throughout your Moodle site.';
+
+$string['perfinfo'] = 'Performance information mode';
+$string['perfinfodesc'] = 'Many sites don\'t need the fully detailed performance info.  Especially when viewed by users.  When enabled, this shows a cleaned up minimal form with basic page load information.';
+$string['perf_max'] = 'Detailed';
+$string['perf_min'] = 'Minimal';
 
 // Mobile Apps.
 $string['mobileappsheading'] = 'Apps';

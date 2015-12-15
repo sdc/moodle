@@ -119,12 +119,12 @@
         margin-right: 0px;
       }
     }
+    .nav > li > a i.fa {
+      color: inherit;
+    }
 
     .nav > li.dropdown ul.dropdown-menu > li > a {
       &:hover, &.open {
-        .fa {
-            color: @dropdownLinkColorHover;
-        }
         > .dimmed_text .fa {
             color: @grayLighter;
         }
@@ -137,7 +137,8 @@
 
     .messagemenu,
     .usermenu,
-    .gotobottommenu {
+    .gotobottommenu,
+    .editingmenu {
       float: right;
     }
 
@@ -162,7 +163,7 @@
         }
         ul.dropdown-menu {
           margin: 0px;
-          i {
+          i.fa {
             margin-right: 5px;
             width: 15px;
           }
@@ -186,11 +187,11 @@
           margin: 0px;
           li > a {
             padding: 0px;
-            background: #fff;
+            background: @white;
             overflow: hidden;
             > .message {
               padding: 5px 10px;
-              i {
+              i.fa {
                 margin: 0px 5px;
               }
               .msg-picture {
@@ -208,6 +209,7 @@
               }
               &.unread {
                 background: @grayLighter;
+                margin: 0;
                 .msg-text {
                   font-weight: 700;
                 }
@@ -241,6 +243,7 @@
               }
               &.unread {
                 background: @grayLighter;
+                margin: 0;
                 .msg-text {
                   font-weight: 700;
                 }

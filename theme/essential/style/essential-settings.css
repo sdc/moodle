@@ -20,15 +20,15 @@
 .block h3.main {
   color: [[setting:themetextcolor]];
 }
-p.tree_item.leaf a > i {
+p.tree_item.leaf a > i.fa {
   color: [[setting:themeiconcolor]];
 }
 p.tree_item.leaf a:hover,
 p.tree_item.leaf a:focus {
   color: [[setting:themehovercolor]];
 }
-p.tree_item.leaf a:hover > i,
-p.tree_item.leaf a:focus > i {
+p.tree_item.leaf a:hover > i.fa,
+p.tree_item.leaf a:focus > i.fa {
   color: inherit;
 }
 p.tree_item.branch {
@@ -200,7 +200,7 @@ p.tree_item.branch.emptybranch:focus:before {
   color: [[setting:themecolor]];
   background-color: [[setting:themehovercolor]];
 }
-.breadcrumb-button i {
+.breadcrumb-button i.fa {
   color: inherit;
 }
 /* @end */
@@ -215,24 +215,14 @@ p.tree_item.branch.emptybranch:focus:before {
 .breadcrumb-nav ul.breadcrumb.style1 li a {
   color: [[setting:themenavcolor]];
 }
-.breadcrumb-nav ul.breadcrumb.style1 li a:hover {
-  color: [[setting:themecolor]];
-}
 .breadcrumb-nav ul.breadcrumb.style1 li:after {
   border-left-color: [[setting:themecolor]];
 }
 .breadcrumb-nav ul.breadcrumb.style1 li:first-of-type a:before {
   color: [[setting:themenavcolor]];
 }
-.breadcrumb-nav ul.breadcrumb.style1 li:first-of-type:hover a:before {
-  color: [[setting:themecolor]];
-}
 .breadcrumb-nav ul.breadcrumb.style1 li:hover {
-  color: [[setting:themecolor]];
   background-color: [[setting:themehovercolor]];
-}
-.breadcrumb-nav ul.breadcrumb.style1 li:hover a {
-  color: [[setting:themecolor]];
 }
 .breadcrumb-nav ul.breadcrumb.style1 li:hover:after {
   border-left-color: [[setting:themehovercolor]];
@@ -257,7 +247,7 @@ ul.breadcrumb.style2 li a:hover {
 /* @end */
 /* @end */
 /* @group Buttons */
-button,
+button.btn-cancel,
 input.form-submit,
 input[type="button"],
 input[type="submit"],
@@ -266,21 +256,21 @@ input[type="reset"],
 .submit.buttons input[name=cancel] {
   color: [[setting:themetextcolor]];
 }
-button:focus,
+button.btn-cancel:focus,
 input.form-submit:focus,
 input[type="button"]:focus,
 input[type="submit"]:focus,
 input[type="reset"]:focus,
 #notice .singlebutton + .singlebutton input:focus,
 .submit.buttons input[name=cancel]:focus,
-button:hover,
+button.btn-cancel:hover,
 input.form-submit:hover,
 input[type="button"]:hover,
 input[type="submit"]:hover,
 input[type="reset"]:hover,
 #notice .singlebutton + .singlebutton input:hover,
 .submit.buttons input[name=cancel]:hover,
-button:active,
+button.btn-cancel:active,
 input.form-submit:active,
 input[type="button"]:active,
 input[type="submit"]:active,
@@ -304,15 +294,15 @@ input[type="reset"]:active,
 #essentialCarousel.carousel .carousel-control {
   color: [[setting:slidebuttoncolor]];
 }
-#essentialCarousel.carousel .carousel-control i {
+#essentialCarousel.carousel .carousel-control i.fa {
   color: inherit;
 }
 #essentialCarousel.carousel .carousel-control:hover,
 #essentialCarousel.carousel .carousel-control:focus {
   color: [[setting:slidebuttonhovercolor]];
 }
-#essentialCarousel.carousel .carousel-control:hover i,
-#essentialCarousel.carousel .carousel-control:focus i {
+#essentialCarousel.carousel .carousel-control:hover i.fa,
+#essentialCarousel.carousel .carousel-control:focus i.fa {
   color: inherit;
 }
 #essentialCarousel.carousel .carousel-indicators {
@@ -339,7 +329,7 @@ input[type="reset"]:active,
 .categoryicons .course_category_tree .category[data-categoryid]:hover > .info > .categoryname a {
   color: [[setting:themenavcolor]];
 }
-.categoryicons .course_category_tree .category[data-categoryid]:hover > .info > .categoryname a i {
+.categoryicons .course_category_tree .category[data-categoryid]:hover > .info > .categoryname a i.fa {
   color: inherit;
 }
 /* @end */
@@ -470,14 +460,14 @@ body.has_dock.essential-colours-alternative4 #dock .dockedtitle[disabled] {
 }
 /* @end */
 /* @group Edit Buttons */
-.menu a.menu-action > i,
-.course-item-actions a > i,
-.actions a > i {
+.menu a.menu-action > i.fa,
+.course-item-actions a > i.fa,
+.actions a > i.fa {
   color: [[setting:themeiconcolor]];
 }
-.menu a.menu-action:hover > i,
-.course-item-actions a:hover > i,
-.actions a:hover > i {
+.menu a.menu-action:hover > i.fa,
+.course-item-actions a:hover > i.fa,
+.actions a:hover > i.fa {
   color: [[setting:themehovercolor]];
 }
 .section-modchooser-link > a:before {
@@ -510,7 +500,6 @@ input[type="color"],
 }
 #page form .form-buttons #fgroup_id_buttonar,
 #page form table#form td.submit #fgroup_id_buttonar,
-#page form .form-buttons #fgroup_id_buttonar,
 #page form .path-admin .buttons #fgroup_id_buttonar,
 #page form #fitem_id_submitbutton #fgroup_id_buttonar,
 #page form .fp-content-center form + div #fgroup_id_buttonar,
@@ -537,6 +526,31 @@ input[type="color"],
 }
 #marketing-spots .marketing-spot h5 {
   color: [[setting:themecolor]];
+}
+#marketing-spots .marketing-spot #marketing-image1 {
+  background-image: [[setting:marketing1image]];
+}
+#marketing-spots .marketing-spot #marketing-image2 {
+  background-image: [[setting:marketing2image]];
+}
+#marketing-spots .marketing-spot #marketing-image3 {
+  background-image: [[setting:marketing3image]];
+}
+#marketing-spots .marketing-spot .marketing-image {
+  height: [[setting:marketingimageheight]];
+  background-repeat: no-repeat;
+}
+#marketing-spots.withimage .marketing-spot {
+  min-height: [[setting:marketingheightwithimage]];
+}
+#marketing-spots.withimage.withbutton .marketing-spot {
+  min-height: [[setting:marketingheightwithimagewithbutton]];
+}
+#marketing-spots.noimages .marketing-spot {
+  min-height: [[setting:marketingheight]];
+}
+#marketing-spots.noimages.withbutton .marketing-spot {
+  min-height: [[setting:marketingheightwithbutton]];
 }
 /* @end */
 /* @end */
@@ -567,7 +581,6 @@ input[type="color"],
 }
 /* @end */
 /* @group Navbar */
-/* @group Custom Menu */
 .navbar .navbar-inner .brand {
   color: [[setting:themenavcolor]];
 }
@@ -581,18 +594,18 @@ input[type="color"],
 .navbar .navbar-inner .nav > li > a {
   color: [[setting:themenavcolor]];
 }
-.navbar .navbar-inner .nav > li.dropdown a i,
-.navbar .navbar-inner .nav > li > a i {
-  color: inherit;
-}
 .navbar .navbar-inner .nav > li.dropdown a:hover,
-.navbar .navbar-inner .nav > li > a:hover {
+.navbar .navbar-inner .nav > li > a:hover,
+.navbar .navbar-inner .nav > li.dropdown a:focus,
+.navbar .navbar-inner .nav > li > a:focus {
   color: [[setting:themecolor]];
   background-color: [[setting:themenavcolor]];
 }
-.navbar .navbar-inner .nav > li.dropdown a:hover i,
-.navbar .navbar-inner .nav > li > a:hover i {
-  color: inherit;
+.navbar .navbar-inner .nav .dropdown-menu .dropdown-submenu .dropdown-toggle:after {
+  border-left-color: [[setting:themeiconcolor]];
+}
+.navbar .navbar-inner .nav .dropdown-menu .dropdown-submenu:hover .dropdown-toggle:after {
+  border-left-color: [[setting:themenavcolor]];
 }
 .navbar .navbar-inner .nav > li.dropdown ul.dropdown-menu > li > a {
   color: [[setting:themeurlcolor]];
@@ -606,21 +619,18 @@ input[type="color"],
   color: #ffffff;
   background-color: [[setting:themeurlcolor]];
 }
-.navbar .navbar-inner .nav > li.dropdown ul.dropdown-menu > li > a:focus i,
-.navbar .navbar-inner .nav > li.dropdown ul.dropdown-menu > li > a.open i {
+.navbar .navbar-inner .nav > li.dropdown ul.dropdown-menu > li > a:focus i.fa,
+.navbar .navbar-inner .nav > li.dropdown ul.dropdown-menu > li > a.open i.fa {
   color: #ffffff;
 }
 .navbar .navbar-inner .nav > li.dropdown ul.dropdown-menu > li > a:hover .dimmed_text {
   color: #eeeeee;
 }
-.navbar .navbar-inner .nav > li.dropdown ul.dropdown-menu > li > a i {
-  color: [[setting:themeiconcolor]];
-}
 .navbar .navbar-inner .nav > li.dropdown ul.dropdown-menu > li.dropdown-submenu:hover > a {
   color: #ffffff;
   background-color: [[setting:themeurlcolor]];
 }
-.navbar .navbar-inner .nav > li.dropdown ul.dropdown-menu > li.dropdown-submenu:hover > a i {
+.navbar .navbar-inner .nav > li.dropdown ul.dropdown-menu > li.dropdown-submenu:hover > a i.fa {
   color: inherit;
 }
 .navbar .navbar-inner .nav li.dropdown.open > .dropdown-toggle,
@@ -628,11 +638,6 @@ input[type="color"],
 .navbar .navbar-inner .nav li.dropdown.open.active > .dropdown-toggle {
   color: #ffffff;
   background-color: [[setting:themehovercolor]];
-}
-.navbar .navbar-inner .nav li.dropdown.open > .dropdown-toggle i,
-.navbar .navbar-inner .nav li.dropdown.active > .dropdown-toggle i,
-.navbar .navbar-inner .nav li.dropdown.open.active > .dropdown-toggle i {
-  color: inherit;
 }
 .navbar .navbar-inner .usermenu .dropdown img.userpicture {
   border: 1px solid [[setting:themenavcolor]];
@@ -660,7 +665,30 @@ input[type="color"],
 .navbar .navbar-inner .messagemenu ul.nav ul.dropdown-menu li > a:hover .notification img.profilepicture {
   box-shadow: 0 0 3px [[setting:themenavcolor]];
 }
-/* @end */
+@media (max-width: 979px) {
+  .navbar .nav-collapse.in .nav .dropdown-submenu .dropdown-toggle:after,
+  .navbar .nav-collapse.in .nav .dropdown-menu .dropdown-submenu .dropdown-toggle:after {
+    border-left-color: transparent;
+    border-top-color: [[setting:themeiconcolor]];
+  }
+  .navbar .nav-collapse.in .nav .dropdown-submenu:hover .dropdown-toggle:after,
+  .navbar .nav-collapse.in .nav .dropdown-menu .dropdown-submenu:hover .dropdown-toggle:after {
+    border-top-color: [[setting:themenavcolor]];
+  }
+  .navbar .nav-collapse.in .nav .dropdown-submenu.open > a,
+  .navbar .nav-collapse.in .nav .dropdown-menu .dropdown-submenu.open > a,
+  .navbar .nav-collapse.in .nav .dropdown-submenu:hover.open > a,
+  .navbar .nav-collapse.in .nav .dropdown-menu .dropdown-submenu:hover.open > a {
+    color: [[setting:themenavcolor]];
+    background-color: [[setting:themecolor]];
+  }
+  .navbar .nav-collapse.in .nav .dropdown-submenu.open > a.dropdown-toggle:after,
+  .navbar .nav-collapse.in .nav .dropdown-menu .dropdown-submenu.open > a.dropdown-toggle:after,
+  .navbar .nav-collapse.in .nav .dropdown-submenu:hover.open > a.dropdown-toggle:after,
+  .navbar .nav-collapse.in .nav .dropdown-menu .dropdown-submenu:hover.open > a.dropdown-toggle:after {
+    border-top-color: [[setting:themenavcolor]];
+  }
+}
 /* @end */
 /* @group Print Styling */
 @media print {
@@ -703,10 +731,10 @@ body {
   background-repeat: [[setting:backgroundrepeat]];
   background-size: [[setting:backgroundsize]];
 }
-body i {
+body i.fa {
   color: [[setting:themeiconcolor]];
 }
-body i:hover {
+body i.fa:hover {
   color: [[setting:themehovercolor]];
 }
 .container-fluid {
@@ -756,14 +784,15 @@ img.profilepicture {
 #page-header {
   background: url('[[setting:headerbackground]]') repeat;
 }
-a.logo {
+#page-header a.logo {
   background-image: [[setting:logo]];
+  height: [[setting:logoheight]];
 }
 h1#title {
   color: [[setting:themetextcolor]];
 }
-#headerlogo {
-  border-right: 1px dotted [[setting:themecolor]];
+#page-header div.titlearea {
+  border-left: 1px dotted [[setting:themecolor]];
 }
 /* @group Social Buttons */
 button.website:hover,
@@ -801,7 +830,7 @@ a .colours-alternative4 {
 .course-content ul li.section.main {
   background: url([[pix:theme|bg/dot]]) bottom repeat-x;
 }
-.course-content ul li.section.main.clearfix.current {
+.course-content ul li.section.main.current {
   box-shadow: 4px 4px 8px 2px [[setting:themecolor]];
   border-style: solid;
   border-width: 1px;
@@ -825,9 +854,11 @@ h2.pagetitle {
 }
 a.marketing-button,
 a.marketing-button:visited {
+  color: [[setting:themenavcolor]];
   background-color: [[setting:themecolor]];
 }
 a.marketing-button:hover {
+  color: [[setting:themenavcolor]];
   background-color: [[setting:themehovercolor]];
 }
 /* @end */
@@ -840,6 +871,9 @@ a.marketing-button:hover {
 }
 .block .header .title h2:before,
 .block.block_iconic_html .header .title h2 span.fa:before {
+  color: [[setting:themeiconcolor]];
+}
+.jsenabled .block_settings .block_tree .tree_item.branch.loadingbranch:before {
   color: [[setting:themeiconcolor]];
 }
 .block_rss_client .footer a {
@@ -872,7 +906,7 @@ a.marketing-button:hover {
 }
 /* @end */
 /* @group Home News Boxes */
-.service i {
+.service i.fa {
   color: [[setting:themecolor]];
 }
 /* @end */
@@ -884,11 +918,11 @@ a.marketing-button:hover {
   border-bottom: 3px solid [[setting:themecolor]];
 }
 #page-footer a,
-#page-footer a > i {
+#page-footer a > i.fa {
   color: [[setting:footerurlcolor]];
 }
 #page-footer a:hover,
-#page-footer a:hover > i {
+#page-footer a:hover > i.fa {
   color: [[setting:footerhovercolor]];
 }
 #page-footer .footnote {
@@ -896,10 +930,10 @@ a.marketing-button:hover {
 }
 #page-footer .footnote a,
 #page-footer .footnote a:visited {
-  color: [[setting:footerurlcolor]] !important;
+  color: [[setting:footerurlcolor]];
 }
 #page-footer .footnote a:hover {
-  color: [[setting:footerhovercolor]] !important;
+  color: [[setting:footerhovercolor]];
 }
 #page-footer hr {
   border-top: 1px solid [[setting:footersepcolor]];
@@ -911,19 +945,38 @@ a.marketing-button:hover {
 #page-footer .tree_item.branch:before {
   color: [[setting:themeiconcolor]];
 }
-#page-footer .block_html ul li:before,
-#greyboxright ul li:before {
-  background-color: [[setting:themecolor]];
-}
 /* @group Footer Block Formatting */
+#page-footer .block {
+  background-color: [[setting:footerblockbackgroundcolour]];
+  color: [[setting:footerblocktextcolour]];
+}
+#page-footer .block a,
+#page-footer .block a > i.fa {
+  color: [[setting:footerblockurlcolour]];
+}
+#page-footer .block a:hover,
+#page-footer .block a:hover > i.fa {
+  color: [[setting:footerblockhovercolour]];
+}
+#page-footer .block .icon {
+  color: [[setting:footerblockurlcolour]];
+}
+#page-footer .block .moodle-core-dragdrop-draghandle:before {
+  color: [[setting:footerblockurlcolour]];
+}
 #page-footer .block .header {
   border-bottom: 1px solid [[setting:footersepcolor]];
 }
-#page-footer .block .header .title h2 {
-  color: [[setting:footerheadingcolor]];
+#page-footer .block .header h2 {
+  color: inherit;
 }
-#page-footer .block .header .title h2:before {
-  color: [[setting:themecolor]];
+#page-footer .header .title h2:before,
+#page-footer.block_iconic_html .header .title h2 span.fa:before {
+  color: inherit;
+}
+#page-footer .block_html ul li:before,
+#page-footer #greyboxright ul li:before {
+  background-color: [[setting:themecolor]];
 }
 #page-footer .block_login input[type="submit"] {
   background-color: [[setting:themecolor]];
@@ -935,23 +988,6 @@ a.marketing-button:hover {
   color: [[setting:themeurlcolor]];
 }
 /* @end */
-/* @end */
-/* @group Marketing Spots */
-#marketing-image1 {
-  background-image: [[setting:marketing1image]];
-  background-repeat: no-repeat;
-}
-#marketing-image2 {
-  background-image: [[setting:marketing2image]];
-  background-repeat: no-repeat;
-}
-#marketing-image3 {
-  background-image: [[setting:marketing3image]];
-  background-repeat: no-repeat;
-}
-.marketing-image {
-  height: [[setting:marketingheight]];
-}
 /* @end */
 /* @group Profile Image */
 .socials img:hover {
@@ -970,7 +1006,7 @@ a.marketing-button:hover {
 }
 .nav-tabs > li.active > a {
   color: [[setting:themetextcolor]];
-  background-color: #fff;
+  background-color: #ffffff;
 }
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
@@ -1050,7 +1086,7 @@ table#user-grades th.courseitem {
   border-right-color: [[setting:themecolor]];
 }
 .path-grade-report-grader .grade_icons img {
-  background-color: #fff;
+  background-color: #ffffff;
   padding: 3px;
   border-radius: 3px;
 }
@@ -1118,31 +1154,3 @@ h6 span {
 }
 /* @end */
 /* @end */
-/* @group Custom */
-/* @Group Scrollbar */
-body {
-  scrollbar-face-color: [[setting:themecolor]];
-  scrollbar-highlight-color: [[setting:themenavcolor]];
-  scrollbar-3dlight-color: [[setting:themenavcolor]];
-  scrollbar-darkshadow-color: [[setting:themecolor]];
-  scrollbar-track-color: [[setting:themenavcolor]];
-  scrollbar-arrow-color: [[setting:themetextcolor]];
-}
-::-webkit-scrollbar {
-  background-color: [[setting:themenavcolor]];
-}
-::-webkit-scrollbar-track {
-  background-color: [[setting:themenavcolor]];
-}
-::-webkit-scrollbar-track-piece {
-  background-color: [[setting:themenavcolor]];
-}
-::-webkit-scrollbar-thumb {
-  background-color: [[setting:themecolor]];
-  border: 0px;
-}
-::-webkit-scrollbar-corner {
-  background-color: [[setting:themecolor]];
-}
-/* @end Scrollbar */
-/* @end Custom */
