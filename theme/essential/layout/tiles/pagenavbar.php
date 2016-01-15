@@ -15,22 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Essentials is a basic child theme of Essential to help you as a theme
- * developer create your own child theme of Essential.
+ * This is built using the bootstrapbase template to allow for new theme's using
+ * Moodle's new Bootstrap theme engine
  *
  * @package     theme_essential
- * @copyright   2013 Julian Ridden
- * @copyright   2014 Gareth J Barnard, David Bezemer
+ * @copyright   2015 Gareth J Barnard
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
-$plugin->version = 2015062403; // YYYYMMDDVV.
-$plugin->maturity = MATURITY_STABLE; // this version's maturity level.
-$plugin->release = '2.9.1.1 (Build: 2015062402)';
-$plugin->requires  = 2015051100.00; // 2.9 (Build: 20150511).
-$plugin->component = 'theme_essentials';
-$plugin->dependencies = array(
-    'theme_essential'  => 2015062410
-);
+echo '<div id="page-navbar" class="clearfix row-fluid">';
+echo '<div class="breadcrumb-nav span9">';
+echo $OUTPUT->navbar();
+echo '</div>';
+echo '<nav class="breadcrumb-button span3">';
+echo $OUTPUT->page_heading_button();
+echo '</nav>';
+echo '</div>';

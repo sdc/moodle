@@ -15,25 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Essentials is a basic child theme of Essential to help you as a theme
- * developer create your own child theme of Essential.
+ * This is built using the bootstrapbase template to allow for new theme's using
+ * Moodle's new Bootstrap theme engine
  *
- * @package     theme_essentials
- * @copyright   2015 Gareth J Barnard
+ * @package     theme_essential
+ * @copyright   2013 Julian Ridden
+ * @copyright   2014 Gareth J Barnard, David Bezemer, Mary L Evans
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace theme_essentials\output;
 
-class core_renderer_maintenance extends \theme_essential\output\core_renderer_maintenance {
-
-    /**
-     * Constructor
-     *
-     * @param moodle_page $page the page we are doing output for.
-     * @param string $target one of rendering target constants
-     */
-    public function __construct(\moodle_page $page, $target) {
-        parent::__construct($page, $target);
-        $this->themeconfig = array(\theme_config::load('essentials'));
-    }
+if ($fontselect === '2') { ?>
+    <link href='//fonts.googleapis.com/css?family=<?php
+echo $headingfont.'|'.$bodyfont.$fontcharacterset; ?>' rel='stylesheet' type='text/css'>
+<?php
 }

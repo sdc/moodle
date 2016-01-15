@@ -79,7 +79,6 @@ if (($PAGE->pagelayout == 'course') && (get_config('core', 'modeditingmenu'))) {
 $regionbsid = 'region-bs-main-and-pre';
 $left = true;
 if (right_to_left()) {
-    $regionbsid = 'region-bs-main-and-pre';
     $left = false;
 }
 
@@ -139,7 +138,8 @@ function essential_report_page_has_title() {
         case 'grade-report-overview-index':
             $hastitle = false;
             break;
-        default: break;
+        default:
+            break;
     }
 
     return $hastitle;
@@ -153,11 +153,17 @@ function essential_has_footer_region() {
     switch ($PAGE->pagetype) {
         case 'admin-plugins':
         case 'course-management':
-        case 'mod-assign-view':
         case 'mod-quiz-edit':
             $hasregion = true;
             break;
-        default: break;
+        case 'mod-assign-view':
+            // Only apply to 'grading' page.
+            if (optional_param('action', '', PARAM_TEXT) == 'grading') {
+                $hasregion = true;
+            }
+            break;
+        default:
+            break;
     }
 
     return $hasregion;
@@ -166,4 +172,3 @@ function essential_has_footer_region() {
 // Footer.
 $hascopyright = \theme_essential\toolbox::get_setting('copyright', true);
 $hasfootnote = \theme_essential\toolbox::get_setting('footnote', 'format_html');
-

@@ -19,11 +19,31 @@
  * Moodle's new Bootstrap theme engine
  *
  * @package     theme_essential
- * @copyright   2013 Julian Ridden
- * @copyright   2014 Gareth J Barnard, David Bezemer, Mary L Evans
+ * @copyright   2015 Gareth J Barnard
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if ($fontselect === '2') { ?>
-    <link href='//fonts.googleapis.com/css?family=<?php echo $headingfont.'|'.$bodyfont.$fontcharacterset;?>' rel='stylesheet' type='text/css'>
-<?php } ?>
+if ($footerregion) {
+    echo '<section id="region-main" class="span12">';
+} else if ($hasboringlayout) {
+    echo '<section id="region-main" class="span9 pull-right">';
+} else {
+    echo '<section id="region-main" class="span9">';
+}
+if ($COURSE->id > 1) {
+    echo $OUTPUT->heading(format_string($COURSE->fullname), 1, 'coursetitle');;
+    echo '<div class="bor"></div>';
+}
+echo $OUTPUT->course_content_header();
+echo $OUTPUT->main_content();
+if (empty($PAGE->layout_options['nocoursefooter'])) {
+    echo $OUTPUT->course_content_footer();
+}
+echo '</section>';
+if (!$footerregion) {
+    if ($hasboringlayout) {
+        echo $OUTPUT->blocks('side-pre', 'span3 desktop-first-column');
+    } else {
+        echo $OUTPUT->blocks('side-pre', 'span3');
+    }
+}
