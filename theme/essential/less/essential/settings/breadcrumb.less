@@ -1,17 +1,19 @@
 /* @group Breadcrumb Button */
+@import "../../fontawesome/variables";
 
 .breadcrumb-button {
   input[type="submit"] {
     color: ~"[[setting:themenavcolor]]";
     background-color: ~"[[setting:themecolor]]";
     background-image: none;
+    border-color: ~"[[setting:themecolor]]";
 
-    &:hover {
+    &:focus, &:hover, &:active {
       color: ~"[[setting:themecolor]]";
-      background-color: ~"[[setting:themehovercolor]]";
+      background-color: ~"[[setting:themenavcolor]]";
     }
   }
-  i.fa {
+  i.@{fa-css-prefix} {
     color: inherit;
   }
 }
@@ -27,25 +29,37 @@
     li {
       color: ~"[[setting:themenavcolor]]";
       background-color: ~"[[setting:themecolor]]";
-      a {
-        color: ~"[[setting:themenavcolor]]";
+      border-color: ~"[[setting:themecolor]]";
+      border-width: 1px;
+      border-style: solid;
+      &:before {
+        border-left-color: ~"[[setting:themenavcolor]]";
       }
-    }
-    li:after {
-      border-left-color: ~"[[setting:themecolor]]";
-    }
-    li:first-of-type {
-      a:before {
-        color: ~"[[setting:themenavcolor]]";
-      }
-    }
-    li:hover {
-      background-color: ~"[[setting:themehovercolor]]";
-    }
-    li:hover:after {
-      border-left-color: ~"[[setting:themehovercolor]]";
       a {
-        color: ~"[[setting:themecolor]]";
+        color: inherit;
+      }
+      &:after {
+        border-left-color: ~"[[setting:themecolor]]";
+      }
+      &:first-of-type {
+        a:before {
+          color: ~"[[setting:themenavcolor]]";
+        }
+      }
+      &:hover, &:focus {
+        background-color: ~"[[setting:themenavcolor]]";
+        &:before {
+          border-left-color: ~"[[setting:themecolor]]";
+        }
+        span, a, a:before {
+          color: ~"[[setting:themecolor]]";
+        }
+      }
+      &:hover:after {
+        border-left-color: ~"[[setting:themenavcolor]]";
+        a {
+          color: ~"[[setting:themecolor]]";
+        }
       }
     }
   }

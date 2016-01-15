@@ -1,8 +1,9 @@
 /* @group Breadcrumb Button */
+@import "../fontawesome/variables";
 
 .breadcrumb-button {
   margin-top: 0px;
-  .fa {
+  .@{fa-css-prefix} {
     vertical-align: middle;
     color: inherit;
     &:hover {
@@ -11,13 +12,28 @@
   }
   input[type="submit"] {
     text-shadow: none;
-    border: 0px none;
+    border-width: 1px;
+    border-style: solid;
     margin: 0;
 
     > .singlebutton > form > div {
       margin: 0;
     }
   }
+  .singlebutton {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .singlebutton, a {
+    float: right;
+  }
+}
+
+
+.dir-rtl .breadcrumb-button .singlebutton {
+  /*@noflip*/margin-left: 0;
+  /*@noflip*/margin-right: 0;
+  /*@noflip*/float: left;
 }
 
 .breadcrumb-button {
@@ -36,7 +52,7 @@
 }
 
 .breadcrumb-nav {
-  width: 65%;
+  //width: 65%;
   margin: 0px;
 
   /* @group Breadcrumb Style None */
@@ -65,17 +81,12 @@
       float: left;
       line-height: 28px;
       height: 28px;
-      border-top-left-radius: @baseBorderRadius;
-      border-bottom-left-radius: @baseBorderRadius;
       text-shadow: none;
       margin-bottom: 4px;
       a {
         text-decoration: none;
         padding-right: 3px;
         overflow: hidden;
-      }
-      a:hover {
-        text-decoration: underline;
       }
       .dimmed_text {
         font-style: italic;
@@ -112,7 +123,8 @@
       margin-top: -14px;
       left: 100%;
       z-index: 100;
-      border-left: 14px solid white;
+      border-left-width: 14px;
+      border-left-style: solid;
       margin-left: 1px;
     }
     li:first-of-type {

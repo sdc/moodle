@@ -100,23 +100,22 @@
  * @package theme
  * @subpackage essential
  * @author G J Barnard - gjbarnard at gmail dot com and {@link http://moodle.org/user/profile.php?id=442195}
- * @author Based on code originally written by Joby Harding, Bas Brands, David Scotson and many other contributors. 
+ * @author Based on code originally written by Joby Harding, Bas Brands, David Scotson and many other contributors.
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-module.exports = function(grunt) {
+module.exports = function(grunt) { // jshint ignore:line
 
     // Import modules.
-    var path = require('path');
+    var path = require('path'); // jshint ignore:line
 
     // Theme Bootstrap constants.
-    var LESSDIR         = 'less',
-        MOODLEURLPREFIX = grunt.option('urlprefix') || '',
+    var MOODLEURLPREFIX = grunt.option('urlprefix') || '',
         THEMEDIR        = path.basename(path.resolve('.'));
 
     // PHP strings for exec task.
-    var moodleroot = path.dirname(path.dirname(__dirname)),
-        dirrootopt = grunt.option('dirroot') || process.env.MOODLE_DIR || '';
+    var moodleroot = path.dirname(path.dirname(__dirname)), // jshint ignore:line
+        dirrootopt = grunt.option('dirroot') || process.env.MOODLE_DIR || ''; // jshint ignore:line
 
     // Allow user to explicitly define Moodle root dir.
     if ('' !== dirrootopt) {
@@ -132,7 +131,7 @@ module.exports = function(grunt) {
         console.log('e.g. -build=p or -build=d.  Defaulting to development.');
     }
 
-    var PWD = process.cwd();
+    var PWD = process.cwd(); // jshint ignore:line
 
     var decachephp = '../../admin/cli/purge_caches.php';
 
@@ -432,7 +431,7 @@ module.exports = function(grunt) {
         exec: {
             decache: {
                 cmd: 'php "' + decachephp + '"',
-                callback: function(error, stdout, stderror) {
+                callback: function(error) {
                     // exec will output error messages
                     // just add one to confirm success.
                     if (!error) {
@@ -483,7 +482,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'style',
-                    src: ['essential.css', 'essential-rtl.css', 'bootstrap-pix.css', 'moodle-pix.css', 'essential-pix.css', 'essential-alternative.css', 'editor.css', 'fontawesome-woff2.css', 'fontawesome-no-woff2.css', 'fontawesome.css', 'moodle-rtl.css'],
+                    src: ['essential.css', 'essential-rtl.css', 'bootstrap-pix.css', 'moodle-pix.css', 'essential-pix.css', 'essential-alternative.css', 'editor.css', 'fontawesome-woff2.css', 'fontawesome-no-woff2.css', 'fontawesome.css', 'moodle-rtl.css'], // jshint ignore:line
                     dest: 'style',
                     ext: '.css'
                 }]
@@ -532,7 +531,7 @@ module.exports = function(grunt) {
                     overwrite: true,
                     replacements: [{
                         from: '/* Essential placeholder */',
-                        to: 'div#page::before { content: "Development version - recomplile LESS with \'grunt compile -build=p\' for production CSS."; font-size: 2em; margin-top: 24px; margin-bottom: 24px; line-height: 42px; text-align: center; }'
+                        to: 'div#page::before { content: "Development version - recomplile LESS with \'grunt compile -build=p\' for production CSS."; font-size: 2em; margin-top: 24px; margin-bottom: 24px; line-height: 42px; text-align: center; }' // jshint ignore:line
                     }]
             }
         },
@@ -543,7 +542,7 @@ module.exports = function(grunt) {
                 }, {
                     removeUselessStrokeAndFill: false
                 }, {
-                    convertPathData: { 
+                    convertPathData: {
                         straightCurves: false
                    }
                 }]
@@ -606,12 +605,24 @@ module.exports = function(grunt) {
     grunt.registerTask("default", ["watch"]);
     grunt.registerTask("decache", ["exec:decache"]);
 
-    grunt.registerTask("css", ["less:essential_"+build, "less:editor_"+build, "less:moodle_rtl_"+build, "less:scrollbars_"+build, "less:settings_"+build, "less:bootstrap_pix_"+build, "less:moodle_pix_"+build, "less:essential_pix_"+build, "less:fontawesome_woff2_"+build, "less:fontawesome_no_woff2_"+build, "less:fontawesome_"+build, "less:alternative_"+build]);
+    grunt.registerTask("css", [
+        "less:essential_" + build,
+        "less:editor_" + build,
+        "less:moodle_rtl_" + build,
+        "less:scrollbars_" + build,
+        "less:settings_" + build,
+        "less:bootstrap_pix_" + build,
+        "less:moodle_pix_" + build,
+        "less:essential_pix_" + build,
+        "less:fontawesome_woff2_" + build,
+        "less:fontawesome_no_woff2_" + build,
+        "less:fontawesome_" + build,
+        "less:alternative_" + build]);
     if (build == 'd') {
-        grunt.registerTask("compile", ["css", "replace:placeholder", "cssflip:rtl_"+build, "bless", 'cssmetrics', "decache"]);
+        grunt.registerTask("compile", ["css", "replace:placeholder", "cssflip:rtl_" + build, "bless", 'cssmetrics', "decache"]);
     } else {
         grunt.loadNpmTasks('grunt-contrib-cssmin');
-        grunt.registerTask("compile", ["css", "cssflip:rtl_"+build, "cssmin:essential_p", "bless", 'cssmetrics', "decache"]);
+        grunt.registerTask("compile", ["css", "cssflip:rtl_" + build, "cssmin:essential_p", "bless", 'cssmetrics', "decache"]);
     }
     grunt.registerTask("copy:svg", ["copy:svg_core", "copy:svg_plugins"]);
     grunt.registerTask("replace:svg_colours", ["replace:svg_colours_core", "replace:svg_colours_plugins"]);

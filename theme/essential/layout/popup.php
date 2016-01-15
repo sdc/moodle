@@ -24,7 +24,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(\theme_essential\toolbox::get_include_file('additionaljs'));
+require_once(\theme_essential\toolbox::get_tile_file('additionaljs'));
 $fontselect = \theme_essential\toolbox::get_setting('fontselect');
 if ($fontselect === '2') {
     $fontcharacterset = '&subset=latin';
@@ -41,15 +41,15 @@ echo $OUTPUT->doctype();
 <head>
     <title><?php echo $OUTPUT->page_title(); ?></title>
     <link rel="shortcut icon" href="<?php echo $OUTPUT->favicon(); ?>" />
-    <?php 
+    <?php
     echo \theme_essential\toolbox::get_csswww();
     echo $OUTPUT->standard_head_html();
     ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Google web fonts -->
-    <?php require_once(dirname(__FILE__) . '/includes/fonts.php'); ?>
+    <?php require_once(\theme_essential\toolbox::get_tile_file('fonts')); ?>
     <!-- Start Analytics -->
-    <?php require_once(dirname(__FILE__) . '/includes/analytics.php'); ?>
+    <?php require_once(\theme_essential\toolbox::get_tile_file('analytics')); ?>
     <!-- End Analytics -->
 </head>
 
@@ -61,7 +61,7 @@ echo $OUTPUT->doctype();
     // If on desktop, then hide the header/footer.
     $hideclass = '';
     $devicetype = core_useragent::get_device_type();
-    if($devicetype !== 'mobile' and $devicetype !== 'tablet') {
+    if ($devicetype !== 'mobile' and $devicetype !== 'tablet') {
         // We can not use the Bootstrap responsive css classes because popups are phone sized on desktop.
         $hideclass = 'hide';
     }
@@ -92,11 +92,8 @@ echo $OUTPUT->doctype();
 <div id="page" class="container-fluid">
 
     <header id="page-header" class="clearfix">
-        <div id="page-navbar" class="clearfix">
-            <nav class="breadcrumb-nav"><?php echo $OUTPUT->navbar(); ?></nav>
-            <div class="breadcrumb-button"><?php echo $OUTPUT->page_heading_button(); ?></div>
-        </div>
-        <?php echo $OUTPUT->page_heading(); ?>
+        <?php require_once(\theme_essential\toolbox::get_tile_file('pagenavbar'));
+        echo $OUTPUT->page_heading(); ?>
         <div id="course-header">
             <?php echo $OUTPUT->course_header(); ?>
         </div>

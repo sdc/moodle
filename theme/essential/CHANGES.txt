@@ -1,7 +1,39 @@
-New in 2.9.1.5
+New in 2.9.1.6
 ================
+- FIX: Issue #590: Message outlining incoming.
+- FIX: Issue #592: Android menu issues.
+- FIX: Issue #593: InCourse page content should be on the right and blocks on the left, in RTL mode.
+- FIX: Performance information styling.
+- FIX: Breadcrumb button hover / focus / active.
+- FIX: Gradebook floating last row.
+- FIX: General form tweaks.
+- FIX: MDL-51881.
+- FIX: IE11 does not support 'initial' background size for tiled backgrounds.
+- NEW: Improve breadcrumb style1.
+- NEW: Dashed block areas during editing when drag and drop moving.
+- NEW: Improve pagenavbar.php and use in popup.php layout.
+- NEW: Only apply footer block layout to assignment grading page.
+
+New in 2.9.1.5.2
+================
+- FIX: Issue #589: Quiz grading.
+
+New in 2.9.1.5.1
+================
+- FIX: Issue #588: Breadcrumb hover colour conflict.
+- FIX: No closing speech mark in header.
+
+New in 2.9.1.5
+==============
+- FIX: Issue #583: Empty topic names cause breadcrumb double arrow.
+- FIX: Issue #585: Alert icons background.
+- FIX: Issue #586: Fatal error on maintenance page.
+- FIX: Issue #587: Slidecaption with wrong color and not aligned.
 - FIX: Space for active indicator in slide show.
+- FIX: Various tidy ups from Travis CI report.
+- FIX: Changes to child theme mechanism.  For a child theme template, please contact me via https://about.me/gjbarnard.
 - NEW: Move the history to CHANGES.txt as per: https://docs.moodle.org/dev/Plugin_files#CHANGES.
+- NEW: Travis CI: https://travis-ci.org/gjb2048/moodle-theme_essential.
 
 New in 2.9.1.4.1
 ================
