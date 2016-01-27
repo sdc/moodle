@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Planet eStream</title>
+    <script type="text/javascript">
+        // Because there is no relative path to TinyMCE, we have to use JavaScript
+        // to work out correct path from the .js files from TinyMCE. Only files
+        // inside this plugin can be included with relative path (below).
+        var editor_tinymce_include = function (path) {
+            document.write('<script type="text/javascript" src="' +
+            parent.tinyMCE.baseURL + '/' + path + '"></' + 'script>');
+        };
+        editor_tinymce_include('tiny_mce_popup.js');
+        editor_tinymce_include('utils/validate.js');
+        editor_tinymce_include('utils/form_utils.js');
+        editor_tinymce_include('utils/editable_selects.js');
+        var inserted = false;
+        function insertContent(html) {
+            if (inserted === false) {
+                inserted = true;
+                tinyMCEPopup.editor.execCommand('mceInsertContent', false, html);
+                tinyMCEPopup.close();
+            }
+        }
+        function querystring(variable, decode) {
+            var query = window.location.search.substring(1);
+            if (decode) {
+                query = decodeURIComponent(window.location.search.substring(1));
+            }
+            var vars = query.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split("=");
+                if (pair[0] == variable) { return pair[1]; }
+            }
+            return "";
+        }
+</script>
+</head>
+<body>
+    <form onsubmit="insertMedia();return false;" action="#">
+        <script type="text/javascript">
+            document.write("<iframe style=\"border: 0px; width: 984px; height: 684px;\" src=\""
+            + querystring("estream_url") + decodeURIComponent(querystring("estream_path"))
+            + '&td=' + window.location.protocol + '//' + window.location.host + ':'
+            + (window.location.port === '' ? '80' : window.location.port) + "\"></iframe>");
+            if (window.addEventListener) {
+                eventMethod = 'addEventListener';
+                messageEvent = 'message';
+            } else if (window.postMessage) {
+                eventMethod = 'attachEvent';
+                messageEvent = 'onmessage';
+            } else {
+                insertContent('Sorry, your web-browser is not compatible with this feature.');
+            }
+            var evX = window[eventMethod];
+            evX(messageEvent, function (e) {
+                var strembedcode = e.data;
+                if (strembedcode.indexOf("rt=2") != -1) {
+                    strembedcode = strembedcode + '&extended=true';
+                }
+                insertContent('<p><iframe style="width: ' + querystring('estream_width', true) + 'px;'
+                + ' height: ' + querystring('estream_height', true) + 'px; border: 0;" src="'
+                + querystring('estream_url', true) + '/Embed.aspx?' + strembedcode + '"></iframe><a href="'
+                + '/_planetestreamiframe_/Embed.aspx?' + strembedcode + '">&nbsp;</a></p>');
+            }, false);
+</script>
+    </form>
+</body>
+</html>
