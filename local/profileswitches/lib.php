@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') or die;
  *
  * @param global_navigation $navigation The global navigation object
  */
-function local_profileswitches_extends_navigation(global_navigation $navigation) {
+function local_profileswitches_extend_navigation(global_navigation $navigation) {
     global $PAGE, $USER;
 
     if ($settingsnav = $PAGE->__get('settingsnav')) {
@@ -85,5 +85,5 @@ function local_profileswitches_extends_navigation(global_navigation $navigation)
  * Pre 2.3 function name format
  */
 function profileswitches_extends_navigation(global_navigation $navigation) {
-    local_profileswitches_extends_navigation($navigation);
+    local_profileswitches_extend_navigation($navigation);
 }
