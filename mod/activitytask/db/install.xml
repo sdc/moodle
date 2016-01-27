@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/activitytask/db" VERSION="20101203" COMMENT="XMLDB file for Moodle mod/activitytask"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+	<TABLES>
+		<TABLE NAME="activitytask" COMMENT="This table saves information about an instance of mod_activitytasks in a course.">
+			<FIELDS>
+				<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"/>
+				<FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Course to which the activitytask belongs."/>
+				<FIELD NAME="name" TYPE="char" LENGTH="500" NOTNULL="true" SEQUENCE="false" COMMENT="The text and name for the activitytask."/>        
+				<FIELD NAME="duedate" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The due date for the activitytask."/>
+				<FIELD NAME="intro" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="The expanded details of an activity task."/>
+				<FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field."/>
+				<FIELD NAME="completiondone" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" UNSIGNED="true" SEQUENCE="false"/>
+				<FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"/>
+				<FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
+			</FIELDS>
+			<KEYS>
+				<KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+			</KEYS>
+			<INDEXES>
+				<INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+			</INDEXES>
+		</TABLE>
+		<TABLE NAME="activitytask_status" COMMENT="This table keeps information about student interactions with the mod_activitytasks.">
+			<FIELDS>
+				<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+				<FIELD NAME="activitytask" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+				<FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+				<FIELD NAME="datedone" TYPE="datetime" NOTNULL="false" SEQUENCE="false" COMMENT="The date and time the task was completed. NULL indicates incompletion."/>
+			</FIELDS>
+			<KEYS>
+				<KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="The unique id for this task status."/>
+				<KEY NAME="activitytask" TYPE="foreign" FIELDS="activitytask" REFTABLE="activitytask" REFFIELDS="id" COMMENT="The instance of mod_activitytask to which this status belongs."/>
+			</KEYS>
+			<INDEXES>
+				<INDEX NAME="userid" UNIQUE="false" FIELDS="userid"/>
+			</INDEXES>
+		</TABLE>
+	</TABLES>
+</XMLDB>

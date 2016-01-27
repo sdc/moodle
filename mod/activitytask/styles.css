@@ -1,0 +1,43 @@
+.activitytask .no-overflow { overflow:visible !important; }
+.activitytask a.activitytask-button,
+.activitytask a.activitytask-button-view {
+	font-size: 12px;
+	padding:4px 8px;
+	margin-left:15px;
+	line-height:12px;
+	/*
+	position: relative;
+    top: -2px;
+	*/
+}
+.activitytask a.activitytask-button:hover,
+.activitytask a.activitytask-button-view:hover {
+	background-color: #02e3ef;
+}
+.activitytask a.activitytask-button-view {
+	background-color: #91c70d;
+}
+.activitytask a.activitytask-button-view + .activitytask a.activitytask-button {
+	margin-left:8px;
+}
+.activitytask span.activitytask-done {
+	display:inline-block;
+	margin-left:15px;
+	color:#81B207; /* #74A006 */
+	font-size:0.9em;
+}
+table.activitytask-student-status tr td {
+	vertical-align:middle;
+}
+table.activitytask-student-status .stuname {
+	display:inline-block;
+	margin-left:5px;
+}
+.path-mod-activitytask .incomplete,
+.path-mod-activitytask .late {
+	color:red;
+}
+.path-mod-activitytask .complete,
+.path-mod-activitytask .ontime {
+	color:green;
+}
