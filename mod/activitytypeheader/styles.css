@@ -1,0 +1,26 @@
+.activitytypeheader .no-overflow { overflow:visible !important; }
+.course-content .section li.activitytypeheader {
+	margin-top:5px;
+	margin-bottom:0;
+}
+.course-content .section li.activitytypeheader:first-child {
+	margin-top:0;
+}
+.course-content .section li.activitytypeheader div.atheader,
+body.editing .section li.activitytypeheader .instancename { 
+	margin:0; 
+	font-size:14px;
+	line-height:16px;
+	font-weight:bold;
+	text-transform:uppercase;
+}
+body.editing .section li.activitytypeheader .activityinstance > a {	
+	/* Disable View Link - We only have it to enable the edit button */
+	pointer-events: none !important;
+	cursor: default !important;
+	text-decoration:none !important;
+	color: #6d6059 !important;
+}
+body.editing .section li.activitytypeheader .activityinstance > a > img.activityicon {
+	display:none !important;
+}
