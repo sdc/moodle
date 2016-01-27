@@ -41,7 +41,7 @@ if(!empty($menunavs)) {
 		<link rel="stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/font-awesome.css">
 		
 		<link type="text/css" rel="Stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/styles.css">
-		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery-1.11.1.min.js"></script>
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery-2.1.4.js"></script>
 		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/bootstrap.min.js"></script>
 		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.bxslider.min.js"></script>
 		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.scroll.js"></script>
@@ -74,11 +74,11 @@ if(!empty($menunavs)) {
 		<header id="header">
 				<div class="main-menu header3">
 					<div class="container">
-						<?php if($logosetting == '"logostyle3"') { ?>
+						<?php if($logosetting == "logostyle3") { ?>
 							<a href="<?php echo $CFG->wwwroot;?>" class="logo logo-text"><?php echo $SITE->fullname; ?></a>
-						<?php } else if($logosetting == '"logostyle2"') { ?>
-							<a href="<?php echo $CFG->wwwroot;?>" class="logo only-text" style = "background: none;"><?php echo $SITE->fullname; ?></a>
-						<?php } else if($logosetting == '"logostyle1"') { ?>
+						<?php } else if($logosetting == "logostyle2") { ?>
+							<a href="<?php echo $CFG->wwwroot;?>" class="logo only-text" style = "background: none !important;"><?php echo $SITE->fullname; ?></a>
+						<?php } else if($logosetting == "logostyle1") { ?>
 							<a href="<?php echo $CFG->wwwroot;?>" class="logo logo-img"></a>
 						<?php } else { ?>
 							<a href="<?php echo $CFG->wwwroot;?>" class="logo"></a>

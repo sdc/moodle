@@ -23,12 +23,13 @@ echo $OUTPUT->doctype()
 		<link rel="stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/font-awesome.css">	
 		<link type="text/css" rel="Stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/styles.css">
 
-		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery-1.11.1.min.js"></script>
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery-2.1.4.js"></script>
 		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/bootstrap.min.js"></script>
 		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.bxslider.min.js"></script>
 		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.scroll.js"></script>
 		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/engine.js"></script>
 		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/backtop.js"></script>
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/nav.js"></script>
 
 		<?php 
 			include($CFG->dirroot . '/theme/roshni/settings/themecolor.php');
@@ -47,28 +48,7 @@ echo $OUTPUT->doctype()
 	<?php echo $OUTPUT->standard_top_of_body_html() ?>
 	<div id="page" class="container-fluid login-page">
 		<header id="page-header" class="clearfix row-fluid">
-			<div id="page-navbar">
-				<div class="main-menu navbar-inner-login">
-					<div class="container">
-						<?php if($logosetting == '"logostyle3"') { ?>
-		                    <a class="inner-logo logo-text" href="<?php echo $CFG->wwwroot;?>"><?php echo
-		                        format_string($SITE->shortname, true, array('context' => context_course::instance(SITEID)));
-		                    ?></a>
-		                <?php } else if($logosetting == '"logostyle2"') { ?>
-		                    <a class="inner-logo only-text" style = "background: none;" href="<?php echo $CFG->wwwroot;?>"><?php echo
-		                        format_string($SITE->shortname, true, array('context' => context_course::instance(SITEID)));
-		                    ?></a>
-		                <?php } else if($logosetting == '"logostyle1"') { ?>
-		                    <a href="<?php echo $CFG->wwwroot;?>" class="inner-logo logo-img"></a>
-		                <?php } else { ?>
-		                    <a class="inner-logo logo-text" href="<?php echo $CFG->wwwroot;?>"></a>
-		                <?php } echo $OUTPUT->lang_menu(); ?>
-						<div class="navbar">
-							<div class="navbar-inner"> </div><!-- END of .navbar-inner -->
-						</div><!-- END of .navbar -->
-					</div><!-- END of .container -->
-				</div><!-- END of main-menu -->
-			</div>
+			<?php require('headers.php');?>
 			<div id="course-header"></div>
 		</header>
 	

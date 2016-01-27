@@ -12,6 +12,19 @@ class theme_roshni_core_renderer extends theme_bootstrapbase_core_renderer {
         $userpic = parent::user_picture($USER, array('link' => false, 'size' => 28));
         return $userpic;
     }
+    public function full_header() {
+        $html = html_writer::start_tag('header', array('id' => 'page-header', 'class' => 'clearfix'));
+        //$html .= $this->context_header();
+        $html .= html_writer::start_div('clearfix', array('id' => 'page-navbar'));
+        $html .= html_writer::start_div('container');
+        $html .= html_writer::tag('nav', $this->navbar(), array('class' => 'breadcrumb-nav'));
+        $html .= html_writer::div($this->page_heading_button(), 'breadcrumb-button');
+        $html .= html_writer::end_div();
+        $html .= html_writer::end_div();
+        $html .= html_writer::tag('div', $this->course_header(), array('id' => 'course-header'));
+        $html .= html_writer::end_tag('header');
+        return $html;
+    }
 }
 require_once($CFG->dirroot.'/course/renderer.php');
 class theme_roshni_core_course_renderer extends core_course_renderer {

@@ -11,7 +11,7 @@ $(window).resize(function() {
 function resizePanels() {
 	var first_panel_height = $(window).height() ;
 	$('.slider-in-laptop').css({'height': first_panel_height + 'px'});
-	$('.slider-in-laptop img').css({'height': first_panel_height + 'px'});
+	$('.slider-in-laptop rsImg').css({'height': first_panel_height + 'px'});
 	
 	var windowWidth = $(window).width();
 	$('.slider-in-laptop').css({'width': windowWidth, 'height': first_panel_height});

@@ -166,11 +166,11 @@ if(!empty($menunavs)) {
 					
 					<div class="main-menu">
 						<div class="container">
-							<?php if($logosetting == '"logostyle3"') { ?>
+							<?php if($logosetting == 'logostyle3') { ?>
 								<a href="<?php echo $CFG->wwwroot;?>" class="logo logo-text"><?php echo $SITE->fullname; ?></a>
-							<?php } else if($logosetting == '"logostyle2"') { ?>
-								<a href="<?php echo $CFG->wwwroot;?>" class="logo only-text" style = "background: none;"><?php echo $SITE->fullname; ?></a>
-							<?php } else if($logosetting == '"logostyle1"') { ?>
+							<?php } else if($logosetting == 'logostyle2') { ?>
+								<a href="<?php echo $CFG->wwwroot;?>" class="logo only-text" style = "background: none !important;"><?php echo $SITE->fullname; ?></a>
+							<?php } else if($logosetting == 'logostyle1') { ?>
 								<a href="<?php echo $CFG->wwwroot;?>" class="logo logo-img"></a>
 							<?php } else { ?>
 								<a href="<?php echo $CFG->wwwroot;?>" class="logo"></a>
@@ -185,6 +185,12 @@ if(!empty($menunavs)) {
 										</button>
 										<div class="nav-collapse collapse">
 											<ul class="nav">
+												<?php
+													$custommenu = get_config("theme_roshni","custmenu");
+													$custommenus = json_decode($custommenu, true); 
+													if($custommenus == "defaultmenu" or empty($custommenus)) {
+												?>
+
 												<li><a href="<?php echo $CFG->wwwroot;?>" class="active">Home</a></li>
 												<li><a href="<?php echo $CFG->wwwroot.'/course/index.php';?>">Courses</a></li>
 												<?php if ($menunavs["headnav"][0] != NULL) { foreach ($menuArray as $key => $menunavsval) { ?>
@@ -196,6 +202,12 @@ if(!empty($menunavs)) {
 												<?php } else { ?>
 												<li><a href="<?php echo $CFG->wwwroot.'/blog/index.php?userid='.$USER->id;?>">Blogs</a></li>
 												<li><a href="<?php echo $CFG->wwwroot.'/mod/forum/user.php?id='.$USER->id;?>">Forums</a></li>
+												<?php }} else { ?>
+												<?php if ($menunavs["headnav"][0] != NULL) { foreach ($menuArray as $key => $menunavsval) { ?>
+													<li><a href="<?php echo $menunavsval;?>"><?php echo $key; ?></a></li>
+												<?php 
+												} /*End of for*/ }
+												?>
 												<?php } ?>
 											</ul>
 										</div><!--/.nav-collapse -->
@@ -417,6 +429,28 @@ if(!empty($menunavs)) {
 						include($CFG->dirroot.'/theme/roshni/layout/home/contacts.php');
 					}
 					
+					/**********************************************/
+					?>
+					<?php 
+					/**************** For section 11 ****************/
+					$plugin = 'theme_roshni';
+					$section = 'formsection11';
+					$checkenable = $DB->get_record_sql('select config.value from {config_plugins} config where config.plugin="'.$plugin.'" and config.name="'.$section.'"');
+					
+					if($checkenable) {
+						$ifenablesection = json_decode($checkenable->value);
+					} else {
+						$ifenablesection = '';
+					}
+					
+					
+					if(!empty($ifenablesection) && $ifenablesection !="none") {
+						include($CFG->dirroot.'/theme/roshni/layout/home/'. $ifenablesection. '.php');
+					} else if(!empty($ifenablesection) && $ifenablesection =="none") {
+						//include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/social_network.php');
+					} else {
+						include($CFG->dirroot.'/theme/roshni/layout/home/social_network.php');
+					}
 					/**********************************************/
 					?>
 				</div><!-- END of .content -->

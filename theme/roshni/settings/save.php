@@ -26,8 +26,8 @@ if(count($_FILES['uploadpl']['name']) > 0){
       //save the filename
       $shortname = $_FILES['uploadpl']['name'][$i];
       //save the url and the file
-      $filePath = $CFG->dirroot.'/theme/'.$CFG->theme."/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadpl']['name'][$i];
-      $filepathforstoreindb = $CFG->wwwroot.'/theme/'.$CFG->theme."/uploaded/" . date('d-m-Y-H-i-s').'-'.$uploadplbcimage;
+      $filePath = $CFG->dirroot."/theme/roshni/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadpl']['name'][$i];
+      $filepathforstoreindb = $CFG->wwwroot."/theme/roshni/uploaded/" . date('d-m-Y-H-i-s').'-'.$uploadplbcimage;
       //Upload the file into the temp dir
       if(move_uploaded_file($tmpFilePath, $filePath)) {
           $files[] = $shortname;
@@ -53,8 +53,8 @@ if(count($_FILES['uploadfavicon']['name']) > 0){
       //save the filename
       $shortname = $_FILES['uploadfavicon']['name'][$i];
       //save the url and the file
-      $filePath = $CFG->dirroot.'/theme/'.$CFG->theme."/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadfavicon']['name'][$i];
-      $filepathforstoreindb = $CFG->wwwroot.'/theme/'.$CFG->theme."/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadfavicon']['name'][$i];
+      $filePath = $CFG->dirroot."/theme/roshni/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadfavicon']['name'][$i];
+      $filepathforstoreindb = $CFG->wwwroot."/theme/roshni/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadfavicon']['name'][$i];
       //Upload the file into the temp dir
       if(move_uploaded_file($tmpFilePath, $filePath)) {
           $files[] = $shortname;
@@ -77,8 +77,8 @@ if(count($_FILES['uploadlogo']['name']) > 0){
       //save the filename
       $shortname = $_FILES['uploadlogo']['name'][$i];
       //save the url and the file
-      $filePath = $CFG->dirroot.'/theme/'.$CFG->theme."/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadlogo']['name'][$i];
-      $filepathforstoreindb = $CFG->wwwroot.'/theme/'.$CFG->theme."/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadlogo']['name'][$i];
+      $filePath = $CFG->dirroot."/theme/roshni/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadlogo']['name'][$i];
+      $filepathforstoreindb = $CFG->wwwroot."/theme/roshni/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadlogo']['name'][$i];
       //Upload the file into the temp dir
       if(move_uploaded_file($tmpFilePath, $filePath)) {
           $files[] = $shortname;
@@ -103,8 +103,8 @@ if(count($_FILES['uploadsb']['name']) > 0){
       //save the filename
       $shortname = $_FILES['uploadsb']['name'][$i];
       //save the url and the file
-      $filePath = $CFG->dirroot.'/theme/'.$CFG->theme."/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadsb']['name'][$i];
-      $filepathforstoreindb = $CFG->wwwroot.'/theme/'.$CFG->theme."/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadsb']['name'][$i];
+      $filePath = $CFG->dirroot."/theme/roshni/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadsb']['name'][$i];
+      $filepathforstoreindb = $CFG->wwwroot."/theme/roshni/uploaded/" . date('d-m-Y-H-i-s').'-'.$_FILES['uploadsb']['name'][$i];
       //Upload the file into the temp dir
       if(move_uploaded_file($tmpFilePath, $filePath)) {
           $files[] = $shortname;

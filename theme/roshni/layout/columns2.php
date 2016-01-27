@@ -2,7 +2,7 @@
 
 // Get the HTML for the settings bits.
 $html = theme_roshni_get_html_for_settings($OUTPUT, $PAGE);
-GLOBAL $USER, $CFG;
+GLOBAL $USER, $CFG, $DB;
 // Set default (LTR) layout mark-up for a two column page (side-pre-only).
 $regionmain = 'span9 pull-right two-column-main'; /* changes classname two-column-main */
 $sidepre = 'span3 desktop-first-column two-column-sidebar'; /* changes classname two-column-sidebar */
@@ -20,6 +20,14 @@ if ($favicon != '""') {
 } else {
     $favicondetails = $CFG->wwwroot . '/theme/roshni/favicon.ico';
 }
+$pluginname = 'theme_roshni';
+$headerstyle = 'header';
+$headerstyles = $DB->get_record_sql('select config.value from {config_plugins} config where config.plugin="'.$pluginname.'" and config.name="'.$headerstyle.'"');
+if(!empty($headerstyles)) { 
+    $headerdetails = json_decode($headerstyles->value,true);
+} else {
+    $headerdetails = '';
+}
 echo $OUTPUT->doctype() ?>
 <html <?php echo $OUTPUT->htmlattributes(); ?>>
 <head>
@@ -29,10 +37,12 @@ echo $OUTPUT->doctype() ?>
     <link type="image/x-icon" rel="shortcut icon" href="<?php echo $favicondetails;?>">
 	<link rel="stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/font-awesome.css">
 	<link type="text/css" rel="Stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/styles.css">
-    <script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery-1.11.1.min.js"></script>
+    <script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery-2.1.4.js"></script>
 	<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/bootstrap.min.js"></script>
 	<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.bxslider.min.js"></script>
 	<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.scroll.js"></script>
+    <script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/nav.js"></script>
+    <script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/backtop.js"></script>
 	
     <?php
       include $CFG->dirroot . '/theme/roshni/settings/themecolor.php';
@@ -46,86 +56,10 @@ echo $OUTPUT->doctype() ?>
 echo $OUTPUT->standard_top_of_body_html() ?>
 
 <header class="navbar navbar-fixed-top<?php echo $html->navbarclass ?> moodle-has-zindex">
-    <div class="inner-header">
-        <nav class="navbar-inner">
-            <div class="container">
-                <?php if($logosetting == '"logostyle3"') { ?>
-                    <a class="inner-logo logo-text" href="<?php echo $CFG->wwwroot;?>"><?php echo
-                        format_string($SITE->shortname, true, array('context' => context_course::instance(SITEID)));
-                    ?></a>
-                <?php } else if($logosetting == '"logostyle2"') { ?>
-                    <a class="inner-logo only-text" style = "background: none;" href="<?php echo $CFG->wwwroot;?>"><?php echo
-                        format_string($SITE->shortname, true, array('context' => context_course::instance(SITEID)));
-                    ?></a>
-                <?php } else if($logosetting == '"logostyle1"') { ?>
-                    <a href="<?php echo $CFG->wwwroot;?>" class="inner-logo logo-img"></a>
-                <?php } else { ?>
-                    <a class="inner-logo logo-text" href="<?php echo $CFG->wwwroot;?>"></a>
-                <?php } echo $OUTPUT->lang_menu(); ?>
-                
-                <?php if (!isloggedin()) { ?>
-                    <a href="<?php echo $CFG->wwwroot; ?>/login/index.php" class="btn-2">LOGIN</a>
-                <?php } else if (isguestuser()) { ?>
-                <div class="usermenu">
-                    <div>
-                        <ul class="menubar">
-                            <li>
-                                <a href="javascript:void(0);">
-                                    <span class="userbutton">
-                                        <span>
-                                            <span class="avatar current">
-                                                <?php echo $OUTPUT->user_profile_picture(); ?>
-                                            </span>
-                                        </span>
-                                        <span>Hi, <?php echo $USER->firstname ." ". $USER->lastname ; ?></span>
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
-                        <ul class="menu">
-                            <li>
-                                <a href="<?php echo $CFG->wwwroot; ?>/login/logout.php"><span>Logout</span></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <?php } else if (!isloggedin() or !isguestuser()) { ?>
-                <div class="usermenu">
-    						<div>
-    							<ul class="menubar">
-    								<li>
-    									<a href="javascript:void(0);">
-    										<span class="userbutton">
-    											<span>
-    												<span class="avatar current">
-    													<?php echo $OUTPUT->user_profile_picture(); ?>
-    												</span>
-    											</span>
-    											<span>Hi, <?php echo $USER->firstname ." ". $USER->lastname ; ?></span>
-    										</span>
-    									</a>
-    								</li>
-    							</ul>
-    							<ul class="menu">
-    								<li>
-    									<a href="<?php echo $CFG->wwwroot; ?>/user/edit.php"><span>Edit Profile</span></a>
-    								</li>
-    								<li>
-    									<a href="<?php echo $CFG->wwwroot.'/course/index.php';?>"><span>Course</span></a>
-    								</li>
-    								<li>
-    									<a href="<?php echo $CFG->wwwroot; ?>/login/logout.php"><span>Logout</span></a>
-    								</li>
-    							</ul>
-    						</div>
-    						</div>
-    			<?php } ?>
-            </div>
-        </nav>
-    </div>
+    <?php require('headers.php');?>
 </header>
 
-<div id="page">
+<div id="page" <?php if(($headerdetails == "Style1") || ($headerdetails == "Style2")) {?>class = "custom-page-header"<?php } ?>>
     <?php if ($CFG->version >= 2015051100){
         echo $OUTPUT->full_header();
     } else { ?>

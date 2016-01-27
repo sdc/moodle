@@ -341,7 +341,7 @@ form.innerpage-login {
 
 .header3.main-menu .usermenu {
 	margin: 0;
-	width: 180px;
+	width: 210px;
 }
 
 .header3.main-menu .usermenu img {
@@ -358,8 +358,8 @@ form.innerpage-login {
 }
 
 .header3.main-menu .usermenu .menubar a::after {
-	top: 24px;
-	right: 8px;
+	/*top: 24px;
+	right: 8px;*/
 }
 
 .main-menu.header3 ul.nav a {
@@ -533,6 +533,7 @@ header .bx-wrapper .bx-pager.bx-default-pager a {
 	padding-top:5px;
 	min-height: 35px;
 	min-width: 110px;
+	background-size: contain !important;
 }
 
 .inner-logo {
@@ -544,6 +545,7 @@ header .bx-wrapper .bx-pager.bx-default-pager a {
 	min-height:35px;
 	color: rgba(0, 0, 0, .8)!important;
 	min-width: 110px;
+	background-size: contain !important;
 }
 
 .logo-img {
@@ -553,7 +555,7 @@ header .bx-wrapper .bx-pager.bx-default-pager a {
 
 .logo-text {
 	background: url(img/logo.png) no-repeat center left;
-	padding-left: 40px;
+	padding-left: 50px;
 }
 
 .navbar {
@@ -774,7 +776,7 @@ header .bx-wrapper .bx-pager.bx-default-pager a {
 .av-course-item-cont {
 	position: absolute;
 	z-index: 3;
-	background: #e84c3d url(img/i-book.png) no-repeat 96.6% center;
+	background: #e84c3d no-repeat 96.6% center;
 	font-size: 13px;
 	line-height: 24px;
 	color: #FFFFFF;
@@ -1091,7 +1093,7 @@ header .bx-wrapper .bx-pager.bx-default-pager a {
 	line-height: 23px;
 	color: #000000;
 	padding: 15px 0 0;
-	white-space: nowrap;
+	/*white-space: nowrap;*/
 }
 
 .feedback-item-user h6 {
@@ -1191,7 +1193,7 @@ header .bx-wrapper .bx-pager.bx-default-pager a {
 	line-height: 22px;
 	color: #FFFFFF;
 	text-transform: uppercase;
-	background: #e84c3d url(img/i-cat.png) no-repeat 96.5% center;
+	background: #e84c3d no-repeat 96.5% center;
 	position: absolute;
 	left: 10px;
 	right: 10px;
@@ -1380,7 +1382,7 @@ footer {
 .usermenu {
 	float: right;
 	margin: 12px 0 11px;
-	width: 174px;
+	width: auto !important;
 	box-sizing: border-box;
 	position: relative;
 }
@@ -1408,7 +1410,6 @@ footer {
 }
 
 .navbar-fixed-top .navbar-inner, .navbar-static-top .navbar-inner, .navbar-inner-login {
-	background: #eeeeee;
 	box-shadow: none;
 	border: none;
 }
@@ -1426,16 +1427,24 @@ footer {
 	position: relative;
 }
 
-.usermenu .menubar a:after {
-	content: "";
-	display: block;
-	width: 0;
-	height: 0;
-	position: absolute;
-	right: 10px;
-	top: 12px;
-	border: 5px solid transparent;
-	border-top: 8px solid #FFFFFF;
+
+.usermenu .menubar a::after {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #ffffff transparent transparent;
+    border-image: none;
+    border-style: solid;
+    border-width: 8px 5px 5px;
+    content: "";
+    display: inline-block !important;
+    height: 0;
+    margin: 0 10px !important;
+    position: relative !important;
+    right: 0 !important;
+    top: 4px !important;
+    width: 0 !important;
 }
 
 .usermenu .menu {
@@ -1447,6 +1456,7 @@ footer {
 	opacity: 0;
 	transition: opacity .4s;
 	display: none;
+	z-index: 1;
 }
 
 .usermenu:hover .menu {
@@ -1469,6 +1479,9 @@ footer {
 	padding-top: 55px;
 	background: none;
 	min-height: 63px;
+}
+.custom-page-header #page-header {
+	padding-top: 125px;
 }
 
 #page-header .navbar {
@@ -1506,8 +1519,8 @@ div#page-navbar {
 
 #block-region-side-pre, #block-region-side-post {
 	min-height: 250px;
-	padding-bottom:9999px;
-	margin-bottom:-9999px;
+	/*padding-bottom:9999px;
+	margin-bottom:-9999px;*/
 }
 
 #block-region-side-post {
@@ -2069,6 +2082,7 @@ div#notice div.singlebutton div {
 	width: auto;
 	text-align: right;
 	white-space: nowrap;
+	clear: both;
 }
 
 .loginbox label {
@@ -3570,4 +3584,8 @@ body.has_dock #page {
 .guestform input[type="submit"] {
       margin: 31px 0 0 130px;
 
+}
+
+.login-page .navbar .btn-navbar {
+    margin-top: 0;
 }

@@ -14,6 +14,14 @@ if (is_siteadmin()) {
 	$ADMIN->add('theme_roshni', $temp);
 
 
+	// Custom CSS file.
+    $name = 'theme_roshni/customcss';
+    $title = get_string('customcss', 'theme_roshni');
+    $description = get_string('customcssdesc', 'theme_roshni');
+    $default = '';
+    $setting = new admin_setting_configtextarea($name, $title, $description, $default);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
 
 	$name = 'theme_roshni/fontselect';
 	$title = get_string('fontselect', 'theme_roshni');
@@ -190,18 +198,3 @@ if (is_siteadmin()) {
 
 
 
-//$temp1 = new admin_settingpage('theme_roshni_generic', get_string('customtemp', 'theme_roshni'));
-
-/* $readme = new moodle_url('/theme/roshni/temp/index.php');
-$readme = html_writer::link($readme, get_string('readme_click', 'theme_roshni'), array('target' => '_blank'));
-
-$temp->add(new admin_setting_heading('theme_roshni_generalreadme', get_string('readme_title', 'theme_roshni'),
-		get_string('readme_desc', 'theme_roshni', array('url' => $readme))));
-
-$ADMIN->add('theme_roshni', $temp);  */
-
-
-
-/* if(isset($_SERVER['QUERY_STRING']) && trim($_SERVER['QUERY_STRING']) == 'section=themesettingroshni') {
-		redirect ($CFG->wwwroot.'/theme/roshni/settings/index.php');
-}  */

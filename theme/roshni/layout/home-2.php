@@ -38,7 +38,7 @@ if(!empty($menunavs)) {
     	<link type="image/x-icon" rel="shortcut icon" href="<?php echo $favicondetails;?>">
 		<link rel="stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/font-awesome.css">
 		<link type="text/css" rel="Stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/styles.css">		
-		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery-1.11.1.min.js"></script>
+		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery-2.1.4.js"></script>
 		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/bootstrap.min.js"></script>
 		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.bxslider.min.js"></script>
 		<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.scroll.js"></script>
@@ -395,6 +395,28 @@ if(!empty($menunavs)) {
 				include($CFG->dirroot.'/theme/roshni/layout/home/contacts.php');
 			}
 			
+			/**********************************************/
+			?>
+			<?php 
+			/**************** For section 11 ****************/
+			$plugin = 'theme_roshni';
+			$section = 'formsection11';
+			$checkenable = $DB->get_record_sql('select config.value from {config_plugins} config where config.plugin="'.$plugin.'" and config.name="'.$section.'"');
+			
+			if($checkenable) {
+				$ifenablesection = json_decode($checkenable->value);
+			} else {
+				$ifenablesection = '';
+			}
+			
+			
+			if(!empty($ifenablesection) && $ifenablesection !="none") {
+				include($CFG->dirroot.'/theme/roshni/layout/home/'. $ifenablesection. '.php');
+			} else if(!empty($ifenablesection) && $ifenablesection =="none") {
+				//include($CFG->dirroot.'/theme/'.$CFG->theme.'/layout/home/social_network.php');
+			} else {
+				include($CFG->dirroot.'/theme/roshni/layout/home/social_network.php');
+			}
 			/**********************************************/
 			?>
 		</div><!-- END of .content -->

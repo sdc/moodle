@@ -1,3 +1,4 @@
+<div class = "clearfix"></div>
 <div class="categories">
 	<?php
   $pluginname = 'theme_roshni';
@@ -73,7 +74,7 @@
 			<div class="mask"></div>
 			<div class="categories-item-cont">
 				<?php if(!empty($course_categoryArraydetails["catname"])) { ?>
-				<h5><a href="<?php echo $course_categoryArraydetails["catlnkpage"];?>;"><?php echo $course_categoryArraydetails["catname"];?></a></h5>
+				<h5><a href="<?php echo $course_categoryArraydetails["catlnkpage"];?>"><?php echo $course_categoryArraydetails["catname"];?></a></h5>
 				<?php } else { ?>
 				<h5><a href="javascript:void(0);">Quisque posuere lacus</a></h5>
 				<?php } ?>

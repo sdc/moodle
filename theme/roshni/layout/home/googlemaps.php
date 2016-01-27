@@ -89,7 +89,7 @@ $(window).load(function () {
 });
 
 </script>
-
+<div class = "clearfix"></div>
 <div class="contact">
 	<?php
 	/******************************* Google Map *************************************/

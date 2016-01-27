@@ -29,7 +29,7 @@ body {
     max-width: 2600px;
     margin: 0 auto !important;
     /*font-weight: normal;*/
-    background-color: yellowgreen; /* changes */
+    
     font-family:  [[setting:bodyfont]] !important; 
     font-style: normal;
     font-weight: 400;
@@ -59,7 +59,12 @@ div.logo {
 .alert-info {
 	background-color: #f5f5dc !important;
 }
-
+.navbar-inner .nav-collapse.in {
+    height: auto !important;
+}
+.navbar .nav-collapse.in {
+    border-top: medium none;
+}
 /* Custom CSS Settings
 -------------------------*/
 /* [[setting:customcss]] */

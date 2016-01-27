@@ -7,13 +7,13 @@
 	    _minSlides = 1;
 	    _minSlides2 = 1;
 	} else if (_width > 550 && _width <= 760) {
-	    _minSlides = 1;/*dc*/
+	    _minSlides = 1;
 	    _minSlides2 = 2;
 	} else if (_width > 760 && _width <= 1200) {
-	    _minSlides = 2;/*dc */
+	    _minSlides = 2;
 	    _minSlides2 = 2;
 	} else {	
-	    _minSlides = 4;
+	    _minSlides = 3;
 	    _minSlides2 = 2;
 	}
 
@@ -23,8 +23,8 @@
 		maxSlides: 1,
 		slideMargin: 0,
 		moveSlides: 1,
-		controls: false,
-		// auto: 3000
+		controls: false
+		
 	});  
 
 	$('.av-courses-slider').bxSlider({
@@ -34,6 +34,7 @@
 		slideMargin: 0,
 		moveSlides: 1,
 		infiniteLoop: false,
+  		hideControlOnEnd: true,
 		pager: false,
 		adaptiveWidth: true
 	});
@@ -55,22 +56,6 @@
 		infiniteLoop: false,
 	});
 
-	
-	/**************  For accordian **************/
-	
-	
-/*	$(".block> div.content").show();
-	$(".block> div.header").each(function(){
-		$(this).click(function(){
-		//$(".content").slideUp("slow");
-		$(this).next().slideToggle("slow");
-		//$(this).$("p").css("color", "red");
-		
-		});
-	}); */
-	
-	
-	/******************************************/
 
 
 	$('.tabs-nav a').click(function(){
@@ -101,8 +86,7 @@
   // END script for upload image text
 	
 	
+
 	
 	
-
-
 });

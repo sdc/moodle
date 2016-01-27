@@ -1,7 +1,10 @@
+<div class = "clearfix"></div>
 <div class="about">
 	<div class="container">
-		<?php if(!empty(get_config('theme_roshni', 'sitedetailshrading'))) { ?>
-		<h2 class="header-b-2"><?php echo  json_decode(get_config('theme_roshni', 'sitedetailshrading')); ?></h2>
+		<?php $hassitedetailshrading = json_decode(get_config('theme_roshni', 'sitedetailshrading'));
+
+		if(!empty($hassitedetailshrading)) { ?>
+		<h2 class="header-b-2"><?php echo $hassitedetailshrading; ?></h2>
 		<?php } else { ?>
 		<h2 class="header-b-2">About University Of Utopia</h2>
 		<?php } ?>
@@ -56,7 +59,6 @@
 				<?php
 				$count2 = 0;
 				foreach($site_detailArray as $site_detailArray_Value) { 
-					//print_r($site_detailArray_Value);
 					if($count2 == 0) { $counthiddenclass= ''; } else { $counthiddenclass= ' hidden';}
 					if(!empty($site_detailArray_Value["sitetext"])) { ?>
 						<div class="tabs-content-item <?php echo $counthiddenclass; ?>" data-target="<?php echo $count2; ?>">
