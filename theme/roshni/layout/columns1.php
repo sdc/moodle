@@ -10,6 +10,15 @@ if ($favicon != "") {
 } else {
     $favicondetails = $CFG->wwwroot . '/theme/roshni/favicon.ico';
 }
+GLOBAL $DB;
+$pluginname = 'theme_roshni';
+$headerstyle = 'header';
+$headerstyles = $DB->get_record_sql('select config.value from {config_plugins} config where config.plugin="'.$pluginname.'" and config.name="'.$headerstyle.'"');
+if(!empty($headerstyles)) { 
+    $headerdetails = json_decode($headerstyles->value,true);
+} else {
+    $headerdetails = '';
+}
 echo $OUTPUT->doctype() ?>
 <html <?php echo $OUTPUT->htmlattributes(); ?>>
 <head>
@@ -19,11 +28,13 @@ echo $OUTPUT->doctype() ?>
     <link type="image/x-icon" rel="shortcut icon" href="<?php echo $favicondetails;?>">
 	<link rel="stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/font-awesome.css">
 	<link type="text/css" rel="Stylesheet" href="<?php echo $CFG->wwwroot ?>/theme/roshni/css/styles.css"> 
-    <script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery-1.11.1.min.js"></script>
+    <script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery-2.1.4.js"></script>
 	<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/bootstrap.min.js"></script>
 	<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.bxslider.min.js"></script>
 	<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/jquery.scroll.js"></script>
 	<script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/engine.js"></script>
+    <script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/nav.js"></script>
+    <script src="<?php echo $CFG->wwwroot ?>/theme/roshni/js/backtop.js"></script>
     <?php
       include $CFG->dirroot . '/theme/roshni/settings/themecolor.php';
       include $CFG->dirroot . '/theme/roshni/settings/pagebackgroundlayout.php';
@@ -36,39 +47,10 @@ echo $OUTPUT->body_attributes(); ?>>
 <?php echo $OUTPUT->standard_top_of_body_html() ?>
 
 <header class="navbar navbar-fixed-top<?php echo $html->navbarclass ?> moodle-has-zindex">
-    <div class="inner-header">
-        <nav class="navbar-inner">
-            <div class="container">
-                <?php if($logosetting == '"logostyle3"') { ?>
-                    <a class="inner-logo logo-text" href="<?php echo $CFG->wwwroot;?>"><?php echo
-                        format_string($SITE->shortname, true, array('context' => context_course::instance(SITEID)));
-                    ?></a>
-                <?php } else if($logosetting == '"logostyle2"') { ?>
-                    <a class="inner-logo only-text" style = "background: none;" href="<?php echo $CFG->wwwroot;?>"><?php echo
-                        format_string($SITE->shortname, true, array('context' => context_course::instance(SITEID)));
-                    ?></a>
-                <?php } else if($logosetting == '"logostyle1"') { ?>
-                    <a href="<?php echo $CFG->wwwroot;?>" class="inner-logo logo-img"></a>
-                <?php } else { ?>
-                    <a class="inner-logo logo-text" href="<?php echo $CFG->wwwroot;?>"></a>
-                <?php } ?>
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </a>
-                <div class="nav-collapse collapse">
-                    <?php echo $OUTPUT->custom_menu(); ?>
-                    <ul class="nav pull-right">
-                        <li><?php echo $OUTPUT->page_heading_menu(); ?></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </div>
+    <?php require('headers.php');?>
 </header>
 
-<div id="page">
+<div id="page" <?php if(($headerdetails == "Style1") || ($headerdetails == "Style2")) {?>class = "custom-page-header"<?php } ?>>
 
     <?php if ($CFG->version >= 2015051100){
         echo $OUTPUT->full_header();

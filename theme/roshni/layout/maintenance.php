@@ -29,7 +29,7 @@ echo $OUTPUT->doctype() ?>
 <?php include $CFG->dirroot . '/theme/roshni/analyticstracking.php';
 echo $OUTPUT->standard_top_of_body_html() ?>
 
-<div id="page" class="container-fluid">
+<div id="page" class="container">
 
     <header id="page-header" class="clearfix">
         <?php echo $html->heading; ?>

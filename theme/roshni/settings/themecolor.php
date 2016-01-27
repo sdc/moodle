@@ -166,14 +166,16 @@ if ($avcstrip == '"image"') {
 }
 
 $logoimages = get_config("theme_roshni","logoimg");
-$logoimage = json_decode($logoimages);
-if($logoimage != "") { ?>
+
+if($logoimages != "") { ?>
 	<style type="text/css">
 		.logo {
-			background: url(<?php echo $logoimage;?>) no-repeat left center !important;
+			background: url(<?php echo $logoimages;?>) no-repeat left center !important;
+			background-size: contain !important;
 		}	
 		.inner-logo {
-			background: url(<?php echo $logoimage;?>) no-repeat left center !important;
+			background: url(<?php echo $logoimages;?>) no-repeat left center !important;
+			background-size: contain !important;
 		}
 	</style>
 	

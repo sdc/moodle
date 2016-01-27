@@ -1050,7 +1050,7 @@ if(!empty($sections)) {
 				$upcomingcourses = get_config("theme_roshni","upcoming");
 				$upcomingcourse = json_decode($upcomingcourses, true);
 				if($upcomingcourse["upctitle"][0] != null) { //checking if not empty the first field.
-					$upcomingRow = count($upcomingcourse["upctitle"]);
+					$upcomingRow = count($upcomingcourse["upcdetails"]);
 					for($i = 1; $i <= $upcomingRow; $i++) {
 						if($i ==  1) {
 							
@@ -1060,11 +1060,14 @@ if(!empty($sections)) {
 							$uc_content = 'remove_uc_details'.' uccla uc_class_'.$i;
 							$uc_remove_field = 'uc_remove_field_show';
 						}
+						if($i ==  1) {
 					  ?>
+
 					  	<div class="inputs-subrow">
 							<h4>Title</h4>
 							<input type="text" value="<?php echo $upcomingcourse["upctitle"][$i-1]; ?>" name="upcoming[upctitle][]" class="upctitle">
 						</div>
+						<?php } ?>
 						<div class="clearfix"></div>
 						<div class="row inputs-row <?php echo $uc_content; ?>" uc-data-element = "<?php echo $upcomingRow; ?>">
 							
@@ -1272,10 +1275,7 @@ if(!empty($sections)) {
 									iconpicker_settings_field($settings, $contacticon); 
 								?>
 							</div>
-							<div class="inputs-subrow">
-								<h4>Title</h4>
-								<input type="text" value="<?php echo $contact["contacttype"][$i-1]; ?>" name="contacts[contacttype][]" class="contacttype">
-							</div>
+							
 							<div class="inputs-subrow">
 								<h4>Details</h4>
 								<input type="text" value="<?php echo $contact["contactdetails"][$i-1]; ?>" name="contacts[contactdetails][]" class="contactdetails">
@@ -1300,10 +1300,7 @@ if(!empty($sections)) {
 								iconpicker_settings_field($settings, $contacticon); 
 							?>
 						</div>
-						<div class="inputs-subrow">
-							<h4>Title</h4>
-							<input type="text" value="" name="contacts[contacttype][]" class="contacttype">
-						</div>
+						
 						<div class="inputs-subrow">
 							<h4>Details</h4>
 							<input type="text" value="" name="contacts[contactdetails][]" class="contactdetails">
@@ -1384,95 +1381,107 @@ if(!empty($sections)) {
 			<div class="form-item clearfix">
 				<h3>Add Social Networks <span class="small-setting">(Home Page)</span></h3>
 				<?php 
+				$socialheadings = get_config("theme_roshni","socialheading");
+				$socialheading = json_decode($socialheadings, true);
 				$socials = get_config("theme_roshni","social");
 				$social = json_decode($socials, true);
 				
 				if(!empty($social)) { //checking if not empty the first field.
 					?>
+					<div class="inputs-subrow">
+						<h4>Title</h4>
+						<input type="text" value="<?php if($socialheading != null) { echo $socialheading; } else { echo ""; } ?>" name="socialheading" class="socialheading">
+					</div>
+					<div class="clearfix"></div>
 					<div class="row inputs-row">
 						<div class="inputs-subrow">
 							<h4>Facebook</h4>
-							<input type="url" id="fburl" value="<?php if($social["facebook"][0] != null) { echo $social["facebook"][0]; } else { echo ""; } ?>" name="social[facebook][]" class="facebook">
+							<input type="url" id="fburl" value="<?php if($social[0] != null) { echo $social[0]; } else { echo ""; } ?>" name="social[0]" class="facebook">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Twitter</h4>
-							<input type="url" id="twturl" value="<?php if($social["twitter"][0] != null) { echo $social["twitter"][0]; } else { echo ""; } ?>" name="social[twitter][]" class="twitter">
+							<input type="url" id="twturl" value="<?php if($social[1] != null) { echo $social[1]; } else { echo ""; } ?>" name="social[1]" class="twitter">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Linkedin</h4>
-							<input type="url" id="linkdnurl" value="<?php if($social["linkedin"][0] != null) { echo $social["linkedin"][0]; } else { echo ""; } ?>" name="social[linkedin][]" class="linkedin">
+							<input type="url" id="linkdnurl" value="<?php if($social[2] != null) { echo $social[2]; } else { echo ""; } ?>" name="social[2]" class="linkedin">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Google Plus</h4>
-							<input type="url" id="googleplusurl" value="<?php if($social["google-plus"][0] != null) { echo $social["google-plus"][0]; } else { echo ""; } ?>" name="social[google-plus][]" class="googleplus">
+							<input type="url" id="googleplusurl" value="<?php if($social[3] != null) { echo $social[3]; } else { echo ""; } ?>" name="social[3]" class="googleplus">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Dribbble</h4>
-							<input type="url" id="drbleurl" value="<?php if($social["dribbble"][0] != null) { echo $social["dribbble"][0]; } else { echo ""; } ?>" name="social[dribbble][]" class="dribbble">
+							<input type="url" id="drbleurl" value="<?php if($social[4] != null) { echo $social[4]; } else { echo ""; } ?>" name="social[4]" class="dribbble">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Youtube</h4>
-							<input type="url" id="youtubeurl" value="<?php if($social["youtube"][0] != null) { echo $social["youtube"][0]; } else { echo ""; } ?>" name="social[youtube][]" class="youtube">
+							<input type="url" id="youtubeurl" value="<?php if($social[5] != null) { echo $social[5]; } else { echo ""; } ?>" name="social[5]" class="youtube">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Vimeo</h4>
-							<input type="url" id="vimeourl" value="<?php if($social["vimeo-square"][0] != null) { echo $social["vimeo-square"][0]; } else { echo ""; } ?>" name="social[vimeo-square][]" class="vimeo">
+							<input type="url" id="vimeourl" value="<?php if($social[6] != null) { echo $social[6]; } else { echo ""; } ?>" name="social[6]" class="vimeo">
 						</div>
 						<div class="inputs-subrow">
 							<h4>RSS</h4>
-							<input type="url" id="rssurl" value="<?php if($social["rss"][0] != null) { echo $social["rss"][0]; } else { echo ""; } ?>" name="social[rss][]" class="rss">
+							<input type="url" id="rssurl" value="<?php if($social[7] != null) { echo $social[7]; } else { echo ""; } ?>" name="social[7]" class="rss">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Flicker</h4>
-							<input type="url" id="flickerurl" value="<?php if($social["flickr"][0] != null) { echo $social["flickr"][0]; } else { echo ""; } ?>" name="social[flickr][]" class="flicker">
+							<input type="url" id="flickerurl" value="<?php if($social[8] != null) { echo $social[8]; } else { echo ""; } ?>" name="social[8]" class="flicker">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Pinterest</h4>
-							<input type="url" id="pinteresturl" value="<?php if($social["pinterest"][0] != null) { echo $social["pinterest"][0]; } else { echo ""; } ?>" name="social[pinterest][]" class="pinterest">
+							<input type="url" id="pinteresturl" value="<?php if($social[9] != null) { echo $social[9]; } else { echo ""; } ?>" name="social[9]" class="pinterest">
 						</div>
 					</div>
 						<?php
 				} else { ?>
+					<div class="inputs-subrow">
+						<h4>Title</h4>
+						<input type="text" value="<?php if($socialheading != null) { echo $socialheading; } else { echo ""; } ?>" name="socialheading" class="socialheading">
+					</div>
+					<div class="clearfix"></div>
 					<div class="row inputs-row">
 						<div class="inputs-subrow">
 							<h4>Facebook</h4>
-							<input type="url" id="fburl" value="<?php if($social["facebook"][0] != null) { echo $social["facebook"][0]; } else { echo ""; } ?>" name="social[facebook][]" class="facebook">
+							<input type="url" id="fburl" value="<?php if($social[0] != null) { echo $social[0]; } else { echo ""; } ?>" name="social[]" class="facebook">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Twitter</h4>
-							<input type="url" id="twturl" value="<?php if($social["twitter"][0] != null) { echo $social["twitter"][0]; } else { echo ""; } ?>" name="social[twitter][]" class="twitter">
+							<input type="url" id="twturl" value="<?php if($social[1] != null) { echo $social[1]; } else { echo ""; } ?>" name="social[]" class="twitter">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Linkedin</h4>
-							<input type="url" id="linkdnurl" value="<?php if($social["linkedin"][0] != null) { echo $social["linkedin"][0]; } else { echo ""; } ?>" name="social[linkedin][]" class="linkedin">
+							<input type="url" id="linkdnurl" value="<?php if($social[2] != null) { echo $social[2]; } else { echo ""; } ?>" name="social[]" class="linkedin">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Google Plus</h4>
-							<input type="url" id="googleplusurl" value="<?php if($social["google-plus"][0] != null) { echo $social["google-plus"][0]; } else { echo ""; } ?>" name="social[google-plus][]" class="googleplus">
+							<input type="url" id="googleplusurl" value="<?php if($social[3] != null) { echo $social[3]; } else { echo ""; } ?>" name="social[]" class="googleplus">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Dribbble</h4>
-							<input type="url" id="drbleurl" value="<?php if($social["dribbble"][0] != null) { echo $social["dribbble"][0]; } else { echo ""; } ?>" name="social[dribbble][]" class="dribbble">
+							<input type="url" id="drbleurl" value="<?php if($social[4] != null) { echo $social[4]; } else { echo ""; } ?>" name="social[]" class="dribbble">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Youtube</h4>
-							<input type="url" id="youtubeurl" value="<?php if($social["youtube"][0] != null) { echo $social["youtube"][0]; } else { echo ""; } ?>" name="social[youtube][]" class="youtube">
+							<input type="url" id="youtubeurl" value="<?php if($social[5] != null) { echo $social[5]; } else { echo ""; } ?>" name="social[]" class="youtube">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Vimeo</h4>
-							<input type="url" id="vimeourl" value="<?php if($social["vimeo-square"][0] != null) { echo $social["vimeo-square"][0]; } else { echo ""; } ?>" name="social[vimeo-square][]" class="vimeo">
+							<input type="url" id="vimeourl" value="<?php if($social[6] != null) { echo $social[6]; } else { echo ""; } ?>" name="social[]" class="vimeo">
 						</div>
 						<div class="inputs-subrow">
 							<h4>RSS</h4>
-							<input type="url" id="rssurl" value="<?php if($social["rss"][0] != null) { echo $social["rss"][0]; } else { echo ""; } ?>" name="social[rss][]" class="rss">
+							<input type="url" id="rssurl" value="<?php if($social[7] != null) { echo $social[7]; } else { echo ""; } ?>" name="social[]" class="rss">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Flicker</h4>
-							<input type="url" id="flickerurl" value="<?php if($social["flickr"][0] != null) { echo $social["flickr"][0]; } else { echo ""; } ?>" name="social[flickr][]" class="flicker">
+							<input type="url" id="flickerurl" value="<?php if($social[8] != null) { echo $social[8]; } else { echo ""; } ?>" name="social[]" class="flicker">
 						</div>
 						<div class="inputs-subrow">
 							<h4>Pinterest</h4>
-							<input type="url" id="pinteresturl" value="<?php if($social["pinterest"][0] != null) { echo $social["pinterest"][0]; } else { echo ""; } ?>" name="social[pinterest][]" class="pinterest">
+							<input type="url" id="pinteresturl" value="<?php if($social[9] != null) { echo $social[9]; } else { echo ""; } ?>" name="social[]" class="pinterest">
 						</div>
 					</div>
 					

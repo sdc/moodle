@@ -247,6 +247,7 @@ function theme_roshni_set_customcss($css, $customcss) {
     return $css;
 }
 
+
 /**
  * Returns an object containing HTML for the areas affected by settings.
  *
