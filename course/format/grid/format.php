@@ -116,11 +116,11 @@ $gfsettings['imagecontainerwidth'], $gfsettings['imagecontainerratio'], $gfsetti
     $blue = hexdec(substr($gfsettings['bordercolour'], $startindex + 4, 2));
     ?>
     .course-content ul.gridicons li:hover .image_holder {
-        box-shadow: 0px 0px 0px <?php echo $gfsettings['borderwidth']; ?>px rgba(<?php echo $red . ',' . $green . ',' . $blue ?>,0.3);
+        box-shadow: 0 0 0 <?php echo $gfsettings['borderwidth']; ?>px rgba(<?php echo $red.','.$green.','.$blue ?>, 0.3);
     }
 
     .course-content ul.gridicons li.currenticon .image_holder {
-        box-shadow: 0px 0px 2px 4px <?php
+        box-shadow: 0 0 2px 4px <?php
         if ($gfsettings['currentselectedsectioncolour'][0] != '#') {
             echo '#';
         }
