@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- /**
+/**
  * @namespace
  */
 M.format_grid = M.format_grid || {
@@ -51,12 +51,13 @@ M.format_grid = M.format_grid || {
 
 /**
  * Initialise with the information supplied from the course format so we can operate.
- * @param {Object} Y YUI instance
+ * @param {Object}  Y YUI instance
  * @param {Boolean} the_editing_on If editing is on.
- * @param {String} the_section_redirect If set will contain a URL prefix for the section page redirect functionality and not show the shade box.
+ * @param {String}  the_section_redirect If set will contain a URL prefix for the section page redirect functionality
+ *                  and not show the shade box.
  * @param {Integer} the_num_sections the number of sections in the course.
- * @param {Array} the_shadebox_shown_array States what sections are not shown (value of 1) and which are (value of 2)
- *                                         index is the section no.
+ * @param {Array}   the_shadebox_shown_array States what sections are not shown (value of 1) and which are (value of 2)
+ *                  index is the section no.
  * @param {Boolean} the_rtl True if a right to left language.
  */
 M.format_grid.init = function(Y, the_editing_on, the_section_redirect, the_num_sections, the_shadebox_shown_array, the_rtl) {
@@ -115,10 +116,23 @@ M.format_grid.init = function(Y, the_editing_on, the_section_redirect, the_num_s
         M.format_grid.shadebox.update_shadebox();
         window.onresize = function() {
             M.format_grid.shadebox.update_shadebox();
-        }
+        };
     }
     this.shadebox_content = Y.one("#gridshadebox_content");
     this.shadebox_content.removeClass('hide_content'); // Content 'flash' prevention.
+    // Show the shadebox of a named anchor in the URL where it is expected to be of the form:
+    // #section-X.
+    if ((window.location.hash) && (!the_editing_on)) {
+        var idx = parseInt(window.location.hash.substring(window.location.hash.indexOf("-") + 1));
+        var min = 1;
+        if (M.format_grid.shadebox_shown_array[0] == 2) { // Section 0 can be shown.
+            min = 0;
+        }
+        if ((idx >= min) && (idx <= this.num_sections) && (M.format_grid.shadebox_shown_array[idx] == 2)) {
+            M.format_grid.tab(idx);
+            M.format_grid.grid_toggle();
+        }
+    }
 };
 
 /**
@@ -136,7 +150,7 @@ M.format_grid.icon_click = function(e) {
 };
 
 /**
- * Called when the user tabs and the item is a grid icon, set up in the init() method.
+ * Called when the user tabs and the item is a grid icon.
  */
 M.format_grid.tab = function(index) {
     "use strict";
@@ -144,7 +158,7 @@ M.format_grid.tab = function(index) {
     var previous_no = this.selected_section_no;
     this.selected_section_no = index;
     this.update_selected_background(previous_no);
-    if (M.format_grid.shadebox.shadebox_open == true) {
+    if (M.format_grid.shadebox.shadebox_open === true) {
          this.change_shown();
     }
 };
@@ -157,14 +171,19 @@ M.format_grid.tab = function(index) {
 M.format_grid.icon_toggle = function(e) {
     "use strict";
     e.preventDefault();
+    this.grid_toggle();
+};
+
+
+M.format_grid.grid_toggle = function() {
     if (this.selected_section_no != -1) { // Then a valid shown section has been selected.
-        if ((this.editing_on == true) && (this.update_capability == true)) {
+        if ((this.editing_on === true) && (this.update_capability === true)) {
             // Jump to the section on the page.
             window.scroll(0,document.getElementById("section-" + this.selected_section_no).offsetTop);
         } else if (this.section_redirect !== null) {
             // Keyboard control of 'toggle' in 'One section per page' layout.
             location.replace(this.section_redirect + "&section=" + this.selected_section_no);
-        } else if (M.format_grid.shadebox.shadebox_open == true) {
+        } else if (M.format_grid.shadebox.shadebox_open === true) {
             //console.log("Shadebox was open");
             this.shadebox.toggle_shadebox();
         } else {
@@ -183,7 +202,7 @@ M.format_grid.icon_toggle = function(e) {
  * Moves to the previous visible section - looping to the last if the current is the first.
  * @param {Object} e Event object.
  */
-M.format_grid.arrow_left = function(e) {
+M.format_grid.arrow_left = function() {
     "use strict";
     if (this.rtl) {
         this.change_selected_section(true);
@@ -198,7 +217,7 @@ M.format_grid.arrow_left = function(e) {
  * Moves to the next visible section - looping to the first if the current is the last.
  * @param {Object} e Event object.
  */
-M.format_grid.arrow_right = function(e) {
+M.format_grid.arrow_right = function() {
     "use strict";
     if (this.rtl) {
         this.change_selected_section(false);
@@ -216,7 +235,7 @@ M.format_grid.change_selected_section = function(increase_section) {
     if (this.selected_section_no != -1) { // Then a valid shown section has been selected.
         this.set_selected_section(this.selected_section_no, increase_section, false);
         //console.log("Selected section no is now: " + this.selected_section_no);
-        if (M.format_grid.shadebox.shadebox_open == true) {
+        if (M.format_grid.shadebox.shadebox_open === true) {
             this.change_shown();
         }
     } //else {
@@ -230,7 +249,7 @@ M.format_grid.change_selected_section = function(increase_section) {
 M.format_grid.change_shown = function() {
     "use strict";
     // Make the selected section visible, scroll to it and hide all other sections.
-    if(this.selected_section != null) {
+    if(this.selected_section !== null) {
         this.selected_section.addClass('hide_section');
     }
     this.selected_section = this.ourYUI.one("#section-" + this.selected_section_no);
@@ -259,7 +278,7 @@ M.format_grid.change_shown = function() {
  */
 M.format_grid.set_selected_section = function(starting_point, increase_section, initialise) {
     "use strict";
-    if ((this.selected_section_no != -1) || (initialise == true)) {
+    if ((this.selected_section_no != -1) || (initialise === true)) {
         var previous_no = this.selected_section_no;
         this.selected_section_no = this.find_next_shown_section(starting_point, increase_section);
         this.update_selected_background(previous_no);
@@ -294,8 +313,8 @@ M.format_grid.find_next_shown_section = function(starting_point, increase_sectio
     var current = starting_point;
     var next = starting_point;
 
-    while(found == false) {
-        if (increase_section == true) {
+    while(found === false) {
+        if (increase_section === true) {
             current++;
             if (current > this.num_sections) {
                 current = 0;
@@ -415,11 +434,12 @@ M.format_grid.shadebox.get_page_height = function() {
     }
 
     var windowHeight;
-    if(self.innerHeight) { // All except Explorer.
-        windowHeight = self.innerHeight;
+    // All except Explorer.
+    if(self.innerHeight) { // jshint ignore:line
+        windowHeight = self.innerHeight; // jshint ignore:line
     } else if(document.documentElement && document.documentElement.clientHeight) { // Explorer 6 strict mode.
         windowHeight = document.documentElement.clientHeight;
-    } else if(document.body) { //other Explorers
+    } else if(document.body) { // Other Explorers.
         windowHeight = document.body.clientHeight;
     }
 
@@ -432,4 +452,4 @@ M.format_grid.shadebox.get_page_height = function() {
     }
 
     return pageHeight;
-};
+};

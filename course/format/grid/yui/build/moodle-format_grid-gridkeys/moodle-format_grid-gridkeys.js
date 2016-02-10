@@ -103,14 +103,14 @@ M.format_grid.gridkeys = {
             Y.on('enter', function (e) {
                 if (M.format_grid.gridkeys.currentGridBox) {
                     e.preventDefault();
-                    if (M.format_grid.shadebox.shadebox_open == false) {
+                    if (M.format_grid.shadebox.shadebox_open === false) {
                         M.format_grid.icon_toggle(e);
                     } else if (e.shiftKey) {
                         M.format_grid.icon_toggle(e);
                     }
                 }
             });
-            Y.on('tab', function (e) {
+            Y.on('tab', function (/*e*/) {
                 //e.preventDefault();
                 //window.dispatchEvent(e);
                 setTimeout(function() {

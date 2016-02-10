@@ -39,7 +39,7 @@ M.format_grid.gridkeys = {
         if (focused && focused.id) {
             Y.log(focused.id);
             if (focused.id.indexOf('gridsection-') > -1) {
-                Y.log('Grid id:'  + focused.id);
+                Y.log('Grid id:' + focused.id);
                 M.format_grid.gridkeys.currentGridBox = true;
                 M.format_grid.gridkeys.currentGridBoxIndex = parseInt(focused.id.replace("gridsection-", ""));
             }
@@ -59,7 +59,7 @@ M.format_grid.gridkeys = {
             Y.on('enter', function (e) {
                 if (M.format_grid.gridkeys.currentGridBox) {
                     e.preventDefault();
-                    if (M.format_grid.shadebox.shadebox_open == false) {
+                    if (M.format_grid.shadebox.shadebox_open === false) {
                         Y.log("Enter pressed");
                         Y.log("Selected section no: " + M.format_grid.selected_section_no);
                         M.format_grid.icon_toggle(e);
@@ -70,7 +70,7 @@ M.format_grid.gridkeys = {
                     }
                 }
             });
-            Y.on('tab', function (e) {
+            Y.on('tab', function (/*e*/) {
                 //e.preventDefault();
                 //window.dispatchEvent(e);
                 setTimeout(function() {
