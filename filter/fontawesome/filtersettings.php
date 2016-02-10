@@ -18,7 +18,7 @@
 /**
  * @package    filter
  * @subpackage fontawesome
- * @copyright  2013 Julian Ridden <julian@moodleman.net>
+ * @copyright  2013-2016 Julian Ridden <julian@moodleman.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
