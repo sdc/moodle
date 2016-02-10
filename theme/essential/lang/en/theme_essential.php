@@ -64,6 +64,7 @@ click here to sponsor.
 <li>Delvon Forrester, Esparanza co uk</li>
 <li>iZone</li>
 <li>Anis Jradah</li>
+<li>Ute Hlasek, <a href="//hlasek-it.de/moodle" target="_blank">hlasek-it.de/moodle</a></li>
 </ul>
 </p>
 <h3>Customisation</h3>
@@ -234,6 +235,14 @@ $string['themeurlcolor'] = 'Link colour';
 $string['themeurlcolordesc'] = 'Set the colour for your linked text.';
 $string['themehovercolor'] = 'Theme hover colour';
 $string['themehovercolordesc'] = 'What colour should your theme hovers be. This is used for links, menus, etc.';
+$string['themedefaultbuttontextcolour'] = 'Default button text colour';
+$string['themedefaultbuttontextcolourdesc'] = 'Set the text colour for all default buttons.';
+$string['themedefaultbuttontexthovercolour'] = 'Default button text hover colour';
+$string['themedefaultbuttontexthovercolourdesc'] = 'Set the text hover colour for all default buttons.';
+$string['themedefaultbuttonbackgroundcolour'] = 'Default button background colour';
+$string['themedefaultbuttonbackgroundcolourdesc'] = 'Set the background colour for all default buttons.';
+$string['themedefaultbuttonbackgroundhovercolour'] = 'Default button background hover colour';
+$string['themedefaultbuttonbackgroundhovercolourdesc'] = 'Set the background hover colour for all default buttons.';
 $string['themeiconcolor'] = 'Icon colour';
 $string['themeiconcolordesc'] = 'Set the colour for all icons.';
 $string['themenavcolor'] = 'Navigation text colour';
@@ -288,6 +297,14 @@ $string['alternativethemetextcolor'] = 'Alternative text colour {$a}';
 $string['alternativethemetextcolordesc'] = 'Set the colour for your alternative text {$a}.';
 $string['alternativethemeurlcolor'] = 'Alternative link colour {$a}';
 $string['alternativethemeurlcolordesc'] = 'Set the colour for your alternative linked text {$a}.';
+$string['alternativethemedefaultbuttontextcolour'] = 'Default button text colour {$a}';
+$string['alternativethemedefaultbuttontextcolourdesc'] = 'Set the text colour for all default buttons {$a}.';
+$string['alternativethemedefaultbuttontexthovercolour'] = 'Default button hover text colour {$a}';
+$string['alternativethemedefaultbuttontexthovercolourdesc'] = 'Set the hover text colour for all default buttons {$a}.';
+$string['alternativethemedefaultbuttonbackgroundcolour'] = 'Default button background colour {$a}';
+$string['alternativethemedefaultbuttonbackgroundcolourdesc'] = 'Set the background colour for all default buttons {$a}.';
+$string['alternativethemedefaultbuttonbackgroundhovercolour'] = 'Default button background hover colour {$a}';
+$string['alternativethemedefaultbuttonbackgroundhovercolourdesc'] = 'Set the background hover colour for all default buttons {$a}.';
 $string['alternativethemeiconcolor'] = 'Alternative icon colour {$a}';
 $string['alternativethemeiconcolordesc'] = 'Set the alternative {$a} colour for all icons.';
 $string['alternativethemenavcolor'] = 'Navigation text colour {$a}';
@@ -522,6 +539,8 @@ $string['enablecustomcategoryicondesc'] = 'If enabled below this section you wil
 $string['categoryiconinfo'] = 'Set custom category icons';
 $string['categoryiconinfodesc'] = 'Enter the name of the icon you wish to use.  List is <a href="http://fortawesome.github.io/Font-Awesome/cheatsheet/" target="_new">here</a>. Just enter what is after "fa-".';
 
+$string['numberofcoursesandsubcatcourses'] = 'Number of courses - sub category courses';
+
 // Header Settings.
 $string['headerheading'] = 'Header';
 $string['headertitle'] = 'Header title';
@@ -691,3 +710,7 @@ $string['nomessagesfound'] = 'No messages were found';
 
 // Preferences.
 $string['badgepreferences'] = 'Badge';
+
+// Incourse.
+$string['returntosection'] = 'Return to section {$a->section}';
+

@@ -61,7 +61,10 @@
                 .form-item .form-description,
                 .form-defaultinfo,
                 .form-label .form-shortname,
-                .mform legend a {
+                .mform legend,
+                .mform legend a,
+                .backup-restore .backup-section > h2.header,
+                .backup-restore .backup-section .backup-sub-section h3 {
                     color: ~"[[setting:alternativethemetextcolor@{index}]]";
                 }
 
@@ -176,6 +179,18 @@
                     color: @grayLight;
                 }
 
+                .filemanager, .file-picker {
+                    a, a:visited {
+                        color: ~"[[setting:alternativethemeurlcolor@{index}]]";
+                        &:hover, &:focus {
+                            color: ~"[[setting:alternativethemehovercolor@{index}]]";
+                            &:before {
+                                color: ~"[[setting:alternativethemehovercolor@{index}]]";
+                            }
+                        }
+                    }
+                }
+
                 #page-header {
                     h1#title {
                         color: ~"[[setting:alternativethemecolor@{index}]]";
@@ -208,10 +223,12 @@
                     input[type="submit"] {
                         color: ~"[[setting:alternativethemenavcolor@{index}]]";
                         background-color: ~"[[setting:alternativethemecolor@{index}]]";
+                        background-image: none;
                         border-color: ~"[[setting:alternativethemecolor@{index}]]";
                         &:focus, &:hover, &:active {
                             color: ~"[[setting:alternativethemecolor@{index}]]";
                             background-color: ~"[[setting:alternativethemenavcolor@{index}]]";
+                            background-image: none;
                         }
                     }
                 }
@@ -387,6 +404,7 @@
                     }
                 }
 
+                button, .btn-default, a.btn-default,
                 button.btn-cancel,
                 input.form-submit,
                 input[type="button"],
@@ -394,11 +412,31 @@
                 input[type="reset"],
                 #notice .singlebutton+.singlebutton input,
                 .submit.buttons input[name=cancel] {
-                    color: ~"[[setting:alternativethemetextcolor@{index}]]";
-                }
-                .button {
-                    a, a:visited {
-                        background-color: ~"[[setting:alternativethemecolor@{index}]]";
+                    color: ~"[[setting:alternativethemedefaultbuttontextcolour@{index}]]";
+                    .fa {
+                        color: ~"[[setting:alternativethemedefaultbuttontextcolour@{index}]]";
+                    }
+
+                    text-shadow: none;
+                    background-color: ~"[[setting:alternativethemedefaultbuttonbackgroundcolour@{index}]]";
+                    background-image: -moz-linear-gradient(bottom, ~"[[setting:alternativethemedefaultbuttonbackgroundcolourimage@{index}]]", ~"[[setting:alternativethemedefaultbuttonbackgroundcolourrgba@{index}]]"); // FF 3.6+
+                    background-image: -webkit-gradient(linear, 0 100%, 0 0, from(~"[[setting:alternativethemedefaultbuttonbackgroundcolourimage@{index}]]"), to(~"[[setting:alternativethemedefaultbuttonbackgroundcolourrgba@{index}]]")); // Safari 4+, Chrome 2+
+                    background-image: -webkit-linear-gradient(bottom, ~"[[setting:alternativethemedefaultbuttonbackgroundcolourimage@{index}]]", ~"[[setting:alternativethemedefaultbuttonbackgroundcolourrgba@{index}]]"); // Safari 5.1+, Chrome 10+
+                    background-image: -o-linear-gradient(bottom, ~"[[setting:alternativethemedefaultbuttonbackgroundcolourimage@{index}]]", ~"[[setting:alternativethemedefaultbuttonbackgroundcolourrgba@{index}]]"); // Opera 11.10
+                    background-image: linear-gradient(to top, ~"[[setting:alternativethemedefaultbuttonbackgroundcolourimage@{index}]]", ~"[[setting:alternativethemedefaultbuttonbackgroundcolourrgba@{index}]]"); // Standard, IE10
+
+                    &:hover, &:focus, &:active, &.active, &.disabled, &[disabled] {
+                        color: ~"[[setting:alternativethemedefaultbuttontexthovercolour@{index}]]";
+                        text-shadow: 0 1px 1px rgba(64, 64, 64, .75);
+                        background-color: ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolour@{index}]]";
+                        background-image: -moz-linear-gradient(bottom, ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourimage@{index}]]", ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourrgba@{index}]]"); // FF 3.6+
+                        background-image: -webkit-gradient(linear, 0 100%, 0 0, from(~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourimage@{index}]]"), to(~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourrgba@{index}]]")); // Safari 4+, Chrome 2+
+                        background-image: -webkit-linear-gradient(bottom, ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourimage@{index}]]", ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourrgba@{index}]]"); // Safari 5.1+, Chrome 10+
+                        background-image: -o-linear-gradient(bottom, ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourimage@{index}]]", ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourrgba@{index}]]"); // Opera 11.10
+                        background-image: linear-gradient(to top, ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourimage@{index}]]", ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourrgba@{index}]]"); // Standard, IE10
+                        .fa {
+                            color: ~"[[setting:alternativethemedefaultbuttontexthovercolour@{index}]]";
+                        }
                     }
                 }
 

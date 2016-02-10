@@ -65,15 +65,13 @@ class core_renderer extends \core_renderer {
                 $breadcrumbstyle = '1'; // Fancy style with no collapse.
             }
             $breadcrumbs = html_writer::start_tag('ul', array('class' => "breadcrumb style$breadcrumbstyle"));
-            $index = 1;
             foreach ($this->page->navbar->get_items() as $item) {
                 // Test for single space hide section name trick.
                 if ((strlen($item->text) == 1) && ($item->text[0] == ' ')) {
                     continue;
                 }
                 $item->hideicon = true;
-                $breadcrumbs .= html_writer::tag('li', $this->render($item), array('style' => 'z-index:' . (100 - $index) . ';'));
-                $index += 1;
+                $breadcrumbs .= html_writer::tag('li', $this->render($item));
             }
             $breadcrumbs .= html_writer::end_tag('ul');
         } else {
@@ -138,6 +136,99 @@ class core_renderer extends \core_renderer {
             ', developed, enhanced and maintained by Gareth J Barnard: about.me/gjbarnard -->';
 
         return $output . $footer . $info;
+    }
+
+    /**
+     * Outputs a heading
+     *
+     * @param string $text The text of the heading
+     * @param int $level The level of importance of the heading. Defaulting to 2
+     * @param string $classes A space-separated list of CSS classes. Defaulting to null
+     * @param string $id An optional ID
+     * @return string the HTML to output.
+     */
+    public function heading($text, $level = 2, $classes = null, $id = null) {
+        $heading = parent::heading($text, $level, $classes, $id);
+
+        if (($level == 2) && ($this->page->pagelayout == 'incourse') && (is_object($this->page->cm))) {
+            static $called = false;
+            if (!$called) {
+                $markup = html_writer::start_tag('div', array('class' => 'row-fluid'));
+
+                $markup .= html_writer::start_tag('div', array('class' => 'span8'));
+                $markup .= $heading;
+                $markup .= html_writer::end_tag('div');
+
+                $markup .= html_writer::start_tag('div', array('class' => 'span4 heading-rts'));
+                $markup .= $this->return_to_section();
+                $markup .= html_writer::end_tag('div');
+
+                $markup .= html_writer::end_tag('div');
+                $called = true;
+
+                return $markup;
+            }
+        }
+        return $heading;
+    }
+
+    /**
+     * Returns course-specific information to be output immediately below content on any course page
+     * (for the current course)
+     *
+     * @param bool $onlyifnotcalledbefore output content only if it has not been output before
+     * @return string
+     */
+    public function course_content_footer($onlyifnotcalledbefore = false) {
+        if ($this->page->course->id == SITEID) {
+            // Return immediately and do not include /course/lib.php if not necessary.
+            return '';
+        }
+        static $functioncalled = false;
+        if ($functioncalled && $onlyifnotcalledbefore) {
+            // We have already output the content header.
+            return '';
+        }
+        $functioncalled = true;
+
+        $markup = parent::course_content_footer($onlyifnotcalledbefore);
+        if (($this->page->pagelayout == 'incourse') && (is_object($this->page->cm))) {
+            $markup .= html_writer::start_tag('div', array('class' => 'row-fluid'));
+            $markup .= html_writer::start_tag('div', array('class' => 'span12 text-center footer-rts'));
+            $markup .= $this->return_to_section();
+            $markup .= html_writer::end_tag('div');
+            $markup .= html_writer::end_tag('div');
+        }
+
+        return $markup;
+    }
+
+    /**
+     * Generate the return to section X button code.
+     * @return markup.
+     */
+    protected function return_to_section() {
+        static $markup = null;
+        if ($markup === null) {
+            $courseformatsettings = \course_get_format($this->page->course)->get_format_options();
+            $url = new moodle_url('/course/view.php');
+            $url->param('id', $this->page->course->id);
+            $url->param('sesskey', sesskey());
+            $courseformatsettings = \course_get_format($this->page->course)->get_format_options();
+            if ((!empty($courseformatsettings['coursedisplay'])) &&
+                ($courseformatsettings['coursedisplay'] == \COURSE_DISPLAY_MULTIPAGE)) {
+                $url->param('section', $this->page->cm->sectionnum);
+                $href = $url->out(false);
+            } else {
+                $href = $url->out(false).'#section-'.$this->page->cm->sectionnum;
+            }
+            $title = get_string('returntosection', 'theme_essential', array('section' => $this->page->cm->sectionnum));
+
+            $markup = html_writer::tag('a', $title.html_writer::tag('i', '', array('class' => 'fa-sign-in fa fa-fw')),
+                array('href' => $href, 'class' => 'btn btn-default', 'title' => $title));
+        }
+
+        return $markup;
     }
 
     /**
@@ -700,28 +791,119 @@ class core_renderer extends \core_renderer {
         if (\theme_essential\toolbox::get_setting('displayeditingmenu')) {
             if ($this->page->user_allowed_editing()) {
                 $menu = new custom_menu();
-                $url = $this->page->url;
-                $url->param('sesskey', sesskey());
-                if ($this->page->user_is_editing()) {
-                    $url->param('edit', 'off');
-                    $editstring = get_string('turneditingoff');
-                    $iconclass = 'fa-power-off fa fa-fw';
-                } else {
-                    $url->param('edit', 'on');
-                    $editstring = get_string('turneditingon');
-                    $iconclass = 'fa-edit fa fa-fw';
+                $buttontoadd = true; // Only set to false when cannot determine what the URL / params should be for a page type.
+                $pagetype = $this->page->pagetype;
+                if (strpos($pagetype, 'admin-setting') !== false) {
+                    $pagetype = 'admin-setting'; // Deal with all setting page types.
+                } else if ((strpos($pagetype, 'mod') !== false) &&
+                    ((strpos($pagetype, 'edit') !== false) || (strpos($pagetype, 'view') !== false))) {
+                    $pagetype = 'mod-edit-view'; // Deal with all mod edit / view page types.
+                } else if (strpos($pagetype, 'mod-data-field') !== false) {
+                    $pagetype = 'mod-data-field'; // Deal with all mod data field page types.
+                } else if (strpos($pagetype, 'mod-lesson') !== false) {
+                    $pagetype = 'mod-lesson'; // Deal with all mod lesson page types.
                 }
-                $edit = html_writer::tag('i', '', array('class' => $iconclass));
-                $menu->add($edit, $url, $editstring);
-                $html = $this->render_custom_menu($menu);
+                switch ($pagetype) {
+                    case 'site-index':
+                    case 'calendar-view':  // Slightly faulty as even the navigation link goes back to the frontpage.  TODO: MDL.
+                        $url = new moodle_url('/course/view.php');
+                        $url->param('id', 1);
+                        if ($this->page->user_is_editing()) {
+                            $url->param('edit', 'off');
+                        } else {
+                            $url->param('edit', 'on');
+                        }
+                    break;
+                    case 'admin-index':
+                    case 'admin-setting':
+                        $url = $this->page->url;
+                        if ($this->page->user_is_editing()) {
+                            $url->param('adminedit', 0);
+                        } else {
+                            $url->param('adminedit', 1);
+                        }
+                    break;
+                    case 'course-index':
+                    case 'course-management':
+                    case 'course-search':
+                    case 'mod-resource-mod':
+                    case 'tag-search':
+                        $buttontoadd = false;
+                    break;
+                    case 'mod-data-field':
+                    case 'mod-edit-view':
+                    case 'mod-forum-discuss':
+                    case 'mod-forum-index':
+                    case 'mod-forum-search':
+                    case 'mod-forum-subscribers':
+                    case 'mod-lesson':
+                    case 'mod-quiz-index':
+                    case 'mod-scorm-player':
+                        $url = new moodle_url('/course/view.php');
+                        $url->param('id', $this->page->course->id);
+                        $url->param('return', $this->page->url->out_as_local_url(false));
+                        if ($this->page->user_is_editing()) {
+                            $url->param('edit', 'off');
+                        } else {
+                            $url->param('edit', 'on');
+                        }
+                    break;
+                    case 'my-index':
+                    case 'user-profile':
+                        // TODO: Not sure how to get 'id' param and if it is really needed.
+                        $url = $this->page->url;
+                        // Umm! Both /user/profile.php and /user/profilesys.php have the same page type but different parameters!
+                        if ($this->page->user_is_editing()) {
+                            $url->param('adminedit', 0);
+                            $url->param('edit', 0);
+                        } else {
+                            $url->param('adminedit', 1);
+                            $url->param('edit', 1);
+                        }
+                    break;
+                    default:
+                        $url = $this->page->url;
+                        if ($this->page->user_is_editing()) {
+                            $url->param('edit', 'off');
+                        } else {
+                            $url->param('edit', 'on');
+                        }
+                    break;
+                }
+                if ($buttontoadd) {
+                    $url->param('sesskey', sesskey());
+                    if ($this->page->user_is_editing()) {
+                        $editstring = get_string('turneditingoff');
+                        $iconclass = 'fa-power-off fa fa-fw';
+                    } else {
+                        $editstring = get_string('turneditingon');
+                        $iconclass = 'fa-edit fa fa-fw';
+                    }
+                    $edit = html_writer::tag('i', '', array('class' => $iconclass));
+                    $menu->add($edit, $url, $editstring);
+                    $html = $this->render_custom_menu($menu);
 
-                if (\theme_essential\toolbox::get_setting('hidedefaulteditingbutton')) {
-                    // Unset button on page.
-                    $this->page->set_button('');
+                    if (\theme_essential\toolbox::get_setting('hidedefaulteditingbutton')) {
+                        // Unset button on page.
+                        $this->page->set_button('');
+                    }
                 }
             }
         }
         return $html;
+    }
+
+    /**
+     * Internal implementation of user image rendering.
+     *
+     * @param user_picture $userpicture
+     * @return string
+     */
+    protected function render_user_picture(\user_picture $userpicture) {
+        if ($this->page->pagetype == 'mod-forum-discuss') {
+            $userpicture->size = 1;
+        }
+        return parent::render_user_picture($userpicture);
     }
 
     /**
@@ -755,7 +937,8 @@ class core_renderer extends \core_renderer {
             // Render direct logout link.
             $usermenu .= html_writer::start_tag('ul', array('class' => 'dropdown-menu pull-right'));
             $branchlabel = '<em><i class="fa fa-sign-out"></i>'.get_string('logout').'</em>';
-            $branchurl = new moodle_url('/login/logout.php?sesskey='.sesskey());
+            $branchurl = new moodle_url('/login/logout.php');
+            $branchurl->param('sesskey', sesskey());
             $usermenu .= html_writer::tag('li', html_writer::link($branchurl, $branchlabel));
 
             // Render Help Link.
@@ -1063,6 +1246,7 @@ class core_renderer extends \core_renderer {
             'docs' => 'question-circle',
             'generate' => 'gift',
             'i/marker' => 'lightbulb-o',
+            'i/delete' => 'times-circle',
             'i/dragdrop' => 'arrows',
             'i/loading' => 'refresh fa-spin fa-2x',
             'i/loading_small' => 'refresh fa-spin',
