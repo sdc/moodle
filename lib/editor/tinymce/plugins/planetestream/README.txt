@@ -18,7 +18,7 @@
  * @package   tinymce_planetestream
  * @copyright Planet Enterprises Ltd
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @requires  Planet eStream v5.69 or later
+ * @requires  Planet eStream v6.00 or later
  * @requires  The Planet eStream Assignment Submission Plugin ('assignsubmission_estream' => ANY_VERSION)
  * @requires  The Planet eStream Text Filter Plugin ('filter_planetestream' => 2015072300)
  */

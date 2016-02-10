@@ -42,8 +42,7 @@
         <script type="text/javascript">
             document.write("<iframe style=\"border: 0px; width: 984px; height: 684px;\" src=\""
             + querystring("estream_url") + decodeURIComponent(querystring("estream_path"))
-            + '&td=' + window.location.protocol + '//' + window.location.host + ':'
-            + (window.location.port === '' ? '80' : window.location.port) + "\"></iframe>");
+            + '&td=' + window.location.protocol + '//' + window.location.host + "\"></iframe>");
             if (window.addEventListener) {
                 eventMethod = 'addEventListener';
                 messageEvent = 'message';
