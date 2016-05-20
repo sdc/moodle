@@ -23,10 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.1
  */
-define(['jquery', 'core/yui', 'core/notification', 'core/templates', 'core/fragment',
+define(['jquery', 'core/notification', 'core/templates', 'core/fragment',
         'core/ajax', 'core/str', 'mod_assign/grading_form_change_checker',
         'mod_assign/grading_events'],
-       function($, Y, notification, templates, fragment, ajax, str, checker, GradingEvents) {
+       function($, notification, templates, fragment, ajax, str, checker, GradingEvents) {
 
     /**
      * GradingPanel class.
