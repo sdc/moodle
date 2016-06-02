@@ -97,14 +97,4 @@ class testable_core_search extends \core_search\manager {
         self::get_search_areas_list(false);
         self::get_search_areas_list(true);
     }
-
-    /**
-     * Changes visibility.
-     *
-     * @param string $classname
-     * @return bool
-     */
-    public static function is_search_area($classname) {
-        return parent::is_search_area($classname);
-    }
 }
