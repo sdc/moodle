@@ -6293,34 +6293,22 @@ function valid_uploaded_file($newfile) {
  *
  * @todo Finish documenting this function
  *
- * @todo Finish documenting this function
- *
  * @param int $sitebytes Set maximum size
  * @param int $coursebytes Current course $course->maxbytes (in bytes)
  * @param int $modulebytes Current module ->maxbytes (in bytes)
- * @param bool $unused This parameter has been deprecated and is not used any more.
  * @return int The maximum size for uploading files.
  */
-function get_max_upload_file_size($sitebytes=0, $coursebytes=0, $modulebytes=0, $usespost = true) {
+function get_max_upload_file_size($sitebytes=0, $coursebytes=0, $modulebytes=0) {
 
-    $sizes = array();
+    if (! $filesize = ini_get('upload_max_filesize')) {
+        $filesize = '5M';
+    }
+    $minimumsize = get_real_size($filesize);
 
-    if ($usespost) {
-        if (! $filesize = ini_get('upload_max_filesize')) {
-            $filesize = '5M';
-        }
-        $sizes[] = get_real_size($filesize);
-
-        if ($postsize = ini_get('post_max_size')) {
-            $sizes[] = get_real_size($postsize);
-        }
-
-        if ($sitebytes > 0) {
-            $sizes[] = $sitebytes;
-        }
-    } else {
-        if ($sitebytes != 0) { // It's for possible that $sitebytes == USER_CAN_IGNORE_FILE_SIZE_LIMITS (-1).
-            $sizes[] = $sitebytes;
+    if ($postsize = ini_get('post_max_size')) {
+        $postsize = get_real_size($postsize);
+        if ($postsize < $minimumsize) {
+            $minimumsize = $postsize;
         }
     }
 
@@ -6349,11 +6337,9 @@ function get_max_upload_file_size($sitebytes=0, $coursebytes=0, $modulebytes=0, 
  * @param int $coursebytes Current course $course->maxbytes (in bytes)
  * @param int $modulebytes Current module ->maxbytes (in bytes)
  * @param stdClass $user The user
- * @param bool $unused This parameter has been deprecated and is not used any more.
  * @return int The maximum size for uploading files.
  */
-function get_user_max_upload_file_size($context, $sitebytes = 0, $coursebytes = 0, $modulebytes = 0, $user = null,
-        $unused = false) {
+function get_user_max_upload_file_size($context, $sitebytes = 0, $coursebytes = 0, $modulebytes = 0, $user = null) {
     global $USER;
 
     if (empty($user)) {
@@ -6361,7 +6347,7 @@ function get_user_max_upload_file_size($context, $sitebytes = 0, $coursebytes = 
     }
 
     if (has_capability('moodle/course:ignorefilesizelimits', $context, $user)) {
-        return USER_CAN_IGNORE_FILE_SIZE_LIMITS;
+        return get_max_upload_file_size(USER_CAN_IGNORE_FILE_SIZE_LIMITS);
     }
 
     return get_max_upload_file_size($sitebytes, $coursebytes, $modulebytes);
