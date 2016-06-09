@@ -3710,7 +3710,7 @@ function glossary_get_search_terms_sql(array $terms, $fullsearch = true, $glossa
 
     // Reduce the search results by restricting it to one glossary.
     if (isset($glossaryid)) {
-        $conditions[] = 'ge.glossaryid = :glossaryid';
+        $conditions[] = 'AND ge.glossaryid = :glossaryid';
         $params['glossaryid'] = $glossaryid;
     }
 
