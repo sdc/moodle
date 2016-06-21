@@ -185,6 +185,14 @@ class behat_hooks extends behat_base {
                 declare(ticks = 1);
             }
         }
+
+        // Handle interrupts on PHP7.
+        if (extension_loaded('pcntl')) {
+            $disabled = explode(',', ini_get('disable_functions'));
+            if (!in_array('pcntl_signal', $disabled)) {
+                declare(ticks = 1);
+            }
+        }
     }
 
     /**
