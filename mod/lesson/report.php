@@ -136,13 +136,10 @@ if ($action === 'delete') {
                 FROM {user} u
                 JOIN (
                     SELECT userid, lessonid FROM {lesson_attempts} a1
-                    WHERE a1.lessonid = :a1lessonid
                         UNION
                     SELECT userid, lessonid FROM {lesson_branch} b1
-                    WHERE b1.lessonid = :b1lessonid
                         UNION
                     SELECT userid, lessonid FROM {lesson_timer} c1
-                    WHERE c1.lessonid = :c1lessonid
                     ) a ON u.id = a.userid
                 JOIN ($esql) ue ON ue.id = a.userid
                 ORDER BY $sort";
