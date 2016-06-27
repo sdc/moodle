@@ -29,3 +29,4 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->version = 2014050800;
+$plugin->component = 'enrol_forced';
