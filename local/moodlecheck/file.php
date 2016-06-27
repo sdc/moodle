@@ -53,7 +53,7 @@ class local_moodlecheck_file {
     public function __construct($filepath) {
         $this->filepath = $filepath;
     }
-    
+
     /**
      * Cleares all cached stuff to free memory
      */
@@ -119,6 +119,15 @@ class local_moodlecheck_file {
         }
         $this->clear_memory();
         return $this->errors;
+    }
+
+    /**
+     * Return the filepath of the file.
+     *
+     * @return string
+     */
+    public function get_filepath() {
+        return $this->filepath;
     }
 
     /**
@@ -781,19 +790,88 @@ class local_moodlecheck_phpdocs {
      * well known, phpdocs tags, always accepted.
      * @link http://manual.phpdoc.org/HTMLSmartyConverter/HandS/ */
     public static $validtags = array(
-        'abstract', 'access', 'author', 'category', 'copyright',
-        'deprecated', 'example', 'final', 'fileresource', 'global',
-        'ignore', 'internal', 'license', 'link', 'method',
-        'name', 'package', 'param', 'property', 'return',
-        'see', 'since', 'static', 'staticvar', 'subpackage',
-        'throws', 'todo', 'tutorial', 'uses', 'var', 'version');
+        // Behat tags.
+        'Given',
+        'Then',
+        'When',
+        // PHPUnit tags.
+        'dataProvider',
+        // PHPDoc tags.
+        'abstract',
+        'access',
+        'author',
+        'category',
+        'copyright',
+        'deprecated',
+        'example',
+        'final',
+        'filesource',
+        'global',
+        'ignore',
+        'internal',
+        'license',
+        'link',
+        'method',
+        'name',
+        'package',
+        'param',
+        'property',
+        'property-read',
+        'property-write',
+        'return',
+        'see',
+        'since',
+        'static',
+        'staticvar',
+        'subpackage',
+        'throws',
+        'todo',
+        'tutorial',
+        'uses',
+        'var',
+        'version'
+    );
     /** @var array static property storing the list of recommended
      * phpdoc tags to use within Moodle phpdocs.
      * @link http://docs.moodle.org/dev/Coding_style */
     public static $recommendedtags = array(
-        'author', 'category', 'copyright', 'deprecated', 'license',
-        'link', 'package', 'param', 'return', 'see',
-        'since', 'subpackage', 'throws', 'todo', 'uses', 'var');
+        // Behat tags.
+        'Given',
+        'Then',
+        'When',
+        // PHPUnit tags.
+        'dataProvider',
+        // PHPDoc tags.
+        'author',
+        'category',
+        'copyright',
+        'deprecated',
+        'license',
+        'link',
+        'package',
+        'param',
+        'property',
+        'property-read',
+        'property-write',
+        'return',
+        'see',
+        'since',
+        'subpackage',
+        'throws',
+        'todo',
+        'uses',
+        'var'
+    );
+    /** @var array static property storing the list of phpdoc tags
+     * allowed to be used under certain directories. keys are tags, values are
+     * arrays of allowed paths (regexp patterns).
+     */
+    public static $pathrestrictedtags = array(
+        'Given' => array('#.*/tests/behat/.*#'),
+        'Then' => array('#.*/tests/behat/.*#'),
+        'When' => array('#.*/tests/behat/.*#'),
+        'dataProvider' => array('#.*/tests/.*_test.php#')
+    );
     /** @var array static property storing the list of phpdoc tags
      * allowed to be used inline within Moodle phpdocs. */
      public static $inlinetags = array(
@@ -835,7 +913,7 @@ class local_moodlecheck_phpdocs {
         $this->description = '';
         $istokenline = false;
         for ($i=0; $i<count($lines); $i++) {
-            if (preg_match('|^\s*\@(\w+)\W|', $lines[$i])) {
+            if (preg_match('|^\s*\@(\w+)|', $lines[$i])) {
                 // first line of token
                 $istokenline = true;
                 $this->tokens[] = $lines[$i];
@@ -1012,9 +1090,9 @@ class local_moodlecheck_phpdocs {
         // Trim the non-inline phpdocs tags
         $text = preg_replace('|^\s*@?|m', '', $this->trimmedtext);
         if ($withcurly) {
-            $regex = '#{@([a-z]*).*?}#';
+            $regex = '#{@([a-z\-]*).*?}#';
         } else {
-            $regex = '#@([a-z]*).*?#';
+            $regex = '#@([a-z\-]*).*?#';
         }
         if (preg_match_all($regex, $text, $matches)) {
             // Filter out invalid ones, can be ignored

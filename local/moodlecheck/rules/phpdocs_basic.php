@@ -44,6 +44,7 @@ local_moodlecheck_registry::add_rule('filehaslicense')->set_callback('local_mood
 local_moodlecheck_registry::add_rule('classeshavelicense')->set_callback('local_moodlecheck_classeshavelicense');
 local_moodlecheck_registry::add_rule('phpdocsinvalidtag')->set_callback('local_moodlecheck_phpdocsinvalidtag');
 local_moodlecheck_registry::add_rule('phpdocsnotrecommendedtag')->set_callback('local_moodlecheck_phpdocsnotrecommendedtag')->set_severity('warning');;
+local_moodlecheck_registry::add_rule('phpdocsinvalidpathtag')->set_callback('local_moodlecheck_phpdocsinvalidpathtag')->set_severity('warning');;
 local_moodlecheck_registry::add_rule('phpdocsinvalidinlinetag')->set_callback('local_moodlecheck_phpdocsinvalidinlinetag');
 local_moodlecheck_registry::add_rule('phpdocsuncurlyinlinetag')->set_callback('local_moodlecheck_phpdocsuncurlyinlinetag');
 
@@ -104,10 +105,18 @@ function local_moodlecheck_classesdocumented(local_moodlecheck_file $file) {
  * @return array of found errors
  */
 function local_moodlecheck_functionsdocumented(local_moodlecheck_file $file) {
+
+    $isphpunitfile = preg_match('#/tests/[^/]+_test\.php$#', $file->get_filepath());
     $errors = array();
     foreach ($file->get_functions() as $function) {
         if ($function->phpdocs === false) {
-            $errors[] = array('function' => $function->fullname, 'line' => $file->get_line_number($function->boundaries[0]));
+            // Exception is made for plain phpunit test methods MDLSITE-3282, MDLSITE-3856.
+            $istestmethod = (strpos($function->name, 'test_') === 0 or
+                            stripos($function->name, 'setup') === 0 or
+                            stripos($function->name, 'teardown') === 0);
+            if (!($isphpunitfile && $istestmethod)) {
+                $errors[] = array('function' => $function->fullname, 'line' => $file->get_line_number($function->boundaries[0]));
+            }
         }
     }
     return $errors;
@@ -221,6 +230,32 @@ function local_moodlecheck_phpdocsnotrecommendedtag(local_moodlecheck_file $file
 }
 
 /**
+ * Check that all the path-restricted phpdoc tags used are in place
+ *
+ * @param local_moodlecheck_file $file
+ * @return array of found errors
+ */
+function local_moodlecheck_phpdocsinvalidpathtag(local_moodlecheck_file $file) {
+    $errors = array();
+    foreach ($file->get_all_phpdocs() as $phpdocs) {
+        foreach ($phpdocs->get_tags() as $tag) {
+            $tag = preg_replace('|^@([^\s]*).*|s', '$1', $tag);
+            if (in_array($tag, local_moodlecheck_phpdocs::$validtags) and
+                    in_array($tag, local_moodlecheck_phpdocs::$recommendedtags) and
+                    isset(local_moodlecheck_phpdocs::$pathrestrictedtags[$tag])) {
+                // Verify file path matches some of the valid paths for the tag.
+                if (!preg_filter(local_moodlecheck_phpdocs::$pathrestrictedtags[$tag], '$0', $file->get_filepath())) {
+                    $errors[] = array(
+                        'line' => $phpdocs->get_line_number($file, '@' . $tag),
+                        'tag' => '@' . $tag);
+                }
+            }
+        }
+    }
+    return $errors;
+}
+
+/**
  * Check that all the inline phpdoc tags found are valid
  *
  * @param local_moodlecheck_file $file
@@ -325,14 +360,30 @@ function local_moodlecheck_functionarguments(local_moodlecheck_file $file) {
             $match = (count($documentedarguments) == count($function->arguments));
             for ($i=0; $match && $i<count($documentedarguments); $i++) {
                 if (count($documentedarguments[$i]) < 2) {
-                    // must be at least type and parameter name
+                    // Must be at least type and parameter name.
                     $match = false;
-                } else if (strlen($function->arguments[$i][0]) && $function->arguments[$i][0] != $documentedarguments[$i][0]) {
-                    $match = false;
-                } else if ($documentedarguments[$i][0] == 'type') {
-                    $match = false;
-                } else if ($function->arguments[$i][1] != $documentedarguments[$i][1]) {
-                    $match = false;
+                } else {
+                    $expectedtype = $function->arguments[$i][0];
+                    $expectedparam = $function->arguments[$i][1];
+                    $documentedtype = $documentedarguments[$i][0];
+                    $documentedparam = $documentedarguments[$i][1];
+
+                    if (strpos($documentedtype, '\\') !== false) {
+                        // Namespaced typehint, potentially sub-namespaced.
+                        // We need to strip namespacing as this area just isn't that smart.
+                        $documentedtype = substr($documentedtype, strrpos($documentedtype, '\\') + 1);
+                    }
+
+                    if (strlen($expectedtype) && $expectedtype !== $documentedtype) {
+                        // It could be a type hinted array.
+                        if ($expectedtype !== 'array' || substr($documentedtype, -2) !== '[]') {
+                            $match = false;
+                        }
+                    } else if ($documentedtype === 'type') {
+                        $match = false;
+                    } else if ($expectedparam !== $documentedparam) {
+                        $match = false;
+                    }
                 }
             }
             $documentedreturns = $function->phpdocs->get_params('return');

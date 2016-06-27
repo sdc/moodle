@@ -128,11 +128,16 @@ function local_moodlecheck_package_names(local_moodlecheck_file $file) {
         if (isset($components['subsystem'])) {
             $allsubsystems = $components['subsystem'];
         } else {
-            $allsubsystems = get_core_subsystems();
+            $allsubsystems = get_core_subsystems(true);
         }
         // Prepare the list of core packages
         foreach ($allsubsystems as $subsystem => $dir) {
-            $corepackages[] = 'core_' . $subsystem;
+            // Subsytems may come with the valid component name (core_ prefixed) already.
+            if (strpos($subsystem, 'core_') === 0 or $subsystem === 'core') {
+                $corepackages[] = $subsystem;
+            } else {
+                $corepackages[] = 'core_' . $subsystem;
+            }
         }
         // Add "core" if missing
         if (!in_array('core', $corepackages)) {
@@ -194,7 +199,7 @@ function &local_moodlecheck_get_categories() {
             $allcategories = explode(',', $lastsavedvalue);
         } else {
             $allcategories = array();
-            $filecontent = file_get_contents("http://docs.moodle.org/dev/Core_APIs");
+            $filecontent = @file_get_contents("http://docs.moodle.org/dev/Core_APIs");
             if (!$filecontent) {
                 $filecontent = file_get_contents($CFG->dirroot . '/local/moodlecheck/rules/coreapis.txt');
             }
