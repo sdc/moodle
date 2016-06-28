@@ -68,6 +68,18 @@ class format_grid extends format_base {
     }
 
     /**
+     * Returns the default section name for the format.
+     *
+     * @param stdClass $section Section object from database or just field course_sections section
+     * @return string The default value for the section name.
+     */
+    public function get_default_section_name($section) {
+        /* Follow the same logic so that this method is supported.  The MDL-51610 enchancement refactored things,
+           but that is not appropriate for us. */
+        return $this->get_section_name($section);
+    }
+
+    /**
      * Prevents ability to change a static variable outside of the class.
      * @return array Array of imagecontainer widths.
      */
@@ -246,10 +258,14 @@ class format_grid extends format_base {
             } else {
                 $usercoursedisplay = $course->coursedisplay;
             }
+            $topic0attop = $this->get_summary_visibility($course->id)->showsummary == 1;
             if ($sectionno != 0 && $usercoursedisplay == COURSE_DISPLAY_MULTIPAGE) {
                 $url->param('section', $sectionno);
+            } else if ($sectionno == 0 && $usercoursedisplay == COURSE_DISPLAY_MULTIPAGE  && (!$topic0attop)) {
+                $url->param('section', $sectionno);
             } else {
-                if (!empty($options['navigation'])) {
+                global $CFG;
+                if (empty($CFG->linkcoursesections) && !empty($options['navigation'])) {
                     return null;
                 }
                 $url->set_anchor('section-' . $sectionno);
@@ -393,6 +409,10 @@ class format_grid extends format_base {
                 ),
                 'fitsectioncontainertowindow' => array(
                     'default' => get_config('format_grid', 'defaultfitsectioncontainertowindow'),
+                    'type' => PARAM_INT
+                ),
+                'greyouthidden' => array(
+                    'default' => get_config('format_grid', 'defaultgreyouthidden'),
                     'type' => PARAM_INT
                 )
             );
@@ -584,6 +604,19 @@ class format_grid extends format_base {
             $courseformatoptionsedit['fitsectioncontainertowindow'] = array(
                 'label' => new lang_string('setfitsectioncontainertowindow', 'format_grid'),
                 'help' => 'setfitsectioncontainertowindow',
+                'help_component' => 'format_grid',
+                'element_type' => 'select',
+                'element_attributes' => array(
+                    array(
+                        1 => new lang_string('no'),   // No.
+                        2 => new lang_string('yes')   // Yes.
+                    )
+                )
+            );
+
+            $courseformatoptionsedit['greyouthidden'] = array(
+                'label' => new lang_string('greyouthidden', 'format_grid'),
+                'help' => 'greyouthidden',
                 'help_component' => 'format_grid',
                 'element_type' => 'select',
                 'element_attributes' => array(
@@ -794,6 +827,7 @@ class format_grid extends format_base {
         $resetallimagecontainerstyle = false;
         $resetallnewactivity = false;
         $resetallfitpopup = false;
+        $resetgreyouthidden = false;
         if (isset($data->resetimagecontainersize) == true) {
             $resetimagecontainersize = true;
             unset($data->resetimagecontainersize);
@@ -833,6 +867,10 @@ class format_grid extends format_base {
         if (isset($data->resetallfitpopup) == true) {
             $resetfitpopup = true;
             unset($data->resetallfitpopup);
+        }
+        if (isset($data->resetgreyouthidden) == true) {
+            $resetgreyouthidden = true;
+            unset($data->resetgreyouthidden);
         }
 
         $settings = $this->get_settings();
@@ -1417,11 +1455,11 @@ class format_grid extends format_base {
                        baulk as the file already exists.   Unfortunately has to be here as the restore mechanism restores
                        the grid format data for the database and then the files.  And the Grid code is called at the 'data'
                        stage. */
-                    // Delete old file.
                     if ($oldfile = $fs->get_file($displayedimagefilerecord['contextid'],
                             $displayedimagefilerecord['component'], $displayedimagefilerecord['filearea'],
                             $displayedimagefilerecord['itemid'], $displayedimagefilerecord['filepath'],
                             $displayedimagefilerecord['filename'])) {
+                        // Delete old file.
                         $oldfile->delete();
                     }
                 }
@@ -1589,8 +1627,8 @@ class format_grid extends format_base {
             $filters = null;
             $quality = 90;
         } else {
-            debugging('Neither JPEG nor PNG are supported at this server,'.
-                ' please fix the system configuration to have the GD PHP extension installed.');
+            debugging('Neither JPEG nor PNG are supported at this server, please fix the system configuration'.
+                ' to have the GD PHP extension installed.');
             return false;
         }
 
@@ -1704,6 +1742,47 @@ class format_grid extends format_base {
      */
     public static function get_instance($courseid) {
         return new format_grid('grid', $courseid);
+    }
+    /**
+     * Prepares the templateable object to display section name.
+     *
+     * @param \section_info|\stdClass $section
+     * @param bool $linkifneeded
+     * @param bool $editable
+     * @param null|lang_string|string $edithint
+     * @param null|lang_string|string $editlabel
+     * @return \core\output\inplace_editable
+     */
+    public function inplace_editable_render_section_name($section, $linkifneeded = true,
+        $editable = null, $edithint = null, $editlabel = null) {
+        if (empty($edithint)) {
+            $edithint = new lang_string('editsectionname', 'format_grid');
+        }
+        if (empty($editlabel)) {
+            $title = $this->get_section_name($section);
+            $editlabel = new lang_string('newsectionname', 'format_grid', $title);
+        }
+        return parent::inplace_editable_render_section_name($section, $linkifneeded, $editable, $edithint, $editlabel);
+    }
+}
+
+/**
+ * Implements callback inplace_editable() allowing to edit values in-place.
+ *
+ * @param string $itemtype
+ * @param int $itemid
+ * @param mixed $newvalue
+ * @return \core\output\inplace_editable
+ */
+function format_grid_inplace_editable($itemtype, $itemid, $newvalue) {
+    global $CFG;
+    require_once($CFG->dirroot . '/course/lib.php');
+    if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
+        global $DB;
+        $section = $DB->get_record_sql(
+            'SELECT s.* FROM {course_sections} s JOIN {course} c ON s.course = c.id WHERE s.id = ? AND c.format = ?',
+            array($itemid, 'grid'), MUST_EXIST);
+        return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
 }
 

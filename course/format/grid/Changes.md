@@ -1,14 +1,36 @@
 History
 =============
-Version 2.9.1.7
+Version 3.1.0.1
+  1. First 'beta' version for M3.1.
+  2. Changes for MDL-51802.
+
+Version 3.0.1.1
+  1. Updated php4 constructor - #27 - thanks to Mark Sharp.
+  2. Added the ability to grey out and unlink grid icons for unavailable sections - #30 - thanks to Justin Hunt.
+  3. Travis CI fixes.
+  4. Fixes for #30 in IE.
+
+Version 3.0.1
+  1. Implement MDL-26226.
+
+Version 3.0.0.4
+  1. Use custom user profile fields for accessibility - #23.
+  2. Section 0 not shown on its own when in the Grid and 'Show one section per page' - #24.
+  3. TravisCI - tidy up.
+
+Version 3.0.0.3
   1. Change colour setting type from 'text' to 'colourtext - 'ftext' -> 'fcolourtext' for theme styling.
   2. Fix logic flaw with named anchor and editing is on.
 
-Version 2.9.1.6.
+Version 3.0.0.2
   1. Add Travis CI Support.
   2. Fix #22 - Grid sometimes loads with blocks misaligned.
   3. Show the correct shadebox section in response to a named anchor in the URL of the format:
      "#section-X" where 'X' is the section number.
+
+Version 3.0.0.1
+  1. First 'beta' version for M3.0.
+  2. Apply MDL-10405, MDL-48947 and MDL-51610.
 
 Version 2.9.1.5.
   1. Do not halt on missing icon error (see: https://moodle.org/mod/forum/discuss.php?d=316768) but just
