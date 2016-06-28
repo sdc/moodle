@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is built using the bootstrapbase template to allow for new theme's using
- * Moodle's new Bootstrap theme engine
+ * Essential is a clean and customizable theme.
  *
  * @package     theme_essential
- * @copyright   2013 Julian Ridden
+ * @copyright   2016 Gareth J Barnard
  * @copyright   2014 Gareth J Barnard, David Bezemer
+ * @copyright   2013 Julian Ridden
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,6 +29,10 @@ global $CFG, $PAGE, $USER, $SITE, $COURSE;
 
 // Body.
 $bodyclasses = array();
+
+if (isloggedin()) {
+    $bodyclasses[] = 'loggedin';
+}
 
 if (\theme_essential\toolbox::get_setting('enablealternativethemecolors1') ||
     \theme_essential\toolbox::get_setting('enablealternativethemecolors2') ||
@@ -109,11 +113,6 @@ $hassocialnetworks = (
 $hasmobileapps = (\theme_essential\toolbox::get_setting('ios') ||
     \theme_essential\toolbox::get_setting('android')
 );
-
-$logoclass = 'ecol12';
-if ($hassocialnetworks || $hasmobileapps) {
-    $logoclass = 'ecol7';
-}
 
 $oldnavbar = \theme_essential\toolbox::get_setting('oldnavbar');
 $haslogo = \theme_essential\toolbox::get_setting('logo');

@@ -6,10 +6,11 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 // Import the bootstrap we need.
-@import "bootstrap/variables";
+@import "bootstrap-override/variables";
+@import "essential/variables";
 @import "fontawesome/variables";
 
-//@import "bootstrap/mixins";
+@import "../../bootstrapbase/less/bootstrap/mixins";
 // Opacity
 .opacity(@opacity) {
     opacity: @opacity / 100;
@@ -17,7 +18,7 @@
 }
 
 // Import the essential variables.
-@import "essential/variables";
+@import "essential/settings/variables";
 
 .navbar .navbar-inner #custom_menu_themecolours .dropdown-menu > li > a.default {
     &:hover, &:focus {
@@ -66,6 +67,14 @@
                 .backup-restore .backup-section > h2.header,
                 .backup-restore .backup-section .backup-sub-section h3 {
                     color: ~"[[setting:alternativethemetextcolor@{index}]]";
+
+                    // Focus state.
+                    &:focus {
+                        border-color: ~"[[setting:alternativethemeinputfocusbordercolor@{index}]]";
+                        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px ~"[[setting:alternativethemeinputfocusshadowcolor@{index}]]";
+                        -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px ~"[[setting:alternativethemeinputfocusshadowcolor@{index}]]";
+                        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px ~"[[setting:alternativethemeinputfocusshadowcolor@{index}]]";
+                    }
                 }
 
                 .breadcrumb-nav {
@@ -122,10 +131,12 @@
                     ul.breadcrumb.style1 {
                         li {
                             &:after {
-                                border-right-color: ~"[[setting:alternativethemecolor@{index}]]";;
+                                border-left-color: transparent;
+                                border-right-color: ~"[[setting:alternativethemecolor@{index}]]";
                             }
                             &:hover:after {
-                                border-right-color: ~"[[setting:alternativethemehovercolor@{index}]]";
+                                border-left-color: transparent;
+                                border-right-color: ~"[[setting:alternativethemenavcolor@{index}]]";
                             }
                         }
                     }
@@ -135,28 +146,39 @@
                     color: ~"[[setting:alternativethemeurlcolor@{index}]]";
                 }
 
-                a:hover {
+                a:focus, a:hover {
                     color: ~"[[setting:alternativethemehovercolor@{index}]]";
                 }
 
                 .@{fa-css-prefix} {
                     color: ~"[[setting:alternativethemeiconcolor@{index}]]";
-                    &:hover {
+                    &:focus, &:hover {
                         color: ~"[[setting:alternativethemehovercolor@{index}]]";
                     }
                     &.@{fa-css-prefix}-warning {
                         color: inherit;
                     }
                 }
-                button.socialicon i.@{fa-css-prefix} {
+                .dimmed .@{fa-css-prefix} {
+                    color: inherit;
+                    &:focus, &:hover {
+                        color: inherit;
+                    }
+                }
+                button.socialicon .@{fa-css-prefix} {
                     color: @white;
                 }
 
-                a:before {
-                    color: ~"[[setting:alternativethemeiconcolor@{index}]]";
-                }
-                a:hover:before {
-                    color: ~"[[setting:alternativethemehovercolor@{index}]]";
+                a {
+                    &:before {
+                        color: ~"[[setting:alternativethemeiconcolor@{index}]]";
+                    }
+                    &:hover:before {
+                        color: ~"[[setting:alternativethemehovercolor@{index}]]";
+                    }
+                    &.dimmed:before {
+                        color: inherit;
+                    }
                 }
 
                 a.dimmed,
@@ -203,9 +225,16 @@
                             background-color: ~"[[setting:alternativethemecolor@{index}]]";
                         }
                     }
+                    div.titlearea {
+                        border-left: 1px dotted ~"[[setting:alternativethemecolor@{index}]]";
+                    }
                 }
 
-                #headerlogo {
+                #mobileapps {
+                    border-right: 1px dotted ~"[[setting:alternativethemecolor@{index}]]";
+                }
+
+                &.dir-ltr #headerlogo {
                     border-right-color: ~"[[setting:alternativethemecolor@{index}]]";
                 }
                 &.dir-rtl #headerlogo {
@@ -213,7 +242,7 @@
                 }
 
                 .breadcrumb-button {
-                    i.@{fa-css-prefix} {
+                    .@{fa-css-prefix} {
                         vertical-align: middle;
                         color: inherit;
                         &:hover {
@@ -258,9 +287,10 @@
                         }
 
                         .nav > li.dropdown a,
-                        .nav > li > a {
+                        .nav > li > a,
+                        .search-input-wrapper > div .fa {
                             color: ~"[[setting:alternativethemenavcolor@{index}]]";
-                            &:hover {
+                            &:focus, &:hover {
                                 color: ~"[[setting:alternativethemecolor@{index}]]";
                                 background-color: ~"[[setting:alternativethemenavcolor@{index}]]";
                             }
@@ -269,9 +299,9 @@
                         .nav .dropdown-menu {
                             .dropdown-submenu  {
                                 .dropdown-toggle:after {
-                                    border-left-color: ~"[[setting:alternativethemeiconcolor@{index}]]";
+                                    border-left-color: inherit;
                                 }
-                                &:hover .dropdown-toggle:after {
+                                &:focus, &:hover .dropdown-toggle:after {
                                     border-left-color: ~"[[setting:alternativethemenavcolor@{index}]]";
                                 }
                             }
@@ -282,10 +312,10 @@
                             > li > a {
                                 color: ~"[[setting:alternativethemenavcolor@{index}]]";
                                 border-left-color: ~"[[setting:alternativethemecolor@{index}]]";
-                                i.@{fa-css-prefix} {
+                                .@{fa-css-prefix} {
                                     color: inherit;
                                 }
-                                &:hover {
+                                &:focus, &:hover {
                                     color: ~"[[setting:alternativethemenavcolor@{index}]]";
                                     background-color: ~"[[setting:alternativethemehovercolor@{index}]]";
                                 }
@@ -300,7 +330,7 @@
                                     &:focus, &.open {
                                         color: @white; // TODO: Page background colour needs to be a setting.
                                         background-color: ~"[[setting:alternativethemeurlcolor@{index}]]";
-                                        i.@{fa-css-prefix} {
+                                        .@{fa-css-prefix} {
                                             color: @white; // TODO: Page background colour needs to be a setting.
                                         }
                                     }
@@ -375,13 +405,18 @@
                             }
                         }
                     }
+                    .@{fa-css-prefix} {
+                        color: inherit;
+                    }
                 }
                 &.dir-rtl .navbar {
                     .navbar-inner {
                         .nav {
                             border-left-color: ~"[[setting:alternativethemecolor@{index}]]";
+                            border-right-color: transparent;
                             > li > a {
                                 border-right-color: ~"[[setting:alternativethemecolor@{index}]]";
+                                border-right-color: transparent;
                             }
                         }
                     }
@@ -413,7 +448,7 @@
                 #notice .singlebutton+.singlebutton input,
                 .submit.buttons input[name=cancel] {
                     color: ~"[[setting:alternativethemedefaultbuttontextcolour@{index}]]";
-                    .fa {
+                    .@{fa-css-prefix} {
                         color: ~"[[setting:alternativethemedefaultbuttontextcolour@{index}]]";
                     }
 
@@ -434,10 +469,113 @@
                         background-image: -webkit-linear-gradient(bottom, ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourimage@{index}]]", ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourrgba@{index}]]"); // Safari 5.1+, Chrome 10+
                         background-image: -o-linear-gradient(bottom, ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourimage@{index}]]", ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourrgba@{index}]]"); // Opera 11.10
                         background-image: linear-gradient(to top, ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourimage@{index}]]", ~"[[setting:alternativethemedefaultbuttonbackgroundhovercolourrgba@{index}]]"); // Standard, IE10
-                        .fa {
+                        .@{fa-css-prefix} {
                             color: ~"[[setting:alternativethemedefaultbuttontexthovercolour@{index}]]";
                         }
                     }
+                }
+                .btn {
+                    .buttonBackground(@btnBackground, @btnBackgroundHighlight, @grayDark, 0 1px 1px rgba(255,255,255,.75));
+                    &:hover, &:focus {
+                        background-image: none;
+                    }
+
+                    &.active,
+                    &:active {
+                        background-image: none;
+                        outline: 0;
+                        .box-shadow(~"inset 0 2px 4px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.05)");
+                    }
+
+                    &.disabled,
+                    &[disabled] {
+                        cursor: default;
+                        background-image: none;
+                        .opacity(65);
+                        .box-shadow(none);
+                    }
+                }
+                .btn-primary {
+                    .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
+                }
+                .btn-warning {
+                    .buttonBackground(@btnWarningBackground, @btnWarningBackgroundHighlight);
+                }
+                .btn-danger {
+                    .buttonBackground(@btnDangerBackground, @btnDangerBackgroundHighlight);
+                }
+                .btn-success {
+                    .buttonBackground(@btnSuccessBackground, @btnSuccessBackgroundHighlight);
+                }
+                .btn-info {
+                    .buttonBackground(@btnInfoBackground, @btnInfoBackgroundHighlight);
+                }
+                .btn-inverse {
+                    .buttonBackground(@btnInverseBackground, @btnInverseBackgroundHighlight);
+                }
+                .btn-link,
+                .btn-link:active,
+                .btn-link:visited,
+                .btn-link[disabled] {
+                    color: ~"[[setting:alternativethemeurlcolor@{index}]]";
+                    background-color: transparent;
+                    background-image: none;
+                    .box-shadow(none);
+                }
+                .btn-link {
+                    border-color: transparent;
+                }
+                .btn-link:hover,
+                .btn-link:focus {
+                    color: ~"[[setting:alternativethemehovercolor@{index}]]";
+                    text-decoration: underline;
+                    background-color: transparent;
+                }
+                .btn-link[disabled]:hover,
+                .btn-link[disabled]:focus {
+                    color: @grayDark;
+                    text-decoration: none;
+                }
+                div.editor_atto_toolbar button {
+                    background: none;
+                }
+
+                #tinymce {
+                    color: ~"[[setting:alternativethemetextcolor@{index}]]";
+                    font-family: ~"[[setting:bodyfont]]";
+                    .container-fluid {
+                        max-width: ~"[[setting:pagewidth]]";
+                    }
+                    h1, h2 {
+                        font-family: ~"[[setting:headingfont]]";
+                    }
+                    h1, h2, h3, h4, h5, h6, #adminsettings h3 {
+                        color: ~"[[setting:alternativethemetextcolor@{index}]]";
+                    }
+
+                    a, a:visited {
+                        color: ~"[[setting:alternativethemeurlcolor@{index}]]";
+                    }
+
+                    a:hover {
+                        color: ~"[[setting:alternativethemehovercolor@{index}]]";
+                        &:before {
+                            color: ~"[[setting:alternativethemehovercolor@{index}]]";
+                        }
+                    }
+
+                    a:before {
+                        color: @icon-colour;
+                        display: inline-block;
+                        text-decoration: none;
+                    }
+
+                    .color {
+                        color: ~"[[setting:alternativethemetextcolor@{index}]]";
+                    }
+                }
+                .editor_atto_content_wrap {
+                    color: ~"[[setting:alternativethemetextcolor@{index}]]";
                 }
 
                 a.marketing-button,
@@ -456,6 +594,20 @@
                         color: ~"[[setting:alternativethemenavcolor@{index}]]";
                         &:hover, &:focus {
                             color: ~"[[setting:alternativethemenavcolor@{index}]]";
+                        }
+                    }
+                }
+
+                .ui-autocomplete {
+                    border-color: ~"[[setting:alternativethemecolor@{index}]]";
+                }
+
+                .ui-autocomplete {
+                    .ui-menu-item {
+                        color: ~"[[setting:alternativethemetextcolor@{index}]]";
+                        &:hover, &:focus {
+                            color: ~"[[setting:alternativethemenavcolor@{index}]]";
+                            background-color: ~"[[setting:alternativethemecolor@{index}]]";
                         }
                     }
                 }
@@ -480,7 +632,7 @@
                             &:focus {
                             color: ~"[[setting:alternativethemeslidebuttonhovercolor@{index}]]";
                         }
-                        i.@{fa-css-prefix} {
+                        .@{fa-css-prefix} {
                             color: ~"[[setting:alternativethemeslidebuttoncolor@{index}]]";
                             &:hover,
                                 &:focus {
@@ -563,12 +715,11 @@
                     color: ~"[[setting:alternativethemetextcolor@{index}]]";
                 }
 
-                .service i.@{fa-css-prefix} {
+                .service .@{fa-css-prefix} {
                     color: ~"[[setting:alternativethemeiconcolor@{index}]]";
                 }
 
                 #page-footer {
-                    border-top-color: ~"[[setting:alternativethemecolor@{index}]]";
                     .footnote {
                         a, a:visited {
                             color: ~"[[setting:alternativethemeurlcolor@{index}]]";
@@ -588,15 +739,16 @@
                         color: ~"[[setting:alternativethemeurlcolor@{index}]]";
                     }
                 }
+
                 #page-footer {
                     background-color: ~"[[setting:alternativethemefootercolor@{index}]]";
                     color: ~"[[setting:alternativethemefootertextcolor@{index}]]";
-                    border-top: 2px solid ~"[[setting:alternativethemecolor@{index}]]";
-                    border-bottom: 3px solid ~"[[setting:alternativethemecolor@{index}]]";
-                    a, a > i.@{fa-css-prefix} {
+                    border-top: 2px solid ~"[[setting:alternativethemefootercolor@{index}]]";
+                    border-bottom: 3px solid ~"[[setting:alternativethemefootercolor@{index}]]";
+                    a, a > .@{fa-css-prefix} {
                         color: ~"[[setting:alternativethemefooterurlcolor@{index}]]";
                     }
-                    a:hover, a:hover > i.@{fa-css-prefix} {
+                    a:hover, a:hover > .@{fa-css-prefix} {
                         color: ~"[[setting:alternativethemefooterhovercolor@{index}]]";
                     }
                     .footnote {
@@ -626,10 +778,10 @@
                     .block {
                         background-color: ~"[[setting:alternativethemefooterblockbackgroundcolour@{index}]]";
                         color: ~"[[setting:alternativethemefooterblocktextcolour@{index}]]";
-                        a, a > i.@{fa-css-prefix} {
+                        a, a > .@{fa-css-prefix} {
                             color: ~"[[setting:alternativethemefooterblockurlcolour@{index}]]";
                         }
-                        a:hover, a:hover > i.@{fa-css-prefix} {
+                        a:hover, a:hover > .@{fa-css-prefix} {
                             color: ~"[[setting:alternativethemefooterblockhovercolour@{index}]]";
                         }
                         .icon {
@@ -667,12 +819,12 @@
 
                 p.tree_item {
                     &.leaf a {
-                        > i.@{fa-css-prefix} {
+                        > .@{fa-css-prefix} {
                             color: ~"[[setting:alternativethemeiconcolor@{index}]]";
                         }
                         &:hover, &:focus {
                             color: ~"[[setting:alternativethemehovercolor@{index}]]";
-                            > i.@{fa-css-prefix} {
+                            > .@{fa-css-prefix} {
                                 color: inherit;
                             }
                         }
@@ -708,7 +860,7 @@
                     border-color: ~"[[setting:alternativethemecolor@{index}]]";
                 }
 
-                .afmatter i.@{fa-css-prefix} {
+                .afmatter .@{fa-css-prefix} {
                     color: ~"[[setting:alternativethemeiconcolor@{index}]]";
                 }
 
@@ -762,6 +914,12 @@
                     #cache:before, #load:before, #memory:before, #peakmemory:before, #session:before, #included:before, #dbqueries:before, #dbtime:before {
                         color: ~"[[setting:alternativethemenavcolor@{index}]]";
                     }
+                    span.@{fa-css-prefix} {
+                        color: inherit;
+                        &:hover, &:focus {
+                            color: inherit;
+                        }
+                    }
                 }
 
                 #page-mod-quiz-edit .questionbankwindow.block div.header {
@@ -780,7 +938,7 @@
                     background-color: ~"[[setting:alternativethemecolor@{index}]]";
                 }
 
-                .path-grade-report-grader table#fixed_column th {
+                &.dir-ltr .path-grade-report-grader table#fixed_column th {
                     border-right-color: ~"[[setting:alternativethemecolor@{index}]]";
                 }
                 &.dir-rtl .path-grade-report-grader table#fixed_column th {
@@ -796,7 +954,7 @@
                         background-color: ~"[[setting:alternativethemecolor@{index}]]";
                         > .info > .categoryname a {
                             color: ~"[[setting:alternativethemenavcolor@{index}]]";
-                            i.@{fa-css-prefix} {
+                            .@{fa-css-prefix} {
                                 color: inherit;
                             }
                         }
@@ -834,6 +992,22 @@
                     }
                 }
 
+                .moodle-actionmenu[data-enhanced].show {
+                    .menu {
+                        background-color: @white; // TODO: Page background colour needs to be a setting.
+                            a {
+                            color: ~"[[setting:alternativethemeurlcolor@{index}]]";
+                            &:hover {
+                                color: @white; // TODO: Page background colour needs to be a setting.
+                                background-color: ~"[[setting:alternativethemeurlcolor@{index}]]";
+                                .@{fa-css-prefix}:before {
+                                    color: @white; // TODO: Page background colour needs to be a setting.
+                                }
+                            }
+                        }
+                    }
+                }
+
                 .actions {
                     a {
                         color: ~"[[setting:alternativethemeurlcolor@{index}]]";
@@ -862,11 +1036,11 @@
                 .menu a.menu-action,
                 .course-item-actions a,
                 .actions a {
-                    > i.@{fa-css-prefix} {
+                    > .@{fa-css-prefix} {
                         color: ~"[[setting:alternativethemeiconcolor@{index}]]";
                     }
                     &:hover {
-                        > i.@{fa-css-prefix} {
+                        > .@{fa-css-prefix} {
                             color: ~"[[setting:alternativethemehovercolor@{index}]]";
                         }
                     }
@@ -897,6 +1071,122 @@
                     form {
                         .form-buttons, #fgroup_id_buttonar {
                             background-color: ~"[[setting:alternativethemecolor@{index}]]";
+                        }
+                    }
+                }
+                &#page-grade-grading-pick {
+                    #region-main {
+                        form {
+                            #fgroup_id_buttonar {
+                                label {
+                                    color: ~"[[setting:alternativethemenavcolor@{index}]]";
+                                }
+                            }
+                        }
+                    }
+                }
+                &.path-admin .buttons input[type="submit"] {
+                    background-image: inherit;
+                }
+
+                &.path-grade-report .gradeparent {
+                    tr:nth-of-type(even) .cell,
+                    .floater .cell,
+                    .avg {
+                        color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
+                        background-color: ~"[[setting:alternativethemestripebackgroundcolour@{index}]]";
+                        a, a:hover, a:focus, a:visited, .fa {
+                            color: inherit;
+                        }
+                    }
+                }
+
+                &#page-grade-report-grader-index .gradeparent div.floater:first-of-type .cell:nth-child(even) {
+                    color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
+                    a, a:hover, a:focus, a:visited {
+                        color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
+                    }
+                }
+
+                &#page-grade-report-grader-index .gradeparent div.floater:first-of-type .cell:nth-child(odd) {
+                    a, a:visited {
+                        color: ~"[[setting:alternativethemeurlcolor@{index}]]";
+                    }
+                    a:hover, a:focus {
+                        color: ~"[[setting:alternativethemehovercolor@{index}]]";
+                    }
+                }
+
+                &.path-grade-report .gradeparent .avg.lastrow,
+                &#page-grade-report-grader-index .gradeparent div.floater.floating.lastrow .cell {
+                    color: ~"[[setting:alternativethemetextcolor@{index}]]";
+                }
+
+                &.path-grade-report-grader .gradeparent .user.cell .userpicture {
+                    background-color: #fff;
+                }
+
+                table#explaincaps,
+                table#defineroletable,
+                table.grading-report,
+                table#listdirectories,
+                table.rolecaps,
+                table.userenrolment,
+                table#form,
+                form#movecourses table,
+                #page-admin-course-index .editcourse,
+                .forumheaderlist,
+                table.flexible,
+                .generaltable {
+                    tbody {
+                        > tr:nth-child(odd) > td,
+                        > tr:nth-child(odd) > th {
+                            color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
+                            background-color: ~"[[setting:alternativethemestripebackgroundcolour@{index}]]";
+                            a, a:hover, a:focus, a:visited {
+                                color: inherit;
+                            }
+                        }
+                    }
+                }
+
+                &#page-admin-plugins #plugins-control-panel,
+                &#plugins-check-page #plugins-check {
+                    tbody {
+                        > tr:nth-child(odd) > td,
+                        > tr:hover > td {
+                            &.displayname .plugindir,
+                            &.notes .requiredby,
+                            &.pluginname .componentname,
+                            &.requires .requires-ok,
+                            &.settings a,
+                            &.uninstall a,
+                            &.version .versionnumber {
+                                color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
+                            }
+                        }
+                    }
+                }
+
+                #categoryquestions > tbody > tr:nth-of-type(even) {
+                    color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
+                    background-color: ~"[[setting:alternativethemestripebackgroundcolour@{index}]]";
+                }
+
+                .user-enroller-panel .uep-search-results .users,
+                .user-enroller-panel .uep-search-results .cohorts,
+                table.grading-report,
+                .forumheaderlist,
+                .generaltable,
+                table.flexible,
+                .category_subcategories,
+                table#modules,
+                table#permissions {
+                    tbody {
+                        tr:hover > td,
+                        tr:hover > th {
+                            color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
+                            background-color: ~"[[setting:alternativethemestripebackgroundcolour@{index}]]";
                         }
                     }
                 }

@@ -15,25 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is built using the bootstrapbase template to allow for new theme's using
- * Moodle's new Bootstrap theme engine
+ * Essential is a clean and customizable theme.
  *
  * @package     theme_essential
- * @copyright   2013 Julian Ridden
+ * @copyright   2016 Gareth J Barnard
  * @copyright   2014 Gareth J Barnard, David Bezemer
+ * @copyright   2013 Julian Ridden
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(\theme_essential\toolbox::get_tile_file('additionaljs'));
-$fontselect = \theme_essential\toolbox::get_setting('fontselect');
-if ($fontselect === '2') {
-    $fontcharacterset = '&subset=latin';
-    if (\theme_essential\toolbox::get_setting('fontcharacterset')) {
-        $fontcharacterset = '&subset=latin,'.\theme_essential\toolbox::get_setting('fontcharacterset');
-    }
-    $headingfont = urlencode(\theme_essential\toolbox::get_setting('fontnameheading'));
-    $bodyfont = urlencode(\theme_essential\toolbox::get_setting('fontnamebody'));
-}
+require_once(\theme_essential\toolbox::get_tile_file('pagesettings'));
 
 echo $OUTPUT->doctype();
 ?>
@@ -42,7 +34,6 @@ echo $OUTPUT->doctype();
     <title><?php echo $OUTPUT->page_title(); ?></title>
     <link rel="shortcut icon" href="<?php echo $OUTPUT->favicon(); ?>" />
     <?php
-    echo \theme_essential\toolbox::get_csswww();
     echo $OUTPUT->standard_head_html();
     ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,18 +44,18 @@ echo $OUTPUT->doctype();
     <!-- End Analytics -->
 </head>
 
-<body <?php echo $OUTPUT->body_attributes(); ?>>
+<body <?php echo $OUTPUT->body_attributes($bodyclasses); ?>>
 
 <?php echo $OUTPUT->standard_top_of_body_html(); ?>
 
 <?php
-    // If on desktop, then hide the header/footer.
-    $hideclass = '';
-    $devicetype = core_useragent::get_device_type();
-    if ($devicetype !== 'mobile' and $devicetype !== 'tablet') {
-        // We can not use the Bootstrap responsive css classes because popups are phone sized on desktop.
-        $hideclass = 'hide';
-    }
+// If on desktop, then hide the header/footer.
+$hideclass = '';
+$devicetype = core_useragent::get_device_type();
+if ($devicetype !== 'mobile' and $devicetype !== 'tablet') {
+    // We can not use the Bootstrap responsive css classes because popups are phone sized on desktop.
+    $hideclass = 'hide';
+}
 ?>
 
 <header role="banner" class="navbar navbar-fixed-top moodle-has-zindex <?php echo $hideclass; ?>">

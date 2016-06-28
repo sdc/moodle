@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is built using the bootstrapbase template to allow for new theme's using
- * Moodle's new Bootstrap theme engine
+ * Essential is a clean and customizable theme.
  *
  * @package     theme_essential
+ * @copyright   2016 Gareth J Barnard
  * @copyright   2015 Gareth J Barnard
  * @copyright   2014 Gareth J Barnard, David Bezemer
  * @copyright   2013 Julian Ridden
@@ -49,7 +49,8 @@ for ($mspot = 1; $mspot <= 3; $mspot++) {
             echo '<!-- Spot #'.$mspot.' -->'; ?>
         <div class="marketing-spot span4">
             <div class="title"><h5><span>
-                <i class="fa fa-<?php echo \theme_essential\toolbox::get_setting('marketing'.$mspot.'icon'); ?>"></i>
+                <span aria-hidden="true" class="fa fa-<?php
+                    echo \theme_essential\toolbox::get_setting('marketing'.$mspot.'icon'); ?>"></span>
                 <?php echo \theme_essential\toolbox::get_setting('marketing'.$mspot, true); ?>
             </span></h5></div>
             <?php if ($spotimage[$mspot]) { ?>

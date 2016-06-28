@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is built using the bootstrapbase template to allow for new theme's using
- * Moodle's new Bootstrap theme engine
+ * Essential is a clean and customizable theme.
  *
  * @package     theme_essential
+ * @copyright   2016 Gareth J Barnard
  * @copyright   2015 Gareth J Barnard
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -121,7 +121,7 @@ class toolbox {
         }
     }
 
-    static public function setting_file_url($setting, $filearea, $theme = null) {
+    static public function setting_file_url($setting, $filearea) {
         $us = self::check_corerenderer();
 
         return $us->setting_file_url($setting, $filearea);
@@ -130,6 +130,19 @@ class toolbox {
     static public function pix_url($imagename, $component) {
         $us = self::check_corerenderer();
         return $us->pix_url($imagename, $component);
+    }
+
+    /**
+     * States if course content search can be used.  Will not work if theme is in $CFG->themedir.
+     * @return boolean false|true if course content search can be used.
+     */
+    static public function course_content_search() {
+        $canwe = false;
+        global $CFG;
+        if ((self::get_setting('coursecontentsearch')) && (file_exists("$CFG->dirroot/theme/essential/"))) {
+            $canwe = true;
+        }
+        return $canwe;
     }
 
     static private function check_corerenderer() {
@@ -143,15 +156,26 @@ class toolbox {
                 // Use $PAGE->theme->name as will be accurate than $CFG->theme when using URL theme changes.
                 // Core 'allowthemechangeonurl' setting.
                 global $PAGE;
-                $corerenderer = $PAGE->get_renderer('theme_'.$PAGE->theme->name, 'core');
+                $corerenderer = null;
+                try {
+                    $corerenderer = $PAGE->get_renderer('theme_'.$PAGE->theme->name, 'core');
+                } catch (\coding_exception $ce) {
+                    // Specialised renderer may not exist in theme.  This is not a coding fault.  We just need to cope.
+                    $corerenderer = null;
+                }
                 // Fallback check.
-                if (property_exists($corerenderer, 'essential')) {
+                if (($corerenderer != null) && (property_exists($corerenderer, 'essential'))) {
                     $us->corerenderer = $corerenderer;
                 } else {
                     // Probably during theme switch, '$CFG->theme' will be accurrate.
                     global $CFG;
-                    $corerenderer = $PAGE->get_renderer('theme_'.$CFG->theme, 'core');
-                    if (property_exists($corerenderer, 'essential')) {
+                    try {
+                        $corerenderer = $PAGE->get_renderer('theme_'.$CFG->theme, 'core');
+                    } catch (\coding_exception $ce) {
+                        // Specialised renderer may not exist in theme.  This is not a coding fault.  We just need to cope.
+                        $corerenderer = null;
+                    }
+                    if (($corerenderer != null) && (property_exists($corerenderer, 'essential'))) {
                         $us->corerenderer = $corerenderer;
                     } else {
                         // Last resort.  Hopefully will be fine on next page load for Child themes.
@@ -192,9 +216,9 @@ class toolbox {
         $indicators = '';
         for ($indicatorslideindex = 0; $indicatorslideindex < $numberofslides; $indicatorslideindex++) {
             $indicators .= '<li data-target="#essentialCarousel" data-slide-to="'.$indicatorslideindex.'"';
-                if ($indicatorslideindex == 0) {
-                    $indicators .= ' class="active"';
-                }
+            if ($indicatorslideindex == 0) {
+                $indicators .= ' class="active"';
+            }
             $indicators .= '></li>';
         }
         return $indicators;
@@ -274,18 +298,11 @@ class toolbox {
         return $slidecontent;
     }
 
-    static public function render_slide_controls($left) {
-        $faleft = 'left';
-        $faright = 'right';
-        if (!$left) {
-            $temp = $faleft;
-            $faleft = $faright;
-            $faright = $temp;
-        }
+    static public function render_slide_controls() {
         $prev = '<a class="left carousel-control" href="#essentialCarousel" data-slide="prev">';
-        $prev .= '<i class="fa fa-chevron-circle-'.$faleft.'"></i></a>';
+        $prev .= '<span aria-hidden="true" class="fa fa-chevron-circle-left"></span></a>';
         $next = '<a class="right carousel-control" href="#essentialCarousel" data-slide="next">';
-        $next .= '<i class="fa fa-chevron-circle-'.$faright.'"></i></a>';
+        $next .= '<span aria-hidden="true" class="fa fa-chevron-circle-right"></span></a>';
 
         return $prev . $next;
     }
@@ -313,10 +330,8 @@ class toolbox {
     static public function initialise_colourswitcher(\moodle_page $page) {
         self::check_colours_switch();
         \user_preference_allow_ajax_update('theme_essential_colours', PARAM_ALPHANUM);
-        $page->requires->yui_module(
-                'moodle-theme_essential-coloursswitcher', 'M.theme_essential.initColoursSwitcher',
-                array(array('div' => '.dropdown-menu'))
-        );
+        $page->requires->js_call_amd('theme_essential/coloursswitcher', 'init',
+            array(array('div' => '#custom_menu_themecolours .dropdown-menu')));
     }
 
     /**
@@ -420,6 +435,76 @@ class toolbox {
         return $css;
     }
 
+    static private function get_categories() {
+        global $CFG, $DB;
+        include_once($CFG->libdir . '/coursecatlib.php');
+
+        $result = $DB->get_records('course_categories', null, '', 'id');
+        $cid = array();
+        if ($result) {
+            foreach ($result as $key => $value) {
+                $cid[] = $key;
+            }
+        } else {
+            $categories = \coursecat::get(0, IGNORE_MISSING, true)->get_children();
+            self::traverse_categories($categories, $cid);
+        }
+
+        return $cid;
+    }
+
+    static private function traverse_categories($categories, &$cid) {
+        foreach ($categories as $category) {
+            $cid[] = $category->id;
+            $catchildren = \coursecat::get($category->id, IGNORE_MISSING, true)->get_children();
+            if ($catchildren) {
+                self::traverse_categories($catchildren, $cid);
+            }
+        }
+    }
+
+    static public function get_current_category() {
+        $us = self::check_corerenderer();
+
+        return $us->get_current_category();
+    }
+
+    static public function set_categorycoursetitleimages($css) {
+        $tag = '[[setting:categorycoursetitle]]';
+        $replacement = '';
+
+        if (self::get_setting('enablecategorycti')) {
+            $categories = self::get_categories();
+
+            foreach ($categories as $cid) {
+                $image = self::get_setting('categoryct'.$cid.'image');
+                $imageurl = false;
+                if ($image) {
+                    $imageurl = self::setting_file_url('categoryct'.$cid.'image', 'categoryct'.$cid.'image');
+                } else {
+                    $imageurlsetting = self::get_setting('categoryctimageurl'.$cid);
+                    if ($imageurlsetting) {
+                        $imageurl = $imageurlsetting;
+                    }
+                }
+                if ($imageurl) {
+                    $replacement .= '.categorycti-'.$cid.' {';
+                    $replacement .= 'background-image: url(\''.$imageurl.'\');';
+                    $replacement .= 'height: '.self::get_setting('categorycti'.$cid.'height').'px;';
+                    $replacement .= '}';
+                    $replacement .= '.categorycti-'.$cid.' .coursetitle {';
+                    $replacement .= 'color: '.self::get_setting('categorycti'.$cid.'textcolour').';';
+                    $replacement .= 'background-color: '.self::get_setting('categorycti'.$cid.'textbackgroundcolour').';';
+                    $replacement .= 'opacity: '.self::get_setting('categorycti'.$cid.'textbackgroundopactity').';';
+                    $replacement .= '}';
+                }
+            }
+        }
+
+        $css = str_replace($tag, $replacement, $css);
+        return $css;
+    }
+
     /**
      * Returns the RGB for the given hex.
      *
@@ -470,11 +555,31 @@ class toolbox {
 
     static public function set_headerbackground($css, $headerbackground) {
         $tag = '[[setting:headerbackground]]';
+
+        $headerbackgroundstyle = self::get_setting('headerbackgroundstyle');
+        $replacement = '#page-header {';
+        $replacement .= 'background-image: url(\'';
         if ($headerbackground) {
-            $replacement = $headerbackground;
+            $replacement .= $headerbackground;
         } else {
-            $replacement = self::pix_url('bg/header', 'theme');
+            $replacement .= self::pix_url('bg/header', 'theme');
+            $headerbackgroundstyle = 'tiled';
         }
+        $replacement .= '\');';
+
+        if ($headerbackground) {
+            $replacement .= 'background-size: contain;';
+        }
+
+        if ($headerbackgroundstyle == 'tiled') {
+            $replacement .= 'background-repeat: repeat;';
+        } else {
+            $replacement .= 'background-repeat: no-repeat;';
+            $replacement .= 'background-position: center;';
+        }
+
+        $replacement .= '}';
+
         $css = str_replace($tag, $replacement, $css);
         return $css;
     }
@@ -570,7 +675,15 @@ class toolbox {
         return $css;
     }
 
-    static public function set_logoheight($css, $logoheight) {
+    static public function set_logodimensions($css, $logowidth, $logoheight) {
+        $tag = '[[setting:logowidth]]';
+        if (!($logowidth)) {
+            $replacement = '65px';
+        } else {
+            $replacement = $logowidth;
+        }
+        $css = str_replace($tag, $replacement, $css);
+
         $tag = '[[setting:logoheight]]';
         if (!($logoheight)) {
             $replacement = '65px';
@@ -578,6 +691,7 @@ class toolbox {
             $replacement = $logoheight;
         }
         $css = str_replace($tag, $replacement, $css);
+
         return $css;
     }
 

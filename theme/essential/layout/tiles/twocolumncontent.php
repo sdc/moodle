@@ -15,25 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is built using the bootstrapbase template to allow for new theme's using
- * Moodle's new Bootstrap theme engine
+ * Essential is a clean and customizable theme.
  *
  * @package     theme_essential
+ * @copyright   2016 Gareth J Barnard
  * @copyright   2015 Gareth J Barnard
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 if ($footerregion) {
     echo '<section id="region-main" class="span12">';
-} else if ($hasboringlayout) {
+} else if (($hasboringlayout) && ($left)) {
     echo '<section id="region-main" class="span9 pull-right">';
 } else {
     echo '<section id="region-main" class="span9">';
 }
-if ($COURSE->id > 1) {
-    echo $OUTPUT->heading(format_string($COURSE->fullname), 1, 'coursetitle');;
-    echo '<div class="bor"></div>';
-}
+echo $OUTPUT->course_title();
 echo $OUTPUT->course_content_header();
 echo $OUTPUT->main_content();
 if (empty($PAGE->layout_options['nocoursefooter'])) {
@@ -41,7 +38,7 @@ if (empty($PAGE->layout_options['nocoursefooter'])) {
 }
 echo '</section>';
 if (!$footerregion) {
-    if ($hasboringlayout) {
+    if (($hasboringlayout) && ($left)) {
         echo $OUTPUT->blocks('side-pre', 'span3 desktop-first-column');
     } else {
         echo $OUTPUT->blocks('side-pre', 'span3');

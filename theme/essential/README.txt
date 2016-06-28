@@ -1,5 +1,8 @@
 The "Essential" Moodle Theme
 ============================
+![image1](pix/screenshot.jpg "Essential Screenshot")
+
+[![Build Status](https://travis-ci.org/gjb2048/moodle-theme_essential.svg?branch=master)](https://travis-ci.org/gjb2048/moodle-theme_essential)
 
 With 2.5 now released Julian thought it time to take the opportunity to build a new theme that would push the new theme engine
 to it's limits a bit. With that in mind he introduced the new "Essential" theme.  Now Julian has left us for Canvassian
@@ -89,19 +92,40 @@ iZone
 Anis Jradah
 Ute Hlasek, https://hlasek-it.de/moodle
 
+Essential for Moodle 3.1 kindly sponsored by
+--------------------------------------------
+ClassroomRevolution, LLC -- Moodle Partner  
+Fernando Oliveira
+James Braastad
+Caleb Elcock
+Nadav Kavalerchik
+Gemma Lesterhuis
+Mihai Bojonca, TCM International Institute
+Guido Hornig, lern.link
+Floyd Saner
+Nigel Barnett
+Donald Schwartz
+Joseph Thibault
+Kees Koopman
+Samuli Koskinen
+Dan Raij
+Gregory Reinert
+Jan Willem Knopper
+Toshimi Hatanaka
+
 Customisation
 =============
-If you like this theme and would like me to customise it, transpose functionality to another theme or
-build a new theme from scratch, then I offer competitive rates.  Please contact me via 'www.gjbarnard.co.uk/contact/'
-or 'gjbarnard at gmail dot com' or 'about.me/gjbarnard' to discuss your requirements.
+If you like this theme and would like me to customise it, transpose functionality to another theme, build a new theme from scratch
+or create a child theme then I offer competitive rates.  Please contact me via 'www.gjbarnard.co.uk/contact/' or
+'gjbarnard at gmail dot com' or 'about.me/gjbarnard' to discuss your requirements.
 
 Required version of Moodle
 ==========================
-This version works with Moodle version 2015051100.00 release 2.9 (Build: 20150511) and above within the 2.9 branch until the
+This version works with Moodle 3.1 version 2016052300.00 (Build: 20160523) and above within the 3.1 branch until the
 next release.
 
 Please ensure that your hardware and software complies with 'Requirements' in 'Installing Moodle' on
-'docs.moodle.org/29/en/Installing_Moodle'.
+'docs.moodle.org/31/en/Installing_Moodle'.
 
 Installation
 ============
@@ -175,6 +199,19 @@ WOFF2 font support will automatically kick in if you are running Moodle 2.8.5+ (
 are and the settings do not appear on the font setting page when using 'Custom font' for 'fontselect', then perform a
 'Purge all caches'.
 
+Category course title image in a course
+=======================================
+If you wish to override the category course title image in a course when this is enabled, then edit the course summary in the course
+settings and add an image.  Then edit in HTML mode, remove the surrounding 'p' tags and 'br' tag, then remove the 'style', 'width' and
+'height' attributes and any 'classes' added by the text editor on the 'img' tag.  Then add the class 'categorycti'.  To specifiy
+the height (px) and the contained title text colour, background colour and opacity, use the following attributes: 'ctih', 'ctit',
+'ctib' and ctio respectively, for example:
+
+<img src="https://mymoodleinstall.mr/pluginfile.php/493/course/section/237/myimage.jpg" alt="Replacement image" class="categorycti"
+ ctih="250" ctit="#afafaf" ctib="#222222" ctio="0.5">
+
+This image will not be shown in the summary itself when viewing the list of courses.
+
 Reporting issues
 ================
 Before reporting an issue, please ensure that you are running the latest version for your release of Moodle.  It is essential
@@ -199,5 +236,5 @@ A video showing many of the core features is available for viewing at https://ww
 
 Documentation
 =============
-As always, documentation is a work in progress. Available documentation is available at http://docs.moodle.org/29/en/Essential_theme
+As always, documentation is a work in progress. Available documentation is available at http://docs.moodle.org/30/en/Essential_theme
 If you have questions you can post them in the issue tracker at https://github.com/gjb2048/moodle-theme_essential/issues

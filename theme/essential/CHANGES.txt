@@ -1,14 +1,155 @@
-New in 2.9.1.9
+New in 3.1.0.4
+==============
+- FIX: Issue #681: Breadcrumbs should be right aligned in RTL mode.
+- FIX: Issue #682: Category icons in M3.1.
+
+New in 3.1.0.3
+==============
+- FIX: SVG version of 'Cogs' for 'Settings' cog.
+- FIX: Plugins check table text colour.
+- FIX: Noticeboard format user picture.
+- NEW: Competancies icon.
+
+New in 3.1.0.2
+==============
+- FIX: Issue #674: M31 beta: Breadcrumbs should be right aligned and flipped in RTL mode.
+- FIX: Issue #675: M31 beta: Left align "return to course" button, in RTL mode.
+- FIX: Issue #676: M31 beta: Tree nodes in Navigation block have no right margin, in RTL mode.
+- FIX: Issue #677: M31b: Tree nodes on Navigation block have redundant 21px right padding, in RTL mode.
+- FIX: Issue #678: Gradebook sticky headers broken, in RTL mode.
+- FIX: Issue #679: Guest user menu show missing support email error.
+- FIX: User menu setting header.
+
+New in 3.1.0.1
+==============
+- FIX: Carousel slides in correct direction for RTL.
+- NEW: Theme table stripe text and background colour settings.
+- NEW: FontAwesome 4.6.3.
+
+New in 3.0.1.5
+==============
+- FIX: Cautionary inclusion of coursecatlib.
+- FIX: Hidden courses / resources on the breadcrumb.  Ref: https://moodle.org/mod/forum/discuss.php?d=334838.
+
+New in 3.0.1.4
+==============
+- FIX: Integer setting default and validation.
+- FIX: Select setting default.
+- FIX: Invisible parent categories with an image for a course that is in a visible category with no image.
+- FIX: Ensure radio button default is set on first use.
+
+New in 3.0.1.3
+==============
+- FIX: MDL-52800 - RTL styling for in place editable tooltip.
+- FIX: MDL-52815 - Groups and members dropdowns overlapping on mobile devices.
+- FIX: MDL-53855 - Navbar should be in exactly one nav region, and that should be labelled.
+- FIX: Issue #659: Links with anchors don't work with the "flexsections" course format.  Thanks to Jay Knight for his input.
+- FIX: Issue #662: Site pages indent.
+- FIX: Issue #664: Broken Alt-text in blocks.
+- FIX: Issue #668: Course page header missing enrolled user info.
+- NEW: Tidy up administration block.
+- NEW: Category and course 'course title' images.  Thanks to Murdoch University, Perth, WA for supporting this enhancement.
+
+New in 3.0.1.2
+==============
+- FIX: Issue #642: Advanced Grading creating template form issue.
+- FIX: Issue #649: Guest access confusing.
+- FIX: Issue #653: Quiz question preview: does not uses the selected color scheme.
+- FIX: Issue #654: Adding a quiz question menu does not use the selected colour scheme.
+- FIX: Font serving instructions.  See: https://moodle.org/mod/forum/discuss.php?d=330553.
+- FIX: Invalid CSS attribute value in carousel.less.
+- FIX: Footer position when using docking and footer is not at the bottom.
+- FIX: MDL-53489 - Quiz editing: if you put in a very long heading, the page layout breaks.
+- FIX: Improve logo setting description.
+- FIX: Missing '$setting->set_updatedcallback('theme_reset_all_caches');' on logo width setting.
+- FIX/NEW: Issue #646: Implement MDL-53147 from M3.1 - 'Reading message screen broken when reading one message and have another unread'.
+- NEW: Issue #647: Navigation bar in course: without course category links.  Thanks to Christian Niemczik for supporting and funding the work on the Essential Theme.
+- NEW: Issue #652: Header logo and background refinements.
+- NEW: Have the 'This course' menu appear on other course related pages.
+- NEW: Tidy up licenses.
+- NEW: Tidy up Font Awesome CSS as WOFF2 support was only an issue in M2.8.
+- NEW: Logo dimension validation.
+- NEW: Update to FontAwesome 4.6.1.
+- NEW: Add 'usesiteicon' setting to allow the site icon not to be shown if desired.
+- NEW: Add radio button selection for breadcrumb style.
+- NEW: Add image and direction capability to radio button selection for breadcrumb style.
+- NEW: Add radio button image selection for 'oldnavbar' setting.
+- NEW: Add radio button image selection for 'slidecaptionoptions' setting.
+
+New in 3.0.1.1
+==============
+- FIX: Issue #351: Footer doesn't stay at bottom.
+- FIX: Issue #627: Request for an unknown renderer.
+- FIX: Issue #628: Course content search dialog does not show up properly on RTL mode.
+- FIX: Issue #629: Hidden resources have low contrast.
+- FIX: Issue #633: Increase performance of administration settings pages.  Thanks to 'Jan Dagefoerde' for the initial patch.
+- FIX: Issue #634: Improve icon replacement performance.
+- FIX: Issue #635: Course table of contents block navigation when static navbar.
+- FIX: Issue #640: Edit profile style not set properly.
+- FIX: Issue #641: Floating rows in the gradebook position after page scroll are wrong.
+- FIX: Issue #642: Advanced Grading creating template form issue.
+- FIX: Issue #643: Grading edit dropdown too small.
+- FIX: Style guide settings tooltips and popups.
+- FIX: MDL-52936 - Fix link hover bug on iOS.
+- FIX: Apply 'aria-hidden="true"' to FontAwesome icons as much as possible.  Still a few 'content' CSS attributes to consider.
+- FIX: Add 'speak: none' to FontAwesome icons for accessibility.
+- FIX: Footer doesn't stay at bottom code fix when no footer.
+- FIX: Alternative colour border colours.
+- FIX: Narrow page width and page header.
+- FIX: Tidy the header.
+- FIX: Admin submit button hover on alternative colour schemes.
+- FIX: Dimmed icon colours.
+- FIX: Hidden course summary box colours to be dimmed.
+- NEW: Issue #632: View StyleGuide without logging on.
+- NEW: Issue #645: Add setting to toggle display of hidden courses in Custom Menu.  Thanks to Mathieu Pelletier for this code.
+- NEW: Improve efficiency of colour switcher.
+- NEW: Add logo width setting.
+- NEW: Hide title area when showing social icons when collapsed.
+- NEW: Bigger user picture when using the old navbar position and at the top.
+- NEW: Refactor ColoursSwitcher into jQuery and optimise.
+
+New in 3.0.1
+============
+- FIX: Issue #623: label is inline.
+- FIX: Issue #625: .btn-link class needs settings.
+- FIX: Coursebox tidy up.
+- FIX: Primary button hover.
+- FIX: Bootstrap button styling.
+- FIX: TravisCI issues.
+- FIX: Ensure that the editor gets the custom font-face declarations.
+- FIX: Disabled and active button styling.
+- FIX: MDL-52371 - Activity Chooser - alignment of strings that need line wrap.
+- NEW: Style guide settings page.
+
+New in 3.0.0.5
 ==============
 - FIX: Issue #614: Dashboard -> Site administration -> Appearance -> HTML settings overflow with fixed width set at normal.
 - FIX: Issue #615: Block login on frontpage.
+- FIX: Issue #616: TinyMCE font family setting overridden by theme.
+- FIX: Issue #617: What is the 'message-index' layout?
+- FIX: Issue #618: Gradebook links are displayed when reports cannot be viewed.  Thanks to Tony Butler for the patch #619.
+- FIX: Issue #620: 'alternativethemedefaultbuttonbackgroundhovercolourX' setting name too long for 'name' attribute in 'config_plugins' table.
+- FIX: Issue #621: Cloze question input box width when taking quiz but not preview.
+- FIX: Editor colours.
+- FIX: Duplicate line in 'Return to section....'.
+- FIX: Input focus colour.
+- FIX: TravisCI Code Checker complaints.
+- FIX: MDL-52249 - Nested navigation dropdowns don't work on small screens - M3.0 only.
+- FIX: MDL-52342 - Hiding section adds gaps to the activity chooser.
+- FIX: MDL-52879 - Unable to delete last (only) question in a quiz.
+- FIX: Question text width on 1200px+ resolutions when editing a quiz.
+- FIX: Changes for Grid format issue #24.
+- NEW: Issue #613: Section names on 'Return to section X'.  Grateful thanks to 'Mihai Bojonca, TCM International Institute, Inc.' for funding this enhancement.
+- NEW: Inspector Scourer.
+- NEW: 'Return to section....' feature setting.
+- NEW: Features settings page to tidy things up a bit.
 
-New in 2.9.1.8
+New in 3.0.0.4
 ==============
 - FIX: Issue #609: Block Editing button on Plugin overview pagechanges colour on hover.
 - FIX: Filemanager link colour.
 
-New in 2.9.1.7
+New in 3.0.0.3
 ==============
 - FIX: Issue #599: .gitattributes: missing *.gif binary line - thanks to Jordi Pujol-Ahulló.
 - FIX: Issue #602: <audio> elements can overflow to the right on small, older phones.
@@ -21,29 +162,34 @@ New in 2.9.1.7
 - NEW: Default button background colour settings.
 - NEW: Bootstrap 3 list group component.
 
-New in 2.9.1.6
+New in 3.0.0.2
 ==============
-- FIX: Issue #590: Message outlining incoming.
-- FIX: Issue #592: Android menu issues.
-- FIX: Issue #593: InCourse page content should be on the right and blocks on the left, in RTL mode.
 - FIX: Issue #595: Navbar turn editing on / off button does not always work.
        Should be complete, please report pages where does not work.
 - FIX: Issue #596: Course category tile does not show sub-category course count.
 - FIX: Issue #597: .gitattributes: extend for binary files.
+- FIX: IE11 does not support 'initial' background size for tiled backgrounds.
+- FIX: Forum search area layout.
+- FIX: legend and header colour for course restore.
+- FIX: Course category management actions menu when AJAX load causes core icons to be used.
+- NEW: Update to FontAwesome 4.5.0.
+
+New in 3.0.0.1
+==============
+- NEW: First beta version for Moodle 3.0.  Using 'bootstrapbase' styles from 2015111602.00 3.0.2 (Build: 20160111).
+- FIX: Issue #575: fa-inverse does not work.
+- FIX: Issue #590: Message outlining incoming.
+- FIX: Issue #592: Android menu issues.
+- FIX: Issue #593: InCourse page content should be on the right and blocks on the left, in RTL mode.
 - FIX: Performance information styling.
 - FIX: Breadcrumb button hover / focus / active.
 - FIX: Gradebook floating last row.
 - FIX: General form tweaks.
 - FIX: MDL-51881.
-- FIX: IE11 does not support 'initial' background size for tiled backgrounds.
-- FIX: Forum search area layout.
-- FIX: legend and header colour for course restore.
-- FIX: Course category management actions menu when AJAX load causes core icons to be used.
 - NEW: Improve breadcrumb style1.
 - NEW: Dashed block areas during editing when drag and drop moving.
 - NEW: Improve pagenavbar.php and use in popup.php layout.
 - NEW: Only apply footer block layout to assignment grading page.
-- NEW: Update to FontAwesome 4.5.0.
 
 New in 2.9.1.5.2
 ================

@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is built using the bootstrapbase template to allow for new theme's using
- * Moodle's new Bootstrap theme engine
+ * Essential is a clean and customizable theme.
  *
  * @package     theme_essential
- * @copyright   2013 Julian Ridden
+ * @copyright   2016 Gareth J Barnard
  * @copyright   2014 Gareth J Barnard, David Bezemer
+ * @copyright   2013 Julian Ridden
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -52,10 +52,10 @@ function theme_essential_pluginfile($course, $cm, $context, $filearea, $args, $f
             return $theme->setting_file_serve('pagebackground', $args, $forcedownload, $options);
         } else if ($filearea === 'favicon') {
             return $theme->setting_file_serve('favicon', $args, $forcedownload, $options);
-        // Ref: http://www.regexr.com/.
         } else if (preg_match("/^fontfile(eot|otf|svg|ttf|woff|woff2)(heading|body)$/", $filearea)) {
+            // Ref: http://www.regexr.com/.
             return $theme->setting_file_serve($filearea, $args, $forcedownload, $options);
-        } else if (preg_match("/^(marketing|slide)[1-9][0-9]*image$/", $filearea)) {
+        } else if (preg_match("/^(marketing|slide|categoryct)[1-9][0-9]*image$/", $filearea)) {
             return $theme->setting_file_serve($filearea, $args, $forcedownload, $options);
         } else if ($filearea === 'iphoneicon') {
             return $theme->setting_file_serve('iphoneicon', $args, $forcedownload, $options);
@@ -157,6 +157,10 @@ function theme_essential_process_css($css, $theme) {
     $themecolor = \theme_essential\toolbox::get_setting('themecolor');
     $css = \theme_essential\toolbox::set_color($css, $themecolor, '[[setting:themecolor]]', '#30add1');
 
+    // Input focus colour.
+    $css = \theme_essential\toolbox::set_color($css, $themecolor, '[[setting:inputfocusbordercolor]]', '#30add1', '0.8');
+    $css = \theme_essential\toolbox::set_color($css, $themecolor, '[[setting:inputfocusshadowcolor]]', '#30add1', '0.6');
+
     // Set the theme text colour.
     $themetextcolor = \theme_essential\toolbox::get_setting('themetextcolor');
     $css = \theme_essential\toolbox::set_color($css, $themetextcolor, '[[setting:themetextcolor]]', '#047797');
@@ -210,6 +214,14 @@ function theme_essential_process_css($css, $theme) {
     // Set the theme navigation colour.
     $themenavcolor = \theme_essential\toolbox::get_setting('themenavcolor');
     $css = \theme_essential\toolbox::set_color($css, $themenavcolor, '[[setting:themenavcolor]]', '#ffffff');
+
+    // Set the theme stripe text colour.
+    $themestripetextcolour = \theme_essential\toolbox::get_setting('themestripetextcolour');
+    $css = \theme_essential\toolbox::set_color($css, $themestripetextcolour, '[[setting:themestripetextcolour]]', '#ffffff');
+
+    // Set the theme stripe background colour.
+    $themestripebackgroundcolour = \theme_essential\toolbox::get_setting('themestripebackgroundcolour');
+    $css = \theme_essential\toolbox::set_color($css, $themestripebackgroundcolour, '[[setting:themestripebackgroundcolour]]', '#ff9a34');
 
     // Set the footer colour.
     $footercolor = \theme_essential\toolbox::get_setting('footercolor');
@@ -290,8 +302,14 @@ function theme_essential_process_css($css, $theme) {
         foreach (range(1, 4) as $alternative) {
             $default = $defaultcolors[$alternative - 1];
             $defaulthover = $defaulthovercolors[$alternative - 1];
+            $alternativethemecolour = \theme_essential\toolbox::get_setting('alternativethemecolor'.$alternative);
             $css = \theme_essential\toolbox::set_alternativecolor($css, 'color'.$alternative,
-                \theme_essential\toolbox::get_setting('alternativethemecolor'.$alternative), $default);
+                $alternativethemecolour, $default);
+
+            $css = \theme_essential\toolbox::set_alternativecolor($css, 'inputfocusbordercolor'.$alternative,
+                $alternativethemecolour, $default, '0.8');
+            $css = \theme_essential\toolbox::set_alternativecolor($css, 'inputfocusshadowcolor'.$alternative,
+                $alternativethemecolour, $default, '0.6');
 
             $css = \theme_essential\toolbox::set_alternativecolor($css, 'textcolor'.$alternative,
                 \theme_essential\toolbox::get_setting('alternativethemetextcolor'.$alternative), $default);
@@ -320,7 +338,7 @@ function theme_essential_process_css($css, $theme) {
                 '#30add1', '0.25');
 
             $alternativethemedefaultbuttonbackgroundhovercolour = \theme_essential\toolbox::get_setting(
-                'alternativethemedefaultbuttonbackgroundhovercolour'.$alternative);
+                'alternativethemedefbuttonbackgroundhvrcolour'.$alternative);
             $css = \theme_essential\toolbox::set_alternativecolor($css, 'defaultbuttonbackgroundhovercolour'.$alternative,
                 $alternativethemedefaultbuttonbackgroundhovercolour,
                 '#3ad4ff');
@@ -339,6 +357,12 @@ function theme_essential_process_css($css, $theme) {
 
             $css = \theme_essential\toolbox::set_alternativecolor($css, 'hovercolor' . $alternative,
                 \theme_essential\toolbox::get_setting('alternativethemehovercolor' . $alternative), $defaulthover);
+
+            $css = \theme_essential\toolbox::set_alternativecolor($css, 'stripetextcolour' . $alternative,
+                \theme_essential\toolbox::get_setting('alternativethemestripetextcolour' . $alternative), '#ffffff');
+
+            $css = \theme_essential\toolbox::set_alternativecolor($css, 'stripebackgroundcolour' . $alternative,
+                \theme_essential\toolbox::get_setting('alternativethemestripebackgroundcolour' . $alternative), '#ff9a34');
 
             $css = \theme_essential\toolbox::set_alternativecolor($css, 'footercolor' . $alternative,
                 \theme_essential\toolbox::get_setting('alternativethemefootercolor' . $alternative), '#30add1');
@@ -388,9 +412,10 @@ function theme_essential_process_css($css, $theme) {
     $logo = \theme_essential\toolbox::setting_file_url('logo', 'logo');
     $css = \theme_essential\toolbox::set_logo($css, $logo);
 
-    // Set the logo height.
+    // Set the logo width and height.
+    $logowidth = \theme_essential\toolbox::get_setting('logowidth');
     $logoheight = \theme_essential\toolbox::get_setting('logoheight');
-    $css = \theme_essential\toolbox::set_logoheight($css, $logoheight);
+    $css = \theme_essential\toolbox::set_logodimensions($css, $logowidth, $logoheight);
 
     // Set the background image for the header.
     $headerbackground = \theme_essential\toolbox::setting_file_url('headerbackground', 'headerbackground');
@@ -421,6 +446,9 @@ function theme_essential_process_css($css, $theme) {
     $setting = 'marketing3image';
     $marketingimage = \theme_essential\toolbox::setting_file_url($setting, $setting);
     $css = \theme_essential\toolbox::set_marketingimage($css, $marketingimage, $setting);
+
+    // Category course title images.
+    $css = \theme_essential\toolbox::set_categorycoursetitleimages($css);
 
     // Set custom CSS.
     $customcss = \theme_essential\toolbox::get_setting('customcss');

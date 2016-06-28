@@ -15,19 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is built using the bootstrapbase template to allow for new theme's using
- * Moodle's new Bootstrap theme engine
+ * Essential is a clean and customizable theme.
  *
  * @package     theme_essential
+ * @copyright   2016 Gareth J Barnard
  * @copyright   2015 Gareth J Barnard
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 echo '<div id="page-navbar" class="clearfix row-fluid">';
-echo '<div class="breadcrumb-nav span9">';
-echo $OUTPUT->navbar();
-echo '</div>';
+if ($left) {
+    echo '<div class="breadcrumb-nav span9">';
+    echo $OUTPUT->navbar();
+    echo '</div>';
+}
 echo '<nav class="breadcrumb-button span3">';
 echo $OUTPUT->page_heading_button();
 echo '</nav>';
+if (!$left) {
+    echo '<div class="breadcrumb-nav span9">';
+    echo $OUTPUT->navbar();
+    echo '</div>';
+}
 echo '</div>';

@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is built using the bootstrapbase template to allow for new theme's using
- * Moodle's new Bootstrap theme engine
+ * Essential is a clean and customizable theme.
  *
  * @package     theme_essential
+ * @copyright   2016 Gareth J Barnard
  * @copyright   2015 Gareth J Barnard
  * @copyright   2014 Gareth J Barnard, David Bezemer
  * @copyright   2013 Julian Ridden
@@ -67,8 +67,32 @@ click here to sponsor.
 <li>Ute Hlasek, <a href="//hlasek-it.de/moodle" target="_blank">hlasek-it.de/moodle</a></li>
 </ul>
 </p>
+<p>
+<h3>Essential for Moodle 3.0 kindly sponsored by:</h3>
+<ul>
+<li>Leila Hiret</li>
+<li>Vilar da Camara Neto</li>
+<li>Kees Koopman</li>
+<li>Matej Topolovec</li>
+<li>Mihai Bojonca</li>
+<li>V. Y. S. Cavalcanti</li>
+<li>Christian Kleinhanss</li>
+<li>Nadav Kavalerchik</li>
+<li>Francisco Gomez Gonzalez</li>
+<li>Lazar Ivanov</li>
+<li>Duval Arnaud</li>
+<li>Kai ner Maa Pitanta</li>
+<li>Gregory Reinert</li>
+<li>M van der Niet</li>
+<li>Floyd Saner</li>
+<li>Andreas Schenkel</li>
+<li>Gemma Lesterhuis</li>
+<li>Roy Bentley</li>
+<li>Duane Cox</li>
+</ul>
+</p>
 <h3>Customisation</h3>
-<p>If you like this theme and would like me to customise it, transpose functionality to another theme or build a new theme from scratch, then I offer competitive rates.  Please contact me via \'www.gjbarnard.co.uk/contact/\' or \'gjbarnard at gmail dot com\' or \'about.me/gjbarnard\' to discuss your requirements.</p>
+<p>If you like this theme and would like me to customise it, transpose functionality to another theme, build a new theme from scratch or create a child theme then I offer competitive rates.  Please contact me via \'www.gjbarnard.co.uk/contact/\' or \'gjbarnard at gmail dot com\' or \'about.me/gjbarnard\' to discuss your requirements.</p>
 </div></div>';
 
 // General.
@@ -116,26 +140,37 @@ $string['flattr_click'] = 'sponsor via Flattr';
 
 // Readme.
 $string['readme_title'] = 'Essential read-me';
-$string['readme_desc'] = 'Please {$a->url} containing more information about the Essential theme.';
-$string['readme_click'] = 'click for README.txt';
+$string['readme_desc'] = 'Please {$a->url} file, which contains more information about the Essential theme including customisation.';
+$string['readme_click'] = 'click here for the README.txt';
 
 // General settings.
 $string['genericsettings'] = 'General';
 $string['generalheadingsub'] = 'General settings';
 $string['generalheadingdesc'] = 'Configure the general settings for the theme here.';
 
+$string['pagebackground'] = 'Page background image';
+$string['pagebackgrounddesc'] = 'Upload your own background image. Select the style of the image below.';
+$string['pagebackgroundstyle'] = 'Page background style';
+$string['pagebackgroundstyledesc'] = 'Select the style for the uploaded image.';
+$string['stylefixed'] = 'Fixed';
+$string['styletiled'] = 'Tiled';
+$string['stylestretch'] = 'Stretch';
+
 $string['customcss'] = 'Custom CSS';
 $string['customcssdesc'] = 'Whatever CSS rules you add to this text area will be reflected in every page, making for easier customisation of this theme.';
 
 $string['logo'] = 'Logo';
-$string['logodesc'] = 'Please upload your custom logo here if you want to add it to the header.
-                       <br>The image should be the same height as the Logo height setting below and any reasonable width that suits.
-                       <br>If you upload a logo it will replace the standard icon and name that was displayed by default.';
+$string['logodesc'] = 'Please upload your custom logo here if you want to add it to the header.<br>The image should be the same width and height as the \'Logo width\' and \'Logo height\' settings below.<br>If you upload a logo it will replace the standard icon and name that was displayed by default.';
+
+$string['logowidth'] = 'Logo width';
+$string['logowidthdesc'] = 'The width of the logo image.  This can be specified in \'px\' or \'em\', e.g. \'96px\'.';
 
 $string['logoheight'] = 'Logo height';
-$string['logoheightdesc'] = 'The height of the logo image. This can be specified in px or em.';
+$string['logoheightdesc'] = 'The height of the logo image.  This can be specified in \'px\' or \'em\', e.g. \'24px\'.';
 
-$string['credit'] = 'The Essential theme for Moodle is developed, enhanced and maintained by ';
+$string['logodimerror'] = ' is invalid.  Please state \'px\' or \'em\' immediately after the unit value and nothing before the unit value.';
+
+$string['credit'] = 'The {$a->name} theme for Moodle is developed by ';
 
 $string['profilebarcustomtitle'] = 'Profile bar custom block title';
 $string['profilebarcustomtitledesc'] = 'Title for custom profile bar block.';
@@ -143,32 +178,16 @@ $string['profilebarcustomtitledesc'] = 'Title for custom profile bar block.';
 $string['contactinfo'] = 'Contact information';
 $string['contactinfodesc'] = 'Enter your contact information';
 
-$string['siteicon'] = 'Site icon';
-$string['siteicondesc'] = 'Do not have a logo? Enter the name of the icon you wish to use.  List is <a href="http://fortawesome.github.io/Font-Awesome/cheatsheet/" target="_new">here</a>. Just enter what is after the "fa-". ';
-
-$string['layout'] = 'Use a standard course layout';
-$string['layoutdesc'] = 'This theme is designed to put both block columns on the side.  If you prefer the standard Moodle course layout you can check this box and be returned to the boring old three column layout.';
-
-$string['floatingsubmitbuttons'] = 'Floating submit buttons';
-$string['floatingsubmitbuttonsdesc'] = 'Have a \'floating\' area that contains the buttons used when submitting a form on desktop devices.  This helps to reduce scrolling on some pages.  Not used on course enrolment or forum posts.';
-
-$string['oldnavbar'] = 'Use the old navbar position';
-$string['oldnavbardesc'] = 'Enable this option to use the old navbar position, placing it below the header.';
-
-$string['fitvids'] = 'Use FitVids';
-$string['fitvidsdesc'] = 'Enable FitVids (fitvidsjs.com) to make your embedded videos responsive.  If FitVids is on and you want a video to be excluded then add \'class="fitvidsignore"\' to the \'iframe\' tag in the HTML mode of the editor.  For example: \'iframe class="fitvidsignore" width="420" height="315" src="//www.youtube.com/embed/enmEmym85xc" frameborder="0" allowfullscreen=""></iframe\'.';
-
 $string['favicon'] = 'Custom favicon';
 $string['favicondesc'] = 'Upload your own favicon.  It should be an .ico file.';
 
-$string['customscrollbars'] = 'Custom scrollbars';
-$string['customscrollbarsdesc'] = 'Use custom scrollbars. This will replace the standard browser scrollbars.';
-
-// Custom Menu.
+// Custom Menus.
 $string['mycoursesinfo'] = 'Enrolled courses menu';
 $string['mycoursesinfodesc'] = 'Displays a dynamic list of enrolled courses to the user.';
 $string['displaymycourses'] = 'Display enrolled courses';
-$string['displaymycoursesdesc'] = 'Display enrolled courses for users in the Custom Menu';
+$string['displaymycoursesdesc'] = 'Display enrolled courses for users in the \'Custom Menu\'.';
+$string['displayhiddenmycourses'] = 'Display hidden courses';
+$string['displayhiddenmycoursesdesc'] = 'Display hidden courses for users in the \'Custom Menu\' if they have permission to view hidden courses';
 
 $string['mycoursetitle'] = 'Terminology';
 $string['mycoursetitledesc'] = 'Change the terminology for the "My Courses" link in the drop down menu';
@@ -190,6 +209,8 @@ $string['helplink'] = 'Help link';
 $string['helplinkdesc'] = 'If you chose URL above fill in the complete URL to your help site (must include http:// or https://). If you chose Email address fill in your email address.';
 
 $string['few'] = 'A few ';
+$string['usermenu'] = 'User menu';
+$string['usermenudesc'] = 'The menu for the user.';
 $string['loggedinas'] = ' logged in as ';
 $string['loggedinfrom'] = 'Logged in from ';
 
@@ -217,6 +238,35 @@ $string['region-footer-left'] = 'Footer (Left)';
 $string['region-footer-middle'] = 'Footer (Middle)';
 $string['region-footer-right'] = 'Footer (Right)';
 $string['region-hidden-dock'] = 'Hidden from users';
+
+// Features.
+$string['featureheading'] = 'Features';
+$string['featureheadingsub'] = 'Set the features used in your theme';
+$string['featuredesc'] = 'Here you can find various settings to change many of the features found in this theme.';
+
+$string['customscrollbars'] = 'Custom scrollbars';
+$string['customscrollbarsdesc'] = 'Use custom scrollbars. This will replace the standard browser scrollbars.';
+
+$string['coursecontentsearch'] = 'Course content search';
+$string['coursecontentsearchdesc'] = "Enable course content search on the 'Dashboard' page.  Only works when Essential is not in '\$CFG->themedir'.";
+
+$string['fitvids'] = 'Use FitVids';
+$string['fitvidsdesc'] = 'Enable FitVids (fitvidsjs.com) to make your embedded videos responsive.  If FitVids is on and you want a video to be excluded then add \'class="fitvidsignore"\' to the \'iframe\' tag in the HTML mode of the editor.  For example: \'iframe class="fitvidsignore" width="420" height="315" src="//www.youtube.com/embed/enmEmym85xc" frameborder="0" allowfullscreen=""></iframe\'.';
+
+$string['floatingsubmitbuttons'] = 'Floating submit buttons';
+$string['floatingsubmitbuttonsdesc'] = 'Have a \'floating\' area that contains the buttons used when submitting a form on desktop devices.  This helps to reduce scrolling on some pages.  Not used on course enrolment or forum posts.';
+
+$string['layout'] = 'Use a standard course layout';
+$string['layoutdesc'] = 'This theme is designed to put both block columns on the side.  If you prefer the standard Moodle course layout you can check this box and be returned to the old three column layout.';
+
+$string['categoryincoursebreadcrumbfeature'] = 'Categories in the course breadcrumb';
+$string['categoryincoursebreadcrumbfeaturedesc'] = 'Show the category links in the breadcrumb of the course.';
+
+$string['returntosectionfeature'] = 'Return to section';
+$string['returntosectionfeaturedesc'] = "Enable return to section feature within course modules.";
+
+$string['returntosectiontextlimitfeature'] = 'Return to section name text limit';
+$string['returntosectiontextlimitfeaturedesc'] = 'Length limit for the \'name\' of the section on the button between {$a->lower} and {$a->upper} characters.';
 
 // Colours.
 $string['colorheading'] = 'Colour';
@@ -247,6 +297,10 @@ $string['themeiconcolor'] = 'Icon colour';
 $string['themeiconcolordesc'] = 'Set the colour for all icons.';
 $string['themenavcolor'] = 'Navigation text colour';
 $string['themenavcolordesc'] = 'Set the text colour for navigation.  Being the navigation bar and the breadcrumb fancy style.';
+$string['themestripetextcolour'] = 'Stripe text colour';
+$string['themestripetextcolourdesc'] = 'Set the text colour for stripes in tables.';
+$string['themestripebackgroundcolour'] = 'Stripe background colour';
+$string['themestripebackgroundcolourdesc'] = 'Set the background colour for stripes in tables.';
 
 $string['footercolor'] = 'Footer background colour';
 $string['footercolordesc'] = 'Set what colour the background of the Footer box should be.';
@@ -268,18 +322,6 @@ $string['footerblockurlcolour'] = 'Footer block link colour';
 $string['footerblockurlcolourdesc'] = 'Set the colour for your linked block text in the footer.';
 $string['footerblockhovercolour'] = 'Footer block link hover colour';
 $string['footerblockhovercolourdesc'] = 'Set the colour for your linked block text when hovered over in the footer.';
-
-$string['headerbackground'] = 'Header background image';
-$string['headerbackgrounddesc'] = 'Upload your own background image.';
-$string['headertextcolor'] = 'Header text colour';
-$string['headertextcolordesc'] = 'Set the text colour for the header.';
-$string['pagebackground'] = 'Page background image';
-$string['pagebackgrounddesc'] = 'Upload your own background image. Select the style of the image below.';
-$string['pagebackgroundstyle'] = 'Page background style';
-$string['pagebackgroundstyledesc'] = 'Select the style for the uploaded image.';
-$string['backgroundstylefixed'] = 'Fixed';
-$string['backgroundstyletiled'] = 'Tiled';
-$string['backgroundstylestretch'] = 'Stretch';
 
 // Alternate Colour Switcher.
 $string['themecolors'] = 'Theme colours';
@@ -311,6 +353,10 @@ $string['alternativethemenavcolor'] = 'Navigation text colour {$a}';
 $string['alternativethemenavcolordesc'] = 'Set the alternative {$a} text colour for navigation.  Being the navigation bar and the breadcrumb fancy style.';
 $string['alternativethemehovercolor'] = 'Alternative theme hover colour {$a}';
 $string['alternativethemehovercolordesc'] = 'What colour should your theme hovers be for the alternative theme colours {$a}.';
+$string['alternativethemestripetextcolour'] = 'Alternative stripe text colour {$a}';
+$string['alternativethemestripetextcolourdesc'] = 'Set the alternative {$a} text colour for stripes in tables.';
+$string['alternativethemestripebackgroundcolour'] = 'Alternative stripe background colour {$a}';
+$string['alternativethemestripebackgroundcolourdesc'] = 'Set the alternative {$a} background colour for stripes in tables.';
 
 $string['alternativethemefootercolor'] = 'Footer background colour for the alternative theme colours {$a}';
 $string['alternativethemefootercolordesc'] = 'Set what colour the background of the Footer box should be for the alternative theme colours {$a}.';
@@ -355,13 +401,16 @@ $string['courselistteachericondesc'] = 'Name of the icon you wish to use or empt
 
 $string['frontcontentheading'] = 'Front page content area';
 $string['frontcontent'] = 'Enable front page content area';
-$string['frontcontentdesc'] = 'If enabled this adds a custom content area between the Slide show and the Marketing boxes for your own custom content.';
+$string['frontcontentdesc'] = 'If enabled this adds a custom content area between the \'Slide show\' and the \'Marketing boxes\' for your own custom content.';
 $string['frontcontentarea'] = 'Front page content area contents';
 $string['frontcontentareadesc'] = 'Whatever is typed into this box will display across the full width of the page in between the slide show and the Marketing spots.';
 
 $string['frontpageblocksheading'] = 'Front page blocks';
 $string['frontpageblocks'] = 'Front page blocks alignment';
-$string['frontpageblocksdesc'] = 'Here you can determine if the standard Moodle blocks on the frontpage align to the left or the right.';
+$string['frontpageblocksdesc'] = 'Here you can determine if the standard Moodle blocks on the frontpage align before or after the content.';
+$string['beforecontent'] = 'Before content';
+$string['aftercontent'] = 'After content';
+
 $string['frontpagemiddleblocks'] = 'Enable additional front page middle blocks';
 $string['frontpagemiddleblocksdesc'] = 'If enabled this will display three additional block locations just under the marketing spots.';
 
@@ -518,6 +567,51 @@ $string['website'] = 'Website';
 $string['websiteurl'] = 'Website URL';
 $string['websitedesc'] = 'Enter the URL of your own website. (i.e http://about.me/gjbarnard)';
 
+
+// Category Course Title Image.
+$string['categoryctiheading'] = 'Category course title images';
+$string['categoryctiheadingsub'] = 'Use images to represent your categories in a course';
+$string['categoryctidesc'] = 'If enabled this will allow you to set images for each category.';
+
+$string['enablecategorycti'] = 'Enable category course title images';
+$string['enablecategoryctidesc'] = 'If enabled you will be able to select category course title images after clicking "Save changes".';
+
+$string['categoryctiinfo'] = '{$a->category} settings';
+$string['categoryctiinfodesc'] = 'Category course title image settings for: {$a->category}.';
+
+$string['categoryctimage'] = 'Category \'{$a->category}\' course title image file';
+$string['categoryctimagedesc'] = 'Image file for the course title in category \'{$a->category}\'.';
+
+$string['categoryctimageurl'] = 'Category \'{$a->category}\' course title image URL';
+$string['categoryctimageurldesc'] = 'Image URL for the course title in category \'{$a->category}\'.  If the file is uploaded then that will override this.';
+
+$string['categoryctiheight'] = 'Category \'{$a->category}\' course title image height';
+$string['categoryctiheightdesc'] = 'Image height for the course title in category \'{$a->category}\' between {$a->lower} and {$a->upper} pixels.  Do not postfix with \'px\', only enter the number.';
+
+$string['categoryctitextcolour'] = 'Category \'{$a->category}\' course title text colour';
+$string['categoryctitextcolourdesc'] = 'Text colour for the course title in category \'{$a->category}\'.';
+
+$string['categoryctitextbackgroundcolour'] = 'Category \'{$a->category}\' course title text background colour';
+$string['categoryctitextbackgroundcolourdesc'] = 'Text background colour for the course title in category \'{$a->category}\'.';
+
+$string['categoryctitextbackgroundopacity'] = 'Category \'{$a->category}\' course title text background opacity';
+$string['categoryctitextbackgroundopacitydesc'] = 'Text background opacity for the course title in category \'{$a->category}\'.';
+
+$string['ctioverride'] = 'Overriding category images in a course';
+$string['ctioverridedesc'] = 'If you wish to override the category course title image in a course when this is enabled with the \'enablecategorycti\' setting, then edit the course summary in the course settings and add an image.  Then edit in HTML mode, remove the surrounding \'p\' tags and \'br\' tag, then remove the \'style\', \'width\' and \'height\' attributes and any \'classes\' added by the text editor on the \'img\' tag.  Then add the class \'categorycti\'.  To specifiy the height (px) and the contained title text colour, background colour and opacity, use the following attributes: \'ctih\', \'ctit\', \'ctib\' and \'ctio\' respectively, for example:<br/><br/>&lt;img src=&quot;https://mymoodleinstall.me/pluginfile.php/493/course/section/237/myimage.jpg&quot; alt=&quot;Replacement image&quot; class=&quot;categorycti&quot; ctih=&quot;250&quot; ctit=&quot;#afafaf&quot; ctib=&quot;#222222&quot; ctio=&quot;0.5&quot;&gt;<br/><br/>This image will not be shown in the summary itself when viewing the list of courses.';
+
+$string['ctioverrideheight'] = 'Default overridden course title image height';
+$string['ctioverrideheightdesc'] = 'Default overridden image height for the course title between {$a->lower} and {$a->upper} pixels.  Do not postfix with \'px\', only enter the number.';
+
+$string['ctioverridetextcolour'] = 'Default overridden course title text colour';
+$string['ctioverridetextcolourdesc'] = 'Default overridden text colour for the course title.';
+
+$string['ctioverridetextbackgroundcolour'] = 'Default overridden course title text background colour';
+$string['ctioverridetextbackgroundcolourdesc'] = 'Default overridden text background colour for the course title.';
+
+$string['ctioverridetextbackgroundopacity'] = 'Default overridden course title text background opacity';
+$string['ctioverridetextbackgroundopacitydesc'] = 'Default overridden text background opacity for the course title.';
+
 // Category Icons.
 $string['categoryiconheading'] = 'Category icons';
 $string['categoryiconheadingsub'] = 'Use icons to represent your categories';
@@ -553,6 +647,26 @@ $string['shortname'] = 'Site short name';
 $string['fullnamesummary'] = 'Full name and summary';
 $string['shortnamesummary'] = 'Short name and summary';
 
+$string['oldnavbar'] = 'Use the old navbar position';
+$string['oldnavbardesc'] = 'Enable this option to use the old navbar position, placing it below the header.';
+$string['navbarabove'] = 'Navbar above the header';
+$string['navbarbelow'] = 'Navbar below the header';
+
+$string['usesiteicon'] = 'Use site icon';
+$string['usesiteicondesc'] = 'Use the site icon if there is no logo.';
+
+$string['siteicon'] = 'Site icon';
+$string['siteicondesc'] = 'Do not have a logo? Enter the name of the icon you wish to use.  List is <a href="http://fortawesome.github.io/Font-Awesome/cheatsheet/" target="_new">here</a>. Just enter what is after the "fa-".';
+
+$string['headertextcolor'] = 'Header text colour';
+$string['headertextcolordesc'] = 'Set the text colour for the header.';
+
+$string['headerbackground'] = 'Header background image';
+$string['headerbackgrounddesc'] = 'Upload your own background image.';
+
+$string['headerbackgroundstyle'] = 'Header background style';
+$string['headerbackgroundstyledesc'] = 'Select the style for the header background.';
+
 $string['editingmenu'] = 'Page editing switch';
 $string['editingmenudesc'] = 'Displays a button to switch the editing of the current page on/off if the user is allowed to edit the page.  The same functionality as the normal page editing button.';
 $string['displayeditingmenu'] = 'Display editing button';
@@ -565,10 +679,10 @@ $string['fontsettings'] = 'Font';
 $string['fontheadingsub'] = 'Font settings';
 $string['fontheadingdesc'] = 'Select and enter the fonts that you want to use in your Moodle environment.';
 $string['fontselect'] = 'Font type selector';
-$string['fontselectdesc'] = 'Choose from the list of available font types. Please save to show the options for your choice.';
-$string['fonttypestandard'] = 'Standard fonts';
+$string['fontselectdesc'] = 'Choose from the list of available font defining mechanisms:<ul><li>\'User fonts\' are where the font is already installed at the users machine and you just specify its name.</li><li>\'Google web fonts\' are where you find a font on \'{$a->googlewebfonts}\' and specify its name.</li><li>\'Custom fonts\' are where you specify the name and upload the font files for the font.</li></ul>Please save to show the options for your choice.';
+$string['fonttypeuser'] = 'User fonts';
 $string['fonttypegoogle'] = 'Google web fonts';
-$string['fonttypecustom'] = 'Custom font';
+$string['fonttypecustom'] = 'Custom fonts';
 $string['fontnameheading'] = 'Heading font';
 $string['fontnameheadingdesc'] = 'Enter the exact name of the font to use for headings.';
 $string['fontnamebody'] = 'Text font';
@@ -674,6 +788,11 @@ $string['analyticsuseuseriddesc'] = 'Enable use of User ID in tracking.';
 $string['analyticspiwik'] = 'Piwik';
 $string['analyticsguniversal'] = 'Google Universal Analytics';
 
+// Style guide.
+$string['styleguide'] = 'Style guide';
+$string['styleguidesub'] = 'Bootstrap V2.3.2 Style guide';
+$string['styleguidedesc'] = 'Original documentation code \'{$a->origcodelicenseurl}\' licensed.  Holder.js is \'{$a->holderlicenseurl}\' licensed.  Additional code \'{$a->thiscodelicenseurl}\' licensed, which is a \'{$a->compatible}\' license.  Content \'{$a->contentlicenseurl}\' licensed.  The documentation has been formatted for Moodle output with addition of FontAwesome icons where appropriate.  Additional CSS can be found in the file \'essential_admin_setting_styleguide.php\' under the comment \'// Beyond docs.css.\'.  The \'{$a->globalsettings}\' section has been removed.';
+
 // Alerts.
 $string['alertsheading'] = 'User alerts';
 $string['alertsheadingsub'] = 'Display important messages to your users on the front page';
@@ -712,5 +831,12 @@ $string['nomessagesfound'] = 'No messages were found';
 $string['badgepreferences'] = 'Badge';
 
 // Incourse.
-$string['returntosection'] = 'Return to section {$a->section}';
+$string['returntosection'] = 'Return to: {$a->section}';
 
+// Course content search.
+$string['findcoursecontent'] = 'Course content: ';
+
+// essential_admin_setting_configinteger.
+$string['asconfigintlower'] = '{$a->value} is less than the lower range limit of {$a->lower}';
+$string['asconfigintupper'] = '{$a->value} is greater than the upper range limit of {$a->upper}';
+$string['asconfigintnan'] = '{$a->value} is not a number';

@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is built using the bootstrapbase template to allow for new theme's using
- * Moodle's new Bootstrap theme engine
+ * Essential is a clean and customizable theme.
  *
  * @package     theme_essential
- * @copyright   2013 Julian Ridden
+ * @copyright   2016 Gareth J Barnard
  * @copyright   2014 Gareth J Barnard, David Bezemer
+ * @copyright   2013 Julian Ridden
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,7 +33,6 @@ echo $OUTPUT->doctype();
     <title><?php echo $OUTPUT->page_title(); ?></title>
     <link rel="shortcut icon" href="<?php echo $OUTPUT->favicon(); ?>"/>
     <?php
-    echo \theme_essential\toolbox::get_csswww();
     echo $OUTPUT->standard_head_html();
     ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,27 +50,39 @@ echo $OUTPUT->doctype();
 <?php echo $OUTPUT->standard_top_of_body_html(); ?>
 
 <header role="banner">
-    <div id="page-header" class="clearfix<?php echo ($oldnavbar) ? ' oldnavbar' : ''; ?>">
+<?php
+if (!$oldnavbar) {
+    require_once(\theme_essential\toolbox::get_tile_file('navbar'));
+}
+?>
+    <div id="page-header" class="clearfix<?php echo ($oldnavbar) ? ' oldnavbar' : ''; echo ($haslogo) ? ' logo' : ' nologo'; ?>">
         <div class="container-fluid">
             <div class="row-fluid">
                 <!-- HEADER: LOGO AREA -->
-                <div class="<?php echo $logoclass;
-                echo (!$left) ? ' pull-right' : ' pull-left'; ?>">
+                <div class="<?php echo (!$left) ? 'pull-right' : 'pull-left'; ?>">
 <?php
 if (!$haslogo) {
-    echo '<a class="textlogo" href="';
-    echo preg_replace("(https?:)", "", $CFG->wwwroot);
-    echo '">';
-    echo '<i id="headerlogo" class="fa fa-'.\theme_essential\toolbox::get_setting('siteicon').'"></i>';
-    echo '<div class="titlearea">'.$OUTPUT->get_title('header').'</div>';
-    echo '</a>';
+    $usesiteicon = \theme_essential\toolbox::get_setting('usesiteicon');
+    $headertitle = $OUTPUT->get_title('header');
+    if ($usesiteicon || $headertitle) {
+        echo '<a class="textlogo" href="';
+        echo preg_replace("(https?:)", "", $CFG->wwwroot);
+        echo '">';
+        if ($usesiteicon) {
+            echo '<span id="headerlogo" aria-hidden="true" class="fa fa-'.\theme_essential\toolbox::get_setting('siteicon').'"></span>';
+        }
+        if ($headertitle) {
+            echo '<div class="titlearea">'.$headertitle.'</div>';
+        }
+        echo '</a>';
+    }
 } else {
     echo '<a class="logo" href="'.preg_replace("(https?:)", "", $CFG->wwwroot).'" title="'.get_string('home').'"></a>';
 }
 ?>
                 </div>
                 <?php if ($hassocialnetworks || $hasmobileapps) { ?>
-                <a class="btn btn-icon" data-toggle="collapse" data-target="#essentialicons">
+                <a class="btn btn-icon collapsed" data-toggle="collapse" data-target="#essentialicons">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -81,9 +92,9 @@ if (!$haslogo) {
                 <div id='essentialicons' class="collapse pull-<?php echo ($left) ? 'right' : 'left'; ?>">
 <?php
 }
-                    // If true, displays the heading and available social links; displays nothing if false.
-                    if ($hassocialnetworks) {
-                        ?>
+// If true, displays the heading and available social links; displays nothing if false.
+if ($hassocialnetworks) {
+?>
                         <div class="pull-<?php echo ($left) ? 'right' : 'left'; ?>" id="socialnetworks">
                             <p id="socialheading"><?php echo get_string('socialnetworks', 'theme_essential') ?></p>
                             <ul class="socials unstyled">
@@ -103,9 +114,9 @@ if (!$haslogo) {
                             </ul>
                         </div>
                     <?php
-                    }
+}
                     // If true, displays the heading and available social links; displays nothing if false.
-                    if ($hasmobileapps) { ?>
+if ($hasmobileapps) { ?>
                         <div class="pull-<?php echo ($left) ? 'right' : 'left'; ?>" id="mobileapps">
                             <p id="socialheading"><?php echo get_string('mobileappsheading', 'theme_essential') ?></p>
                             <ul class="socials unstyled">
@@ -118,66 +129,19 @@ if (!$haslogo) {
                             </ul>
                         </div>
                     <?php
-                    }
-                    if ($hassocialnetworks || $hasmobileapps) {
-                    ?>
+}
+if ($hassocialnetworks || $hasmobileapps) {
+?>
                 </div>
 <?php
-                    }
+}
 ?>
             </div>
         </div>
     </div>
-    <nav role="navigation">
-        <div id='essentialnavbar' class="navbar<?php echo ($oldnavbar) ? ' oldnavbar' : ''; ?> moodle-has-zindex">
-            <div class="container-fluid navbar-inner">
-                <div class="row-fluid">
-                    <div class="custommenus pull-<?php echo ($left) ? 'left' : 'right'; ?>">
-                        <a class="btn btn-navbar" data-toggle="collapse" data-target="#essentialmenus">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </a>
-                        <?php echo $OUTPUT->get_title('navbar'); ?>
-                    <div class="pull-<?php echo ($left) ? 'right' : 'left'; ?>">
-                        <div class="usermenu">
-                            <?php echo $OUTPUT->custom_menu_user(); ?>
-                        </div>
-                        <div class="messagemenu">
-                            <?php echo $OUTPUT->custom_menu_messages(); ?>
-                        </div>
-                        <div class="gotobottommenu">
-                            <?php echo $OUTPUT->custom_menu_goto_bottom(); ?>
-                        </div>
-                        <div id="custom_menu_editing" class="editingmenu">
-                            <?php echo $OUTPUT->custom_menu_editing(); ?>
-                        </div>
-                    </div>
-                        <div id='essentialmenus' class="nav-collapse collapse pull-<?php echo ($left) ? 'left' : 'right'; ?>">
-                            <div id="custom_menu_language">
-                                <?php echo $OUTPUT->custom_menu_language(); ?>
-                            </div>
-                            <div id="custom_menu_courses">
-                                <?php echo $OUTPUT->custom_menu_courses(); ?>
-                            </div>
-                            <?php if ($colourswitcher) { ?>
-                                <div id="custom_menu_themecolours">
-                                    <?php echo $OUTPUT->custom_menu_themecolours(); ?>
-                                </div>
 <?php
+if ($oldnavbar) {
+    require_once(\theme_essential\toolbox::get_tile_file('navbar'));
 }
 ?>
-                            <div id="custom_menu">
-                                <?php echo $OUTPUT->custom_menu(); ?>
-                            </div>
-                            <div id="custom_menu_activitystream">
-                                <?php echo $OUTPUT->custom_menu_activitystream(); ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
 </header>

@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is built using the bootstrapbase template to allow for new theme's using
- * Moodle's new Bootstrap theme engine
+ * Essential is a clean and customizable theme.
  *
  * @package     theme_essential
- * @copyright   2013 Julian Ridden
+ * @copyright   2016 Gareth J Barnard
  * @copyright   2014 Gareth J Barnard, David Bezemer
+ * @copyright   2013 Julian Ridden
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -43,7 +43,7 @@ $footerregion = essential_has_footer_region(); // In pagesettings.php.
                 if ($footerregion) {
                     echo $OUTPUT->essential_blocks('side-pre', 'row-fluid', 'aside', 4);
                 }
-                ?>
+?>
             </div>
         </div>
         <!-- End Main Regions -->

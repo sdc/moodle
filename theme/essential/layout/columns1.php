@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is built using the bootstrapbase template to allow for new theme's using
- * Moodle's new Bootstrap theme engine
+ * Essential is a clean and customizable theme.
  *
  * @package     theme_essential
- * @copyright   2013 Julian Ridden
+ * @copyright   2016 Gareth J Barnard
  * @copyright   2014 Gareth J Barnard, David Bezemer
+ * @copyright   2013 Julian Ridden
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -34,11 +34,7 @@ require_once(\theme_essential\toolbox::get_tile_file('header'));
         <!-- Start Main Regions -->
         <div id="page-content" class="row-fluid">
             <section id="region-main" class="span12">
-                <?php if ($COURSE->id > 1) {
-                    echo $OUTPUT->heading(format_string($COURSE->fullname), 1, 'coursetitle');
-                    echo '<div class="bor"></div>';
-}
-                ?>
+                <?php echo $OUTPUT->course_title(); ?>
                 <?php echo $OUTPUT->course_content_header(); ?>
                 <?php echo $OUTPUT->main_content(); ?>
                 <?php if (empty($PAGE->layout_options['nocoursefooter'])) {
