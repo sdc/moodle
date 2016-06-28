@@ -82,7 +82,7 @@ class repository_planetestream extends repository {
         $ret['norefresh'] = true;
         $ret['nosearch'] = true;
         $ret['pages'] = - 1;
-        if (count ($ret ['list']) == 1) { // ... !(<10) ...
+        if (count($ret['list']) <= 1) { // ... !(<10) ...
             $ret['pages'] = 0;
             $ret['page'] = 0;
         }
@@ -201,9 +201,9 @@ class repository_planetestream extends repository {
         $help->type = 'hidden';
         $help->label = '<div style="position: relative; min-width: 100%; height: 24px; '
         .'font-size: 12px; white-space: nowrap;"><div style="float: left; padding-right: 7px;">'
-        .'[&nbsp;<a href="#" id="planetestream_addandembed" title="add (upload) and embed a new'
-        .'media file" style="text-decoration: underline" onclick="alert(\'An upload window will'
-        .'now open.\n\nAfter the upload has completed, click the Search button to find, select,'
+        .'[&nbsp;<a href="#" id="planetestream_addandembed" title="add (upload) and embed a new '
+        .'media file" style="text-decoration: underline" onclick="alert(\'An upload window will '
+        .'now open.\n\nAfter the upload has completed, click the Search button to find, select, '
         .'and insert the uploaded item.\'); var dtX=new Date(); document.getElementById(\'plane'
         .'testream_search\').value=\'mi\' + dtX.getTime(); window.open(\'' . $this->get_url()
         . '/UploadContentVLE.aspx?sourceID=11&uid=mi\' + dtX.getTime(), \'add\', \'width=720,he'
@@ -351,7 +351,7 @@ class repository_planetestream extends repository {
      * repository class name
      */
     public static function type_config_form($mform, $classname = 'repository') {
-        parent::type_config_form ( $mform, $classname );
+        parent::type_config_form ($mform, $classname);
         $mform->addElement ('text', 'url', get_string ('settingsurl', 'repository_planetestream'));
         $mform->setType('url', PARAM_RAW);
         $mform->addRule('url', get_string('required'), 'required', null, 'client');

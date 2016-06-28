@@ -23,8 +23,8 @@
  *
  */
 defined('MOODLE_INTERNAL') || die();
-$plugin->version = 2015071500;
+$plugin->version = 2016022600;
 $plugin->requires = 2012062500;
 $plugin->component = 'repository_planetestream';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '5.67';
+$plugin->release = '6.05';
