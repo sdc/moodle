@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Columns Information
  *
@@ -14,18 +29,6 @@
  * @author     Based on code originally written by Dan Poltawski.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
-
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
-
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 defined('MOODLE_INTERNAL') || die();
 
@@ -53,7 +56,7 @@ if ($week = optional_param('week', 0, PARAM_INT)) { // Weeks old section paramet
 }
 // End backwards-compatible aliasing..
 
-// make sure all sections are created
+// Make sure all sections are created.
 $courseformat = course_get_format($course);
 $course = $courseformat->get_course();
 course_create_sections_if_missing($course, range(0, $course->numsections));
@@ -100,7 +103,7 @@ if (!empty($displaysection)) {
     }
 
     // Establish horizontal unordered list for horizontal columns.
-    if ($cnsettings['columnorientation'] == 2) {
+    if (($renderer->get_format_responsive()) && ($cnsettings['columnorientation'] == 2)) {
         echo '.course-content ul.cntopics li.section {';
         // Note: Need '!important' for Bootstrap V3 based themes as '.hidden' class now uses it when V2.3.2 did not.
         echo 'display: inline-block !important;';
@@ -118,5 +121,5 @@ if (!empty($displaysection)) {
     $renderer->print_multiple_section_page($course, $sections, $mods, $modnames, $modnamesused);
 }
 
-// Include course format js module
+// Include course format js module.
 $PAGE->requires->js('/course/format/columns/format.js');

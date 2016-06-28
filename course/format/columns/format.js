@@ -26,7 +26,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 M.course = M.course || {};
 
 M.course.format = M.course.format || {};
@@ -50,7 +49,7 @@ M.course.format.get_config = function() {
         section_node : 'li',
         section_class : 'section'
     };
-}
+};
 
 /**
  * Swap section
@@ -66,11 +65,10 @@ M.course.format.swap_sections = function(Y, node1, node2) {
         SECTIONADDMENUS : 'section_add_menus'
     };
 
-    var sectionlist = Y.Node.all('.'+CSS.COURSECONTENT+' '+M.course.format.get_section_selector(Y));
-    // Swap menus
-    sectionlist.item(node1).one('.'+CSS.SECTIONADDMENUS).swap(sectionlist.item(node2).one('.'+CSS.SECTIONADDMENUS));
-}
-
+    var sectionlist = Y.Node.all('.' + CSS.COURSECONTENT + ' ' + M.course.format.get_section_selector(Y));
+    // Swap menus.
+    sectionlist.item(node1).one('.' + CSS.SECTIONADDMENUS).swap(sectionlist.item(node2).one('.' + CSS.SECTIONADDMENUS));
+};
 
 /**
  * Process sections after ajax response
@@ -88,7 +86,7 @@ M.course.format.process_sections = function(Y, sectionlist, response, sectionfro
     };
 
     if (response.action == 'move') {
-        if (sectionfrom > sectionto) { // From http://tracker.moodle.org/browse/MDL-34798
+        if (sectionfrom > sectionto) { // From http://tracker.moodle.org/browse/MDL-34798.
             // Swap.
             var temp = sectionto;
             sectionto = sectionfrom;
@@ -103,14 +101,15 @@ M.course.format.process_sections = function(Y, sectionlist, response, sectionfro
         // Update titles and move icons in all affected sections.
         for (var i = sectionfrom; i <= sectionto; i++) {
             // Update section title.
-            sectionlist.item(i).one('.'+CSS.SECTIONNAME).setContent(response.sectiontitles[i]);
+            var content = Y.Node.create('<span>' + response.sectiontitles[i] + '</span>');
+            sectionlist.item(i).all('.' + CSS.SECTIONNAME).setHTML(content);
             // Update move icon.
-            ele = sectionlist.item(i).one('.'+CSS.SECTIONLEFTSIDE);
+            ele = sectionlist.item(i).one('.' + CSS.SECTIONLEFTSIDE);
             str = ele.getAttribute('alt');
             stridx = str.lastIndexOf(' ');
-            newstr = str.substr(0, stridx +1) + i;
+            newstr = str.substr(0, stridx + 1) + i;
             ele.setAttribute('alt', newstr);
             ele.setAttribute('title', newstr); // For FireFox as 'alt' is not refreshed.
         }
     }
-}
+};
