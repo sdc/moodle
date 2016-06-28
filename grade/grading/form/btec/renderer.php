@@ -393,7 +393,7 @@ class gradingform_btec_renderer extends plugin_renderer_base {
             $btectemplate .= html_writer::tag('div', $input, array('class' => 'addcomment'));
         }
 
-        $btectemplate .=$this->btec_edit_options($mode, $options);
+        $btectemplate .= $this->btec_edit_options($mode, $options);
         $btectemplate .= html_writer::end_tag('div');
 
         return str_replace('{NAME}', $elementname, $btectemplate);
@@ -414,9 +414,9 @@ class gradingform_btec_renderer extends plugin_renderer_base {
             // Options are displayed only for people who can manage.
             return;
         }
-        $html = html_writer::start_tag('div', array('class' => 'options'));
-        $html .= html_writer::tag('div', get_string('btecoptions', 'gradingform_btec'),
-                array('class' => 'optionsheading'));
+        $html = html_writer::start_tag('div', array('class' => 'optionsheader'));
+        $html .= print_collapsible_region_start('btecoptions', uniqid('btecoptions'),
+                    get_string('btecoptions', 'gradingform_btec'), '', true, true);
         $attrs = array('type' => 'hidden', 'name' => '{NAME}[options][optionsset]',
             'value' => 1);
         $html .= html_writer::empty_tag('input', $attrs);
@@ -469,6 +469,7 @@ class gradingform_btec_renderer extends plugin_renderer_base {
         }
 
         $html .= html_writer::end_tag('div'); // Options.
+        $html .= print_collapsible_region_end(true);
 
         return $html;
     }
@@ -503,7 +504,7 @@ class gradingform_btec_renderer extends plugin_renderer_base {
             } else {
                 $criterionvalue = null;
             }
-            $criteriastr.= $this->criterion_template($mode, $options, $elementname,
+            $criteriastr .= $this->criterion_template($mode, $options, $elementname,
                     $criterion, $criterionvalue, $validationerrors);
         }
         $cnt = 0;
@@ -529,8 +530,8 @@ class gradingform_btec_renderer extends plugin_renderer_base {
             $showdescstud = get_user_preferences('gradingform_btec-showstudentdesc', true);
             $checked1 = array();
             $checked2 = array();
-            $checked_s1 = array();
-            $checked_s2 = array();
+            $checkeds1 = array();
+            $checkeds2 = array();
             $checked = array('checked' => 'checked');
             if ($showdesc) {
                 $checked1 = $checked;
@@ -538,9 +539,9 @@ class gradingform_btec_renderer extends plugin_renderer_base {
                 $checked2 = $checked;
             }
             if ($showdescstud) {
-                $checked_s1 = $checked;
+                $checkeds1 = $checked;
             } else {
-                $checked_s2 = $checked;
+                $checkeds2 = $checked;
             }
 
             $radio = html_writer::tag('input', get_string('showmarkerdesc', 'gradingform_btec'),
@@ -556,11 +557,11 @@ class gradingform_btec_renderer extends plugin_renderer_base {
             $radio = html_writer::tag('input', get_string('showstudentdesc', 'gradingform_btec'),
                     array('type' => 'radio',
                         'name' => 'showstudentdesc',
-                        'value' => "true") + $checked_s1);
+                        'value' => "true") + $checkeds1);
             $radio .= html_writer::tag('input', get_string('hidestudentdesc', 'gradingform_btec'),
                     array('type' => 'radio',
                         'name' => 'showstudentdesc',
-                        'value' => "false") + $checked_s2);
+                        'value' => "false") + $checkeds2);
             $output .= html_writer::tag('div', $radio, array('class' => 'showstudentdesc'));
         }
         return $output;
