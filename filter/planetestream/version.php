@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 $plugin            = new StdClass();
 $plugin->component = 'filter_planetestream';
-$plugin->version   = 2015082500;
+$plugin->version   = 2016022600;
 $plugin->requires  = 2012062500;
-$plugin->release   = '6.00';
+$plugin->release   = '6.05';
 $plugin->maturity  = MATURITY_STABLE;
