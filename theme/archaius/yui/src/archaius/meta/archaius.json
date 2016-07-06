@@ -1,7 +1,0 @@
-{
-    "moodle-theme_archaius-archaius":{
-        "requires":[
-            "base"
-        ]
-    }
-}
