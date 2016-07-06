@@ -105,7 +105,7 @@
     $name = 'theme_adaptable/enablepref';
     $title = get_string('enablepref', 'theme_adaptable');
     $description = get_string('enableprefdesc', 'theme_adaptable');
-    $default = false;
+    $default = true;
     $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);

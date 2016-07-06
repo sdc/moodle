@@ -24,14 +24,8 @@
  *
  */
 
-defined('MOODLE_INTERNAL') || die;
-
-$plugin->version   = 2016052900;
-$plugin->requires  = 2015051100;
-$plugin->component = 'theme_adaptable';
-$plugin->release = '1.2.3';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = array(
-    'theme_bootstrapbase'  => 2014111000,
-    'block_course_overview' => ANY_VERSION
+$definitions = array(
+    'userdata' => array(
+        'mode' => cache_store::MODE_SESSION
+    )
 );

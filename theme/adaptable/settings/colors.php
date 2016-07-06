@@ -99,6 +99,15 @@
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 
+    // Top header message badge background color.
+    $name = 'theme_adaptable/msgbadgecolor';
+    $title = get_string('msgbadgecolor', 'theme_adaptable');
+    $description = get_string('msgbadgecolordesc', 'theme_adaptable');
+    $previewconfig = null;
+    $setting = new admin_setting_configcolourpicker($name, $title, $description, '#E53935', $previewconfig);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+
     // Top header background color.
     $name = 'theme_adaptable/headerbkcolor';
     $title = get_string('headerbkcolor', 'theme_adaptable');
@@ -320,11 +329,12 @@
     $setting = new admin_setting_heading($name, $heading, '');
     $temp->add($setting);
 
+    // Breadcrumb background color.
     $name = 'theme_adaptable/breadcrumb';
     $title = get_string('breadcrumb', 'theme_adaptable');
     $description = get_string('breadcrumbdesc', 'theme_adaptable');
     $previewconfig = null;
-    $setting = new admin_setting_configcolourpicker($name, $title, $description, '#b4bbbf', $previewconfig);
+    $setting = new admin_setting_configcolourpicker($name, $title, $description, '#f5f5f5', $previewconfig);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 
@@ -334,30 +344,6 @@
     $description = get_string('breadcrumbtextcolordesc', 'theme_adaptable');
     $previewconfig = null;
     $setting = new admin_setting_configcolourpicker($name, $title, $description, '#444444', $previewconfig);
-    $setting->set_updatedcallback('theme_reset_all_caches');
-    $temp->add($setting);
-
-    $name = 'theme_adaptable/activebreadcrumb';
-    $title = get_string('activebreadcrumb', 'theme_adaptable');
-    $description = get_string('activebreadcrumbdesc', 'theme_adaptable');
-    $previewconfig = null;
-    $setting = new admin_setting_configcolourpicker($name, $title, $description, '#e8eaeb', $previewconfig);
-    $setting->set_updatedcallback('theme_reset_all_caches');
-    $temp->add($setting);
-
-    $name = 'theme_adaptable/sectionheadingcolor';
-    $title = get_string('sectionheadingcolor', 'theme_adaptable');
-    $description = get_string('sectionheadingcolordesc', 'theme_adaptable');
-    $previewconfig = null;
-    $setting = new admin_setting_configcolourpicker($name, $title, $description, '#5f588a', $previewconfig);
-    $setting->set_updatedcallback('theme_reset_all_caches');
-    $temp->add($setting);
-
-    $name = 'theme_adaptable/currentcolor';
-    $title = get_string('currentcolor', 'theme_adaptable');
-    $description = get_string('currentcolordesc', 'theme_adaptable');
-    $previewconfig = null;
-    $setting = new admin_setting_configcolourpicker($name, $title, $description, '#d9edf7', $previewconfig);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 

@@ -34,7 +34,7 @@ $temp->add(new admin_setting_heading('theme_adaptable_marketing', get_string('bl
 $name = 'theme_adaptable/frontpageblocksenabled';
 $title = get_string('frontpageblocksenabled', 'theme_adaptable');
 $description = get_string('frontpageblocksenableddesc', 'theme_adaptable');
-$setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
+$setting = new admin_setting_configcheckbox($name, $title, $description, false);
 $setting->set_updatedcallback('theme_reset_all_caches');
 $temp->add($setting);
 

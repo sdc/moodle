@@ -31,25 +31,17 @@
     $temp->add(new admin_setting_heading('theme_adaptable_social', get_string('socialheading', 'theme_adaptable'),
     format_text(get_string('socialtitledesc', 'theme_adaptable'), FORMAT_MARKDOWN)));
 
-    $name = 'theme_adaptable/socialset';
-    $title = get_string('socialset', 'theme_adaptable');
-    $description = get_string('socialsetdesc', 'theme_adaptable');
-    $default = true;
-    $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
-    $setting->set_updatedcallback('theme_reset_all_caches');
-    $temp->add($setting);
-
     $name = 'theme_adaptable/socialsize';
     $title = get_string('socialsize', 'theme_adaptable');
     $description = get_string('socialsize', 'theme_adaptable');
-    $setting = new admin_setting_configselect($name, $title, $description, 32, $from14to42px);
+    $setting = new admin_setting_configselect($name, $title, $description, '32px', $from14to42px);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 
     $name = 'theme_adaptable/socialsizemobile';
     $title = get_string('socialsizemobile', 'theme_adaptable');
     $description = get_string('socialsizemobile', 'theme_adaptable');
-    $setting = new admin_setting_configselect($name, $title, $description, '14', $from14to42px);
+    $setting = new admin_setting_configselect($name, $title, $description, '22px', $from14to42px);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 
@@ -69,7 +61,7 @@
 
     $name = 'theme_adaptable/socialiconlist';
     $title = get_string('socialiconlist', 'theme_adaptable');
-  $default = 'http://facebook.com/|Facebook|fa-facebook-square';
+    $default = '';
     $description = get_string('socialiconlistdesc', 'theme_adaptable');
     $setting = new admin_setting_configtextarea($name, $title, $description, $default, PARAM_RAW, '50', '10');
     $temp->add($setting);

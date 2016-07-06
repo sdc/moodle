@@ -64,18 +64,4 @@
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 
-    $name = 'theme_adaptable/coursetitlemaxwidth';
-    $title = get_string('coursetitlemaxwidth', 'theme_adaptable');
-    $description = get_string('coursetitlemaxwidthdesc', 'theme_adaptable');
-    $setting = new admin_setting_configselect($name, $title, $description, '50%', $from35to50percent);
-    $setting->set_updatedcallback('theme_reset_all_caches');
-    $temp->add($setting);
-
-  $name = 'theme_adaptable/coursetitlepaddingtop';
-    $title = get_string('coursetitlepaddingtop', 'theme_adaptable');
-    $description = get_string('coursetitlepaddingtopdesc', 'theme_adaptable');
-    $setting = new admin_setting_configselect($name, $title, $description, '0px', $from0to20);
-    $setting->set_updatedcallback('theme_reset_all_caches');
-    $temp->add($setting);
-
     $ADMIN->add('theme_adaptable', $temp);

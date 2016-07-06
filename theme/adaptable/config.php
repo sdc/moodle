@@ -24,10 +24,20 @@
  *
  */
 
+global $PAGE;
+if ($PAGE->pagetype == 'site-index') {
+    $regions = array('side-post', 'middle', 'frnt-footer', 'frnt-market-a', 'frnt-market-b', 'frnt-market-c', 'frnt-market-d',
+        'frnt-market-e', 'frnt-market-f', 'frnt-market-g', 'frnt-market-h', 'frnt-market-i', 'frnt-market-j', 'frnt-market-k',
+        'frnt-market-l', 'frnt-market-m', 'frnt-market-n', 'frnt-market-o', 'frnt-market-p', 'frnt-market-q',
+        'frnt-market-r', 'frnt-market-s', 'frnt-market-t');
+} else {
+    $regions = array('side-post');
+}
+
 $THEME->name = 'adaptable';
 $THEME->doctype = 'html5';
 $THEME->parents = array('bootstrapbase');
-$THEME->sheets = array('adaptable', 'blocks', 'menu', 'course', 'slider', 'extras', 'zoom', 'button', 'custom');
+$THEME->sheets = array('adaptable', 'blocks', 'menu', 'course', 'slider', 'extras', 'zoom', 'button', 'socialwall',  'custom');
 $THEME->supportscssoptimisation = false;
 $THEME->yuicssmodules = array();
 
@@ -77,10 +87,7 @@ $THEME->layouts = array(
     // The site home page.
     'frontpage' => array(
         'file' => 'frontpage.php',
-        'regions' => array('side-post', 'middle', 'frnt-footer', 'frnt-market-a', 'frnt-market-b', 'frnt-market-c', 'frnt-market-d',
-        'frnt-market-e', 'frnt-market-f', 'frnt-market-g', 'frnt-market-h', 'frnt-market-i', 'frnt-market-j', 'frnt-market-k',
-        'frnt-market-l', 'frnt-market-m', 'frnt-market-n', 'frnt-market-o', 'frnt-market-p', 'frnt-market-q',
-        'frnt-market-r', 'frnt-market-s', 'frnt-market-t'),
+        'regions' => $regions,
         'defaultregion' => 'side-post',
         'options' => array('nonavbar' => true),
     ),
@@ -102,6 +109,7 @@ $THEME->layouts = array(
         'file' => 'columns2.php',
         'regions' => array('side-post'),
         'defaultregion' => 'side-post',
+        'options' => array('nonavbar' => true),
     ),
     // Login page.
     'login' => array(
@@ -151,6 +159,7 @@ $THEME->layouts = array(
         'regions' => array('side-post'),
         'defaultregion' => 'side-post',
     ),
+
     // The pagelayout used for safebrowser and securewindow.
     'secure' => array(
         'file' => 'secure.php',

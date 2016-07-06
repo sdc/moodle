@@ -30,6 +30,22 @@ $temp = new admin_settingpage('theme_adaptable_navbar', get_string('navbarsettin
 $temp->add(new admin_setting_heading('theme_adaptable_navbar', get_string('navbarsettingsheading', 'theme_adaptable'),
 format_text(get_string('navbardesc', 'theme_adaptable'), FORMAT_MARKDOWN)));
 
+// Sticky Navbar at the top.
+$name = 'theme_adaptable/stickynavbar';
+$title = get_string('stickynavbar', 'theme_adaptable');
+$description = get_string('stickynavbardesc', 'theme_adaptable');
+$default = false;
+$setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
+$setting->set_updatedcallback('theme_reset_all_caches');
+$temp->add($setting);
+
+$name = 'theme_adaptable/navbarcachetime';
+$title = get_string('navbarcachetime', 'theme_adaptable');
+$description = get_string('navbarcachetimedesc', 'theme_adaptable');
+$setting = new admin_setting_configselect($name, $title, $description, '0', $from0to60inc5);
+$setting->set_updatedcallback('theme_reset_all_caches');
+$temp->add($setting);
+
 $name = 'theme_adaptable/enablehome';
 $title = get_string('home');
 $description = get_string('enablehomedesc', 'theme_adaptable');
@@ -41,7 +57,7 @@ $temp->add($setting);
 $name = 'theme_adaptable/enablehomeredirect';
 $title = get_string('enablehomeredirect', 'theme_adaptable');
 $description = get_string('enablehomeredirectdesc', 'theme_adaptable');
-$default = false;
+$default = true;
 $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
 $setting->set_updatedcallback('theme_reset_all_caches');
 $temp->add($setting);
@@ -79,6 +95,26 @@ $title = get_string('mysitesmaxlength', 'theme_adaptable');
 $description = get_string('mysitesmaxlengthdesc', 'theme_adaptable');
 $setting = new admin_setting_configselect($name, $title, $description, '30', $from20to40);
 $setting->set_updatedcallback('theme_reset_all_caches');
+$temp->add($setting);
+
+$name = 'theme_adaptable/mysitessortoverride';
+$title = get_string('mysitessortoverride', 'theme_adaptable');
+$description = get_string('mysitessortoverridedesc', 'theme_adaptable');
+$choices = array(
+    'off' => get_string('mysitessortoverrideoff', 'theme_adaptable'),
+    'strings' => get_string('mysitessortoverridestrings', 'theme_adaptable'),
+    'profilefields' => get_string('mysitessortoverrideprofilefields', 'theme_adaptable'),
+    'profilefieldscohort' => get_string('mysitessortoverrideprofilefieldscohort', 'theme_adaptable')
+);
+$setting = new admin_setting_configselect($name, $title, $description, 'off', $choices);
+$setting->set_updatedcallback('theme_reset_all_caches');
+$temp->add($setting);
+
+$name = 'theme_adaptable/mysitessortoverridefield';
+$title = get_string('mysitessortoverridefield', 'theme_adaptable');
+$description = get_string('mysitessortoverridefielddesc', 'theme_adaptable');
+$default = '';
+$setting = new admin_setting_configtext($name, $title, $description, $default, PARAM_RAW);
 $temp->add($setting);
 
 $name = 'theme_adaptable/enablethiscourse';

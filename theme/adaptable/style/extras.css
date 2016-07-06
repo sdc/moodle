@@ -24,6 +24,10 @@ a.back-to-top {
     margin-bottom: 20px;
 }
 
+.gradereport-grader-table img {
+    max-width: none;
+}
+
 .singleselect {
     display: inline-block;
     max-width: 100%;
@@ -130,7 +134,7 @@ ul.teachers {
 }
 #page-mod-forum-discuss .discussioncontrols .discussioncontrol .singleselect select.singleselect {
     display: block;
-    width: 100%;
+    width: auto;
     height: 38px;
     padding: 8px 12px;
     font-size: 14px;

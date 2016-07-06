@@ -111,7 +111,7 @@ for ($i = 1; $i <= $totalblocks; $i++) {
     $title = get_string('footercontent', 'theme_adaptable') . $i;
     $description = get_string('footercontentdesc', 'theme_adaptable') . $i;
     $default = '';
-    $setting = new admin_setting_confightmleditor($name, $title, $description, $default);
+    $setting = new adaptable_setting_confightmleditor($name, $title, $description, $default);
     $temp->add($setting);
 }
 
@@ -121,5 +121,6 @@ $description = get_string('footnotedesc', 'theme_adaptable');
 $default = '';
 $setting = new admin_setting_confightmleditor($name, $title, $description, $default);
 $temp->add($setting);
+
 
 $ADMIN->add('theme_adaptable', $temp);

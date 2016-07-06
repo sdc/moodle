@@ -1,6 +1,96 @@
-Changes in version 1.1.1
+Changes in version 1.2.3 (2016052900)
+-------------------------------------
+- #469: Infobox2 strings missed
+- #468: Lower Header blocks text and link Colour: not working
+- #467: Override .block settings
+- #444: Neither site title nor course title in the header
+
+
+Changes in version 1.2.2 (2016050900)
+-------------------------------------
+- #449: 'People' item in 'This course' menu is not displayed in local language 
+- #446: Failed to control 'Course Full Name' / 'Course Short Name' setting for the breadcrumb 
+- #445: Header height has a 'hidden' limit 
+- #444: Neither site title nor course title in the header 
+- #441: Multi-lang content not displayed in the marketing blocks 
+- #440: Preferences menu item enable by default 
+- #429: Teacher Style front Page Tiles 
+
+
+Changes in version 1.2.1 (2016031800)
 -------------------------------------
 
+- Fix #409 Bug rendering sub menus on mobile
+- Fix #416 Bug rendering My Courses with cohort option selected
+- Fix #411 Multiple tools menus added to menu
+- Fix #406 User Preference setting doesn't apply
+- Fix #414 Correct URL for My Feedback Report
+- Fix #415 Analytics not rendering script tag properly
+- Fix #413 Add setting for messages "badge" in header
+- Fix #407 Fix time calculation on navbar cache ttl
+- Fix #404 Alerts not displaying if set to display to logged in users
+- Fix #398 Second infobox has not full screen
+- Fix #278 Navbar sticky at the top
+- Fix #394 Set Enable Home redirect=0 to On by default
+- Fix #397 Replace <b> with <strong>
+- Fix #395 Set site title to truncate and add width setting making consistent with course title
+
+Changes in version 1.2.0 (2016030700)
+-------------------------------------
+
+- Fix #393 Fix HTML Validation errors on closing menu div
+- Fix #392 Remove unwanted </i> tag from top menus
+- Fix #389 Coursebox non closed <a> tag breaks HTML validation
+- Fix #390 Header menu font-size increment is too rough
+- Fix #375 Prevent Frontpage Block Regions appearing in block settings sitewide
+- Fix #354 Grader Report: Icons in webkit overlapping.
+- Fix #381 Prevent slider being wrapped in <a tag where no slider URL is given
+- Fix #384 Add settings page for course layout
+- Fix #184 Topic title header width changes when editing On
+- Fix #383 Correct display of section headings in courses
+- Fix #382 Improve support for onetopic course format
+- Fix #281 Correct width of forum display dropdown select
+- Fix #287 Remove duplicate check on logo
+- Fix #376 Multiple changes to improve site titles and header settings.
+- Fix #377 Add options for display of cohort enrolments in list of my courses
+- Fix #375 Prevent Frontpage Block Regions appearing in block settings sitewide
+- Fix #373 Help link target not being applied
+- Fix #340 Correct / improve block style settings
+- Fix #372 Improve styling of saved comments in marking guide
+- Fix #367 Change logout icon to fa-sign-out making consistent with core Moodle.
+- Fix #298 Use larger profile image on front page to improve view of forum posts.
+- Fix #368 Adding class for frontpage blocks which can bow be targeted independently of the side blocks
+- Fix #366 Missed region-frnt-market-a string when editing an HTML block
+- Fix #365 Add dropdown to Font Weight
+- Fix #343 Link hover colour in blocks
+- Fix #358 Set enable custom block region on front page to off by default
+
+Changes in version 1.1.3 (2016022601)
+-------------------------------------
+
+- Fix #60 Add support for Social Wall courese format
+- Fix #363 Add padding setting for main navigation items
+- Fix #362 Add caching for main navigation bar
+- Fix #355 Add link to font awesome icon list in social settings
+- Fix #315 Resolve bugs on theme select
+
+Changes in version 1.1.2 (2016022502)
+-------------------------------------
+
+- Fix #345 One full width marketing block not displayed
+- Fix #360 Remove es language files
+- Fix #361 Make My Course list settings more generic
+- Fix #353 Add feature for custom sorting of My Courses
+- Fix #349 End slash in the social icon url error
+- Fix #348 Remove default facebook social icon
+- Fix #353 Add feature for custom sorting of My Courses
+- Fix #352 Move hidden courses into sub menu
+- Fix #273 PHP errors after install
+- Fix #334 Include Font Awesome in the theme
+- Fix #336 Remove Global Font Size from settings
+- Fix #268 Quiz settings spill out of the main region
+- Fix #247 Mail settings spill on blocks
+- Fix #331 Remove lecacy contact details style
 - Fix #327 Fix show / hide front page marketing blocks
 
 Changes in version 1.1.1 (2016020400)

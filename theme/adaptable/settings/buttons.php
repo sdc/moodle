@@ -33,7 +33,7 @@
     $name = 'theme_adaptable/buttonradius';
     $title = get_string('buttonradius', 'theme_adaptable');
     $description = get_string('buttonradiusdesc', 'theme_adaptable');
-    $radchoices = $from0to6;
+    $radchoices = $from0to6px;
     $setting = new admin_setting_configselect($name, $title, $description, '5px', $radchoices);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
@@ -92,7 +92,7 @@
     $name = 'theme_adaptable/editverticalpadding';
     $title = get_string('editverticalpadding', 'theme_adaptable');
     $description = get_string('editverticalpadding', 'theme_adaptable');
-    $radchoices = $from0to6;
+    $radchoices = $from0to6px;
     $setting = new admin_setting_configselect($name, $title, $description, '4px', $radchoices);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
@@ -100,7 +100,7 @@
     $name = 'theme_adaptable/edithorizontalpadding';
     $title = get_string('edithorizontalpadding', 'theme_adaptable');
     $description = get_string('edithorizontalpadding', 'theme_adaptable');
-    $radchoices = $from0to6;
+    $radchoices = $from0to6px;
     $setting = new admin_setting_configselect($name, $title, $description, '6px', $radchoices);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
@@ -108,7 +108,7 @@
     $name = 'theme_adaptable/edittopmargin';
     $title = get_string('edittopmargin', 'theme_adaptable');
     $description = get_string('edittopmargin', 'theme_adaptable');
-    $radchoices = $from0to8;
+    $radchoices = $from0to8px;
     $setting = new admin_setting_configselect($name, $title, $description, '1px', $radchoices);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
@@ -140,7 +140,7 @@
     $name = 'theme_adaptable/buttonloginpadding';
     $title = get_string('buttonloginpadding', 'theme_adaptable');
     $description = get_string('buttonloginpaddingdesc', 'theme_adaptable');
-    $radchoices = $from0to8;
+    $radchoices = $from0to8px;
     $setting = new admin_setting_configselect($name, $title, $description, '0px', $radchoices);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
@@ -167,7 +167,7 @@
     $name = 'theme_adaptable/buttonloginmargintop';
     $title = get_string('buttonloginmargintop', 'theme_adaptable');
     $description = get_string('buttonloginmargintopdesc', 'theme_adaptable');
-    $radchoices = $from0to12;
+    $radchoices = $from0to12px;
     $setting = new admin_setting_configselect($name, $title, $description, '2px', $radchoices);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);

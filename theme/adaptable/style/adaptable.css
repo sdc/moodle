@@ -76,6 +76,18 @@ fieldset {
     fieldset {
         display: table-cell;
     }
+
+}
+
+
+@-moz-document url-prefix() {
+    textarea {
+        box-sizing: border-box
+    }
+
+    textarea[cols] {
+        width: 100%;
+    }
 }
 
 select {
@@ -83,6 +95,8 @@ select {
 width: auto;
 
 }
+
+
 
 
 /* real main headings */
@@ -207,14 +221,20 @@ div.signuppanel h2 {
     padding-top: 10px;
 }
 
+#titlecontainer,
 #titlecontainer a,
-#titlecontainer a p {
+#titlecontainer p {
     font-family: [[setting:fonttitlename]], sans-serif !important;
-    font-size: [[setting:fonttitlesize]] !important;
-    font-weight: [[setting:fonttitleweight]] !important;
     color: [[setting:fonttitlecolor]] !important;
-    padding-top: 10px;
+    font-size: [[setting:fonttitlesize]] !important;
     line-height: 100%;
+    font-weight: [[setting:fonttitleweight]];
+    padding-left: 15px;
+    padding-top: [[setting:coursetitlepaddingtop]];
+    max-width: [[setting:coursetitlemaxwidth]];
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #titlecontainer a:hover {
@@ -232,11 +252,11 @@ div.signuppanel h2 {
     margin-left: 0px;
 }
 
-#coursetitle {
+#coursetitle p {
     font-family: [[setting:fonttitlename]], sans-serif !important;
     color: [[setting:fonttitlecolor]] !important;
     font-size: [[setting:fonttitlesize]] !important;
-    line-height: normal;
+    line-height: 100%;
     font-weight: [[setting:fonttitleweight]];
     padding-left: 15px;
     padding-top: [[setting:coursetitlepaddingtop]];
@@ -269,11 +289,11 @@ div.signuppanel h2 {
 .socialbox {
     padding-top: [[setting:socialpaddingtop]];
     padding-bottom: 5px;
+    font-size: [[setting:socialsize]];
 }
 
 .socialbox a {
     color: [[setting:headertextcolor2]];
-    font-size: [[setting:socialsize]]px;
     padding-left: 10px;
 }
 
@@ -347,8 +367,8 @@ a.usermendrop {
 }
 
 #marketblocks {
-    margin-bottom: 20px;
     overflow: hidden;
+    padding: 0 10px 10px 0;
     background-color: [[setting:marketblocksbackgroundcolor]];
 }
 
@@ -381,24 +401,15 @@ a.usermendrop {
 }
 
 #themessage {
-    background: [[setting:infoboxcolor2]];
     position: relative;
     margin-bottom: 20px;
 }
 
 #themessage-internal {
+/*
     padding: 15px;
     padding-right: 25px;
-}
-
-#themessage h1,
-#themessage h2,
-#themessage h3,
-#themessage h4,
-#themessage h5,
-#themessage h6,
-#themessage p {
-    color: [[setting:infoboxtextcolor2]] !important;
+*/
 }
 
 .personpic {
@@ -427,23 +438,8 @@ span.fa-chevron-right.fa {
     margin: 10px 0 0;
 }
 
-#theinfo {
-    background: [[setting:infoboxcolor]];
-    margin-bottom: 20px;
-}
-
 #theinfo-internal {
   padding: 15px 25px;
-}
-
-#theinfo h1,
-#theinfo h2,
-#theinfo h3,
-#theinfo h4,
-#theinfo h5,
-#theinfo h6,
-#theinfo p {
-    color: [[setting:infoboxtextcolor]] !important;
 }
 
 #theinfo .span3 {
@@ -542,6 +538,14 @@ span.fa-chevron-right.fa {
   border-radius: 0px;
   padding: 5px;
 }
+
+
+.breadcrumb li span.divider {
+    display: none !important;
+
+
+}
+
 
 #page-footer .logininfo {
     margin: 0px auto 0px;
@@ -646,36 +650,32 @@ langmenu a:hover {
 }
 
 
+/* Breadcrumb */
 .breadcrumb {
-  padding: 0px 0px 0px;
-  margin: 0 0;
+    padding: 5px;
+    margin: 0;
+    background-color: [[setting:breadcrumb]];
 }
 
 .breadcrumb li {
-  height: 35px;
-  background: [[setting:breadcrumb]];
+    text-shadow: none;
+    margin: 5px 0;
 }
 
-.breadcrumb li.lastli {
-    background: [[setting:activebreadcrumb]];
+.separator {
+    margin: 0 5px;
+}
+
+.separator i {
+    margin-left: 5px;
 }
 
 .breadcrumb li.lastli a span {
   display: none !important;
 }
 
-.breadcrumb li a, .breadcrumb li.lastli span, .breadcrumb li span.spnlink {
-    display: inline-block;
-    height: 26px;
-    padding: 9px 8px 0 25px;
-    position: relative;
-    color: [[setting:breadcrumbtextcolor]];
-    text-shadow: none;
-    font-size: 13px;
-    text-decoration: none !important;
-}
-
-.breadcrumb li.lastli a, .breadcrumb li.lastli span {
+.breadcrumb li.lastli a,
+.breadcrumb li.lastli span {
     color: [[setting:breadcrumbtextcolor]];
 }
 
@@ -684,7 +684,7 @@ langmenu a:hover {
     padding-right: 20px;
 }
 
-.breadcrumb li span.divider  {
+.breadcrumb li span.divider {
   display: none !important;
 }
 
@@ -978,7 +978,7 @@ input[type="radio"], input[type="checkbox"] {
 
     .socialbox a {
         color: [[setting:headertextcolor2]];
-        font-size: [[setting:socialsizemobile]]px;
+        font-size: [[setting:socialsizemobile]];
         padding-left: 10px;
     }
 
@@ -1455,6 +1455,10 @@ div.questionbankwindow.block {
   display: none;
 }
 
+.coursebox.hover .summary p {
+  color: [[setting:rendereroverlayfontcolor]] !important;
+}
+
 .coursebox.panel.hover .panel-body:hover .coursebox-content h3 a {
   color: [[setting:rendereroverlayfontcolor]] !important;
 }
@@ -1464,9 +1468,10 @@ div.questionbankwindow.block {
 }
 
 .coursebox.hover .teachers {
-  text-align: left;
-  padding-top: 2px;
-  padding-left: 2px;
+    text-align: left;
+    padding-top: 2px;
+    padding-left: 2px;
+    color: [[setting:rendereroverlayfontcolor]] !important;
 }
 
 .coursebox.hover:hover .summary {
@@ -1660,4 +1665,9 @@ line-height: normal;
 
 .hidden-blocks .block-region .block .header {
   border-top: 0px;
+}
+
+/* Fix glossary print option */
+#page-mod-glossary-view .glossarycontrol {
+    margin: -40px 5px;
 }

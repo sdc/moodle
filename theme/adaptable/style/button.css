@@ -2,8 +2,8 @@
 input[type="submit"],
 input[type="button"],
 #searchform_button,
-a.submit, #notice .singlebutton + .singlebutton input,
-.submit.buttons input[name="cancel"],
+a.submit,
+#notice .singlebutton + .singlebutton input,
 #page-login-index2 .forgetpass a,
 .btn,
 input.form-submit,
@@ -20,7 +20,7 @@ td.submit input {
     -moz-border-radius: [[setting:buttonradius]];
     border-radius: [[setting:buttonradius]];
     background-size: 100% 200%;
-  color: [[setting:buttontextcolor]] !important;
+    color: [[setting:buttontextcolor]] !important;
     cursor: pointer;
     padding: 8px 15px 8px;
     -webkit-transition: background .2s ease-out;
@@ -55,19 +55,34 @@ td.submit input {
     padding: 8px 15px 8px;
 }
 
-#notice .singlebutton + .singlebutton input, .submit.buttons input[name="cancel"] {
+#notice .singlebutton + .singlebutton input,
+.submit.buttons input[name="cancel"] {
   background: #0084C2 !important;
   text-shadow: none;
 }
 
-input[type="submit"]:hover, input[type="button"]:hover, #searchform_button:hover, a.submit:hover, #notice .singlebutton + .singlebutton input:hover, .submit.buttons input[name="cancel"]:hover,#page-login-index2 .forgetpass a:hover, .btn:hover, .btn:active {
+input[type="submit"]:hover,
+input[type="button"]:hover,
+#searchform_button:hover,
+a.submit:hover,
+#notice .singlebutton + .singlebutton input:hover,
+.submit.buttons input[name="cancel"]:hover,
+#page-login-index2 .forgetpass a:hover,
+.btn:hover,
+.btn:active {
     background-position: 0 -100%;
     text-decoration: none !important;
     color: #fff;
     background-color: [[setting:buttonhovercolor]];
 }
 
-input[type="submit"]:focus, input[type="button"]:focus, #searchform_button:focus, a.submit:focus, #notice .singlebutton + .singlebutton input:focus, .submit.buttons input[name="cancel"]:focus,#page-login-index2 .forgetpass a:focus, .btn:focus, .btn:focus {
+input[type="submit"]:focus,
+input[type="button"]:focus,
+#searchform_button:focus,
+a.submit:focus, #notice .singlebutton + .singlebutton input:focus,
+.submit.buttons input[name="cancel"]:focus,
+#page-login-index2 .forgetpass a:focus,
+.btn:focus {
     background-position: 0 -100%;
     text-decoration: none !important;
     color: #fff;
@@ -77,7 +92,7 @@ input[type="submit"]:focus, input[type="button"]:focus, #searchform_button:focus
 button.close {
     background: transparent !important;
     text-shadow: none !important;
-  color: [[setting:buttontextcolor]] !important;
+    color: [[setting:buttontextcolor]] !important;
     opacity: 1 !important;
     box-shadow: none !important;
 }
@@ -86,25 +101,53 @@ button.close {
     color: [[setting:editfont]] !important;
 }
 
-input.form-submit:hover, input#id_submitbutton:hover, input#id_submitbutton2:hover, .path-admin .buttons input[type="submit"]:hover, td.submit input:hover, input.form-submit:focus, input#id_submitbutton:focus, input#id_submitbutton2:focus, .path-admin .buttons input[type="submit"]:focus, td.submit input:focus, input.form-submit:active, input#id_submitbutton:active, input#id_submitbutton2:active, .path-admin .buttons input[type="submit"]:active, td.submit input:active, input.form-submit.active, input#id_submitbutton.active, input#id_submitbutton2.active, .path-admin .buttons input[type="submit"].active, td.submit input.active, input.form-submit.disabled, input#id_submitbutton.disabled, input#id_submitbutton2.disabled, .path-admin .buttons input[type="submit"].disabled, td.submit input.disabled, input.form-submit[disabled], input#id_submitbutton[disabled], input#id_submitbutton2[disabled], .path-admin .buttons input[type="submit"][disabled], td.submit input[disabled] {
+input.form-submit:hover,
+input#id_submitbutton:hover,
+input#id_submitbutton2:hover,
+.path-admin .buttons input[type="submit"]:hover,
+td.submit input:hover,
+input.form-submit:focus,
+input#id_submitbutton:focus,
+input#id_submitbutton2:focus,
+.path-admin .buttons input[type="submit"]:focus,
+td.submit input:focus,
+input.form-submit:active,
+input#id_submitbutton:active,
+input#id_submitbutton2:active,
+.path-admin .buttons input[type="submit"]:active,
+td.submit input:active,
+input.form-submit.active,
+input#id_submitbutton.active,
+input#id_submitbutton2.active,
+.path-admin .buttons input[type="submit"].active,
+td.submit input.active, input.form-submit.disabled,
+input#id_submitbutton.disabled,
+input#id_submitbutton2.disabled,
+.path-admin .buttons input[type="submit"].disabled,
+td.submit input.disabled,
+input.form-submit[disabled],
+input#id_submitbutton[disabled],
+input#id_submitbutton2[disabled],
+.path-admin .buttons input[type="submit"][disabled], td.submit input[disabled] {
     background-color: [[setting:buttonhovercolor]];
-  color: [[setting:buttontextcolor]] !important;
+    color: [[setting:buttontextcolor]] !important;
 }
 
 #edittingbutton .btn,
 #edittingbutton input[type="submit"],
 #edittingbutton a,
 .purgecaches a:hover {
-  background-color: [[setting:editonbk]];
-  color: [[setting:editfont]] !important;
-  margin-top: [[setting:edittopmargin]];
-  padding: [[setting:editverticalpadding]] [[setting:edithorizontalpadding]];
+    background-color: [[setting:editonbk]];
+    color: [[setting:editfont]] !important;
+    margin-top: [[setting:edittopmargin]];
+    padding: [[setting:editverticalpadding]] [[setting:edithorizontalpadding]];
     -webkit-border-radius: [[setting:buttonradius]];
     -moz-border-radius: [[setting:buttonradius]];
     border-radius: [[setting:buttonradius]];
     box-shadow: 0 -2px 0 0 rgba(0, 0, 0, 0.5) inset;
 }
 
+.submit.buttons input[name="cancel"],
 .editing #edittingbutton .btn,
 .editing #edittingbutton input[type="submit"],
 .editing #edittingbutton a:hover,
@@ -137,13 +180,13 @@ input.form-submit:hover, input#id_submitbutton:hover, input#id_submitbutton2:hov
     padding: [[setting:buttonloginpadding]] 15px;
     text-shadow: none;
     transition: background 0.2s ease-out 0s;
-  margin-top: [[setting:buttonloginmargintop]];
-  margin-right:2px;
-  height:[[setting:buttonloginheight]];
+    margin-top: [[setting:buttonloginmargintop]];
+    margin-right:2px;
+    height:[[setting:buttonloginheight]];
 }
 
 .btn-login:hover {
     background: [[setting:buttonloginhovercolor]];
-  color: [[setting:buttonlogintextcolor]];
+    color: [[setting:buttonlogintextcolor]];
     text-decoration: none;
 }

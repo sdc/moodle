@@ -67,7 +67,7 @@
     $name = 'theme_adaptable/fontweight';
     $title = get_string('fontweight', 'theme_adaptable');
     $description = get_string('fontweightdesc', 'theme_adaptable');
-    $setting = new admin_setting_configtext($name, $title, $description, '400');
+    $setting = new admin_setting_configselect($name, $title, $description, 400, $from100to900);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 
@@ -98,6 +98,14 @@
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 
+    // Navber Menu Padding.
+    $name = 'theme_adaptable/menufontpadding';
+    $title = get_string('menufontpadding', 'theme_adaptable');
+    $description = get_string('menufontpaddingdesc', 'theme_adaptable');
+    $radchoices = $from10to30px;
+    $setting = new admin_setting_configselect($name, $title, $description, '20px', $radchoices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
 
     // Header Font Name.
     $name = 'theme_adaptable/fontheadername';
@@ -112,7 +120,7 @@
     $name = 'theme_adaptable/fontheaderweight';
     $title = get_string('fontheaderweight', 'theme_adaptable');
     $description = get_string('fontheaderweightdesc', 'theme_adaptable');
-    $setting = new admin_setting_configtext($name, $title, $description, '400');
+    $setting = new admin_setting_configselect($name, $title, $description, 400, $from100to900);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 
@@ -147,7 +155,7 @@
     $name = 'theme_adaptable/fonttitleweight';
     $title = get_string('fonttitleweight', 'theme_adaptable');
     $description = get_string('fonttitleweightdesc', 'theme_adaptable');
-    $setting = new admin_setting_configtext($name, $title, $description, '400');
+    $setting = new admin_setting_configselect($name, $title, $description, 400, $from100to900);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 
@@ -155,6 +163,49 @@
     $name = 'theme_adaptable/fonttitlecolor';
     $title = get_string('fonttitlecolor', 'theme_adaptable');
     $description = get_string('fonttitlecolordesc', 'theme_adaptable');
+    $previewconfig = null;
+    $setting = new admin_setting_configcolourpicker($name, $title, $description, '#ffffff', $previewconfig);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+
+    // Course Title Font Name.
+    $name = 'theme_adaptable/fonttitlenamecourse';
+    $title = get_string('fonttitlenamecourse', 'theme_adaptable');
+    $description = get_string('fonttitlenamecoursedesc', 'theme_adaptable');
+    $default = 'Audiowide';
+    $choices = $fontlist;
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+
+    // Course Title Font size.
+    $name = 'theme_adaptable/fonttitlesizecourse';
+    $title = get_string('fonttitlesizecourse', 'theme_adaptable');
+    $description = get_string('fonttitlesizecoursedesc', 'theme_adaptable');
+    $setting = new admin_setting_configtext($name, $title, $description, '48px');
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+
+    // Course Title Font size.
+    $name = 'theme_adaptable/fonttitlesizecourse';
+    $title = get_string('fonttitlesizecourse', 'theme_adaptable');
+    $description = get_string('fonttitlesizecoursedesc', 'theme_adaptable');
+    $setting = new admin_setting_configtext($name, $title, $description, '48px');
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+
+    // Course Font weight.
+    $name = 'theme_adaptable/fonttitleweightcourse';
+    $title = get_string('fonttitleweightcourse', 'theme_adaptable');
+    $description = get_string('fonttitleweightcoursedesc', 'theme_adaptable');
+    $setting = new admin_setting_configselect($name, $title, $description, 400, $from100to900);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+
+    // Course font color.
+    $name = 'theme_adaptable/fonttitlecolorcourse';
+    $title = get_string('fonttitlecolorcourse', 'theme_adaptable');
+    $description = get_string('fonttitlecolorcoursedesc', 'theme_adaptable');
     $previewconfig = null;
     $setting = new admin_setting_configcolourpicker($name, $title, $description, '#ffffff', $previewconfig);
     $setting->set_updatedcallback('theme_reset_all_caches');

@@ -47,10 +47,4 @@
     $setting = new admin_setting_configtextarea($name, $title, $description, $default);
     $temp->add($setting);
 
-    $name = 'theme_adaptable/fsize';
-    $title = get_string('fsize', 'theme_adaptable');
-    $description = get_string('fsizedesc', 'theme_adaptable');
-    $setting = new admin_setting_configtext($name, $title, $description, '');
-    $temp->add($setting);
-
     $ADMIN->add('theme_adaptable', $temp);

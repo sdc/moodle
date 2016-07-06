@@ -31,7 +31,8 @@
 }
 
 #page .course-content ul li.section.main {
-  border: 1px solid #e8eaeb;
+  border: [[setting:coursesectionborderwidth]] [[setting:coursesectionborderstyle]] [[setting:coursesectionbordercolor]];
+  border-radius: [[setting:coursesectionborderradius]];
   margin-bottom: 20px;
 }
 
@@ -88,7 +89,9 @@
 }
 
 .section-handle {
-    margin: 0px;
+    margin: 0;
+    position: relative;
+    top: 12px;
 }
 
 .course-content ul.topics li.section .left {
@@ -102,16 +105,34 @@
 }
 
 h3.sectionname {
-    background: #f3f3f3;
+    background: [[setting:coursesectionheaderbg]];
     color: [[setting:sectionheadingcolor]];
     font-size: 20px;
     margin-bottom: 20px;
-    margin-top: -12px;
     padding: 3px 10px;
+    border-bottom: [[setting:coursesectionheaderborderstyle]] [[setting:coursesectionheaderbordercolor]] [[setting:coursesectionheaderborderwidth]];
+    -webkit-border-radius: [[setting:coursesectionheaderborderradiustop]];
+    -webkit-border-bottom-right-radius: [[setting:coursesectionheaderborderradiusbottom]];
+    -webkit-border-bottom-left-radius: [[setting:coursesectionheaderborderradiusbottom]];
+    -moz-border-radius: [[setting:coursesectionheaderborderradiustop]];
+    -moz-border-radius-bottomright: [[setting:coursesectionheaderborderradiusbottom]];
+    -moz-border-radius-bottomleft: [[setting:coursesectionheaderborderradiusbottom]];
+    border-radius: [[setting:coursesectionheaderborderradiustop]];
+    border-bottom-right-radius: [[setting:coursesectionheaderborderradiusbottom]];
+    border-bottom-left-radius: [[setting:coursesectionheaderborderradiusbottom]];
 }
 
 .section .activity .mod-indent-outer {
     padding-left: 23px;
+}
+
+/* Alter nav on single-section for better onetopic course format support */
+.single-section .nav {
+    margin-bottom: 0px;
+}
+
+.single-section .nav-tabs {
+    border-bottom: none;
 }
 
 .path-course-view .completionprogress {
@@ -121,10 +142,19 @@ h3.sectionname {
     padding: 0 0 10px;
 }
 
+.path-course-view .section .summary {
+    padding: 10px 0px 0px 20px;
+}
+
 #gridshadebox_content .content .summary, #gridshadebox_content .content ul.section {padding: 0 20px;}
 
 .course-content .current  .content .sectionname {
-  background: [[setting:currentcolor]];
+    background: [[setting:currentcolor]];
+}
+
+.course-content ul li.section.hidden .sectionname,
+.course-content ul li.section.hidden .content > div {
+    margin-right: 40px;
 }
 
 #page .covtiles.panel {

@@ -29,7 +29,6 @@ require_once(dirname(__FILE__) . '/includes/header.php');
 $left = theme_adaptable_get_block_side();
 
 $hasfootnote = (!empty($PAGE->theme->settings->footnote));
-$haslogo = (!empty($PAGE->theme->settings->logo));
 
 if (!empty($PAGE->theme->settings->sliderenabled)) {
     echo $OUTPUT->get_frontpage_slider();
@@ -42,13 +41,11 @@ if (!empty($PAGE->theme->settings->infobox)) {
         echo '<div id="theinfo" class="container">';
     }
 ?>
-
-        <div id="theinfo-internal">
             <div class="row-fluid">
                 <?php echo $OUTPUT->get_setting('infobox', 'format_html'); ?>
             </div>
         </div>
-    </div>
+ 
 <?php
 }
 ?>
@@ -67,19 +64,24 @@ if (!empty($PAGE->theme->settings->infobox)) {
 }
 ?>
 
-
 <?php
 if (!empty($PAGE->theme->settings->infobox2)) {
+    if (!empty($PAGE->theme->settings->infoboxfullscreen)) {
+        echo '<div id="themessage">';
+    } else {
+        echo '<div id="themessage" class="container">';
+    }
 ?>
-<div id="themessage" class="container">
-    <div id="themessage-internal"><div class="row-fluid">
-        <?php echo $OUTPUT->get_setting('infobox2', 'format_html');; ?>
-    </div></div>
+
+    <div id="themessage-internal">
+        <div class="row-fluid">
+<?php echo $OUTPUT->get_setting('infobox2', 'format_html');; ?>
+        </div>
+    </div>
 </div>
 <?php
 }
 ?>
-
 
 <div class="container outercont">
     <div id="page-content" class="row-fluid">
@@ -91,13 +93,14 @@ if (!empty($PAGE->theme->settings->infobox2)) {
 if ($left == 1) {
     echo $OUTPUT->blocks('side-post', 'span3 desktop-first-column');
 }
-?>
-<section id="region-main" class="span9 <?php
-if ($left) {
-    echo ' ';
+
+// Control span to display course tiles.
+if (!isloggedin()) {
+    echo '<section id="region-main">';
 } else {
-    echo 'desktop-first-column';
-} ?> ">
+    echo '<section id="region-main" class="span9 desktop-first-column">';
+} ?>
+
 
 <?php
 echo $OUTPUT->course_content_header();

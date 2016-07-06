@@ -35,6 +35,15 @@ $heading = get_string('alertsettingsgeneral', 'theme_adaptable');
 $setting = new admin_setting_heading($name, $heading, '');
 $temp->add($setting);
 
+// Enable or disable alerts.
+$name = 'theme_adaptable/enablealerts';
+$title = get_string('enablealerts', 'theme_adaptable');
+$description = get_string('enablealertsdesc', 'theme_adaptable');
+$default = false;
+$setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
+$setting->set_updatedcallback('theme_reset_all_caches');
+$temp->add($setting);
+
 // Disable alert in course pages.
 $name = 'theme_adaptable/enablealertcoursepages';
 $title = get_string('enablealertcoursepages', 'theme_adaptable');
@@ -119,7 +128,7 @@ for ($alertindex = 1; $alertindex <= $alertcount; $alertindex++) {
     $default = 'global';
     $choices = array(
     'global' => get_string('alertaccessglobal', 'theme_adaptable'),
-    'users' => get_string('alertaccessusers', 'theme_adaptable'),
+    'user' => get_string('alertaccessusers', 'theme_adaptable'),
     'admin' => get_string('alertaccessadmins', 'theme_adaptable'),
     'profile' => get_string('alertaccessprofile', 'theme_adaptable'));
     $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);

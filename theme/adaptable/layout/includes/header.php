@@ -24,10 +24,6 @@
  *
  */
 
-// Fixed header is determined by the individual layouts.
-if (!ISSET($fixedheader)) {
-    $fixedheader = false;
-}
 theme_adaptable_initialise_zoom($PAGE);
 $setzoom = theme_adaptable_get_zoom();
 
@@ -38,22 +34,13 @@ $left = (!right_to_left());  // To know if to add 'pull-right' and 'desktop-firs
 
 $hasmiddle = $PAGE->blocks->region_has_content('middle', $OUTPUT);
 $hasfootnote = (!empty($PAGE->theme->settings->footnote));
-$haslogo = (!empty($PAGE->theme->settings->logo));
-$hastitle = (!empty($PAGE->theme->settings->sitetitletext));
-$enableheadingtitle = $PAGE->theme->settings->enableheading;
 
-if ($COURSE->id != 1) {
-    switch($enableheadingtitle) {
-        case "shortname" :
-                    $PAGE->set_heading($COURSE->shortname);
-                    break;
-        case "off" :
-                    $PAGE->set_heading('');
-                    break;
-    }
-}
+// Fixed header.
+// $fixedheader = $PAGE->theme->settings->stickynavbar;.
 
-// Get the fonts.
+$fixedheader = false;
+
+// Get the fonts name.
 $fontname = str_replace(" ", "+", $PAGE->theme->settings->fontname);
 $fontheadername = str_replace(" ", "+", $PAGE->theme->settings->fontheadername);
 $fonttitlename = str_replace(" ", "+", $PAGE->theme->settings->fonttitlename);
@@ -93,6 +80,7 @@ if (right_to_left()) {
     $regionbsid = 'region-bs-main-and-pre';
 }
 
+// Social icons class.
 $showicons = "";
 $showicons = $PAGE->theme->settings->blockicons;
 if ($showicons == 1) {
@@ -108,20 +96,24 @@ if ($defaultview == 1 && $setfull == "") {
     $setfull = "fullin";
 }
 
+// HTML header.
 echo $OUTPUT->doctype();
 ?>
 <html <?php echo $OUTPUT->htmlattributes(); ?>>
 <head>
     <title><?php echo $OUTPUT->page_title(); ?></title>
     <link rel="icon" href="<?php echo $OUTPUT->favicon(); ?>" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="<?php p($CFG->wwwroot) ?>/theme/adaptable/style/font-awesome.min.css">
 
 <?php
+
+// Load Google Fonts.
 if (!empty($fontname) && $fontname != 'default') {
 ?>
-        <link href='https://fonts.googleapis.com/css?family=<?php echo $fontname.$fontweight.$fontssubset; ?>'
-        rel='stylesheet'
-        type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=<?php echo $fontname.$fontweight.$fontssubset; ?>'
+    rel='stylesheet'
+    type='text/css'>
 <?php
 }
 ?>
@@ -156,19 +148,23 @@ if (!empty($fonttitlename)  && $fonttitlename != 'default') {
 <div id="page" class="container-fluid <?php echo "$setfull $showiconsclass"; ?>">
 
 <?php
-
+// Display alerts.
 echo $OUTPUT->get_alert_messages();
-
 ?>
 
-<header id="page-header-wrapper"
+
 <?php
+// Fixed header.
 if ($fixedheader) {
 ?>
-style="position: fixed;"
+    <header id="page-header-wrapper" style="position: fixed;">
+<?php
+} else {
+?>
+    <header id="page-header-wrapper">
 <?php
 }
-?> >
+?>
     <div id="above-header">
         <div class="clearfix container userhead">
             <div class="pull-left">
@@ -177,16 +173,18 @@ style="position: fixed;"
 
             <div class="headermenu row">
 <?php
+// Top login form.
 if (!isloggedin() || isguestuser()) {
     echo $OUTPUT->page_heading_menu();
     if (!empty($PAGE->theme->settings->frontpagelogin)) { ?>
         <form action="<?php p($CFG->wwwroot) ?>/login/index.php" method="post">
-            <input style="height: 12px; padding-bottom: 4px;" type="text" name="username" placeholder="Username" size="10">
-            <input style="height: 12px; padding-bottom: 4px;" type="password" name="password" placeholder="Password"  size="10">
+            <input style="height: 12px; padding-bottom: 4px;" type="text" name="username" placeholder="<?php echo get_string('loginplaceholder', 'theme_adaptable'); ?>" size="10">
+            <input style="height: 12px; padding-bottom: 4px;" type="password" name="password" placeholder="<?php echo get_string('passwordplaceholder', 'theme_adaptable'); ?>"  size="10">
             <button class="btn-login" type="submit"><?php echo get_string('logintextbutton', 'theme_adaptable'); ?></button>
         </form>
 <?php
     } else {
+        // Login button.
 ?>
         <form action="<?php p($CFG->wwwroot) ?>/login/index.php" method="post">
             <button class="btn-login" type="submit">
@@ -276,7 +274,7 @@ if (!isloggedin() || isguestuser()) {
 ?>
 
 <?php
-    if ($CFG->version > 2015051100) { ?>
+    if ($CFG->version > 2015051100 && !empty($PAGE->theme->settings->enablepref)) { ?>
         <li>
         <a href="<?php p($CFG->wwwroot) ?>/user/preferences.php"
             title="<?php echo get_string('preferences') ?>">
@@ -304,9 +302,9 @@ if (!isloggedin() || isguestuser()) {
     if (!empty($PAGE->theme->settings->enableblog)) { ?>
         <li>
         <a href="<?php p($CFG->wwwroot) ?>/blog/index.php?userid=<?php echo "$userid"; ?>"
-            title="<?php echo get_string('myblogs', 'theme_adaptable') ?>">
+            title="<?php echo get_string('enableblog', 'theme_adaptable') ?>">
                 <i class="fa fa-rss"></i>
-                <?php echo get_string('myblogs', 'theme_adaptable') ?>
+                <?php echo get_string('enableblog', 'theme_adaptable') ?>
         </a>
         </li>
 <?php
@@ -317,9 +315,9 @@ if (!isloggedin() || isguestuser()) {
     if (!empty($PAGE->theme->settings->enableposts)) { ?>
         <li>
         <a href="<?php p($CFG->wwwroot) ?>/mod/forum/user.php?id=<?php echo "$userid"; ?>"
-            title="<?php echo get_string('posts') ?>">
+            title="<?php echo get_string('enableposts', 'theme_adaptable') ?>">
                 <i class="fa fa-commenting"></i>
-                <?php echo get_string('posts') ?>
+                <?php echo get_string('enableposts', 'theme_adaptable') ?>
         </a>
         </li>
 <?php
@@ -329,10 +327,10 @@ if (!isloggedin() || isguestuser()) {
 <?php
     if (!empty($PAGE->theme->settings->enablefeed)) { ?>
         <li>
-        <a href="<?php p($CFG->wwwroot) ?>/report/myfeedback/index.php?userid=<?php echo "$userid"; ?>"
-            title="<?php echo get_string('feedback') ?>">
+        <a href="<?php p($CFG->wwwroot) ?>/report/myfeedback/index.php"
+            title="<?php echo get_string('enablefeed', 'theme_adaptable') ?>">
                 <i class="fa fa-bullhorn"></i>
-                <?php echo get_string('feedback') ?>
+                <?php echo get_string('enablefeed', 'theme_adaptable') ?>
         </a>
         </li>
 <?php
@@ -354,7 +352,7 @@ if (!isloggedin() || isguestuser()) {
         <li>
         <a href="<?php echo $CFG->wwwroot.'/login/logout.php?sesskey='.sesskey(); ?>"
             title="<?php echo get_string('logout') ?>">
-                <i class="fa fa-lock"></i>
+                <i class="fa fa-sign-out"></i>
                 <?php echo get_string('logout') ?>
         </a>
         </li>
@@ -379,41 +377,24 @@ echo $OUTPUT->get_top_menus();
     </div>
 </div>
 <div id="page-header" class="clearfix container">
-        <?php if ($haslogo) { ?>
-            <div id="logocontainer">
-                <a href="<?php p($CFG->wwwroot) ?>">
-                    <?php echo "<img src='".$PAGE->theme->setting_file_url('logo', 'logo')."' alt='logo' id='logo' />";
-                    echo "</a></div>";
-} else if ($hastitle) {
-?>
-            <div id="titlecontainer">
-                <a href="<?php p($CFG->wwwroot) ?>">
-                    <?php echo $PAGE->theme->settings->sitetitletext; ?>
-                </a>
-            </div>
-        <?php
-}
 
-if (isset($PAGE) && !$PAGE->theme->settings->sitetitle) {
-        $header = theme_adaptable_remove_site_fullname($PAGE->heading);
-        $PAGE->set_heading($header);
-}
+
+<?php 
+// Site title or logo.
+echo $OUTPUT->get_logo_title();
 ?>
 
-<div id="coursetitle" class="pull-left">
-<?php
-    echo $PAGE->heading;
-?>
-    </div>
 
 <?php
-if (!empty($PAGE->theme->settings->socialset)) {
+// Social icons.
+if ($PAGE->theme->settings->socialorsearch == 'social') {
     echo $OUTPUT->socialicons();
 }
 ?>
 
 <?php
-if (empty($PAGE->theme->settings->socialset)) { ?>
+// Search box.
+if ($PAGE->theme->settings->socialorsearch == 'search') { ?>
         <div class="searchbox">
             <form action="<?php p($CFG->wwwroot) ?>/course/search.php">
                 <label class="hidden" for="search-1" style="display: none;">Search iCity</label>
@@ -516,7 +497,6 @@ if (isloggedin()) {
 }
 ?>
 </header>
-
 
 <?php
     echo $OUTPUT->get_news_ticker();

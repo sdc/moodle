@@ -1,3 +1,7 @@
+*******************************************************************************************************
+Adaptable - the most adaptable moodle theme
+*******************************************************************************************************
+
 Adaptable is a highly customisable responsive two column moodle theme based on the popular BCU theme adding:
 
 * Customisable fonts (Google Fonts)
@@ -28,17 +32,17 @@ With a little time you should be able to setup an attractive Moodle site with a 
 individuality without without knowing any CSS.
 
 
-======================================
-HTML code for settings and block areas
-======================================
+==========================================================================================================
+HTML/CSS sample code for block areas
+==========================================================================================================
 
-Here you will find some code samples to help you to customize the Info Box and the Marketing Blocks
+Here you will find some code samples to help you to customize the Info Box and the Marketing Blocks.
 
 You can insert any HTML tag to customize the frontpage blocks. Use a <div> as a main container and add the
 height to keep the same value in all the blocks.
 
 The Font Awesome icons set is available in http://fortawesome.github.io/Font-Awesome/icons/.
-You can insert any of them and following the examples http://fortawesome.github.io/Font-Awesome/examples/
+You can insert any of them following the examples http://fortawesome.github.io/Font-Awesome/examples/
 
 
 Front Page Slider Styles
@@ -47,7 +51,6 @@ Front Page Slider Styles
 There are two possible slider styles each with different markup required:
 
 Original BCU Slider Markup:
-
 
 <div class="span9">
   <h4>Information</h4>
@@ -60,95 +63,90 @@ Original BCU Slider Markup:
   <a href="#" class="submit">2013/14 Courses <i class="fa-chevron-right fa"></i></a>
 </div>
 
-Coventry Style Slider Markup:
 
+Coventry Style Slider Markup:
 
 <div class="span6 col-sm-6">
 <h3>Hand-crafted</h3> <h4>pixels and code for the Moodle community</h4>
 <a href="#" class="submit">Check out our custom theme pricing!</a>
 </div>
 
-Frontpage Marketing Block HTML structure Coventry
 
+Frontpage Marketing Block HTML structure Coventry:
 
 <div><img src="http://somewebsite.com/2.jpg" class="marketimage"></div>
 <h4><a href="#">International Courses</a></h4>
 <p>Some text below the link....</p>
 
 
-Front page Info Block
----------------------
-There are two Info blocks in the frontpage located above and below the Marketing Blocks. See pix/layout.png
 
-
-Simple box with solid background and using a default heading
-
-<div style="text-align:center; background: #f0f0f0;">
-    <h3 style="text-align: center;">Add your text here</h3>
-</div>
-
-
-Simple box with solid background colour, default heading h3 and white text colour.
-
-<div style="text-align:center; background: #009688; color: #ffffff;">
-    <h3 style="text-align: center;">Add your text here</h3>
-</div>
-
-
-Front Page Secondary Info Block Example:
+Front page Info Box and Marketing Blocks 
 ----------------------------------------
+There are two Info blocks in the frontpage located above and below the Marketing Blocks. These are just for compatibility with the old BCU. 
 
-You can apply additional styles to the secondary info block:
+It is recommended to use the new marketing blocks builder that allows you to create your own layout and add much more blocks. 
 
+There are 8 rows where you can add up to 4 blocks in each. See pix/layout.png for more information.
 
-<div class="span2 personpic">
-    <div id="person" class="spn5">
-        <img src="/urltoanimage.jpg" alt="person">
-    </div>
-</div>
+You can enter any HTML code to the block, include FA icons, images, videos and apply inline styles. 
 
-<div class="span10">
-    <h4>School of Jewelry</h4>
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-    <a href="#" class="submit">Learn more... <i class="fa-chevron-right fa"></i></a>
-</div>
+Some samples:
 
-Frontpage Marketing Block HTML
-------------------------------
-You can add up to 12 Marketing Blocks in the frontpage.
-The blocks are located automatically in rows with a maximum of 4 blocks per row.
-The full width is divided equally between the blocks.
+ 
+Block with solid background, FA icon and some text: 
 
-Simple Block with white background and Font Awesome icon. Using the default text colour and h3 heading.
-
-<div style="text-align:center; background: #ffffff; height: 240px; padding: 7px;">
-    <i class="fa fa-font fa-5x"></i>
-    <h3 style="color: #333333;">TITLE</h3>
-    <div style="text-align:center;">Add your text here</div>
+<div style="text-align:center; background: #e6e6e6; height: 240px; padding: 7px;">
+    <i class="fa fa-paint-brush fa-5x" style="color: #009688;"></i>
+    <h3>Title </h3>
+    <div style="text-align:center;">Add your text here.</div>
 </div>
 
 
-Block with solid background colour, white text colour and Font Awesome icon.
+Block with border and transparent background:
 
-<div style="text-align:center; background: #4b4b4b; color: #ffffff; height: 240px; padding: 7px;">
-    <i class="fa fa-th fa-5x"></i>
-    <h3 style="color: #ffffff;">TITLE</h3>
-    <div style="text-align:center; padding: 5px;">Add your text here</div>
+<div style="text-align:center; height: 240px; padding: 7px; border: 1px solid #009688;">
+    <i class="fa fa-list fa-5x" style="color: #009688;"></i>
+    <h3>Heading</h3>
+    <div style="text-align:center; padding: 5px; color: #009688;">Add your text here.</div>
 </div>
 
 
-Block with solid background, white text colour and text aligned vertically (useful for blocks 100% wide)
+Block with an image:
 
-<div style="background: #c2185b; height: 120px;">
-    <h1 style="line-height: 120px; color: #ffffff; text-align: center; "><b>moodle 3.0 ready !!!</b></h1>
+<div style="height: 350px;"> 
+    <img src="http://yoursite/yourimage.jpg" style="vertical-align:text-bottom; margin: 0 .5em;" height="auto" width="100%">
+    <p style="margin-top: 5px; color: #333333; text-align: center;"><strong>Add your text here</strong></p>
+</div>
+
+
+
+Block with a video:
+
+<div style="background: #606060; height: 315px">
+    <center>
+    <iframe src="https://www.youtube.com/embed/wop3FMhoLGs" allowfullscreen="" frameborder="0" height="315" width="560"></iframe>
+    </center>
+</div>
+
+
+Block using multi-lang filter:
+<div style="width: 100%; height: 240px; background-color: #cccccc;">
+<h1 style="text-align: center; line-height: 120px;">
+      <span class="multilang" lang="en">text in english</span>
+      <span class="multilang" lang="es">texto en español</span>
+      <span class="multilang" lang="fr">texte en français</span>
+      <span class="multilang" lang="ca">text en català</span>
+</h1>
 </div>
 
 
 
 Footer Blocks
 ----------------------------
+
+You can apply the same HTML/CSS in the footer blocks. 
+Some samples:
+
 
 Contact information
 
@@ -161,10 +159,47 @@ Contact information
 
 List with Chevron
 
-<ul class="block-list white">
-    <li><a href="http://moodle.org/"><span class="icon-right-open-mini"></span><span>Accessibility</span></a></li>
-    <li><a href="http://moodle.org/"><span class="icon-right-open-mini"></span><span>Moodle Help</span></a></li>
-    <li><a href="http://moodle.org/"><span class="icon-right-open-mini"></span><span>Moodle Feedback</span></a></li>
-    <li><a href="http://moodle.org/"><span class="icon-right-open-mini"></span><span>IT Help</span></a></li>
-    <li><a href="http://moodle.org/"><span class="icon-right-open-mini"></span><span>IT Feedback</span></a></li>
+<ul class="block-list">
+    <li><a href="http://moodle.org/"><span class="fa fa-chevron-right"></span><span>Accessibility</span></a></li>
+    <li><a href="http://moodle.org/"><span class="fa fa-chevron-right"></span><span>Moodle Help</span></a></li>
+    <li><a href="http://moodle.org/"><span class="fa fa-chevron-right"></span><span>Moodle Feedback</span></a></li>
+    <li><a href="http://moodle.org/"><span class="fa fa-chevron-right"></span><span>IT Help</span></a></li>
+    <li><a href="http://moodle.org/"><span class="fa fa-chevron-right"></span><span>IT Feedback</span></a></li>
 </ul>
+
+
+Copyright
+-------------------------------------
+<p>&copy; 0000 - 9999 Adaptable - Made with <i class="fa fa-heart" style="color: #ff0000;"></i></p>
+
+
+News Ticker
+-------------------------------------
+To add news to the ticker you need to create an unordered list using the Atto editor.
+
+IMPORTANT! Verify you only enter the <li> tags. For example:
+
+<li>Configure all the theme colours</li>
+<li>Use any Google Font for the content, headings and site title</li>
+<li>Display a logo or a configurable title site</li>
+<li>Configurable Slideshow</li>
+<li>Display up to 12 marketing blocks in the front page</li>
+
+
+
+Acknowledgment
+--------------------------------------
+Big thanks to all the volunteers that are testing Adaptable continously. 
+We really appreciate your help and support to develope the most adaptable theme for moodle.
+
+
+
+
+
+Adaptable is licensed under the GPL (GNU General Public License). 
+You can find a complete licence copy in: http://www.gnu.org/licenses
+
+
+
+
+

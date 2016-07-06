@@ -37,19 +37,19 @@ $default = '';
 $setting = new admin_setting_confightmleditor($name, $title, $description, $default);
 $temp->add($setting);
 
+$name = 'theme_adaptable/infobox2';
+$title = get_string('infobox2', 'theme_adaptable');
+$description = get_string('infobox2desc', 'theme_adaptable');
+$default = '';
+$setting = new admin_setting_confightmleditor($name, $title, $description, $default);
+$temp->add($setting);
+
 $name = 'theme_adaptable/infoboxfullscreen';
 $title = get_string('infoboxfullscreen', 'theme_adaptable');
 $description = get_string('infoboxfullscreendesc', 'theme_adaptable');
 $default = false;
 $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
 $setting->set_updatedcallback('theme_reset_all_caches');
-$temp->add($setting);
-
-$name = 'theme_adaptable/infobox2';
-$title = get_string('infobox2', 'theme_adaptable');
-$description = get_string('infobox2desc', 'theme_adaptable');
-$default = '';
-$setting = new admin_setting_confightmleditor($name, $title, $description, $default);
 $temp->add($setting);
 
 $name = 'theme_adaptable/frontpagemarketenabled';
