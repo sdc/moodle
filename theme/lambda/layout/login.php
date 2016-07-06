@@ -23,10 +23,8 @@
  *
  */
  
-$hide_breadrumb_setting = theme_lambda_get_setting('hide_breadcrumb');
-$hide_breadrumb = ((!isloggedin() or isguestuser()) and $hide_breadrumb_setting);
-$left = (!right_to_left());
-$standardlayout = (empty($PAGE->theme->settings->layout)) ? false : $PAGE->theme->settings->layout;
+$custom_login=$PAGE->theme->settings->custom_login;
+$haslogo = (!empty($PAGE->theme->settings->logo));
 
 echo $OUTPUT->doctype() ?>
 <html <?php echo $OUTPUT->htmlattributes(); ?>>
@@ -39,56 +37,65 @@ echo $OUTPUT->doctype() ?>
     <?php require_once(dirname(__FILE__).'/includes/fonts.php'); ?>
 </head>
 
-<body <?php echo $OUTPUT->body_attributes('two-column'); ?>>
+<body <?php echo $OUTPUT->body_attributes(); ?>>
 
 <?php echo $OUTPUT->standard_top_of_body_html(); ?>
 
-<div id="wrapper">
+<div id="wrapper" <?php if ($custom_login==1) echo 'style="background: transparent none repeat scroll 0 0; border: medium none;"';?>>
+
+<?php if ($custom_login==0) {?>
 <?php require_once(dirname(__FILE__).'/includes/header.php'); ?>
+<?php } else { ?>
+
+<header id="page-header" class="clearfix">
+       
+    <div class="container-fluid">    
+    <div class="row-fluid">
+    <!-- HEADER: LOGO AREA -->
+        	
+            <?php if (!$haslogo) { ?>
+            	<div class="span6">
+              		<h1 id="title" style="line-height: 2em"><?php echo $SITE->shortname; ?></h1>
+                </div>
+            <?php } else { ?>
+                <div class="logo-header">
+                	<a class="logo" href="<?php echo $CFG->wwwroot; ?>" title="<?php print_string('home'); ?>">
+                    <?php 
+					echo html_writer::empty_tag('img', array('src'=>$PAGE->theme->setting_file_url('logo', 'logo'), 'class'=>'logo', 'alt'=>'logo'));
+					?>
+                    </a>
+                </div>
+            <?php } ?> 
+            
+    </div>
+    </div>
+               
+</header>
+
+<?php } ?>
 
 <div id="page" class="container-fluid">
 
-    <header id="page-header" class="clearfix">
-    	<?php if (!($hide_breadrumb)) { ?>
-        <div id="page-navbar" class="clearfix">
-            <div class="breadcrumb-nav"><?php echo $OUTPUT->navbar(); ?></div>
-            <nav class="breadcrumb-button"><?php echo $OUTPUT->page_heading_button(); ?></nav>
-        </div>
-        <?php } ?>
-    </header>
-
-    <div id="page-content" class="row-fluid">
-        <section id="region-main" class="span9<?php if ($left) { echo ' pull-left'; } ?><?php if ($standardlayout) { echo ' pull-right'; } ?>">
+    <div id="page-content" class="row-fluid" <?php if ($custom_login==1) {echo 'style="background-clip:padding-box;background-color: rgba(255, 255, 255, 0.85);border: 8px solid rgba(255, 255, 255, 0.35);border-radius: 3px;"';}?>>
+        <section id="region-main" class="span12">
+        
             <?php
             echo $OUTPUT->course_content_header();
             echo $OUTPUT->main_content();
             echo $OUTPUT->course_content_footer();
             ?>
         </section>
-        <?php
-        $classextra1 = '';
-		$classextra2 = '';
-		if (!$standardlayout) {
-            $classextra1 = ' pull-right';
-        }
-        if ($left or (!$left and $standardlayout)) {
-            $classextra2 = ' desktop-first-column';
-        }
-        echo $OUTPUT->blocks('side-pre', 'span3'.$classextra1.$classextra2);
-        ?>
     </div>
-
+    
     <a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><p><?php print_string('backtotop', 'theme_lambda'); ?></p></a>
-
+    
 </div>
 
-	<footer id="page-footer" class="container-fluid">
+	<footer id="page-footer" class="container-fluid" <?php if ($custom_login==1) echo 'style="display:none;"';?>>
 		<?php require_once(dirname(__FILE__).'/includes/footer.php'); ?>
 	</footer>
 
     <?php echo $OUTPUT->standard_end_of_body_html() ?>
-
-</div>
 
 
 <!--[if lte IE 9]>

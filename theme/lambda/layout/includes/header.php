@@ -19,12 +19,16 @@
  * Built on: Essential by Julian Ridden
  *
  * @package   theme_lambda
- * @copyright 2014 redPIthemes
+ * @copyright 2016 redPIthemes
  *
  */
 
+$login_link = theme_lambda_get_setting('login_link');
+$login_custom_url = theme_lambda_get_setting('custom_login_link_url');
+$login_custom_txt = theme_lambda_get_setting('custom_login_link_txt');
+$shadow_effect = theme_lambda_get_setting('shadow_effect');
+$auth_googleoauth2 = theme_lambda_get_setting('auth_googleoauth2');
 $haslogo = (!empty($PAGE->theme->settings->logo));
-
 $hasheaderprofilepic = (empty($PAGE->theme->settings->headerprofilepic)) ? false : $PAGE->theme->settings->headerprofilepic;
 
 $checkuseragent = '';
@@ -53,16 +57,18 @@ if (strpos($checkuseragent, 'MSIE 8')) {$username = str_replace("'", "&prime;", 
               		<h1 id="title" style="line-height: 2em"><?php echo $SITE->shortname; ?></h1>
                 </div>
             <?php } else { ?>
+            	<div class="span6">
                 <div class="logo-header">
                 	<a class="logo" href="<?php echo $CFG->wwwroot; ?>" title="<?php print_string('home'); ?>">
                     <?php 
-					echo html_writer::empty_tag('img', array('src'=>$PAGE->theme->setting_file_url('logo', 'logo'), 'class'=>'logo', 'alt'=>'logo'));
+					echo html_writer::empty_tag('img', array('src'=>$PAGE->theme->setting_file_url('logo', 'logo'), 'class'=>'img-responsive', 'alt'=>'logo'));
 					?>
                     </a>
                 </div>
+                </div>
             <?php } ?>      	
             
-            <div class="login-header">
+            <div class="span6 login-header">
             <div class="profileblock">
             
             <?php 
@@ -77,18 +83,47 @@ if (strpos($checkuseragent, 'MSIE 8')) {$username = str_replace("'", "&prime;", 
 		$wwwroot = str_replace("http://", "https://", $CFG->wwwroot);
 	}
 
-		if (!isloggedin() or isguestuser()) { ?>
-		<form class="navbar-form pull-right" method="post" action="<?php echo $wwwroot; ?>/login/index.php?authldap_skipntlmsso=1">
-		<div id="block-login">
-		<label id="user"><i class="fa fa-user"></i></label>	
-		<input id="inputName" class="span2" type="text" name="username" placeholder="<?php echo $username; ?>" style="margin-bottom:10px;">
-		<label id="pass"><i class="fa fa-key"></i></label>        
-		<input id="inputPassword" class="span2" type="password" name="password" id="password" placeholder="<?php echo get_string('password'); ?>">        
-		<input type="submit" id="submit" name="submit" value=""/>
-		</div>
-		</form>
+		if (!isloggedin() or isguestuser()) {
+			
+			$login_link_url = '';
+			$login_link_txt = '';
+			if ($login_link=='1') {$login_link_url = $wwwroot.'/login/signup.php'; $login_link_txt = get_string('startsignup');}
+			else if ($login_link=='2') {$login_link_url = $wwwroot.'/login/forgot_password.php'; $login_link_txt = get_string('forgotten');}
+			else if ($login_link=='3') {$login_link_url = $wwwroot.'/login/index.php'; $login_link_txt = get_string('moodle_login_page','theme_lambda');}
+			if ($login_custom_url != '') {$login_link_url = $login_custom_url;}
+			if ($login_custom_txt != '') {$login_link_txt = $login_custom_txt;}
+        	
+			if ($auth_googleoauth2) {
+        		require_once($CFG->dirroot . '/auth/googleoauth2/lib.php'); auth_googleoauth2_display_buttons(); ?>
+                <div style="clear:both;"></div>
+                <div class="forgotpass oauth2">
+        			<?php 
+					if ($login_link_url != '' and $login_link_txt != '') { ?>
+						<a target="_self" href="<?php echo $login_link_url; ?>"><?php echo $login_link_txt; ?></a>
+            		<?php } ?> 
+				</div>
+			<?php } else { ?>
         
-	<?php } else { 
+				<form class="navbar-form pull-right" method="post" action="<?php echo $wwwroot; ?>/login/index.php?authldap_skipntlmsso=1">
+					<div id="block-login">
+					<label id="user"><i class="fa fa-user"></i></label>	
+					<input id="inputName" class="span2" type="text" name="username" placeholder="<?php echo $username; ?>">
+					<label id="pass"><i class="fa fa-key"></i></label>
+        			<input id="inputPassword" class="span2" type="password" name="password" id="password" placeholder="<?php echo get_string('password'); ?>">
+					<input type="submit" id="submit" name="submit" value=""/>
+					</div>
+        
+        			<div class="forgotpass">
+        			<?php 
+					if ($login_link_url != '' and $login_link_txt != '') { ?>
+						<a target="_self" href="<?php echo $login_link_url; ?>"><?php echo $login_link_txt; ?></a>
+            		<?php } ?> 
+					</div>
+        
+				</form>
+			<?php } ?>
+ 
+	<?php } else {
 
  		echo '<div id="loggedin-user">';		
 		echo $OUTPUT->user_menu();
@@ -98,7 +133,7 @@ if (strpos($checkuseragent, 'MSIE 8')) {$username = str_replace("'", "&prime;", 
 	}?>
 
 	</div>
-	</div>
+    </div>
             
     </div>
     </div>
@@ -116,7 +151,6 @@ if (strpos($checkuseragent, 'MSIE 8')) {$username = str_replace("'", "&prime;", 
             </a>
             <div class="nav-collapse collapse">
                 <?php echo $OUTPUT->custom_menu(); ?>
-                <div class="nav-divider-right"></div>
                 <ul class="nav pull-right">
                     <li><?php echo $OUTPUT->page_heading_menu(); ?></li>
                 </ul>
@@ -131,3 +165,7 @@ if (strpos($checkuseragent, 'MSIE 8')) {$username = str_replace("'", "&prime;", 
         </div>
     </nav>
 </header>
+
+<?php if ($shadow_effect) { ?>
+<div class="container-fluid"><img src="<?php echo $OUTPUT->pix_url('bg/lambda-shadow', 'theme'); ?>" class="lambda-shadow" alt=""></div>
+<?php } ?>
