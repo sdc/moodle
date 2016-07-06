@@ -51,13 +51,19 @@ class local_codechecker_form extends moodleform {
 
         $mform->addElement('text', 'exclude', get_string('exclude', 'local_codechecker'), array('size' => '48'));
         $mform->setType('exclude', PARAM_NOTAGS);
-        $mform->setDefault('exclude', '*/yui/build/*, */tests/fixtures/*');
+        $mform->setDefault('exclude', '');
+
+        $mform->addElement('advcheckbox', 'includewarnings', get_string('includewarnings', 'local_codechecker'));
+        $mform->setType('includewarnings', PARAM_BOOL);
 
         $mform->addElement('submit', 'submitbutton', get_string('check', 'local_codechecker'));
     }
 }
 
-
+// These classes are not following the moodle standard but phpcs one,
+// so we intruct the checker to ignore them
+// TODO: Move these classes to own php files.
+// @codingStandardsIgnoreStart
 /**
  * Code sniffer insists on having an PHP_CodeSniffer_CLI, even though we don't
  * really want one. This is a dummy class to make it work.
@@ -82,6 +88,11 @@ class local_codechecker_codesniffer_cli extends PHP_CodeSniffer_CLI {
     /** Set the reportfile to use */
     public function setReportFile($reportfile) {
         $this->reportfile = $reportfile;
+    }
+
+    /** Set the warnings flag to use */
+    public function setIncludeWarnings($includewarnings) {
+        $this->warningSeverity = (int)$includewarnings;
     }
 
     /* Overload method to inject our settings */
@@ -119,17 +130,18 @@ class PHP_CodeSniffer_Reports_local_codechecker extends PHP_CodeSniffer_Reports_
      * For files with violations delegate processing to parent class. For files
      * without violations, just return the plain <file> element, without any err/warn.
      *
-     * @param array   $report      Prepared report data.
+     * @param array $report Prepared report data.
+     * @param PHP_CodeSniffer_File $phpcsFile The file being reported on.
      * @param boolean $showSources Show sources?
-     * @param int     $width       Maximum allowed line width.
+     * @param int $width Maximum allowed line width.
      *
      * @return boolean
      */
-    public function generateFileReport($report, $showSources=false, $width=80) {
+    public function generateFileReport($report, PHP_CodeSniffer_File $phpcsFile, $showSources = false, $width = 80) {
 
         // Report has violations, delegate to parent standard processing.
         if ($report['errors'] !== 0 || $report['warnings'] !== 0) {
-            return parent::generateFileReport($report, $showSources, $width);
+            return parent::generateFileReport($report, $phpcsFile, $showSources, $width);
         }
 
         // Here we are, with a file with 0 errors and warnings.
@@ -149,6 +161,9 @@ class PHP_CodeSniffer_Reports_local_codechecker extends PHP_CodeSniffer_Reports_
 
     }
 }
+
+// End of phpcs classes, we end ignoring now.
+// @codingStandardsIgnoreEnd
 
 /**
  * Convert a full path name to a relative one, for output.
@@ -238,6 +253,13 @@ function local_codesniffer_get_ignores($extraignorelist = '') {
         }
     }
 
+    // Ignore any compiled JS and test fixtures.
+    $finalpaths['*/amd/build/*'] = 'absolute';
+    $finalpaths['*/yui/build/*'] = 'absolute';
+    if (!defined('BEHAT_SITE_RUNNING')) { // We need testing fixtures at hand for testing purposes, heh.
+        $finalpaths['*/tests/fixtures/*'] = 'absolute';
+    }
+
     return $finalpaths;
 }
 
@@ -267,7 +289,7 @@ function local_codechecker_get_line_of_code($line, $prettypath) {
  * converting all / and \ to DIRECTORY_SEPARATOR. It should be used whenever a
  * path is passed to the CodeSniffer library.
  * @param string $path a file path
- * @return the path with all directory separators changed to DIRECTORY_SEPARATOR.
+ * @return string The path with all directory separators changed to DIRECTORY_SEPARATOR.
  */
 function local_codechecker_clean_path($path) {
     return str_replace(array('\\', '/'), DIRECTORY_SEPARATOR, $path);

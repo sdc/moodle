@@ -26,5 +26,14 @@ $sqlregexptick = '@SELECT * FROM {table} AS t WHERE `column` = :param@mes';
 $this->pix_url('<div tabindex="0" class="file-picker fp-generallayout" role="dialog" aria-live="assertive">');
 $regexp = preg_replace('/test/me0', 'ignore anything having invalid (not "imsxeADSUXJu") modifiers');
 echo '       <div class="fp-restrictions">';
+echo '{"foo" : {"fe" : 1} }';
+
+// And these are valid lang string using Markdown formatting.
+$string['something_desc'] = 'Some with `backticks` is not so bad';
+$string['something_help'] = 'Some with `backticks` is not so bad';
+
+// But not these.
+$variable['something_desc'] = 'Some with `backticks` in this context is bad';
+$string['something_warn'] = 'Some with `backticks` in this context is bad';
 
 // Fair enough.

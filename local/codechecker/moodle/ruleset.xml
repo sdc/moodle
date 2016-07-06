@@ -21,11 +21,14 @@
     <rule ref="Generic.PHP.DisallowShortOpenTag"/>
     <rule ref="Generic.PHP.LowerCaseConstant"/>
 
+    <rule ref="Generic.WhiteSpace.ScopeIndent"/>
+    <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
+
     <rule ref="Squiz.Classes.DuplicateProperty"/>
     <rule ref="Squiz.Classes.LowercaseClassKeywords"/>
     <rule ref="Squiz.Classes.SelfMemberReference"/>
 
-    <rule ref="Squiz.CodeAnalysis.EmptyStatement"/>
+    <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
 
     <rule ref="Squiz.Commenting.DocCommentAlignment"/>
     <rule ref="Squiz.Commenting.EmptyCatchComment"/>
@@ -38,6 +41,11 @@
     <rule ref="Squiz.Functions.LowercaseFunctionKeywords"/>
 
     <rule ref="Squiz.PHP.LowercasePHPFunctions"/>
+    <rule ref="Squiz.PHP.CommentedOutCode">
+        <properties>
+            <property name="maxPercentage" value="40"/>
+        </properties>
+    </rule>
 
     <rule ref="Squiz.Scope.MethodScope"/>
     <rule ref="Squiz.Scope.StaticThisUsage"/>
@@ -50,6 +58,11 @@
     <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
 
     <rule ref="Zend.Files.ClosingTag"/>
+
+    <!-- Disable this exact error unless it's approved -->
+    <rule ref="moodle.Commenting.InlineComment.SpacingAfter">
+        <severity>0</severity>
+    </rule>
 
     <!-- Add the PHPCompatibility external standard
          from git://github.com/wimg/PHPCompatibility.git

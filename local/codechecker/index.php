@@ -28,6 +28,7 @@ require_once($CFG->dirroot . '/local/codechecker/locallib.php');
 
 $path = optional_param('path', '', PARAM_PATH);
 $exclude = optional_param('exclude', '', PARAM_NOTAGS);
+$includewarnings = optional_param('includewarnings', true, PARAM_BOOL);
 
 $pageparams = array();
 if ($path) {
@@ -36,6 +37,7 @@ if ($path) {
 if ($exclude) {
     $pageparams['exclude'] = $exclude;
 }
+$pageparams['includewarnings'] = $includewarnings;
 
 admin_externalpage_setup('local_codechecker', '', $pageparams);
 
@@ -67,12 +69,13 @@ if ($path) {
         $cli = new local_codechecker_codesniffer_cli();
         $cli->setReport('local_codechecker'); // Using own custom xml format for easier handling later.
         $cli->setReportFile($reportfile); // Send the report to dataroot temp.
+        $cli->setIncludeWarnings($includewarnings); // Decide if we want to show warnings (defaults yes).
         $phpcs->setCli($cli);
         $phpcs->setIgnorePatterns(local_codesniffer_get_ignores($exclude));
         $phpcs->process(local_codechecker_clean_path($fullpath),
                 local_codechecker_clean_path($CFG->dirroot . '/local/codechecker/moodle'));
         // Save the xml report file to dataroot/temp.
-        $phpcs->reporting->printReport('local_codechecker', false, $reportfile);
+        $phpcs->reporting->printReport('local_codechecker', false, $cli->getCommandLineValues(), $reportfile);
         // Load the XML file to proceed with the rest of checks.
         $xml = simplexml_load_file($reportfile);
 

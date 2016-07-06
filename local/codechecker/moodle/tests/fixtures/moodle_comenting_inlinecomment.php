@@ -69,3 +69,35 @@ defined('ADEFINED', true);
 echo 'hello'; // --------------------------
 
 echo 'hello'; // A--------------.
+
+# and, finally, some horrible perl comment, oh my. Missing uppers and ending too
+
+// and yes, I'm missing correct start and end
+
+// just checking multilines do work ok.
+/// And the correct problems are detected, also this 3-slash line
+// missig upper at the start and missing dot at the end
+
+// Following CONTRIB-6025, let's accept phpdoc type hinting matching with begin of next line.
+/** @var some_class $variable */
+$variable = $giveme->some_class();
+
+foreach ($somearray as $variable) {
+    /** @var some_class $variable */
+    $variable->do_something();
+}
+
+// Don't accept type hinting if it does not match the begin of next line.
+/** @var some_class $variable */
+lets_execute_it($variable->do_something());
+
+/** @var some_class $variable */
+$variables = $giveme->some_class();
+
+// And also, CONTRIB-6105, consider assignments via list() like a viable use.
+/** @var cm_info $cm */
+list($course, $cm) = get_course_and_cm_from_cmid($cmid);
+
+// But not this (non matching within the list().
+/** @var cm_info $cm */
+list($course, $something) = $cm->whatever($cmid);

@@ -1,3 +1,35 @@
+Changes in version 2.5.3 (20160608) - Another dent to indent
+------------------------------------------------------------
+- NOBUG: Add travis support (using the nice [moodle-plugin-ci](https://github.com/moodlerooms/moodle-plugin-ci)
+      assistant for Moodle plugins).
+- NOBUG: Upgrade PHP_CodeSniffer to 2.6.0 version. (Mark Nielsen)
+- CONTRIB-5921: Exclude yui/amd and fixtures by default. (Brendan Heywood)
+- CONTRIB-6206: Fixed indentation issues when mixing functions and arrays. Bundled PHP_CodeSniffer upgraded to 2.6.2 dev version.
+
+Changes in version 2.5.2 (20160314) - The March begins...
+---------------------------------------------------------
+- MDLSITE-4197: Allow backticks within lang strings. Valid Markdown.
+- CONTRIB-6146: Better handling of indentation in files having multiple PHP blocks.
+    - Moving away from our custom indentation Sniff.
+    - Using upstream Generic.Whitespace.ScopeIndent, with open/close tags rooting indentation.
+    - Added Generic.Whitespace.DisallowTabIndent (to detect tabs within codechecker).
+    - Better coverage of indentation tests.
+- NOBUG: Upgrade PHP_CodeSniffer to pre 2.6.0 version (8c5d176).
+
+Changes in version 2.5.1 (20160214) - Valentinius release!
+----------------------------------------------------------
+- Pull request #19. Minor changes to make it work with CS 2.x (Corey Wallis).
+- CONTRIB-5175: Better modifiers matching in regexps.
+- CONTRIB-5732: Upgrade to recent version (Mark Nielsen):
+    - Upgrade PHP_CodeSniffer to 2.5.1+ (b506fcd).
+    - Upgrade PHPCompatibility to PHP 5.6 release.
+    - Renew various moodle Sniffs using their updated sources.
+    - Fixes to reporting API, unit tests...
+    - Allow the UI to skip warnings (warningSeverity).
+- CONTRIB-6025, CONTRIB-6105: Allow type hinting phpdoc blocks, supported both in variable/list assignments and variable actions.
+- NOBUG: Improve moodle standard unit test coverage.
+- NOBUG: Added some UI acceptance tests.
+
 Changes in version 2.3.2 (20140815) - Candelaria, mojo's paradise!
 ------------------------------------------------------------------
 - CONTRIB-5240: Fix CamelCase problems (so it works ok on any OS,
