@@ -1,3 +1,21 @@
+Changes in version 2016-06-14 (20160614)
+- Fix Moodle 31 compatibility
+
+Changes in version 2016-04-26 (20160426)
+----------------------------------------
+- Fix Use get_types or get_shortcuts depended on version of Moodle
+
+Changes in version 2016-03-03 (20160302)
+------------------------------------------------------------------
+- New: Max compute time in crossword and cryptex
+
+Changes in version 2016-02-14 (20160214)
+------------------------------------------------------------------
+- Fix syntax error (missed fullstop for concatenation)
+- Merge pull request #10 from grigory-catalyst/MOODLE_20_STABLE
+- Fix missing string gameopenclose at lang/en/game.php
+- Fix compatibility with Moodle 2.5
+
 Changes in version 2015-12-31 (4) (2015123104)
 ------------------------------------------------------------------
 - Fix translations check at translate.php
