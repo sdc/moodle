@@ -20,7 +20,9 @@ $string['action_hide'] = 'Hide';
 $string['action_show'] = 'Show';
 $string['action_delete'] = 'Delete';
 $string['action_moveto'] = 'Move to';
+$string['action_dupto'] = 'Duplicate to';
 $string['action_movetosection'] = 'Move to section';
+$string['action_duptosection'] = 'Duplicate to section';
 
 $string['week'] = 'W';
 $string['topic'] = 'Topic';
@@ -41,8 +43,8 @@ $string['deletecheckconfirm'] = 'Are you REALLY sure you want to delete the foll
 $string['sectionnotexist'] = 'Target section does not exist';
 $string['missingparam'] = 'Error coding: missing required JSON param "{$a}"';
 
-$string['usage_help'] = <<< EOB
-<p>This block allows instructors to perform actions upon multiple resources or activities in the class view, rather than having to perform repeated actions on individual items.</p>
+$string['usage_help'] = '<p>This block allows instructors to perform actions upon multiple resources or activities in the class view, rather than having to perform repeated actions on individual items.</p>
 <p>To use this block, Javascript must be enabled in your browser, you must be in editing mode in the course home page, and AJAX must be disabled. Only the courses in the Week or Topics formats are supported.</p>
-<p>Supported actions include mass deletion, mass hiding, mass showing, and mass moving. To select items to perform actions on, simply click the checkbox to the right of it in the course home page, or you may select all items, or select all items in a section using the block. To perform actions, click the action you would like to perform inside the block.</p>
-EOB;
+<p>Supported actions include mass deletion, mass hiding, mass showing, and mass moving. To select items to perform actions on, simply click the checkbox to the right of it in the course home page, or you may select all items, or select all items in a section using the block. To perform actions, click the action you would like to perform inside the block.</p>';
+
+$string['jsdisabled'] = 'You must enable Javascript to use this block.';
