@@ -1039,14 +1039,7 @@ class core_renderer extends renderer_base {
     public function footer() {
         global $CFG, $DB, $PAGE;
 
-        /**
-         * Changes to make the navbuttons block work.
-         * https://github.com/davosmith/moodle-navbuttons
-         */
-        //$output = $this->container_end_all(true);
-        require_once($CFG->dirroot.'/blocks/navbuttons/footer.php');
-        $output = draw_navbuttons().$this->container_end_all(true);
-        /* end changes */
+        $output = $this->container_end_all(true);
 
         $footer = $this->opencontainers->pop('header/footer');
 
