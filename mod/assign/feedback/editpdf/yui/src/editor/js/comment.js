@@ -267,7 +267,6 @@ var COMMENT = function(editor, gradeid, pageno, x, y, width, colour, rawtext) {
 
         node.on('gesturemovestart', function(e) {
             if (editor.currentedit.tool === 'select') {
-                e.preventDefault();
                 node.setData('dragging', true);
                 node.setData('offsetx', e.clientX - node.getX());
                 node.setData('offsety', e.clientY - node.getY());
