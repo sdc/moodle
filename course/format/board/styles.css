@@ -10,6 +10,7 @@
 .course-content ul.board {
 	margin: 0;
 	display: inline-block;
+	vertical-align: top;
 	width: 100%;
 }
 .course-content ul.board ul.section {
@@ -25,8 +26,8 @@
 	padding: 0;
 	width: 100%;
 	display: inline-block;
-	border: 0;
 	float: left;
+	border: 0;
 }
 .course-content ul.board li.section .content {
 	padding: 0;

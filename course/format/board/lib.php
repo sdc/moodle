@@ -84,6 +84,16 @@ class format_board extends format_topics {
                 'default' => get_config('format_board', 'showdefaultsectionname'),
                 'type' => PARAM_INT,
             );
+            for ($i=1; $i<=4; $i++) {
+                $courseformatoptions['widthcol'.$i] = array(
+                    'default' => get_config('format_board', 'widthcol'.$i),
+                    'type' => PARAM_INT,
+                );
+                $courseformatoptions['numsectionscol'.$i] = array(
+                    'default' => get_config('format_board', 'numsectionscol'.$i),
+                    'type' => PARAM_INT,
+                );
+            }
             for ($i = 1; $i <= $max; $i++) {
                 $courseformatoptions['widthsection'.$i] = array(
                     'default' => get_config('format_board', 'widthsection'.$i),
@@ -179,6 +189,44 @@ class format_board extends format_topics {
                     ),
                 ),
             );
+            /*
+            $courseformatoptionsedit['collapsetopics'] = array(
+                'label' => get_string('collapsetopics', 'format_board'),
+                'element_type' => 'select',
+                'element_attributes' => array(
+                    array(
+                        1 => new lang_string('Yes'),
+                        0 => new lang_string('No'),
+                    ),
+                ),
+            );
+            $courseformatoptionsedit['ignorecollapseintopics'] = array(
+                'label' => get_string('ignorecollapseintopics', 'format_board'),
+                'element_type' => 'text',
+                'element_attributes' => '',
+            );
+            */
+            for ($i = 1; $i <= 4; $i++) {
+                $courseformatoptionsedit['widthcol'.$i] = array(
+                    'label' => get_string('widthcol', 'format_board').' ('.$i.')',
+                    'element_type' => 'select',
+                    'element_attributes' => array(
+                        array(
+                            100 => '100%',
+                            75 => '75%',
+                            66 => '66%',
+                            50 => '50%',
+                            33 => '33%',
+                            25 => '25%',
+                        ),
+                    ),
+                );
+                $courseformatoptionsedit['numsectionscol'.$i] = array(
+                    'label' => get_string('numsectionscol', 'format_board').' ('.$i.')',
+                    'element_type' => 'select',
+                    'element_attributes' => array($sectionmenu),
+                );
+            }
             for ($i = 1; $i <= $max; $i++) {
                 $courseformatoptionsedit['widthsection'.$i] = array(
                     'label' => get_string('widthsection', 'format_board').' ('.$i.')',

@@ -26,7 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->maturity = MATURITY_ALPHA;
-$plugin->release = '(Build: 2016031800)';
-$plugin->version = 2016031800;
-$plugin->requires = 2015111200;
+$plugin->version = 2016031900;
+$plugin->release = '(Build: 2016031900)';
+$plugin->requires = 2015111000;
 $plugin->component = 'format_board';
+

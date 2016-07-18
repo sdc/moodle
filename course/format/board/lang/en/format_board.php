@@ -37,8 +37,11 @@ $string['hidefromothers'] = 'Hide topic';
 $string['showfromothers'] = 'Show topic';
 
 /* ini - format_board */
+$string['widthcol'] = 'Column width';
 $string['widthsection'] = 'Section width';
 $string['heightsection'] = 'Section height';
+$string['numsectionscol'] = 'Limit of sections in column';
+$string['numcols'] = 'Number of columns';
 $string['showdefaultsectionname'] = 'Show the default sections name';
 $string['yes'] = 'Yes';
 $string['no'] = 'No';
@@ -47,5 +50,6 @@ $string['logo'] = 'Custom theme logo';
 $string['height'] = 'Custom theme logo height';
 $string['designermode'] = 'Desginer mode';
 $string['contrast'] = 'Contrast color';
+$string['unlimited'] = 'Unlimited';
 $string['customcss'] = 'Custom CSS';
 /* end - format_board */

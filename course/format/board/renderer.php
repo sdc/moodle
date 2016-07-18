@@ -51,9 +51,14 @@ class format_board_renderer extends format_topics_renderer {
         $course = course_get_format($course)->get_course();
         /* ini - format_board */
         $css = '';
-        for ($i = 0; $i <= $course->numsections; $i++) {
-            @$width = (int)$course->{'widthsection'.$i};
-            @$height = (int)$course->{'heightsection'.$i};
+        for ($i = 0; $i <= 4; $i++) {
+            eval('@$width = (int)$course->widthcol'.$i.';');
+            $width = $width ? ($width != 33 ? ($width != 66 ? $width : '66.666666') : '33.333333') : 100;
+            $css .= '#col-'.$i.' { width: '.$width.'%; }';
+        }
+        for ($i = 0, $t = count($modinfo->get_section_info_all()); $i < $t; $i++) {
+            @$width = (int)$course->widthsection{$i};
+            @$height = (int)$course->heightsection{$i};
             $width = $width ? ($width != 33 ? ($width != 66 ? $width : '66.666666') : '33.333333') : 100;
             $height = $height ? $height : 1;
             $background = ($course->designermode) ? 'background: rgb('.rand(0, 255).', '.rand(0, 255).', '.rand(0, 255).');' : '';
@@ -67,6 +72,14 @@ class format_board_renderer extends format_topics_renderer {
         echo $this->output->heading($this->page_title(), 2, 'accesshide');
         echo $this->course_activity_clipboard($course, 0);
         echo $this->start_section_list();
+        /* ini - format_board */
+        $cont = 1;
+        $currentcol = 1;
+        $numtopicscol[1] = $course->numsectionscol1;
+        $numtopicscol[2] = $course->numsectionscol2;
+        $numtopicscol[3] = $course->numsectionscol3;
+        $numtopicscol[4] = $course->numsectionscol4;
+        /* end - format_board */
         foreach ($modinfo->get_section_info_all() as $section => $thissection) {
             if ($section == 0) {
                 /* 0-section is displayed a little different then the others */
@@ -76,6 +89,10 @@ class format_board_renderer extends format_topics_renderer {
                     echo $this->courserenderer->course_section_add_cm_control($course, 0, 0);
                     echo $this->section_footer();
                 }
+                /* ini - format_board */
+                echo $this->end_section_list();
+                echo $this->start_section_list(1);
+                /* end - format_board */
                 continue;
             }
             if ($section > $course->numsections) {
@@ -100,6 +117,15 @@ class format_board_renderer extends format_topics_renderer {
                 }
                 echo $this->section_footer();
             }
+            /* ini - format_board */
+            if ($cont == @$numtopicscol[$currentcol] && @$numtopicscol[$currentcol] != 0) {
+                $cont = 0;
+                $currentcol++;
+                echo $this->end_section_list();
+                echo $this->start_section_list($currentcol);
+            }
+            $cont++;
+            /* end - format_board */
         }
         if ($PAGE->user_is_editing() and has_capability('moodle/course:update', $context)) {
             foreach ($modinfo->get_section_info_all() as $section => $thissection) {
