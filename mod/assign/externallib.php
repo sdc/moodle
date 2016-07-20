@@ -2614,12 +2614,11 @@ class mod_assign_external extends external_api {
      * @param int $skip Number of records to skip
      * @param int $limit Maximum number of records to return
      * @param bool $onlyids Only return user ids.
-     * @param bool $includeenrolments Return courses where the user is enrolled.
      * @return array of warnings and status result
      * @since Moodle 3.1
      * @throws moodle_exception
      */
-    public static function list_participants($assignid, $groupid, $filter, $skip, $limit, $onlyids, $includeenrolments) {
+    public static function list_participants($assignid, $groupid, $filter, $skip, $limit, $onlyids) {
         global $DB, $CFG;
         require_once($CFG->dirroot . "/mod/assign/locallib.php");
         require_once($CFG->dirroot . "/user/lib.php");
@@ -2631,8 +2630,7 @@ class mod_assign_external extends external_api {
                                                 'filter' => $filter,
                                                 'skip' => $skip,
                                                 'limit' => $limit,
-                                                'onlyids' => $onlyids,
-                                                'includeenrolments' => $includeenrolments
+                                                'onlyids' => $onlyids
                                             ));
         $warnings = array();
 
