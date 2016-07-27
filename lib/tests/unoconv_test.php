@@ -75,7 +75,20 @@ class core_unoconv_testcase extends advanced_testcase {
             return $this->markTestSkipped();
         }
 
-        $this->resetAfterTest();
+        $result = $fs->get_converted_document($this->testfile1, 'pdf');
+        $this->assertNotFalse($result);
+        $this->assertSame($result->get_mimetype(), 'application/pdf');
+        $this->assertGreaterThan(0, $result->get_filesize());
+        $result = $fs->get_converted_document($this->testfile2, 'pdf');
+        $this->assertNotFalse($result);
+        $this->assertSame($result->get_mimetype(), 'application/pdf');
+        $this->assertGreaterThan(0, $result->get_filesize());
+        // Test forcing a refresh of the document.
+        $result = $fs->get_converted_document($this->testfile2, 'pdf', true);
+        $this->assertNotFalse($result);
+        $this->assertSame($result->get_mimetype(), 'application/pdf');
+        $this->assertGreaterThan(0, $result->get_filesize());
+    }
 
         $filerecord = array(
             'contextid' => context_system::instance()->id,
@@ -95,13 +108,10 @@ class core_unoconv_testcase extends advanced_testcase {
         $this->assertSame($mimetype, $result->get_mimetype());
         $this->assertGreaterThan(0, $result->get_filesize());
 
-        // Repeat immediately with the file forcing re-generation.
-        $new = $fs->get_converted_document($testfile, $format, true);
-        $this->assertNotFalse($new);
-        $this->assertSame($mimetype, $new->get_mimetype());
-        $this->assertGreaterThan(0, $new->get_filesize());
-        $this->assertNotEquals($result->get_id(), $new->get_id());
-        // Note: We cannot compare contenthash for PDF because the PDF has a unique ID, and a creation timestamp
-        // imprinted in the file.
+        // Test forcing a refresh of the document.
+        $result = $fs->get_converted_document($this->testfile2, 'txt', true);
+        $this->assertNotFalse($result);
+        $this->assertSame($result->get_mimetype(), 'text/plain');
+        $this->assertGreaterThan(0, $result->get_filesize());
     }
 }
