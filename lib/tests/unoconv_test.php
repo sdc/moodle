@@ -77,16 +77,16 @@ class core_unoconv_testcase extends advanced_testcase {
 
         $result = $fs->get_converted_document($this->testfile1, 'pdf');
         $this->assertNotFalse($result);
-        $this->assertSame($result->get_mimetype(), 'application/pdf');
+        $this->assertSame('application/pdf', $result->get_mimetype());
         $this->assertGreaterThan(0, $result->get_filesize());
         $result = $fs->get_converted_document($this->testfile2, 'pdf');
         $this->assertNotFalse($result);
-        $this->assertSame($result->get_mimetype(), 'application/pdf');
+        $this->assertSame('application/pdf', $result->get_mimetype());
         $this->assertGreaterThan(0, $result->get_filesize());
         // Test forcing a refresh of the document.
         $result = $fs->get_converted_document($this->testfile2, 'pdf', true);
         $this->assertNotFalse($result);
-        $this->assertSame($result->get_mimetype(), 'application/pdf');
+        $this->assertSame('application/pdf', $result->get_mimetype());
         $this->assertGreaterThan(0, $result->get_filesize());
     }
 
@@ -103,15 +103,19 @@ class core_unoconv_testcase extends advanced_testcase {
         //$testfile = $fs->create_file_from_string($filerecord, file_get_contents($source));
         $testfile = $fs->create_file_from_pathname($filerecord, $source);
 
-        $result = $fs->get_converted_document($testfile, $format);
+        $result = $fs->get_converted_document($this->testfile1, 'txt');
         $this->assertNotFalse($result);
-        $this->assertSame($mimetype, $result->get_mimetype());
+        $this->assertSame('text/plain', $result->get_mimetype());
+        $this->assertGreaterThan(0, $result->get_filesize());
+        $result = $fs->get_converted_document($this->testfile2, 'txt');
+        $this->assertNotFalse($result);
+        $this->assertSame('text/plain', $result->get_mimetype());
         $this->assertGreaterThan(0, $result->get_filesize());
 
         // Test forcing a refresh of the document.
         $result = $fs->get_converted_document($this->testfile2, 'txt', true);
         $this->assertNotFalse($result);
-        $this->assertSame($result->get_mimetype(), 'text/plain');
+        $this->assertSame('text/plain', $result->get_mimetype());
         $this->assertGreaterThan(0, $result->get_filesize());
     }
 }
