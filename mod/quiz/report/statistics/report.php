@@ -665,6 +665,7 @@ class quiz_statistics_report extends quiz_default_report {
      * all questions and sub-questions.
      *
      * @param moodle_url $reporturl the base URL of the report.
+     *
      * @return string HTML.
      */
     protected function everything_download_options(moodle_url $reporturl) {
