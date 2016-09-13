@@ -2614,11 +2614,12 @@ class mod_assign_external extends external_api {
      * @param int $skip Number of records to skip
      * @param int $limit Maximum number of records to return
      * @param bool $onlyids Only return user ids.
+     * @param bool $includeenrolments Return courses where the user is enrolled.
      * @return array of warnings and status result
      * @since Moodle 3.1
      * @throws moodle_exception
      */
-    public static function list_participants($assignid, $groupid, $filter, $skip, $limit, $onlyids) {
+    public static function list_participants($assignid, $groupid, $filter, $skip, $limit, $onlyids, $includeenrolments) {
         global $DB, $CFG;
         require_once($CFG->dirroot . "/mod/assign/locallib.php");
         require_once($CFG->dirroot . "/user/lib.php");
@@ -2630,7 +2631,8 @@ class mod_assign_external extends external_api {
                                                 'filter' => $filter,
                                                 'skip' => $skip,
                                                 'limit' => $limit,
-                                                'onlyids' => $onlyids
+                                                'onlyids' => $onlyids,
+                                                'includeenrolments' => $includeenrolments
                                             ));
         $warnings = array();
 
@@ -2649,6 +2651,17 @@ class mod_assign_external extends external_api {
         $participants = array();
         if (groups_group_visible($params['groupid'], $course, $cm)) {
             $participants = $assign->list_participants_with_filter_status_and_group($params['groupid']);
+        }
+
+        $userfields = user_get_default_fields();
+        if (!$params['includeenrolments']) {
+            // Remove enrolled courses from users fields to be returned.
+            $key = array_search('enrolledcourses', $userfields);
+            if ($key !== false) {
+                unset($userfields[$key]);
+            } else {
+                throw new moodle_exception('invaliduserfield', 'error', '', 'enrolledcourses');
+            }
         }
 
         $userfields = user_get_default_fields();
