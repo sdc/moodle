@@ -76,7 +76,7 @@ class external extends external_api {
      * @param string $themename The name of theme
      * @return array[string]
      */
-    public static function list_templates($component, $search, $themename = '') {
+    public static function list_templates($component, $search, $themename) {
         $params = self::validate_parameters(self::list_templates_parameters(),
                                             array(
                                                 'component' => $component,
