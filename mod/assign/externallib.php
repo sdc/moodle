@@ -2664,17 +2664,6 @@ class mod_assign_external extends external_api {
             }
         }
 
-        $userfields = user_get_default_fields();
-        if (!$params['includeenrolments']) {
-            // Remove enrolled courses from users fields to be returned.
-            $key = array_search('enrolledcourses', $userfields);
-            if ($key !== false) {
-                unset($userfields[$key]);
-            } else {
-                throw new moodle_exception('invaliduserfield', 'error', '', 'enrolledcourses');
-            }
-        }
-
         $result = array();
         $index = 0;
         foreach ($participants as $record) {
