@@ -70,9 +70,9 @@
 
                 complete_user_login($user);
 
-                if (user_not_fully_set_up($USER)) {
-                    $urltogo = $CFG->wwwroot.'/user/edit.php?id='.$USER->id.'&amp;course='.SITEID;
-                    // We don't delete $SESSION->wantsurl yet, so we get there later
+            if (user_not_fully_set_up($USER, true)) {
+                $urltogo = $CFG->wwwroot.'/user/edit.php?id='.$USER->id.'&amp;course='.SITEID;
+                // We don't delete $SESSION->wantsurl yet, so we get there later
 
                 } else if (isset($SESSION->wantsurl) and (strpos($SESSION->wantsurl, $CFG->wwwroot) === 0)) {
                     $urltogo = $SESSION->wantsurl;    /// Because it's an address in this site
