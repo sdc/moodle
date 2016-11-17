@@ -379,6 +379,7 @@ class behat_hooks extends behat_base {
     public function after_scenario(AfterScenarioScope $scope) {
         try {
             $this->wait_for_pending_js();
+            $this->getSession()->visit($this->locate_path('/README.txt'));
             $this->getSession()->reset();
         } catch (DriverException $e) {
             // Try restart session, if DriverException caught.
