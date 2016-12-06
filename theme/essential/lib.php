@@ -42,6 +42,10 @@ function theme_essential_pluginfile($course, $cm, $context, $filearea, $args, $f
         $theme = theme_config::load('essential');
     }
     if ($context->contextlevel == CONTEXT_SYSTEM) {
+        // By default, theme files must be cache-able by both browsers and proxies.  From 'More' theme.
+        if (!array_key_exists('cacheability', $options)) {
+            $options['cacheability'] = 'public';
+        }
         if ($filearea === 'logo') {
             return $theme->setting_file_serve('logo', $args, $forcedownload, $options);
         } else if ($filearea === 'style') {
@@ -65,6 +69,8 @@ function theme_essential_pluginfile($course, $cm, $context, $filearea, $args, $f
             return $theme->setting_file_serve('ipadicon', $args, $forcedownload, $options);
         } else if ($filearea === 'ipadretinaicon') {
             return $theme->setting_file_serve('ipadretinaicon', $args, $forcedownload, $options);
+        } else if ($filearea === 'loginbackground') {
+            return $theme->setting_file_serve('loginbackground', $args, $forcedownload, $options);
         } else {
             send_file_not_found();
         }
@@ -223,6 +229,14 @@ function theme_essential_process_css($css, $theme) {
     $themestripebackgroundcolour = \theme_essential\toolbox::get_setting('themestripebackgroundcolour');
     $css = \theme_essential\toolbox::set_color($css, $themestripebackgroundcolour, '[[setting:themestripebackgroundcolour]]', '#ff9a34');
 
+    $themestripeurlcolour = \theme_essential\toolbox::get_setting('themestripeurlcolour');
+    $css = \theme_essential\toolbox::set_color($css, $themestripeurlcolour, '[[setting:themestripeurlcolour]]', '#25849F');
+
+    // Enrolled and not accessed course background colour.
+    $mycoursesorderenrolbackcolour = \theme_essential\toolbox::get_setting('mycoursesorderenrolbackcolour');
+    $css = \theme_essential\toolbox::set_color($css, $mycoursesorderenrolbackcolour,
+        '[[setting:mycoursesorderenrolbackcolour]]', '#a3ebff');
+
     // Set the footer colour.
     $footercolor = \theme_essential\toolbox::get_setting('footercolor');
     $css = \theme_essential\toolbox::set_color($css, $footercolor, '[[setting:footercolor]]', '#30add1', '0.95');
@@ -298,10 +312,16 @@ function theme_essential_process_css($css, $theme) {
         // Set theme alternative colours.
         $defaultcolors = array('#a430d1', '#d15430', '#5dd130', '#006b94');
         $defaulthovercolors = array('#9929c4', '#c44c29', '#53c429', '#4090af');
+        $defaultstripetextcolors = array('#bdfdb7', '#c3fdd0', '#9f5bfb', '#ff1ebd');
+        $defaultstripebackgroundcolors = array('#c1009f', '#bc2800', '#b4b2fd', '#0336b4');
+        $defaultstripeurlcolors = array('#bef500', '#30af67', '#ffe9a6', '#ffab00');
 
         foreach (range(1, 4) as $alternative) {
             $default = $defaultcolors[$alternative - 1];
             $defaulthover = $defaulthovercolors[$alternative - 1];
+            $defaultstripetext = $defaultstripetextcolors[$alternative - 1];
+            $defaultstripebackground = $defaultstripebackgroundcolors[$alternative - 1];
+            $defaultstripeurl = $defaultstripeurlcolors[$alternative - 1];
             $alternativethemecolour = \theme_essential\toolbox::get_setting('alternativethemecolor'.$alternative);
             $css = \theme_essential\toolbox::set_alternativecolor($css, 'color'.$alternative,
                 $alternativethemecolour, $default);
@@ -359,10 +379,18 @@ function theme_essential_process_css($css, $theme) {
                 \theme_essential\toolbox::get_setting('alternativethemehovercolor' . $alternative), $defaulthover);
 
             $css = \theme_essential\toolbox::set_alternativecolor($css, 'stripetextcolour' . $alternative,
-                \theme_essential\toolbox::get_setting('alternativethemestripetextcolour' . $alternative), '#ffffff');
+                \theme_essential\toolbox::get_setting('alternativethemestripetextcolour' . $alternative), $defaultstripetext);
 
             $css = \theme_essential\toolbox::set_alternativecolor($css, 'stripebackgroundcolour' . $alternative,
-                \theme_essential\toolbox::get_setting('alternativethemestripebackgroundcolour' . $alternative), '#ff9a34');
+                \theme_essential\toolbox::get_setting('alternativethemestripebackgroundcolour' . $alternative), $defaultstripebackground);
+
+            $css = \theme_essential\toolbox::set_alternativecolor($css, 'stripeurlcolour' . $alternative,
+                \theme_essential\toolbox::get_setting('alternativethemestripeurlcolour' . $alternative), $defaultstripeurl);
+
+            $alternativethememycoursesorderenrolbackcolour = \theme_essential\toolbox::get_setting(
+                'alternativethememycoursesorderenrolbackcolour'.$alternative);
+            $css = \theme_essential\toolbox::set_alternativecolor($css, 'mycoursesorderenrolbackcolour'.$alternative,
+                $alternativethememycoursesorderenrolbackcolour, '#a3ebff');
 
             $css = \theme_essential\toolbox::set_alternativecolor($css, 'footercolor' . $alternative,
                 \theme_essential\toolbox::get_setting('alternativethemefootercolor' . $alternative), '#30add1');
@@ -428,6 +456,15 @@ function theme_essential_process_css($css, $theme) {
     // Set the background style for the page.
     $pagebgstyle = \theme_essential\toolbox::get_setting('pagebackgroundstyle');
     $css = \theme_essential\toolbox::set_pagebackgroundstyle($css, $pagebgstyle);
+
+    // Set the background image for the login page.
+    $loginbackground = \theme_essential\toolbox::setting_file_url('loginbackground', 'loginbackground');
+    $css = \theme_essential\toolbox::set_loginbackground($css, $loginbackground);
+
+    // Set the background style for the login page.
+    $loginbgstyle = \theme_essential\toolbox::get_setting('loginbackgroundstyle');
+    $loginbgopacity = \theme_essential\toolbox::get_setting('loginbackgroundopacity');
+    $css = \theme_essential\toolbox::set_loginbackgroundstyle($css, $loginbgstyle, $loginbgopacity);
 
     // Set marketing height.
     $marketingheight = \theme_essential\toolbox::get_setting('marketingheight');

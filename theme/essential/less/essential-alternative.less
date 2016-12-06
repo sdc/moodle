@@ -6,6 +6,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 // Import the bootstrap we need.
+@import "../../bootstrapbase/less/bootstrap/variables";
 @import "bootstrap-override/variables";
 @import "essential/variables";
 @import "fontawesome/variables";
@@ -20,7 +21,7 @@
 // Import the essential variables.
 @import "essential/settings/variables";
 
-.navbar .navbar-inner #custom_menu_themecolours .dropdown-menu > li > a.default {
+.navbar .navbar-inner #custom_menu_themecolours .dropdown-menu li > a.default {
     &:hover, &:focus {
         color: ~"[[setting:themenavcolor]]";
         background-color: ~"[[setting:themecolor]]";
@@ -119,7 +120,7 @@
                     ul.breadcrumb.style2 {
                         li {
                             a {
-                                color: ~"[[setting:alternativethemenavcolor@{index}]]";
+                                color: ~"[[setting:alternativethemeurlcolor@{index}]]";
                                 &:hover {
                                     color: ~"[[setting:alternativethemehovercolor@{index}]]";
                                 }
@@ -288,7 +289,7 @@
 
                         .nav > li.dropdown a,
                         .nav > li > a,
-                        .search-input-wrapper > div .fa {
+                        .search-input-wrapper > div .@{fa-css-prefix} {
                             color: ~"[[setting:alternativethemenavcolor@{index}]]";
                             &:focus, &:hover {
                                 color: ~"[[setting:alternativethemecolor@{index}]]";
@@ -301,9 +302,17 @@
                                 .dropdown-toggle:after {
                                     border-left-color: inherit;
                                 }
-                                &:focus, &:hover .dropdown-toggle:after {
-                                    border-left-color: ~"[[setting:alternativethemenavcolor@{index}]]";
+                                &:focus, &:hover {
+                                    .dropdown-toggle:after {
+                                        border-left-color: ~"[[setting:alternativethemenavcolor@{index}]]";
+                                    }
                                 }
+                            }
+                        }
+
+                        #custom_menu_courses {
+                            .dropdown-menu li > a > span.onlyenrolled {
+                                background-color: ~"[[setting:alternativethememycoursesorderenrolbackcolour@{index}]]";
                             }
                         }
 
@@ -320,8 +329,8 @@
                                     background-color: ~"[[setting:alternativethemehovercolor@{index}]]";
                                 }
                             }
-                            > li.dropdown ul.dropdown-menu {
-                                > li > a {
+                            > li.dropdown .dropdown-menu {
+                                li > a {
                                     color: ~"[[setting:alternativethemetextcolor@{index}]]";
                                     &:hover { 
                                         color: @white; // TODO: Page background colour needs to be a setting.
@@ -340,10 +349,24 @@
                                 }
                             }
                         }
-                        .dropdown-menu > li > a:hover,
-                            .dropdown-menu > li > a:focus,
-                            .dropdown-submenu:hover > a,
-                            .dropdown-submenu:focus > a {
+
+                        #custom_menu_courses {
+                            .nav > li.dropdown .dropdown-menu > li {
+                                > a {
+                                    &:hover > span {
+                                        background-color: ~"[[setting:alternativethemeurlcolor@{index}]]";
+                                    }
+                                    &:focus > span, &.open > span {
+                                        background-color: ~"[[setting:alternativethemeurlcolor@{index}]]";
+                                    }
+                                }
+                            }
+                        }
+
+                        .dropdown-menu li > a:hover,
+                        .dropdown-menu li > a:focus,
+                        .dropdown-submenu:hover > a,
+                        .dropdown-submenu:focus > a {
                             color: ~"[[setting:alternativethemenavcolor@{index}]]";
                             background-color: ~"[[setting:alternativethemecolor@{index}]]";
                         }
@@ -375,7 +398,7 @@
                             img.userpicture {
                                 border: 1px solid ~"[[setting:alternativethemenavcolor@{index}]]";
                             }
-                            ul.dropdown-menu {
+                            .dropdown-menu {
                                 border: 1px solid ~"[[setting:alternativethemecolor@{index}]]";
                                 hr.sep {
                                     border-bottom: 1px dotted ~"[[setting:alternativethemecolor@{index}]]";
@@ -386,7 +409,7 @@
 
                     .navbar-inner .messagemenu {
                         ul.nav {
-                            ul.dropdown-menu {
+                            .dropdown-menu {
                                 border: 1px solid ~"[[setting:alternativethemecolor@{index}]]";
                                 li > a {
                                     border-top: 1px dotted ~"[[setting:alternativethemecolor@{index}]]";
@@ -404,9 +427,6 @@
                                 }
                             }
                         }
-                    }
-                    .@{fa-css-prefix} {
-                        color: inherit;
                     }
                 }
                 &.dir-rtl .navbar {
@@ -539,6 +559,9 @@
                 div.editor_atto_toolbar button {
                     background: none;
                 }
+                .moodle-dialogue-base .closebutton:hover {
+                    background-image: url(~"[[pix:theme|sprite]]");
+                }
 
                 #tinymce {
                     color: ~"[[setting:alternativethemetextcolor@{index}]]";
@@ -622,6 +645,15 @@
                                 color: ~"[[setting:alternativethemeslidecaptiontextcolor@{index}]]";
                             }
                         }
+                        // Caption for text when there is a background image.
+                        &.pagebackground {
+                            .the-side-caption-content {
+                                background-color: ~"[[setting:alternativethemeslidecaptionbackgroundcolor@{index}]]";
+                                h4, div {
+                                    color: ~"[[setting:alternativethemeslidecaptiontextcolor@{index}]]";
+                                }
+                            }
+                        }
                     }
                     // Left/right controls for nav.
                     .carousel-control {
@@ -673,18 +705,10 @@
                 }
 
                 &.editing {
-                    // Using 'used' instead of 'empty' as body class will be 'used' as soon as D&D starts.
-                    &.used-region-side-pre #block-region-side-pre,
-                    &.used-region-side-post #block-region-side-post,
-                    &.used-region-home-left #block-region-home-left,
-                    &.used-region-home-middle #block-region-home-middle,
-                    &.used-region-home-right #block-region-home-right,
-                    &.used-region-hidden-dock #block-region-hidden-dock {
+                    #page .block-region.yui3-dd-drop-active-valid {
                         border-color: ~"[[setting:alternativethemecolor@{index}]]";
                     }
-                    &.used-region-footer-left #block-region-footer-left,
-                    &.used-region-footer-middle #block-region-footer-middle,
-                    &.used-region-footer-right #block-region-footer-right {
+                    #page-footer .block-region.yui3-dd-drop-active-valid {
                         border-color: ~"[[setting:alternativethemefootertextcolor@{index}]]";
                     }
                 }
@@ -1095,8 +1119,8 @@
                     .avg {
                         color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
                         background-color: ~"[[setting:alternativethemestripebackgroundcolour@{index}]]";
-                        a, a:hover, a:focus, a:visited, .fa {
-                            color: inherit;
+                        a, a:hover, a:focus, a:visited, .@{fa-css-prefix} {
+                            color: ~"[[setting:alternativethemestripeurlcolour@{index}]]";
                         }
                     }
                 }
@@ -1104,7 +1128,7 @@
                 &#page-grade-report-grader-index .gradeparent div.floater:first-of-type .cell:nth-child(even) {
                     color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
                     a, a:hover, a:focus, a:visited {
-                        color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
+                        color: ~"[[setting:alternativethemestripeurlcolour@{index}]]";
                     }
                 }
 
@@ -1123,7 +1147,7 @@
                 }
 
                 &.path-grade-report-grader .gradeparent .user.cell .userpicture {
-                    background-color: #fff;
+                    background-color: @white;
                 }
 
                 table#explaincaps,
@@ -1143,9 +1167,55 @@
                         > tr:nth-child(odd) > th {
                             color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
                             background-color: ~"[[setting:alternativethemestripebackgroundcolour@{index}]]";
-                            a, a:hover, a:focus, a:visited {
-                                color: inherit;
+                            a:not(.btn), > a:not(.btn):hover, > a:not(.btn):focus, > a:not(.btn):visited,
+                            a.toggle-display, a.toggle-display:hover, a.toggle-display:focus, a.toggle-display:visited {
+                                color:  ~"[[setting:alternativethemestripeurlcolour@{index}]]";
                             }
+                        }
+                        > tr:nth-child(odd) > td {
+                            .@{fa-css-prefix}, .@{fa-css-prefix}:hover, .@{fa-css-prefix}:focus {
+                                color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
+                            }
+                        }
+                    }
+                }
+
+                &.path-grade-report-user .user-grade,
+                &.path-grade-edit-tree .setup-grades {
+                    &.generaltable > tbody {
+                        > tr:nth-child(odd) > th,
+                        > tr:nth-child(odd) > td {
+                            &.leveleven, &.levelodd {
+                                color: ~"[[setting:alternativethemetextcolor@{index}]]";
+                                a:not(.btn):not([role="menuitem"]),
+                                a:not(.btn):not([role="menuitem"]):visited,
+                                a.toggle-display,
+                                a.toggle-display:visited {
+                                    color: ~"[[setting:alternativethemeurlcolor@{index}]]";
+                                }
+                                a:not(.btn):not([role="menuitem"]):hover,
+                                a:not(.btn):not([role="menuitem"]):focus,
+                                a:not(.btn):not([role="menuitem"]):active,
+                                a.toggle-display:hover,
+                                a.toggle-display:focus,
+                                a.toggle-display:active {
+                                    color: ~"[[setting:alternativethemehovercolor@{index}]]";
+                                }
+                            }
+                        }
+                        tr:hover > td,
+                        tr:hover > td > h3,
+                        tr:hover > th {
+                            color: ~"[[setting:alternativethemetextcolor@{index}]]";
+                        }
+                        tr:hover > td a:not(.btn):not([role="menuitem"]),
+                        tr:hover > td a:not(.btn):not([role="menuitem"]):visited {
+                            color: ~"[[setting:alternativethemeurlcolor@{index}]]";
+                        }
+                        tr:hover > td a:not(.btn):not([role="menuitem"]):hover,
+                        tr:hover > td a:not(.btn):not([role="menuitem"]):focus,
+                        tr:hover > td a:not(.btn):not([role="menuitem"]):active {
+                            color: ~"[[setting:alternativethemehovercolor@{index}]]";
                         }
                     }
                 }
@@ -1159,10 +1229,12 @@
                             &.notes .requiredby,
                             &.pluginname .componentname,
                             &.requires .requires-ok,
-                            &.settings a,
-                            &.uninstall a,
                             &.version .versionnumber {
                                 color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
+                            }
+                            &.settings a,
+                            &.uninstall a {
+                                color: ~"[[setting:alternativethemestripeurlcolour@{index}]]";
                             }
                         }
                     }
@@ -1188,6 +1260,10 @@
                             color: ~"[[setting:alternativethemestripetextcolour@{index}]]";
                             background-color: ~"[[setting:alternativethemestripebackgroundcolour@{index}]]";
                         }
+                        tr:hover > td > a:not(.btn) {
+                            color: ~"[[setting:alternativethemestripeurlcolour@{index}]]";
+                            background-color: ~"[[setting:alternativethemestripebackgroundcolour@{index}]]";
+                        }
                     }
                 }
             }
@@ -1196,8 +1272,8 @@
                 body.essential-colours-alternative@{index} {
                     .nav-collapse {
                         background-color: ~"[[setting:alternativethemecolor@{index}]]";
-                        .dropdown-menu > li > a,
-                        .dropdown-menu > li > a:visited {
+                        .dropdown-menu li > a,
+                        .dropdown-menu li > a:visited {
                             color: ~"[[setting:alternativethemenavcolor@{index}]]";
                         }
                     }
@@ -1209,8 +1285,10 @@
                                         border-left-color: transparent;
                                         border-top-color: ~"[[setting:alternativethemeiconcolor@{index}]]";
                                     }
-                                    &:hover .dropdown-toggle:after {
-                                        border-top-color: ~"[[setting:alternativethemenavcolor@{index}]]";
+                                    &:focus, &:hover {
+                                        .dropdown-toggle:after {
+                                            border-top-color: ~"[[setting:alternativethemenavcolor@{index}]]";
+                                        }
                                     }
                                 }
                                 .dropdown-submenu, .dropdown-submenu:hover {
@@ -1231,7 +1309,7 @@
             }
             /* @end */
 
-            .navbar .navbar-inner #custom_menu_themecolours .dropdown-menu > li > a.alternative@{index} {
+            .navbar .navbar-inner #custom_menu_themecolours .dropdown-menu li > a.alternative@{index} {
                 &:hover, &:focus {
                     color: ~"[[setting:alternativethemenavcolor@{index}]]";
                     background-color: ~"[[setting:alternativethemecolor@{index}]]";

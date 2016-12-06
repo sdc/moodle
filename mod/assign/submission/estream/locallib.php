@@ -78,21 +78,23 @@ class assign_submission_estream extends assign_submission_plugin
      * @return bool
      */
     public function save(stdClass $submission, stdClass $data) {
-        global $DB;
-        $thissubmission = $this->funcgetsubmission($submission->id);
-        if ($thissubmission) {
+        if ($data->cdid > 0) {
+	    global $DB;
+            $thissubmission = $this->funcgetsubmission($submission->id);
+            if ($thissubmission) {
                 $thissubmission->submission = $submission->id;
                 $thissubmission->assignment = $this->assignment->get_instance()->id;
                 $thissubmission->embedcode = $data->embedcode;
                 $thissubmission->cdid = $data->cdid;
                 return $DB->update_record('assignsubmission_estream', $thissubmission);
-        } else {
+             } else {
                 $thissubmission = new stdClass();
                 $thissubmission->submission = $submission->id;
                 $thissubmission->assignment = $this->assignment->get_instance()->id;
                 $thissubmission->embedcode = $data->embedcode;
                 $thissubmission->cdid = $data->cdid;
                 return $DB->insert_record('assignsubmission_estream', $thissubmission) > 0;
+            }
         }
     }
     /**
@@ -163,6 +165,7 @@ class assign_submission_estream extends assign_submission_plugin
             curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 60);
             curl_setopt($curl, CURLOPT_TIMEOUT, 60);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             $content = curl_exec($curl);
         } catch (Exception $e) {
             // Non-fatal exception!

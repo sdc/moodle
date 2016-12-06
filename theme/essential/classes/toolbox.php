@@ -198,6 +198,71 @@ class toolbox {
         return $us->get_tile_file($filename);
     }
 
+    static public function get_categories_list() {
+        static $catlist = null;
+        if (empty($catlist)) {
+            global $DB;
+            $catlist = $DB->get_records('course_categories', null, 'sortorder', 'id, name, depth, path');
+
+            foreach ($catlist as $category) {
+                $category->parents = array();
+                if ($category->depth > 1 ) {
+                    $path = preg_split('|/|', $category->path, -1, PREG_SPLIT_NO_EMPTY);
+                    $category->namechunks = array();
+                    foreach ($path as $parentid) {
+                        $category->namechunks[] = $catlist[$parentid]->name;
+                        $category->parents[] = $parentid;
+                    }
+                    $category->parents = array_reverse($category->parents);
+                } else {
+                    $category->namechunks = array($category->name);
+                }
+            }
+        }
+
+        return $catlist;
+    }
+
+    // Report Page Title.
+    static public function report_page_has_title() {
+        global $PAGE;
+        $hastitle = true;
+
+        switch ($PAGE->pagetype) {
+            case 'grade-report-overview-index':
+                $hastitle = false;
+                break;
+            default:
+                break;
+        }
+
+        return $hastitle;
+    }
+
+    // Page Bottom Region.
+    static public function has_page_bottom_region() {
+        global $PAGE;
+        $hasregion = false;
+
+        switch ($PAGE->pagetype) {
+            case 'admin-plugins':
+            case 'course-management':
+            case 'mod-quiz-edit':
+                $hasregion = true;
+                break;
+            case 'mod-assign-view':
+                // Only apply to 'grading' page.
+                if (optional_param('action', '', PARAM_TEXT) == 'grading') {
+                    $hasregion = true;
+                }
+                break;
+            default:
+                break;
+        }
+
+        return $hasregion;
+    }
+
     static public function showslider() {
         global $CFG;
         $noslides = self::get_setting('numberofslides');
@@ -299,9 +364,11 @@ class toolbox {
     }
 
     static public function render_slide_controls() {
-        $prev = '<a class="left carousel-control" href="#essentialCarousel" data-slide="prev">';
+        $strprev = get_string('prev');
+        $strnext = get_string('next');
+        $prev = '<a class="left carousel-control" href="#essentialCarousel" data-slide="prev" aria-label="'.$strprev.'">';
         $prev .= '<span aria-hidden="true" class="fa fa-chevron-circle-left"></span></a>';
-        $next = '<a class="right carousel-control" href="#essentialCarousel" data-slide="next">';
+        $next = '<a class="right carousel-control" href="#essentialCarousel" data-slide="next" aria-label="'.$strnext.'">';
         $next .= '<span aria-hidden="true" class="fa fa-chevron-circle-right"></span></a>';
 
         return $prev . $next;
@@ -435,34 +502,6 @@ class toolbox {
         return $css;
     }
 
-    static private function get_categories() {
-        global $CFG, $DB;
-        include_once($CFG->libdir . '/coursecatlib.php');
-
-        $result = $DB->get_records('course_categories', null, '', 'id');
-        $cid = array();
-        if ($result) {
-            foreach ($result as $key => $value) {
-                $cid[] = $key;
-            }
-        } else {
-            $categories = \coursecat::get(0, IGNORE_MISSING, true)->get_children();
-            self::traverse_categories($categories, $cid);
-        }
-
-        return $cid;
-    }
-
-    static private function traverse_categories($categories, &$cid) {
-        foreach ($categories as $category) {
-            $cid[] = $category->id;
-            $catchildren = \coursecat::get($category->id, IGNORE_MISSING, true)->get_children();
-            if ($catchildren) {
-                self::traverse_categories($catchildren, $cid);
-            }
-        }
-    }
-
     static public function get_current_category() {
         $us = self::check_corerenderer();
 
@@ -474,9 +513,9 @@ class toolbox {
         $replacement = '';
 
         if (self::get_setting('enablecategorycti')) {
-            $categories = self::get_categories();
+            $categories = self::get_categories_list();
 
-            foreach ($categories as $cid) {
+            foreach ($categories as $cid => $unused) {
                 $image = self::get_setting('categoryct'.$cid.'image');
                 $imageurl = false;
                 if ($image) {
@@ -611,6 +650,30 @@ class toolbox {
 
         $css = str_replace($tagattach, $replacementattach, $css);
         $css = str_replace($tagrepeat, $replacementrepeat, $css);
+        $css = str_replace($tagsize, $replacementsize, $css);
+        return $css;
+    }
+
+    static public function set_loginbackground($css, $loginbackground) {
+        $tag = '[[setting:loginbackground]]';
+        if (!($loginbackground)) {
+            $replacement = 'none';
+        } else {
+            $replacement = 'url(\''.$loginbackground.'\')';
+        }
+        $css = str_replace($tag, $replacement, $css);
+        return $css;
+    }
+
+    static public function set_loginbackgroundstyle($css, $style, $opacity) {
+        $tagopacity = '[[setting:loginbackgroundopacity]]';
+        $tagsize = '[[setting:loginbackgroundstyle]]';
+        $replacementsize = 'cover';
+        if ($style === 'stretch') {
+            $replacementsize = '100% 100%';
+        }
+
+        $css = str_replace($tagopacity, $opacity, $css);
         $css = str_replace($tagsize, $replacementsize, $css);
         return $css;
     }

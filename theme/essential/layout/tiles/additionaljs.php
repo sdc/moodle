@@ -27,7 +27,9 @@
 $PAGE->requires->js_call_amd('theme_essential/header', 'init');
 $PAGE->requires->js_call_amd('theme_essential/footer', 'init');
 if (\theme_essential\toolbox::not_lte_ie9()) {
-    if (\theme_essential\toolbox::get_setting('oldnavbar')) {
+    $oldnavbar = \theme_essential\toolbox::get_setting('oldnavbar');
+    $PAGE->requires->js_call_amd('theme_essential/navbar', 'init', array('data' => array('oldnavbar' => $oldnavbar)));
+    if ($oldnavbar) {
         // Only need this to change the classes when scrolling when the navbar is in the old position.
         $PAGE->requires->js_call_amd('theme_essential/affix', 'init');
     }
@@ -40,5 +42,13 @@ if (\theme_essential\toolbox::not_lte_ie9()) {
     }
     if (\theme_essential\toolbox::get_setting('fitvids')) {
         $PAGE->requires->js_call_amd('theme_essential/fitvids', 'init');
+    }
+}
+if ($PAGE->pagelayout == 'mydashboard') {
+    if (\theme_essential\toolbox::course_content_search()) {
+        $essentialsearch = new moodle_url('/theme/essential/inspector.ajax.php');
+        $essentialsearch->param('sesskey', sesskey());
+        $inspectorscourerdata = array('data' => array('theme' => $essentialsearch->out(false)));
+        $PAGE->requires->js_call_amd('theme_essential/inspector_scourer', 'init', $inspectorscourerdata);
     }
 }

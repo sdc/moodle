@@ -37,6 +37,11 @@ echo $OUTPUT->doctype();
     echo $OUTPUT->standard_head_html();
     ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google web fonts -->
+    <?php require_once(\theme_essential\toolbox::get_tile_file('fonts')); ?>
+    <!-- Start Analytics -->
+    <?php require_once(\theme_essential\toolbox::get_tile_file('analytics')); ?>
+    <!-- End Analytics -->
 </head>
 
 <body <?php echo $OUTPUT->body_attributes($bodyclasses); ?>>
@@ -52,19 +57,19 @@ echo $OUTPUT->doctype();
 </header>
 
 <div id="page" class="container-fluid">
-    <section role="main-content">
-        <div id="page-content" class="row-fluid">
-            <div id="region-bs-main-and-pre" class="span9">
-                <div class="row-fluid">
-                    <section id="region-main" class="span8 pull-right">
+    <div id="page-content" class="row-fluid">
+        <div id="region-bs-main-and-pre" class="span9">
+            <div class="row-fluid">
+                <div id="content" class="span8 pull-right">
+                    <section id="region-main">
                         <?php echo $OUTPUT->main_content(); ?>
                     </section>
-                    <?php echo $OUTPUT->blocks('side-pre', 'span4 desktop-first-column'); ?>
                 </div>
+                <?php echo $OUTPUT->essential_blocks('side-pre', 'span4 desktop-first-column'); ?>
             </div>
-            <?php echo $OUTPUT->blocks('side-post', 'span3'); ?>
         </div>
-    </section>
+        <?php echo $OUTPUT->essential_blocks('side-post', 'span3'); ?>
+    </div>
 </div>
 
 <footer>

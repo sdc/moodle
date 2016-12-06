@@ -100,6 +100,9 @@ class repository_planetestream extends repository {
             'cache' => false,
             'module_cache' => false
         ));
+        curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 6);
+        curl_setopt($c, CURLOPT_TIMEOUT, 12);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         $content = $c->get($this->feed_url);
         $xml = simplexml_load_string($content);
         foreach ($xml->item as $item) {
@@ -278,6 +281,7 @@ class repository_planetestream extends repository {
         ));
         curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 6);
         curl_setopt($c, CURLOPT_TIMEOUT, 12);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         $content = $c->get ($url);
         $xml = simplexml_load_string($content);
         $cats = array();
