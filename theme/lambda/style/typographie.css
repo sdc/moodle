@@ -8,26 +8,6 @@
 	font-weight:normal;
 	font-style:normal;
 }
-@font-face {
-	font-family:'open_sansregular';
-	src: url([[font:theme|OpenSans-Regular-webfont.eot]]);
-    src: url([[font:theme|OpenSans-Regular-webfont.eot?#iefix]]) format('embedded-opentype'),
-          url([[font:theme|OpenSans-Regular-webfont.woff]]) format('woff'),
-          url([[font:theme|OpenSans-Regular-webfont.ttf]]) format('truetype'),
-          url([[font:theme|OpenSans-Regular-webfont.svg#open_sansregular]]) format('svg');
-	font-weight:normal;
-	font-style:normal;
-}
-@font-face {
-	font-family:'open_sansbold';
-	src: url([[font:theme|OpenSans-Bold-webfont.eot]]);
-    src: url([[font:theme|OpenSans-Bold-webfont.eot?#iefix]]) format('embedded-opentype'),
-          url([[font:theme|OpenSans-Bold-webfont.woff]]) format('woff'),
-          url([[font:theme|OpenSans-Bold-webfont.ttf]]) format('truetype'),
-          url([[font:theme|OpenSans-Bold-webfont.svg#open_sansbold]]) format('svg');
-	font-weight:normal;
-	font-style:normal;
-}
 
 /*================================================== * 
 HTML-Elements
@@ -64,9 +44,9 @@ blockquote:before {
 	font-size:1.05em;
 }
 .main-heading {
-    font-size: 3.5em;
+    font-size: 45.5px;
     font-weight: bold !important;
-    line-height: 1.25em;
+    line-height: 57px;
 }
 .row-fluid.frontpage {
     margin-bottom: 40px;
@@ -567,6 +547,7 @@ Headlines
 }
 .course-pano > img {
     bottom: 0;
+	height: 100%;
     margin: 0 !important;
     min-height: 175px;
     object-fit: cover;
@@ -649,8 +630,8 @@ Spotlight
     color: #555;
 }
 .spotlight-full {
-    margin-left:-23px;
-	margin-right:-23px;
+    margin-left:-22px;
+	margin-right:-22px;
 	margin-top:25px;
     padding: 30px;	
 }
@@ -920,6 +901,17 @@ Bootstrap
 }
 .panel .panel-heading a.collapsed:before {
     content: "\f105";
+}
+.panel-primary > .panel-heading {
+    background-color: #f9bf3b;
+    border-color: #f9bf3b;
+}
+.panel-primary {
+    border-color: #f9bf3b;
+}
+.panel-primary > .panel-heading > .panel-title {
+    color: #fff !important;
+    margin: 0;
 }
 .nav-tabs > li.active {
     border-bottom: 1px solid #fff;

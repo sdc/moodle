@@ -24,6 +24,8 @@
  */
  
 $custom_login=$PAGE->theme->settings->custom_login;
+$login_lambda = "";
+if ($custom_login==1) {$login_lambda = "login_lambda";}
 $haslogo = (!empty($PAGE->theme->settings->logo));
 
 echo $OUTPUT->doctype() ?>
@@ -37,11 +39,11 @@ echo $OUTPUT->doctype() ?>
     <?php require_once(dirname(__FILE__).'/includes/fonts.php'); ?>
 </head>
 
-<body <?php echo $OUTPUT->body_attributes(); ?>>
+<body <?php echo $OUTPUT->body_attributes("$login_lambda"); ?> >
 
 <?php echo $OUTPUT->standard_top_of_body_html(); ?>
 
-<div id="wrapper" <?php if ($custom_login==1) echo 'style="background: transparent none repeat scroll 0 0; border: medium none;"';?>>
+<div id="wrapper" <?php if ($custom_login==1) {echo 'style="background: transparent none repeat scroll 0 0; border: medium none;"';} ?> >
 
 <?php if ($custom_login==0) {?>
 <?php require_once(dirname(__FILE__).'/includes/header.php'); ?>
@@ -55,7 +57,7 @@ echo $OUTPUT->doctype() ?>
         	
             <?php if (!$haslogo) { ?>
             	<div class="span6">
-              		<h1 id="title" style="line-height: 2em"><?php echo $SITE->shortname; ?></h1>
+              		<h1 id="title" style="line-height: 2em"><?php echo $SITE->fullname; ?></h1>
                 </div>
             <?php } else { ?>
                 <div class="logo-header">
@@ -104,14 +106,14 @@ echo $OUTPUT->doctype() ?>
 
 
 <script>
-jQuery(document).ready(function ($) {
+$(window).on('load resize', function () {
+if (window.matchMedia('(min-width: 980px)').matches) {
 $('.navbar .dropdown').hover(function() {
-	$(this).addClass('extra-nav-class').find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
+	$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
 }, function() {
-	var na = $(this)
-	na.find('.dropdown-menu').first().stop(true, true).delay(100).slideUp('fast', function(){ na.removeClass('extra-nav-class') })
+	$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp();
 });
-
+} else {$('.dropdown-menu').removeAttr("style"); $('.navbar .dropdown').unbind('mouseenter mouseleave');}
 });
 
 jQuery(document).ready(function() {

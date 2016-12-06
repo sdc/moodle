@@ -8,7 +8,8 @@ $hasgoogleplus = (!empty($PAGE->theme->settings->googleplus));
 $haspinterest = (!empty($PAGE->theme->settings->pinterest));
 $hasinstagram = (!empty($PAGE->theme->settings->instagram));
 $hasyoutube = (!empty($PAGE->theme->settings->youtube));
-$hassocials = ($haswebsite||$hassocials_mail||$hasfacebook||$hasflickr||$hastwitter||$hasgoogleplus||$haspinterest||$hasinstagram||$hasyoutube);
+$haslinkedin = (!empty($PAGE->theme->settings->linkedin));
+$hassocials = ($haswebsite||$hassocials_mail||$hasfacebook||$hasflickr||$hastwitter||$hasgoogleplus||$haspinterest||$hasinstagram||$hasyoutube||$haslinkedin);
 ?>
 
 <?php if ($hassocials) { ?>
@@ -41,6 +42,7 @@ $hassocials = ($haswebsite||$hassocials_mail||$hasfacebook||$hasflickr||$hastwit
                 <?php if ($haspinterest) { ?><a class="social fa fa-pinterest" href='<?php echo $PAGE->theme->settings->pinterest; ?>' target='_blank'> </a><?php } ?>
                 <?php if ($hasinstagram) { ?><a class="social fa fa-instagram" href='<?php echo $PAGE->theme->settings->instagram; ?>' target='_blank'> </a><?php } ?>
                 <?php if ($hasyoutube) { ?><a class="social fa fa-youtube" href='<?php echo $PAGE->theme->settings->youtube; ?>' target='_blank'> </a><?php } ?>
+                <?php if ($haslinkedin) { ?><a class="social fa fa-linkedin" href='<?php echo $PAGE->theme->settings->linkedin; ?>' target='_blank'> </a><?php } ?>
             </div>
         </div>
         

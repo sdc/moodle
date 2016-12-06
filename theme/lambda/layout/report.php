@@ -22,12 +22,10 @@
  * @copyright 2016 redPIthemes
  *
  */
-
+ 
 $hide_breadrumb_setting = theme_lambda_get_setting('hide_breadcrumb');
 $hide_breadrumb = ((!isloggedin() or isguestuser()) and $hide_breadrumb_setting);
-$left = (!right_to_left());
-$standardlayout = (empty($PAGE->theme->settings->layout)) ? false : $PAGE->theme->settings->layout;
-
+		
 echo $OUTPUT->doctype() ?>
 <html <?php echo $OUTPUT->htmlattributes(); ?>>
 <head>
@@ -39,11 +37,12 @@ echo $OUTPUT->doctype() ?>
     <?php require_once(dirname(__FILE__).'/includes/fonts.php'); ?>
 </head>
 
-<body <?php echo $OUTPUT->body_attributes('two-column'); ?>>
+<body <?php echo $OUTPUT->body_attributes(); ?>>
 
 <?php echo $OUTPUT->standard_top_of_body_html(); ?>
 
 <div id="wrapper">
+
 <?php require_once(dirname(__FILE__).'/includes/header.php'); ?>
 
 <div id="page" class="container-fluid">
@@ -58,24 +57,25 @@ echo $OUTPUT->doctype() ?>
     </header>
 
     <div id="page-content" class="row-fluid">
-        		<section id="region-main" class="span12">
-            		<?php
-            			echo $OUTPUT->course_content_header();
-            			echo $OUTPUT->main_content();
-            			echo $OUTPUT->course_content_footer();
-            		?>
-        		</section>
-            </div>
-            <div class="hidden-blocks">
-            	<div class="row-fluid">
-        		<?php
-        			echo $OUTPUT->blocks('side-pre', 'report-blocks');
-        		?>
-            	</div>
+        <section id="region-main" class="span12">
+            <?php
+            echo $OUTPUT->course_content_header();
+            echo $OUTPUT->main_content();
+            echo $OUTPUT->course_content_footer();
+            ?>
+        </section>
+    </div>
+
+    <div class="hidden-blocks">
+        <div class="row-fluid">
+            <?php
+                echo $OUTPUT->blocks('hidden-dock');
+            ?>
+        </div>
     </div>
 
     <a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><p><?php print_string('backtotop', 'theme_lambda'); ?></p></a>
-
+    
 </div>
 
 	<footer id="page-footer" class="container-fluid">
@@ -84,23 +84,21 @@ echo $OUTPUT->doctype() ?>
 
     <?php echo $OUTPUT->standard_end_of_body_html() ?>
 
-</div>
-
 
 <!--[if lte IE 9]>
-<script src="<?php echo $CFG->wwwroot;?>/theme/lambda/javascript/ie/iefix1.js"></script>
+<script src="<?php echo $CFG->wwwroot;?>/theme/lambda/javascript/ie/iefix.js"></script>
 <![endif]-->
 
 
 <script>
-jQuery(document).ready(function ($) {
+$(window).on('load resize', function () {
+if (window.matchMedia('(min-width: 980px)').matches) {
 $('.navbar .dropdown').hover(function() {
-	$(this).addClass('extra-nav-class').find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
+	$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
 }, function() {
-	var na = $(this)
-	na.find('.dropdown-menu').first().stop(true, true).delay(100).slideUp('fast', function(){ na.removeClass('extra-nav-class') })
+	$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp();
 });
-
+} else {$('.dropdown-menu').removeAttr("style"); $('.navbar .dropdown').unbind('mouseenter mouseleave');}
 });
 
 jQuery(document).ready(function() {

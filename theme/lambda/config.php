@@ -47,13 +47,12 @@ $THEME->layouts = array(
         'file' => 'frontpage.php',
         'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
         'defaultregion' => 'hidden-dock',
-        'options' => array('nonavbar'=>true),
     ),
     // Most backwards compatible layout without the blocks - this is the layout used by default.
     'base' => array(
         'file' => 'columns1.php',
         'regions' => array('footer-left', 'footer-middle', 'footer-right'),
-        'defaultregion' => 'footer-right',
+        'defaultregion' => '',
     ),
     // Standard layout with blocks, this is recommended for most pages with general information.
     'standard' => array(
@@ -63,10 +62,9 @@ $THEME->layouts = array(
     ),
     // Main course page.
     'course' => array(
-        'file' => 'columns2.php',
-        'regions' => array('side-pre', 'footer-left', 'footer-middle', 'footer-right'),
-        'defaultregion' => 'side-pre',
-        'options' => array('langmenu'=>true),
+        'file' => 'columns3.php',
+        'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right'),
+        'defaultregion' => 'side-post',
     ),
     'coursecategory' => array(
         'file' => 'columns3.php',
@@ -75,9 +73,9 @@ $THEME->layouts = array(
     ),
     // part of course, typical for modules - default page layout if $cm specified in require_login().
     'incourse' => array(
-        'file' => 'columns2.php',
-        'regions' => array('side-pre', 'footer-left', 'footer-middle', 'footer-right'),
-        'defaultregion' => 'side-pre',
+        'file' => 'columns3.php',
+        'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right'),
+        'defaultregion' => 'side-post',
     ),
     // Server administration scripts.
     'admin' => array(
@@ -90,7 +88,6 @@ $THEME->layouts = array(
         'file' => 'columns3.php',
         'regions' => array('side-pre', 'side-post', 'footer-left', 'footer-middle', 'footer-right'),
         'defaultregion' => 'side-post',
-        'options' => array('langmenu'=>true),
     ),
     // My public page.
     'mypublic' => array(
@@ -100,34 +97,32 @@ $THEME->layouts = array(
     ),
     'login' => array(
         'file' => 'login.php',
-        'regions' => array('footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
-        'defaultregion' => 'hidden-dock',
-        'options' => array('langmenu'=>true),
+        'regions' => array('footer-left', 'footer-middle', 'footer-right'),
+        'defaultregion' => '',
     ),
     // Pages that appear in pop-up windows - no navigation, no blocks, no header.
     'popup' => array(
         'file' => 'columns1.php',
         'regions' => array('footer-left', 'footer-middle', 'footer-right'),
-        'defaultregion' => 'footer-right',
+        'defaultregion' => '',
         'options' => array('nofooter'=>true, 'nonavbar'=>true, 'noheader'=>true),
     ),
-	// The pagelayout used for reports.
+    // The pagelayout used for reports.
     'report' => array(
         'file' => 'report.php',
-        'regions' => array('side-pre', 'footer-left', 'footer-middle', 'footer-right'),
-        'defaultregion' => 'side-pre',
+        'regions' => array('footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
+        'defaultregion' => 'hidden-dock',
     ),
 	// TOTARA Grade report
 	'noblocks' => array(
         'file' => 'columns1.php',
-        'regions' => array('footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
-        'defaultregion' => 'hidden-dock',
-        'options' => array('langmenu'=>true),
+        'regions' => array('footer-left', 'footer-middle', 'footer-right'),
+        'defaultregion' => '',
     ),
     // No blocks and minimal footer - used for legacy frame layouts only!
     'frametop' => array(
         'file' => 'columns1.php',
-        'regions' => array('footer-left', 'footer-middle', 'footer-right'),
+        'regions' => array('footer-left', 'footer-middle', 'footer-right', 'hidden-dock'),
         'defaultregion' => 'footer-right',
         'options' => array('nofooter'=>true, 'nocoursefooter'=>true),
     ),
@@ -147,7 +142,7 @@ $THEME->layouts = array(
     'print' => array(
         'file' => 'columns1.php',
         'regions' => array('footer-left', 'footer-middle', 'footer-right'),
-        'defaultregion' => 'footer-right',
+        'defaultregion' => '',
         'options' => array('nofooter'=>true, 'nonavbar'=>false),
     ),
     // The pagelayout used when a redirection is occuring.

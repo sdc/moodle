@@ -65,7 +65,7 @@ echo $OUTPUT->doctype() ?>
             ?>
         </section>
     </div>
-    
+
     <a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><p><?php print_string('backtotop', 'theme_lambda'); ?></p></a>
     
 </div>
@@ -83,14 +83,14 @@ echo $OUTPUT->doctype() ?>
 
 
 <script>
-jQuery(document).ready(function ($) {
+$(window).on('load resize', function () {
+if (window.matchMedia('(min-width: 980px)').matches) {
 $('.navbar .dropdown').hover(function() {
-	$(this).addClass('extra-nav-class').find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
+	$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
 }, function() {
-	var na = $(this)
-	na.find('.dropdown-menu').first().stop(true, true).delay(100).slideUp('fast', function(){ na.removeClass('extra-nav-class') })
+	$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp();
 });
-
+} else {$('.dropdown-menu').removeAttr("style"); $('.navbar .dropdown').unbind('mouseenter mouseleave');}
 });
 
 jQuery(document).ready(function() {

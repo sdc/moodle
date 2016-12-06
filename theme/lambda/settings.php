@@ -47,7 +47,17 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting = new admin_setting_configcheckbox($name, $title, $description, 1);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
-	
+
+	// Label of home button
+    $name = 'theme_lambda/home_button';
+    $title = get_string('home_button', 'theme_lambda');
+    $description = get_string('home_button_desc', 'theme_lambda');
+    $default = 'shortname';
+    $choices = array('shortname' => get_string('home_button_shortname','theme_lambda'), 'frontpage' => get_string('home_button_frontpage', 'theme_lambda'), 'frontpagedashboard' => get_string('home_button_frontpagedashboard', 'theme_lambda'));
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+
 	// Fixed or Variable Width.
     $name = 'theme_lambda/pagewidth';
     $title = get_string('pagewidth', 'theme_lambda');
@@ -362,6 +372,15 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	
+    // LinkedIn url setting.
+    $name = 'theme_lambda/linkedin';
+    $title = get_string('linkedin', 'theme_lambda');
+    $description = get_string('linkedindesc', 'theme_lambda');
+    $default = '';
+    $setting = new admin_setting_configtext($name, $title, $description, $default);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
 	// social icons color setting.
     $name = 'theme_lambda/socials_color';
     $title = get_string('socials_color', 'theme_lambda');
@@ -406,14 +425,15 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
 		'10'=>'Gudea',
 		'11'=>'Imprima',
 		'12'=>'Lekton',
-		'13'=>'Nixie One',
+		'13'=>'Nunito',
 		'14'=>'Montserrat',
 		'15'=>'Playfair Display',
 		'16'=>'Pontano Sans',
 		'17'=>'PT Sans',
     	'18'=>'Raleway', 
 		'19'=>'Ubuntu',
-    	'20'=>'Vollkorn');
+    	'20'=>'Vollkorn',
+		'21'=>'Work Sans');
 	 			
     $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
     $setting->set_updatedcallback('theme_reset_all_caches');
@@ -440,7 +460,7 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
 		'14'=>'Josefin Sans',
 		'15'=>'Lekton',
 		'16'=>'Lobster',
-		'17'=>'Nixie One',
+		'17'=>'Nunito',
 		'18'=>'Montserrat',
 		'19'=>'Pacifico',
 		'20'=>'Playfair Display',
@@ -449,9 +469,24 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     	'23'=>'Raleway', 
 		'24'=>'Sansita One',
 		'25'=>'Ubuntu',
-    	'26'=>'Vollkorn');
+    	'26'=>'Vollkorn',
+		'27'=>'Work Sans');
 
     $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	$name = 'theme_lambda/font_languages';
+    $title = get_string('font_languages', 'theme_lambda');
+    $description = get_string('font_languages_desc', 'theme_lambda');
+    $default = '';
+    $setting = new admin_setting_configmulticheckbox($name, $title, $description, $default, array(
+        'latin-ext' => get_string('font_languages_latinext', 'theme_lambda'),
+        'cyrillic' => get_string('font_languages_cyrillic', 'theme_lambda'),
+        'cyrillic-ext' => get_string('font_languages_cyrillicext', 'theme_lambda'),
+        'greek' => get_string('font_languages_greek', 'theme_lambda'),
+        'greek-ext' => get_string('font_languages_greekext', 'theme_lambda'),
+    ));
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	
