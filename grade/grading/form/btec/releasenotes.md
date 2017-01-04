@@ -1,7 +1,16 @@
+
 ###Release notes  for BTEC grading method for Moodle by Marcus Green
 
+####Version 1.2. September 2016
+I call this the Sue Moss release, in honour of the help she gave me with some of the ideas.
+Updates to take account of the Moodle 3.1 grading interface, while
+still working with earlier versions.
+* Moved yes/no radio buttons to the left hand side of grading page
+* Added radio buttons at the top to toggle all to yes or no
+* Added behat tests (benefits to developers mainly)
+
 ####Version 1.1. March 2016
-I call this the  Gloucester college release in honour of the help and feedback given on my visit there.
+I call this the  Gloucestershire college release in honour of the help and feedback given on my visit there.
 * Reduced the size of the description field as it was occupying a disproportional amount of space
 * Added a check to ensure that the assignment has the BTEC scale set
 * Changed CSS so the Add Criterion button lined up properly

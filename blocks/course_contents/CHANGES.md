@@ -1,3 +1,22 @@
+v5.0
+====
+
+* All features and fixes included in the v4.0 release, just Behat tests
+  supported by Moodle 3.0 and 3.1.
+
+v4.0
+====
+
+* Added site level settings for controlling the enumeration mode and automatic
+  title feature. The new site level settings determine the default values for
+  instances and whether or not they can be changed.
+* As a result, the automatic title feature can be now switched off.
+* Improved the styling of the table of contents, particularly the way how
+  enumerated items look.
+* Added behat tests for all combinations of display modes.
+* Added Travis-CI integration.
+* Versions 4.x should support Moodle 2.7, 2.8 and 2.9.
+
 v3.0
 ====
 

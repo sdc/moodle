@@ -106,6 +106,7 @@ function atto_planetestream_getauthticket($url, $checksum, $delta, $userip, &$pa
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_MAXREDIRS, 4);
         curl_setopt($curl, CURLOPT_FORBID_REUSE, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         $response = curl_exec($curl);
         if (strpos($response, '{"ticket":') === 0) {
             $jobj = json_decode($response);

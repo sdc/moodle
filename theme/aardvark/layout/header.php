@@ -19,7 +19,6 @@
  * @package   theme_aardvark
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- 
 global $CFG;
 
 $hasheading = ($PAGE->heading);
@@ -36,7 +35,6 @@ $showsidepost = ($hassidepost && !$PAGE->blocks->region_completely_docked('side-
 $isfrontpage = $PAGE->bodyid == "page-site-index";
 $iscoursepage = $PAGE->pagelayout == "course";
 
-$haslogo = (!empty($PAGE->theme->settings->logo));
 $hasshortname = (!empty($PAGE->theme->settings->shortname));
 $hasgeneralalert = (!empty($PAGE->theme->settings->generalalert));
 
@@ -48,26 +46,20 @@ $hascustommenu = (empty($PAGE->layout_options['nocustommenu']) && !empty($custom
 <header role="banner" class="navbar navbar-fixed-top">
     <nav role="navigation" class="navbar-inner">
         <div class="container-fluid" >
-		<div class="logo">
-            <a href="<?php echo $CFG->wwwroot;?>"> 
-			
-			 <?php if ($haslogo) {
- echo html_writer::empty_tag('img', array('src'=>$PAGE->theme->settings->logo, 'class'=>'logo')); }
-
- else {} ?>
- 
- </div>
- <?php if ($hasshortname) {?>
-<a class="brand" href="<?php echo $CFG->wwwroot;?>"><?php echo
-                format_string($SITE->shortname, true, array('context' => context_course::instance(SITEID)));
-                ?></a>
- <?php }		 else {} ?>
+		
+		<a class="brand" href="<?php echo $CFG->wwwroot;?>"><?php
+        if ($hasshortname) {
+            echo '<span class="shortname">' . format_string($SITE->shortname, true, array('context' => context_course::instance(SITEID))). '</span>';
+        } ?></a>
+		
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-responsive-collapse">
 			    <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
+			
             <?php echo $OUTPUT->user_menu(); ?>
+			<?php echo $OUTPUT->search_box(); ?>
             <div class="nav-collapse collapse navbar-responsive-collapse">
                 <?php echo $OUTPUT->custom_menu(); ?>
                 <ul class="nav pull-right">
@@ -79,21 +71,21 @@ $hascustommenu = (empty($PAGE->layout_options['nocustommenu']) && !empty($custom
  
 	</header>
 
+<div class="container-fluid clearfix"><?php
 
+if ($hasnavbar) { ?>
+    <nav class="breadcrumb-button"><?php echo $PAGE->button; ?></nav><?php
+    echo $OUTPUT->navbar();
+}
 
-<div class="container-fluid clearfix">
+if ($iscoursepage) { ?>
+    <h1 id="courseheader"><?php echo $PAGE->heading ?></h1><?php
+}
+if (($isfrontpage) && ($hasgeneralalert)) { ?>
+    <div id="page-header-generalalert"><?php
+        echo $PAGE->theme->settings->generalalert; ?>
+    </div><?php
+} ?>
 
-    <?php if ($hasnavbar) { ?>
-        <nav class="breadcrumb-button"><?php echo $PAGE->button; ?></nav>
-        <?php echo $OUTPUT->navbar(); ?>
-    <?php } ?>
-	<?php if ($iscoursepage) {?>
-    <h1 id="courseheader"><?php echo $PAGE->heading ?></h1>
-	<?php } ?>
-	<?php if (($isfrontpage) && ($hasgeneralalert)) {?>
-	<div id="page-header-generalalert">
-	<?php echo $PAGE->theme->settings->generalalert; ?>
-	</div>
-	<?php } ?>
 </div>
 <div id="page" class="container-fluid clearfix">

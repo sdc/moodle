@@ -37,7 +37,7 @@ $string['choosereadme'] = '
 </div>
 <h4>Theme Summary</h4>
 <div style="color: #888; text-transform: uppercase; margin-bottom:20px;">
-<p>Compatibility: Moodle 2.5/2.6/2.7/2.8/2.9/3.0/3.1<br />Theme Version: 1.51<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
+<p>Compatibility: Moodle 2.5/2.6/2.7/2.8/2.9/3.0/3.1<br />Theme Version: 1.54<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
 </div>
 <hr />
 <p style="text-align:center;"><img class="img-polaroid" src="lambda/pix/redPIthemes.jpg" /></p>';
@@ -48,6 +48,11 @@ $string['logo'] = 'Logo';
 $string['logodesc'] = 'Please upload your custom logo here. If you upload a logo it will appear in the header.';
 $string['logo_res'] = 'Standard logo dimension';
 $string['logo_res_desc'] = 'Sets the dimension of your logo to a maximum height of 90px. Using this setting, your logo will adapt to different screen resolutions and you can also use a @2x version for high-res screens.';
+$string['home_button'] = 'Home button';
+$string['home_button_desc'] = 'Choose from the list of available texts for the home button (the first button in the custom menu)';
+$string['home_button_shortname'] = 'Short site name';
+$string['home_button_frontpage'] = 'Frontpage';
+$string['home_button_frontpagedashboard'] = 'Frontpage (for non-logged-in users) / Dashboard (for logged-in users)';
 $string['pagewidth'] = 'Set Page Width';
 $string['pagewidthdesc'] = 'Choose from the list of availble page layouts.';
 $string['boxed_wide'] = 'Boxed - fixed width wide';
@@ -119,6 +124,8 @@ $string['pinterest'] = 'Pinterest URL';
 $string['pinterestdesc'] = 'Enter the URL of your Pinterest page. (i.e http://pinterest.com/mycollege/mypinboard)';
 $string['instagram'] = 'Instagram URL';
 $string['instagramdesc'] = 'Enter the URL of your Instagram page. (i.e http://instagram.com/mycollege)';
+$string['linkedin'] = 'LinkedIn URL';
+$string['linkedindesc'] = 'Enter the URL of your LinkedIn page. (i.e http://www.linkedin.com/company/mycollege)';
 $string['website'] = 'Website URL';
 $string['websitedesc'] = 'Enter the URL of your own website. (i.e http://www.mycollege.com)';
 $string['socials_mail'] = 'Email Address';
@@ -134,6 +141,13 @@ $string['fontselect_heading'] = 'Font Selector - Headings';
 $string['fontselectdesc_heading'] = 'Choose from the list of availble fonts.';
 $string['fontselect_body'] = 'Font Selector - Body';
 $string['fontselectdesc_body'] = 'Choose from the list of availble fonts.';
+$string['font_languages'] = 'Additional character sets';
+$string['font_languages_desc'] = 'Some of the fonts in the Google Font Directory support additional character sets for different languages. Using many character sets can slow down your Moodle, so only select the character sets that you actually need.<br /><strong>Please note: </strong>The Google Font Directory does not provide each additional character sets for every font. In case of doubt you should select <i>Open Sans</i>.';
+$string['font_languages_latinext'] = 'Latin Extended';
+$string['font_languages_cyrillic'] = 'Cyrillic';
+$string['font_languages_cyrillicext'] = 'Cyrillic Extended';
+$string['font_languages_greek'] = 'Greek';
+$string['font_languages_greekext'] = 'Greek Extended';
 
 /* Settings - Slider */
 $string['settings_slider'] = 'Slideshow';

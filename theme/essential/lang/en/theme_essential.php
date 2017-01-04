@@ -129,6 +129,17 @@ $string['displaybeforelogin'] = 'Show before login only';
 $string['displayafterlogin'] = 'Show after login only';
 $string['dontdisplay'] = 'Never show';
 
+// Regions.
+$string['region-side-post'] = 'Right';
+$string['region-side-pre'] = 'Left';
+$string['region-header'] = 'Header';
+$string['region-home'] = 'Home';
+$string['region-page-top'] = 'Page top';
+$string['region-footer-left'] = 'Footer (Left)';
+$string['region-footer-middle'] = 'Footer (Middle)';
+$string['region-footer-right'] = 'Footer (Right)';
+$string['region-hidden-dock'] = 'Hidden from users';
+
 // Sponsor.
 $string['sponsor_title'] = 'Sponsor Essential';
 $string['sponsor_desc'] = 'Please sponsor via PayPal by contacting me via my \'';
@@ -149,12 +160,18 @@ $string['generalheadingsub'] = 'General settings';
 $string['generalheadingdesc'] = 'Configure the general settings for the theme here.';
 
 $string['pagebackground'] = 'Page background image';
-$string['pagebackgrounddesc'] = 'Upload your own background image. Select the style of the image below.';
+$string['pagebackgrounddesc'] = 'Upload your own background image.  Select the style of the image below.';
 $string['pagebackgroundstyle'] = 'Page background style';
 $string['pagebackgroundstyledesc'] = 'Select the style for the uploaded image.';
+$string['stylecover'] = 'Cover';
 $string['stylefixed'] = 'Fixed';
-$string['styletiled'] = 'Tiled';
 $string['stylestretch'] = 'Stretch';
+$string['styletiled'] = 'Tiled';
+
+$string['pagetopblocksperrow'] = 'Page top blocks per row';
+$string['pagetopblocksperrowdesc'] = 'State up to how many blocks per row between {$a->lower} and {$a->upper} for pages with \'Page top blocks\'.  Current pages are: Admin, Course, Course Category, Dashboard, Frontpage, My Public.';
+$string['pagebottomblocksperrow'] = 'Page bottom blocks per row';
+$string['pagebottomblocksperrowdesc'] = 'State up to how many blocks per row between {$a->lower} and {$a->upper} for pages with \'Page bottom blocks\'.  Current pages are: Admin, Course management, Grading and Quiz edit.';
 
 $string['customcss'] = 'Custom CSS';
 $string['customcssdesc'] = 'Whatever CSS rules you add to this text area will be reflected in every page, making for easier customisation of this theme.';
@@ -181,20 +198,38 @@ $string['contactinfodesc'] = 'Enter your contact information';
 $string['favicon'] = 'Custom favicon';
 $string['favicondesc'] = 'Upload your own favicon.  It should be an .ico file.';
 
-// Custom Menus.
-$string['mycoursesinfo'] = 'Enrolled courses menu';
+// Courses menu.
+$string['mycoursesinfo'] = 'Courses menu';
 $string['mycoursesinfodesc'] = 'Displays a dynamic list of enrolled courses to the user.';
-$string['displaymycourses'] = 'Display enrolled courses';
-$string['displaymycoursesdesc'] = 'Display enrolled courses for users in the \'Custom Menu\'.';
+$string['displaymycourses'] = 'Display courses';
+$string['displaymycoursesdesc'] = 'Display enrolled courses for users on the \'Navbar\'.';
 $string['displayhiddenmycourses'] = 'Display hidden courses';
-$string['displayhiddenmycoursesdesc'] = 'Display hidden courses for users in the \'Custom Menu\' if they have permission to view hidden courses';
+$string['displayhiddenmycoursesdesc'] = 'Display hidden courses for users in the \'Courses menu\' if they have permission to view hidden courses';
+
+$string['mycoursesorder'] = 'Courses order';
+$string['mycoursesorderdesc'] = 'State how the courses should be ordered.  The course sort order can be is set by the core navigation setting \'navsortmycoursessort\'.';
+$string['mycoursesordersort'] = 'Course sort order';
+$string['mycoursesorderid'] = 'Course ID';
+$string['mycoursesorderlast'] = 'Last accessed time or enrolment start time if never accessed';
+$string['mycoursesorderidorder'] = 'Course ID order';
+$string['mycoursesorderidorderdesc'] = 'Course ID order for when \'Course ID\' is set as the \'Course sort order\'.';
+$string['mycoursesorderidasc'] = 'Ascending';
+$string['mycoursesorderiddes'] = 'Descending';
+$string['mycoursesmax'] = 'Max courses';
+$string['mycoursesmaxdesc'] = 'State up to how many courses should be listed between {$a->lower} and {$a->upper} where \'{$a->lower}\' represents all.';
+$string['mycoursesorderenrolbackcolour'] = 'Enrolled and not accessed course background colour';
+$string['mycoursesorderenrolbackcolourdesc'] = 'The background colour for enrolled but not accessed courses.  For ehen \'mycoursesorder\' is set to \'Last accessed...\'.';
 
 $string['mycoursetitle'] = 'Terminology';
-$string['mycoursetitledesc'] = 'Change the terminology for the "My Courses" link in the drop down menu';
+$string['mycoursetitledesc'] = 'Change the terminology for the "My courses" menu title.  When \'mycoursesorder\' is set to \'Last accessed...\' then the word \'latest\' will be added.';
 $string['mycourses'] = 'My courses';
+$string['mylatestcourses'] = 'My latest courses';
 $string['myunits'] = 'My units';
+$string['mylatestunits'] = 'My latest units';
 $string['mymodules'] = 'My modules';
+$string['mylatestmodules'] = 'My latest modules';
 $string['myclasses'] = 'My classes';
+$string['mylatestclasses'] = 'My latest classes';
 $string['allcourses'] = 'All courses';
 $string['allunits'] = 'All units';
 $string['allmodules'] = 'All modules';
@@ -203,6 +238,7 @@ $string['noenrolments'] = 'You have no current enrolments';
 $string['thiscourse'] = 'This course';
 $string['people'] = 'People';
 
+// User menu.
 $string['helplinktype'] = 'Enable help link in menu';
 $string['helplinktypedesc'] = 'Choose whether you want to enable a help option in the user menu, you can choose to either provide an URL that will be opened in a new window or an email address.';
 $string['helplink'] = 'Help link';
@@ -227,17 +263,6 @@ $string['breadcrumbstylednocollapse'] = 'Fancy with no collapse';
 $string['breadcrumbsimple'] = 'Simple';
 $string['breadcrumbthin'] = 'Thin';
 $string['nobreadcrumb'] = 'Hide';
-
-// Regions.
-$string['region-side-post'] = 'Right';
-$string['region-side-pre'] = 'Left';
-$string['region-home-left'] = 'Home (Left)';
-$string['region-home-middle'] = 'Home (Middle)';
-$string['region-home-right'] = 'Home (Right)';
-$string['region-footer-left'] = 'Footer (Left)';
-$string['region-footer-middle'] = 'Footer (Middle)';
-$string['region-footer-right'] = 'Footer (Right)';
-$string['region-hidden-dock'] = 'Hidden from users';
 
 // Features.
 $string['featureheading'] = 'Features';
@@ -267,6 +292,13 @@ $string['returntosectionfeaturedesc'] = "Enable return to section feature within
 
 $string['returntosectiontextlimitfeature'] = 'Return to section name text limit';
 $string['returntosectiontextlimitfeaturedesc'] = 'Length limit for the \'name\' of the section on the button between {$a->lower} and {$a->upper} characters.';
+
+$string['loginbackground'] = 'Login background image';
+$string['loginbackgrounddesc'] = 'Upload your own login background image.  Select the style of the image below.';
+$string['loginbackgroundstyle'] = 'Login background style';
+$string['loginbackgroundstyledesc'] = 'Select the style for the uploaded image.';
+$string['loginbackgroundopacity'] = 'Login box background opacity when there is a background image';
+$string['loginbackgroundopacitydesc'] = 'Lofin background opacity for the login box when there is a background image.';
 
 // Colours.
 $string['colorheading'] = 'Colour';
@@ -299,6 +331,8 @@ $string['themenavcolor'] = 'Navigation text colour';
 $string['themenavcolordesc'] = 'Set the text colour for navigation.  Being the navigation bar and the breadcrumb fancy style.';
 $string['themestripetextcolour'] = 'Stripe text colour';
 $string['themestripetextcolourdesc'] = 'Set the text colour for stripes in tables.';
+$string['themestripeurlcolour'] = 'Stripe url colour';
+$string['themestripeurlcolourdesc'] = 'Set the url colour for stripes in tables.';
 $string['themestripebackgroundcolour'] = 'Stripe background colour';
 $string['themestripebackgroundcolourdesc'] = 'Set the background colour for stripes in tables.';
 
@@ -355,8 +389,13 @@ $string['alternativethemehovercolor'] = 'Alternative theme hover colour {$a}';
 $string['alternativethemehovercolordesc'] = 'What colour should your theme hovers be for the alternative theme colours {$a}.';
 $string['alternativethemestripetextcolour'] = 'Alternative stripe text colour {$a}';
 $string['alternativethemestripetextcolourdesc'] = 'Set the alternative {$a} text colour for stripes in tables.';
+$string['alternativethemestripeurlcolour'] = 'Alternative stripe url colour {$a}';
+$string['alternativethemestripeurlcolourdesc'] = 'Set the alternative {$a} url colour for stripes in tables.';
 $string['alternativethemestripebackgroundcolour'] = 'Alternative stripe background colour {$a}';
 $string['alternativethemestripebackgroundcolourdesc'] = 'Set the alternative {$a} background colour for stripes in tables.';
+
+$string['alternativethememycoursesorderenrolbackcolour'] = 'Alternative {$a} enrolled and not accessed course background colour';
+$string['alternativethememycoursesorderenrolbackcolourdesc'] = 'Set alternative {$a} background colour for enrolled but not accessed courses.  For ehen \'mycoursesorder\' is set to \'Last accessed...\'.';
 
 $string['alternativethemefootercolor'] = 'Footer background colour for the alternative theme colours {$a}';
 $string['alternativethemefootercolordesc'] = 'Set what colour the background of the Footer box should be for the alternative theme colours {$a}.';
@@ -411,8 +450,12 @@ $string['frontpageblocksdesc'] = 'Here you can determine if the standard Moodle 
 $string['beforecontent'] = 'Before content';
 $string['aftercontent'] = 'After content';
 
-$string['frontpagemiddleblocks'] = 'Enable additional front page middle blocks';
-$string['frontpagemiddleblocksdesc'] = 'If enabled this will display three additional block locations just under the marketing spots.';
+$string['frontpagemiddleblocks'] = 'Enable additional front page \'Home\' (was \'Middle\') blocks';
+$string['frontpagemiddleblocksdesc'] = 'If enabled this will display an additional block location just under the marketing spots.';
+$string['frontpagehomeblocksperrow'] = 'Home (was \'Middle\') blocks per row';
+$string['frontpagehomeblocksperrowdesc'] = 'State up to how many blocks per row between {$a->lower} and {$a->upper} for the \'Home blocks\'.';
+$string['fppagetopblocks'] = 'Enable additional front page \'Page top\' blocks';
+$string['fppagetopblocksdesc'] = 'If enabled this will display an additional block location beside the side blocks and above the content area.  Note: The number of blocks per row depends on the setting \'pagetopblocksperrow\'.';
 
 // Slideshow.
 $string['slideshowheading'] = 'Slide show';
@@ -484,7 +527,7 @@ $string['slideurltargetparent'] = 'Parent frame';
 // Marketing Spots.
 $string['marketingheading'] = 'Marketing spots';
 $string['marketinginfodesc'] = 'Enter the settings for your marketing spot.';
-$string['marketingheadingsub'] = 'Three locations on the front page to add information and links';
+$string['marketingheadingsub'] = 'Three locations on the front page to add information and links.'; // Legacy only.
 
 $string['marketingheight'] = 'Height of marketing spot container (px)';
 $string['marketingheightdesc'] = 'Specify the height of the marketing spot container in pixels.  Adjust this to suit your content.  If any spot has an image or link, then that will be added to this for all spots.';
@@ -570,11 +613,17 @@ $string['websitedesc'] = 'Enter the URL of your own website. (i.e http://about.m
 
 // Category Course Title Image.
 $string['categoryctiheading'] = 'Category course title images';
+$string['categoryctiheadingcs'] = 'Category course title images configuration';
 $string['categoryctiheadingsub'] = 'Use images to represent your categories in a course';
 $string['categoryctidesc'] = 'If enabled this will allow you to set images for each category.';
 
 $string['enablecategorycti'] = 'Enable category course title images';
 $string['enablecategoryctidesc'] = 'If enabled you will be able to select category course title images after clicking "Save changes".';
+
+$string['enablecategoryctics'] = 'Enable category course title image category setting pages';
+$string['enablecategorycticsdesc'] = 'If enabled each top level category will get its own setting page.';
+
+$string['categoryctiheadingcategory'] = 'Category course title images for: {$a->category}';
 
 $string['categoryctiinfo'] = '{$a->category} settings';
 $string['categoryctiinfodesc'] = 'Category course title image settings for: {$a->category}.';
@@ -673,6 +722,11 @@ $string['displayeditingmenu'] = 'Display editing button';
 $string['displayeditingmenudesc'] = 'Displays a button with the same functionality as the default page editing button on the header.';
 $string['hidedefaulteditingbutton'] = 'Hide default page editing button';
 $string['hidedefaulteditingbuttondesc'] = 'Hides the default page editing button from any page.  This setting only takes effect if the "Display editing button" setting is enabled.';
+
+$string['haveheaderblock'] = 'Header block region';
+$string['haveheaderblockdesc'] = 'Have a header block region just below the breadcrumb.';
+$string['headerblocksperrow'] = 'Header blocks per row';
+$string['headerblocksperrowdesc'] = 'State up to how many blocks per row between {$a->lower} and {$a->upper} for pages with the \'Header block region\'.';
 
 // Font settings.
 $string['fontsettings'] = 'Font';
@@ -818,6 +872,8 @@ $string['alerttextdesc'] = 'What is the text you wish to display in your alert.'
 $string['alert_info'] = 'Information';
 $string['alert_warning'] = 'Warning';
 $string['alert_general'] = 'Announcement';
+
+$string['alert_edit'] = 'Edit alerts';
 
 $string['versionalerttitle'] = 'Version warning: ';
 $string['versionalerttext1'] = 'Theme not designed for Moodle version.';

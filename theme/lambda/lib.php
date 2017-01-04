@@ -131,153 +131,152 @@ function theme_lambda_process_css($css, $theme) {
 	$css = lambda_set_logo_res($css,$logo_res);
     // Set the Fonts.
     if ($theme->settings->font_body ==1) {
-        $bodyfont = 'open_sansregular';
+        $bodyfont = 'Open Sans';
         $bodysize = '13px';
-        $bodyweight = '400';
     } else if ($theme->settings->font_body ==2) {
         $bodyfont = 'Arimo';
-        $bodysize = '13px';
-        $bodyweight = '400';
+        $bodysize = '14px';
     } else if ($theme->settings->font_body ==3) {
         $bodyfont = 'Arvo';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==4) {
         $bodyfont = 'Bree Serif';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==5) {
         $bodyfont = 'Cabin';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==6) {
         $bodyfont = 'Cantata One';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==7) {
         $bodyfont = 'Crimson Text';
         $bodysize = '14px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==8) {
         $bodyfont = 'Droid Sans';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==9) {
         $bodyfont = 'Droid Serif';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==10) {
         $bodyfont = 'Gudea';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==11) {
         $bodyfont = 'Imprima';
-        $bodysize = '13px';
-        $bodyweight = '400';
+        $bodysize = '14px';
 	} else if ($theme->settings->font_body ==12) {
         $bodyfont = 'Lekton';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==13) {
-        $bodyfont = 'Nixie One';
+        $bodyfont = 'Nunito';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==14) {
         $bodyfont = 'Montserrat';
         $bodysize = '12px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==15) {
         $bodyfont = 'Playfair Display';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==16) {
         $bodyfont = 'Pontano Sans';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==17) {
         $bodyfont = 'PT Sans';
         $bodysize = '14px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==18) {
         $bodyfont = 'Raleway';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==19) {
         $bodyfont = 'Ubuntu';
         $bodysize = '13px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==20) {
         $bodyfont = 'Vollkorn';
         $bodysize = '14px';
-        $bodyweight = '400';
 	} else if ($theme->settings->font_body ==21) {
-        $bodyfont = 'cwtexyenmedium';
-        $bodysize = '14px';
-        $bodyweight = '400';
-	} else if ($theme->settings->font_body ==22) {
-        $bodyfont = 'cwtexheimedium';
-        $bodysize = '14px';
-        $bodyweight = '400';}	
+        $bodyfont = 'Work Sans';
+        $bodysize = '14px';}
 		
 	if ($theme->settings->font_heading ==1) {
-        $headingfont = 'open_sansbold';
+        $headingfont = 'Open Sans';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==2) {
         $headingfont = 'Abril Fatface';
+		$headingweight = '400';
     } else if ($theme->settings->font_heading ==3) {
         $headingfont = 'Arimo';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==4) {
         $headingfont = 'Arvo';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==5) {
         $headingfont = 'Bevan';
+		$headingweight = '400';
     } else if ($theme->settings->font_heading ==6) {
         $headingfont = 'Bree Serif';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==7) {
         $headingfont = 'Cabin';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==8) {
         $headingfont = 'Cantata One';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==9) {
         $headingfont = 'Crimson Text';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==10) {
         $headingfont = 'Droid Sans';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==11) {
         $headingfont = 'Droid Serif';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==12) {
         $headingfont = 'Gudea';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==13) {
         $headingfont = 'Imprima';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==14) {
         $headingfont = 'Josefin Sans';
+		$headingweight = '400';
     } else if ($theme->settings->font_heading ==15) {
         $headingfont = 'Lekton';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==16) {
         $headingfont = 'Lobster';
     } else if ($theme->settings->font_heading ==17) {
-        $headingfont = 'Nixie One';
+        $headingfont = 'Nunito';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==18) {
         $headingfont = 'Montserrat';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==19) {
         $headingfont = 'Pacifico';
+		$headingweight = '400';
     } else if ($theme->settings->font_heading ==20) {
         $headingfont = 'Playfair Display';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==21) {
         $headingfont = 'Pontano Sans';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==22) {
         $headingfont = 'PT Sans';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==23) {
         $headingfont = 'Raleway';
+		$headingweight = '500';
     } else if ($theme->settings->font_heading ==24) {
         $headingfont = 'Sansita One';
+		$headingweight = '400';
     } else if ($theme->settings->font_heading ==25) {
         $headingfont = 'Ubuntu';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==26) {
         $headingfont = 'Vollkorn';
+		$headingweight = '700';
 	} else if ($theme->settings->font_heading ==27) {
-        $headingfont = 'cwtexyenmedium';
-	} else if ($theme->settings->font_heading ==28) {
-        $headingfont = 'cwtexheimedium';}
+        $headingfont = 'Work Sans';
+        $headingweight = '700';}
     
-    $css = theme_lambda_set_headingfont($css, $headingfont);
-    $css = theme_lambda_set_bodyfont($css, $bodyfont);
+    $css = theme_lambda_set_headingfont($css, $headingfont, $headingweight);
+    $css = theme_lambda_set_bodyfont($css, $bodyfont, $bodysize);
   
     if (!empty($theme->settings->customcss)) {
         $customcss = $theme->settings->customcss;
@@ -465,21 +464,33 @@ function theme_lambda_process_css($css, $theme) {
     return $css;
 }
 
-function theme_lambda_set_headingfont($css, $headingfont) {
+function theme_lambda_set_headingfont($css, $headingfont, $headingweight) {
     $tag = '[[setting:headingfont]]';
     $replacement = $headingfont;
     if (is_null($replacement)) {
-        $replacement = 'open_sansbold';
+        $replacement = 'Open Sans';
+    }
+    $css = str_replace($tag, $replacement, $css);
+    $tag = '[[setting:headingweight]]';
+    $replacement = $headingweight;
+    if (is_null($replacement)) {
+        $replacement = '700';
     }
     $css = str_replace($tag, $replacement, $css);
     return $css;
 }
 
-function theme_lambda_set_bodyfont($css, $bodyfont) {
+function theme_lambda_set_bodyfont($css, $bodyfont, $bodysize) {
     $tag = '[[setting:bodyfont]]';
     $replacement = $bodyfont;
     if (is_null($replacement)) {
-        $replacement = 'open_sansregular';
+        $replacement = 'Open Sans';
+    }
+    $css = str_replace($tag, $replacement, $css);
+	$tag = '[[setting:bodysize]]';
+    $replacement = $bodysize;
+    if (is_null($replacement)) {
+        $replacement = '13px';
     }
     $css = str_replace($tag, $replacement, $css);
     return $css;

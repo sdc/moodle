@@ -38,8 +38,15 @@
             $branchtitle = $branchlabel;
             $branchsort  = 10000 ; 
             $branch = $menu->add($branchlabel, $branchurl, $branchtitle, $branchsort);
- 
- 			if ($mycourses = enrol_get_my_courses(NULL, 'visible DESC, fullname ASC')) {
+
+            if (!$sortorder = $CFG->navsortmycoursessort) {
+                $sortorder = 'sortorder';
+            }
+            if (!$courses_limit = $CFG->navcourselimit) {
+                $courses_limit = 20;
+            }
+			
+ 			if ($mycourses = enrol_get_my_courses(NULL, 'visible DESC, '.$sortorder.' ASC', $courses_limit)) {
 				foreach ($mycourses as $mycourse) {
                 	$branch->add($mycourse->shortname, new moodle_url('/course/view.php', array('id' => $mycourse->id)), $mycourse->fullname);
             	}
@@ -102,9 +109,8 @@
             $btn = 'btn-success';
             $title = get_string('turneditingon');
             $icon = 'fa-edit';
-        }
-        return html_writer::tag('a', html_writer::start_tag('i', array('class' => $icon.' fa fa-fw')).
-               html_writer::end_tag('i'), array('href' => $url, 'class' => 'btn '.$btn, 'title' => $title));
+        }		
+		return html_writer::tag('a', $title, array('href' => $url, 'class' => 'btn ' . $btn, 'title' => $title));
     }
 }
 
@@ -114,8 +120,8 @@ class theme_lambda_format_topics_renderer extends format_topics_renderer {
     
     protected function get_nav_links($course, $sections, $sectionno) {
         $course = course_get_format($course)->get_course();
-        $previousarrow= '<i class="fa fa-chevron-circle-left"></i>';
-        $nextarrow= '<i class="fa fa-chevron-circle-right"></i>';
+        $previousarrow= '<i class="fa fa-chevron-left" aria-hidden="true" style="float: left; margin-right: 10px;"></i>';
+        $nextarrow= '<i class="fa fa-chevron-right" aria-hidden="true" style="float: right; margin-left: 10px;"></i>';
         $canviewhidden = has_capability('moodle/course:viewhiddensections', context_course::instance($course->id))
             or !$course->hiddensections;
 

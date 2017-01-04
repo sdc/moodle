@@ -21,6 +21,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 /** @global int $CHOICE_COLUMN_HEIGHT */
 global $CHOICE_COLUMN_HEIGHT;
 $CHOICE_COLUMN_HEIGHT = 300;
@@ -291,7 +293,7 @@ function choice_user_submit_response($formanswer, $choice, $userid, $course, $cm
         $lockfactory = \core\lock\lock_config::get_lock_factory($locktype);
 
         // Opening the lock.
-        $choicelock = $lockfactory->get_lock($resouce, $timeout);
+        $choicelock = $lockfactory->get_lock($resouce, $timeout, MINSECS);
         if (!$choicelock) {
             print_error('cannotsubmit', 'choice', $continueurl);
         }

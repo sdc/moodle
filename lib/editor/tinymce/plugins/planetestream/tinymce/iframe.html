@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -42,7 +42,10 @@
         <script type="text/javascript">
             document.write("<iframe style=\"border: 0px; width: 984px; height: 684px;\" src=\""
             + querystring("estream_url") + decodeURIComponent(querystring("estream_path"))
-            + '&td=' + window.location.protocol + '//' + window.location.host + "\"></iframe>");
+            + '&td=' + window.location.protocol + '//' + window.location.host + ':'
+            + ((window.location.port === '80' && window.location.protocol==='http')|
+            (window.location.port === '443' && window.location.protocol==='https') 
+            ? '' : window.location.port) + "\"></iframe>");
             if (window.addEventListener) {
                 eventMethod = 'addEventListener';
                 messageEvent = 'message';
@@ -54,14 +57,16 @@
             }
             var evX = window[eventMethod];
             evX(messageEvent, function (e) {
-                var strembedcode = e.data;
-                if (strembedcode.indexOf("rt=2") != -1) {
-                    strembedcode = strembedcode + '&extended=true';
-                }
+                //insertContent('<p><iframe style="width: ' + querystring('estream_width', true) + 'px;'
+                //+ ' height: ' + querystring('estream_height', true) + 'px; border: 0;" src="'
+                //+ querystring('estream_url', true) + '/Embed.aspx?' + e.data + '"></iframe><a href="'
+                //+ '_planetestreamiframe_/Embed.aspx?' + e.data + '"></a></p>');
+
                 insertContent('<p><iframe style="width: ' + querystring('estream_width', true) + 'px;'
                 + ' height: ' + querystring('estream_height', true) + 'px; border: 0;" src="'
-                + querystring('estream_url', true) + '/Embed.aspx?' + strembedcode + '"></iframe><a href="'
-                + '/_planetestreamiframe_/Embed.aspx?' + strembedcode + '">&nbsp;</a></p>');
+                + querystring('estream_url', true) + '/Embed.aspx?' + e.data + '"></iframe><a href="'
+                + '/_planetestreamiframe_/Embed.aspx?' + e.data + '">&nbsp;</a></p>');
+
             }, false);
 </script>
     </form>
