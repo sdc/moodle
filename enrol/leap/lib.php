@@ -823,7 +823,9 @@ class enrol_leap_plugin extends enrol_plugin {
                             continue;
                         }
 
-                        if ( isset ( $blockinstance->config->coursecodes ) && stripos( $blockinstance->config->coursecodes, $coursecode ) !== false ) {
+// OW 20170209 arghh - don't compare strings as 'GC2MAT1F' would be found in 'GC2MAT1FHS,GC2MAT2FHS,GC2MTH2FHS,GC2MAH1F' when it shouldn't be!!
+//                      if ( isset ( $blockinstance->config->coursecodes ) && stripos( $blockinstance->config->coursecodes, $coursecode ) !== false ) {
+                        if ( isset ( $blockinstance->config->coursecodes ) && in_array( strtoupper($coursecode), explode( ",", strtoupper($blockinstance->config->coursecodes)) ) ) {
                             $toenrol[] = $course;
                             if ( $this->logging ) {
                                 error_log( $this->errorlogtag . '    Course code "' . $coursecode . '" found in course ' . $course->id . ' (' . $course->shortname . ')' );
