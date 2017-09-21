@@ -770,25 +770,35 @@ error_log($trackertype);
 
         } else {
             $output = array();
-            $count = 0;
+            $count = 1;
             foreach ( $userbadges as $hash => $ubadge ) {
-                $count++;
 
-                $output[$count]['course_id']    = $ubadge->courseid;
-                $output[$count]['date_issued']  = $ubadge->dateissued;
-                $output[$count]['description']  = $ubadge->description;
-                $output[$count]['details_link'] = (string) new moodle_url('/badges/badge.php', array( 'hash' => $hash ));
-                $output[$count]['image_url']    = (string) badges_bake( $hash, $ubadge->id );
-                $output[$count]['name']         = $ubadge->name;
+                try {
+                    // Skip if course not found or else will crash out with error and not release valid badge entries - OW 20170921
+                    if ( ! ($coursecontext = context_course::instance( $ubadge->courseid )) )
+                        continue;
 
-                // Gets the 'leapcore' tag associated with the course associated with this badge.
-                $coursecontext  = context_course::instance( $ubadge->courseid );
-                $blockrecord    = $DB->get_record( 'block_instances', array(
-                    'blockname'         => 'leap',
-                    'parentcontextid'   => $coursecontext->id
-                ), '*', MUST_EXIST );
-                $blockinstance  = block_instance( 'leap', $blockrecord );
-                $output[$count]['leapcore']     = $blockinstance->config->trackertype;
+                    $output[$count]['course_id']    = $ubadge->courseid;
+                    $output[$count]['date_issued']  = $ubadge->dateissued;
+                    $output[$count]['description']  = $ubadge->description;
+                    $output[$count]['details_link'] = (string) new moodle_url('/badges/badge.php', array( 'hash' => $hash ));
+                    $output[$count]['image_url']    = (string) badges_bake( $hash, $ubadge->id );
+                    $output[$count]['name']         = $ubadge->name;
+
+                    // Gets the 'leapcore' tag associated with the course associated with this badge.
+                    // $coursecontext  = context_course::instance( $ubadge->courseid );
+                    $blockrecord    = $DB->get_record( 'block_instances', array(
+                        'blockname'         => 'leap',
+                        'parentcontextid'   => $coursecontext->id
+                    ), '*', MUST_EXIST );
+                    $blockinstance  = block_instance( 'leap', $blockrecord );
+                    $output[$count]['leapcore']     = $blockinstance->config->trackertype;
+
+                    $count++;
+                }
+                catch (Exception $e) {
+                    continue; 
+                }
 
             }
 
