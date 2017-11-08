@@ -124,6 +124,12 @@ jQuery(document).ready(function() {
         return false;
     })
 });
+
+// When connecting to office 365, this is called to refresh filepicker
+   function refreshFilePicker() {
+       console.log("test");
+       document.getElementById('filepicker-refresh').click();
+   }
 </script>
 
 

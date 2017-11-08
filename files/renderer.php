@@ -594,7 +594,7 @@ class core_files_renderer extends plugin_renderer_base {
                         </a>
                     </div>
                     <div class="fp-tb-logout">
-                        <a title="'. get_string('logout', 'repository') .'" href="#">
+                        <a id="filepicker-refresh" title="'. get_string('logout', 'repository') .'" href="#">
                             <img alt="" src="'.$this->pix_url('a/logout').'" />
                         </a>
                     </div>
