@@ -199,7 +199,23 @@ YUI.add('moodle-core_filepicker', function(Y) {
             var el = Y.Node.create('<div/>');
             el.appendChild(options.filenode.cloneNode(true));
 
-            el.one('.fp-filename').setContent(file_get_displayname(node));
+            //el.one('.fp-filename').setContent(file_get_displayname(node));
+            /**
+             * Replicate functionality from lines 746 - 767 when viewed in tree mode 
+             *
+             * JKR Oct '17
+             */ 
+            if (typeof node.children != "undefined") {
+                if ((file_get_displayname(node) == 'Office 365') && (node.children.length == 0)) {
+                el.one('.fp-filename').setContent(file_get_displayname(node) + '<br/><a href="https://moodle-clone.southdevon.ac.uk/local/o365/ucp.php?action=connecttoken" \
+                    onclick="window.open(this.href,\'targetWindow\', \'width=550, height=350\'); return false;">\
+                    Connect to Office 365</a>');
+                }
+            else {
+                el.one('.fp-filename').setContent(file_get_displayname(node));
+                }
+            }                    
+
             // TODO add tooltip with node.title or node.thumbnail_title
             var tmpnodedata = {className:options.classnamecallback(node)};
             el.get('children').addClass(tmpnodedata.className);
@@ -744,10 +760,26 @@ M.core_filepicker.init = function(Y, options) {
         },
         /** displays error instead of filepicker contents */
         display_error: function(errortext, errorcode) {
-            this.fpnode.one('.fp-content').setContent(M.core_filepicker.templates.error);
-            this.fpnode.one('.fp-content .fp-error').
-                addClass(errorcode).
-                setContent(Y.Escape.html(errortext));
+            /**
+             * Instead of outputting default error message or saying there are no 
+             * files available, we can check the id of the active repository first.
+             *
+             * If it's Office 365, provide a link for users to connect.
+             * 
+             * If they're already connected, they won't see this
+             *
+             * JKR Oct '17 
+             */
+            //this.fpnode.one('.fp-content').setContent(M.core_filepicker.templates.error);
+            if (this.active_repo.id == 18) {
+                this.fpnode.one('.fp-content').setContent('<a href="https://moodle-clone.southdevon.ac.uk/local/o365/ucp.php?action=connecttoken" onclick="window.open(this.href,\'targetWindow\', \'width=550, height=350\'); return false;">Connect to Office 365</a>');
+            }
+            else {
+                this.fpnode.one('.fp-content').setContent(M.core_filepicker.templates.error);
+                this.fpnode.one('.fp-content .fp-error').
+                    addClass(errorcode).
+                    setContent(Y.Escape.html(errortext));                
+            }
         },
         /** displays message in a popup */
         print_msg: function(msg, type) {

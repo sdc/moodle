@@ -1,0 +1,45 @@
+.bcu_course_status {
+	float: right;
+}
+
+.bcu_course_checks.sectiontable {
+	font-size: 10px;
+	table-layout:fixed;
+	width: 100%;
+}
+
+.bcu_course_checks .tableimg {
+	width: 100%;
+	float: left;
+	text-align: center;
+}
+
+.bcu_course_checks .header {
+	text-align: center;
+	white-space: nowrap
+}
+
+.block_bcu_course_checks_collapsible .collapsibleregioncaption {
+    font-size: 1.25em;
+    font-weight: bold;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-decoration: none;
+}
+
+.block_bcu_course_checks_collapsible .collapsibleregioninner {
+    padding-top: 5px;
+}
+
+.block_bcu_course_checks_collapsible .collapsibleregioncaption {
+    white-space: normal !important; 
+}
+
+.assignmentdate {
+    clear: both;
+    float: left;
+}
+
+.assignmenthr {
+    clear: both;
+}

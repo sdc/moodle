@@ -205,7 +205,96 @@ if ($user->description && !isset($hiddenfields['description'])) {
     } else {
         $user->description = file_rewrite_pluginfile_urls($user->description, 'pluginfile.php', $usercontext->id, 'user',
                                                           'profile', null);
-        echo format_text($user->description, $user->descriptionformat);
+        $options = array('overflowdiv' => true);
+        echo format_text($user->description, $user->descriptionformat, $options);
+    }
+}
+echo '</div>';
+
+
+// Print all the little details in a list.
+echo html_writer::start_tag('dl', array('class' => 'list'));
+if (!isset($hiddenfields['country']) && $user->country) {
+    echo html_writer::tag('dt', get_string('country'));
+    echo html_writer::tag('dd', get_string($user->country, 'countries'));
+}
+
+if (!isset($hiddenfields['city']) && $user->city) {
+    echo html_writer::tag('dt', get_string('city'));
+    echo html_writer::tag('dd', $user->city);
+}
+
+if (isset($identityfields['address']) && $user->address) {
+    echo html_writer::tag('dt', get_string('address'));
+    echo html_writer::tag('dd', $user->address);
+}
+
+if (isset($identityfields['phone1']) && $user->phone1) {
+    echo html_writer::tag('dt', get_string('phone'));
+    echo html_writer::tag('dd', $user->phone1);
+}
+
+if (isset($identityfields['phone2']) && $user->phone2) {
+    echo html_writer::tag('dt', get_string('phone2'));
+    echo html_writer::tag('dd', $user->phone2);
+}
+
+if (isset($identityfields['institution']) && $user->institution) {
+    echo html_writer::tag('dt', get_string('institution'));
+    echo html_writer::tag('dd', $user->institution);
+}
+
+if (isset($identityfields['department']) && $user->department) {
+    echo html_writer::tag('dt', get_string('department'));
+    echo html_writer::tag('dd', $user->department);
+}
+
+if (isset($identityfields['idnumber']) && $user->idnumber) {
+    echo html_writer::tag('dt', get_string('idnumber'));
+    echo html_writer::tag('dd', $user->idnumber);
+}
+
+if (isset($identityfields['email']) and ($currentuser
+  or $user->maildisplay == 1
+  or has_capability('moodle/course:useremail', $context)
+  or ($user->maildisplay == 2 and enrol_sharing_course($user, $USER)))) {
+    echo html_writer::tag('dt', get_string('email'));
+    echo html_writer::tag('dd', obfuscate_mailto($user->email, ''));
+}
+
+
+$ebsid = explode( '@', $user->username );
+echo html_writer::tag( 'dt', 'Leap' );
+echo html_writer::tag( 'dd', html_writer::link('https://leap.southdevon.ac.uk/people/' . $ebsid[0] , 'Leap profile for ' . fullname($user), array( 'target' => '_blank' ) ) );
+
+
+if ($user->url && !isset($hiddenfields['webpage'])) {
+    $url = $user->url;
+    if (strpos($user->url, '://') === false) {
+        $url = 'http://'. $url;
+    }
+    $webpageurl = new moodle_url($url);
+    echo html_writer::tag('dt', get_string('webpage'));
+    echo html_writer::tag('dd', html_writer::link($webpageurl, s($user->url)));
+}
+
+if ($user->icq && !isset($hiddenfields['icqnumber'])) {
+    $imurl = new moodle_url('http://web.icq.com/wwp', array('uin' => $user->icq) );
+    $iconurl = new moodle_url('http://web.icq.com/whitepages/online', array('icq' => $user->icq, 'img' => '5'));
+    $statusicon = html_writer::tag('img', '', array('src' => $iconurl, 'class' => 'icon icon-post', 'alt' => get_string('status')));
+    echo html_writer::tag('dt', get_string('icqnumber'));
+    echo html_writer::tag('dd', html_writer::link($imurl, s($user->icq) . $statusicon));
+}
+
+if ($user->skype && !isset($hiddenfields['skypeid'])) {
+    $imurl = 'skype:'.urlencode($user->skype).'?call';
+    $iconurl = new moodle_url('http://mystatus.skype.com/smallicon/'.urlencode($user->skype));
+    if (is_https()) {
+        // Bad luck, skype devs are lazy to set up SSL on their servers - see MDL-37233.
+        $statusicon = '';
+    } else {
+        $statusicon = html_writer::empty_tag('img',
+            array('src' => $iconurl, 'class' => 'icon icon-post', 'alt' => get_string('status')));
     }
     echo '</div>';
 }

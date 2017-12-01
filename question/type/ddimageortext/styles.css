@@ -118,3 +118,38 @@ body#page-question-type-ddimageortext div[id^=fitem_id_][id*=draglabel_] {
     border: 1px solid #BBB;
     border-top: 0;
 }
+/* Editing form. Style repeated elements*/
+/*Top*/
+body#page-question-type-ddimageortext div[id^=fgroup_id_][id*=drags_] {
+    background: #EEE;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    border: 1px solid #BBB;
+    border-bottom: 0;
+}
+body#page-question-type-ddimageortext div[id^=fgroup_id_][id*=drags_] .fgrouplabel label {
+    font-weight: bold;
+}
+/* Middle */
+body#page-question-type-ddimageortext div[id^=fitem_id_][id*=dragitem_] {
+    background: #EEE;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    border: 1px solid #BBB;
+    border-top: 0;
+    border-bottom: 0;
+}
+/* Bottom */
+body#page-question-type-ddimageortext div[id^=fitem_id_][id*=draglabel_] {
+    background: #EEE;
+    margin-bottom: 2em;
+    margin-top: 0;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    border: 1px solid #BBB;
+    border-top: 0;
+}
