@@ -501,6 +501,8 @@ class core_userliblib_testcase extends advanced_testcase {
         $user5 = $this->getDataGenerator()->create_user();
         $user6 = $this->getDataGenerator()->create_user(array('deleted' => 1));
         $user7 = $this->getDataGenerator()->create_user();
+        $user8 = $this->getDataGenerator()->create_user();
+        $user8->id = 0; // Visitor.
 
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
         // Add the course creator role to the course contact and assign a user to that role.
@@ -527,6 +529,11 @@ class core_userliblib_testcase extends advanced_testcase {
         $this->getDataGenerator()->enrol_user($user1->id, $course3->id);
         $this->getDataGenerator()->enrol_user($user4->id, $course3->id);
         $this->getDataGenerator()->enrol_user($user5->id, $course3->id);
+
+        // User 3 should not be able to see user 1, either by passing their own course (course 2) or user 1's course (course 1).
+        $this->setUser($user3);
+        $this->assertFalse(user_can_view_profile($user1, $course2));
+        $this->assertFalse(user_can_view_profile($user1, $course1));
 
         // Remove capability moodle/user:viewdetails in course 2.
         assign_capability('moodle/user:viewdetails', CAP_PROHIBIT, $studentrole->id, $coursecontext);
@@ -574,6 +581,24 @@ class core_userliblib_testcase extends advanced_testcase {
         $this->assertTrue(user_can_view_profile($user4));
 
         $CFG->coursecontact = null;
+
+        // Visitor (Not a guest user, userid=0).
+        $CFG->forceloginforprofiles = 1;
+        $this->setUser($user8);
+
+        // By default guest has 'moodle/user:viewdetails' cap.
+        $this->assertTrue(user_can_view_profile($user1));
+        $CFG->forceloginforprofiles = 0;
+        $this->assertTrue(user_can_view_profile($user1));
+
+        // Let us remove this cap.
+        $allroles = $DB->get_records_menu('role', array(), 'id', 'archetype, id');
+        assign_capability('moodle/user:viewdetails', CAP_PROHIBIT, $allroles['guest'], context_system::instance()->id, true);
+        reload_all_capabilities();
+        $CFG->forceloginforprofiles = 1;
+        $this->assertFalse(user_can_view_profile($user1));
+        $CFG->forceloginforprofiles = 0;
+        $this->assertTrue(user_can_view_profile($user1));
     }
 
     /**
@@ -622,5 +647,35 @@ class core_userliblib_testcase extends advanced_testcase {
         // Get exception for invalid required fields.
         $this->setExpectedException('moodle_exception');
         $result = user_get_user_details($student, $course1, array('wrongrequiredfield'));
+    }
+
+    /**
+     * Regression test for MDL-57840.
+     *
+     * Ensure the fields "auth, confirmed, idnumber, lang, theme, timezone and mailformat" are present when
+     * calling user_get_user_details() function.
+     */
+    public function test_user_get_user_details_missing_fields() {
+        $this->resetAfterTest(true);
+        $this->setAdminUser(); // We need capabilities to view the data.
+        $user = self::getDataGenerator()->create_user([
+                                                          'auth'       => 'auth_something',
+                                                          'confirmed'  => '0',
+                                                          'idnumber'   => 'someidnumber',
+                                                          'lang'       => 'en_ar',
+                                                          'theme'      => 'mytheme',
+                                                          'timezone'   => '50',
+                                                          'mailformat' => '0',
+                                                      ]);
+
+        // Fields that should get by default.
+        $got = user_get_user_details($user);
+        self::assertSame('auth_something', $got['auth']);
+        self::assertSame('0', $got['confirmed']);
+        self::assertSame('someidnumber', $got['idnumber']);
+        self::assertSame('en_ar', $got['lang']);
+        self::assertSame('mytheme', $got['theme']);
+        self::assertSame('50', $got['timezone']);
+        self::assertSame('0', $got['mailformat']);
     }
 }

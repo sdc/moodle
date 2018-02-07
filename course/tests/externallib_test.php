@@ -259,8 +259,19 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
 
         $this->assertEquals($DB->count_records('course_categories'), count($categories));
 
-        // Call without required capability (it will fail cause of the search on idnumber).
         $this->unassignUserCapability('moodle/category:manage', $context->id, $roleid);
+
+        // Ensure maxdepthcategory is 2 and retrieve all categories without category:manage capability. It should retrieve all
+        // visible categories as well.
+        set_config('maxcategorydepth', 2);
+        $categories = core_course_external::get_categories();
+
+        // We need to execute the return values cleaning process to simulate the web service server.
+        $categories = external_api::clean_returnvalue(core_course_external::get_categories_returns(), $categories);
+
+        $this->assertEquals($DB->count_records('course_categories', array('visible' => 1)), count($categories));
+
+        // Call without required capability (it will fail cause of the search on idnumber).
         $this->setExpectedException('moodle_exception');
         $categories = core_course_external::get_categories(array(
             array('key' => 'id', 'value' => $category1->id),
@@ -451,7 +462,7 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
                 $this->assertEquals($courseinfo->numsections, $course3options['numsections']);
                 $this->assertEquals($courseinfo->coursedisplay, $course3options['coursedisplay']);
             } else {
-                throw moodle_exception('Unexpected shortname');
+                throw new moodle_exception('Unexpected shortname');
             }
         }
 
@@ -606,6 +617,32 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
         $courses = external_api::clean_returnvalue(core_course_external::get_courses_returns(), $courses);
 
         $this->assertEquals($DB->count_records('course'), count($courses));
+    }
+
+    /**
+     * Test get_courses without capability
+     */
+    public function test_get_courses_without_capability() {
+        $this->resetAfterTest(true);
+
+        $course1 = $this->getDataGenerator()->create_course();
+        $this->setUser($this->getDataGenerator()->create_user());
+
+        // No permissions are required to get the site course.
+        $courses = core_course_external::get_courses(array('ids' => [SITEID]));
+        $courses = external_api::clean_returnvalue(core_course_external::get_courses_returns(), $courses);
+
+        $this->assertEquals(1, count($courses));
+        $this->assertEquals('PHPUnit test site', $courses[0]['fullname']);
+        $this->assertEquals('site', $courses[0]['format']);
+
+        // Requesting course without being enrolled or capability to view it will throw an exception.
+        try {
+            core_course_external::get_courses(array('ids' => [$course1->id]));
+            $this->fail('Exception expected');
+        } catch (moodle_exception $e) {
+            $this->assertEquals(1, preg_match('/Course or activity not accessible. \(Not enrolled\)/', $e->getMessage()));
+        }
     }
 
     /**
@@ -1089,7 +1126,7 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
                 $this->assertEquals(0, $courseinfo->newsitems);
                 $this->assertEquals(FORMAT_MOODLE, $courseinfo->summaryformat);
             } else {
-                throw moodle_exception('Unexpected shortname');
+                throw new moodle_exception('Unexpected shortname');
             }
         }
 

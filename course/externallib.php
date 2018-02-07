@@ -427,7 +427,9 @@ class core_course_external extends external_api {
                 $exceptionparam->courseid = $course->id;
                 throw new moodle_exception('errorcoursecontextnotvalid', 'webservice', '', $exceptionparam);
             }
-            require_capability('moodle/course:view', $context);
+            if ($course->id != SITEID) {
+                require_capability('moodle/course:view', $context);
+            }
 
             $courseinfo = array();
             $courseinfo['id'] = $course->id;
@@ -1613,12 +1615,6 @@ class core_course_external extends external_api {
                 if (isset($excludedcats[$parentid]) and $excludedcats[$parentid] != 'context') {
                     $excludedcats[$category->id] = 'parent';
                 }
-            }
-
-            // Check category depth is <= maxdepth (do not check for user who can manage categories).
-            if ((!empty($CFG->maxcategorydepth) && count($parents) > $CFG->maxcategorydepth)
-                    and !has_capability('moodle/category:manage', $context)) {
-                $excludedcats[$category->id] = 'depth';
             }
 
             // Check the user can use the category context.
