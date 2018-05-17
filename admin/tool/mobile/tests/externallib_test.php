@@ -83,6 +83,9 @@ class tool_mobile_external_testcase extends externallib_advanced_testcase {
             'maintenanceenabled' => $CFG->maintenance_enabled,
             'maintenancemessage' => $maintenancemessage,
             'typeoflogin' => api::LOGIN_VIA_APP,
+            'mobilecssurl' => '',
+            'tool_mobile_disabledfeatures' => '',
+            'launchurl' => "$CFG->wwwroot/$CFG->admin/tool/mobile/launch.php",
             'warnings' => array()
         );
         $this->assertEquals($expected, $result);
@@ -94,14 +97,11 @@ class tool_mobile_external_testcase extends externallib_advanced_testcase {
         set_config('typeoflogin', api::LOGIN_VIA_BROWSER, 'tool_mobile');
         set_config('logo', 'mock.png', 'core_admin');
         set_config('logocompact', 'mock.png', 'core_admin');
-        set_config('forgottenpasswordurl', 'mailto:fake@email.zy'); // Test old hack.
 
         list($authinstructions, $notusedformat) = external_format_text($authinstructions, FORMAT_MOODLE, $context->id);
         $expected['registerauth'] = 'email';
         $expected['authinstructions'] = $authinstructions;
         $expected['typeoflogin'] = api::LOGIN_VIA_BROWSER;
-        $expected['launchurl'] = "$CFG->wwwroot/$CFG->admin/tool/mobile/launch.php";
-        $expected['forgottenpasswordurl'] = ''; // Expect empty when it's not an URL.
 
         if ($logourl = $OUTPUT->get_logo_url()) {
             $expected['logourl'] = $logourl->out(false);
@@ -123,10 +123,6 @@ class tool_mobile_external_testcase extends externallib_advanced_testcase {
         require_once($CFG->dirroot . '/course/format/lib.php');
 
         $this->resetAfterTest(true);
-
-        $mysitepolicy = 'http://mysite.is/policy/';
-        set_config('sitepolicy', $mysitepolicy);
-
         $result = external::get_config();
         $result = external_api::clean_returnvalue(external::get_config_returns(), $result);
 
@@ -144,12 +140,15 @@ class tool_mobile_external_testcase extends externallib_advanced_testcase {
             array('name' => 'frontpageloggedin', 'value' => $CFG->frontpageloggedin),
             array('name' => 'maxcategorydepth', 'value' => $CFG->maxcategorydepth),
             array('name' => 'frontpagecourselimit', 'value' => $CFG->frontpagecourselimit),
-            array('name' => 'numsections', 'value' => course_get_format($SITE)->get_course()->numsections),
+            array('name' => 'numsections', 'value' => course_get_format($SITE)->get_last_section_number()),
             array('name' => 'newsitems', 'value' => $SITE->newsitems),
             array('name' => 'commentsperpage', 'value' => $CFG->commentsperpage),
-            array('name' => 'sitepolicy', 'value' => $mysitepolicy),
             array('name' => 'disableuserimages', 'value' => $CFG->disableuserimages),
             array('name' => 'mygradesurl', 'value' => user_mygrades_url()->out(false)),
+            array('name' => 'tool_mobile_forcelogout', 'value' => 0),
+            array('name' => 'tool_mobile_customlangstrings', 'value' => ''),
+            array('name' => 'tool_mobile_disabledfeatures', 'value' => ''),
+            array('name' => 'tool_mobile_custommenuitems', 'value' => ''),
         );
         $this->assertCount(0, $result['warnings']);
         $this->assertEquals($expected, $result['settings']);
@@ -157,6 +156,7 @@ class tool_mobile_external_testcase extends externallib_advanced_testcase {
         // Change a value and retrieve filtering by section.
         set_config('commentsperpage', 1);
         $expected[10]['value'] = 1;
+        // Remove not expected elements.
         array_splice($expected, 11);
 
         $result = external::get_config('frontpagesettings');
@@ -183,9 +183,6 @@ class tool_mobile_external_testcase extends externallib_advanced_testcase {
         $this->assertTrue(isset($token->privatetoken));
 
         // Enable requeriments.
-        $CFG->httpswwwroot = str_replace('http:', 'https:', $CFG->httpswwwroot);    // Mock https.
-        $CFG->enablewebservices = 1;
-        $CFG->enablemobilewebservice = 1;
         $_GET['wstoken'] = $token->token;   // Mock parameters.
 
         // Even if we force the password change for the current user we should be able to retrieve the key.
@@ -212,7 +209,12 @@ class tool_mobile_external_testcase extends externallib_advanced_testcase {
      * Test get_autologin_key missing ws.
      */
     public function test_get_autologin_key_missing_ws() {
+        global $CFG;
         $this->resetAfterTest(true);
+
+        // Need to disable webservices to verify that's checked.
+        $CFG->enablewebservices = 0;
+        $CFG->enablemobilewebservice = 0;
 
         $this->setAdminUser();
         $this->expectException('moodle_exception');
@@ -226,10 +228,12 @@ class tool_mobile_external_testcase extends externallib_advanced_testcase {
     public function test_get_autologin_key_missing_https() {
         global $CFG;
 
+        // Need to simulate a non HTTPS site here.
+        $CFG->wwwroot = str_replace('https:', 'http:', $CFG->wwwroot);
+        $CFG->httpswwwroot = str_replace('https:', 'http:', $CFG->wwwroot);
+
         $this->resetAfterTest(true);
         $this->setAdminUser();
-        $CFG->enablewebservices = 1;
-        $CFG->enablemobilewebservice = 1;
 
         $this->expectException('moodle_exception');
         $this->expectExceptionMessage(get_string('httpsrequired', 'tool_mobile'));
@@ -244,9 +248,6 @@ class tool_mobile_external_testcase extends externallib_advanced_testcase {
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
-        $CFG->enablewebservices = 1;
-        $CFG->enablemobilewebservice = 1;
-        $CFG->httpswwwroot = str_replace('http:', 'https:', $CFG->httpswwwroot);
 
         $this->expectException('moodle_exception');
         $this->expectExceptionMessage(get_string('autologinnotallowedtoadmins', 'tool_mobile'));
@@ -262,9 +263,6 @@ class tool_mobile_external_testcase extends externallib_advanced_testcase {
         $this->resetAfterTest(true);
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
-        $CFG->enablewebservices = 1;
-        $CFG->enablemobilewebservice = 1;
-        $CFG->httpswwwroot = str_replace('http:', 'https:', $CFG->httpswwwroot);
 
         $service = $DB->get_record('external_services', array('shortname' => MOODLE_OFFICIAL_MOBILE_SERVICE));
 

@@ -339,18 +339,13 @@ function ldap_get_entries_moodle($ldapconnection, $searchresult) {
         return array();
     }
     do {
-        $attributes = array();
-        $attribute = ldap_first_attribute($ldapconnection, $entry);
-        while ($attribute !== false) {
-            $attributes[] = strtolower($attribute); // Attribute names don't usually contain non-ASCII characters.
-            $attribute = ldap_next_attribute($ldapconnection, $entry);
-        }
-        foreach ($attributes as $attribute) {
-            $values = ldap_get_values_len($ldapconnection, $entry, $attribute);
+        $attributes = array_change_key_case(ldap_get_attributes($ldapconnection, $entry), CASE_LOWER);
+        for ($j = 0; $j < $attributes['count']; $j++) {
+            $values = ldap_get_values_len($ldapconnection, $entry, $attributes[$j]);
             if (is_array($values)) {
-                $result[$i][$attribute] = $values;
+                $result[$i][$attributes[$j]] = $values;
             } else {
-                $result[$i][$attribute] = array($values);
+                $result[$i][$attributes[$j]] = array($values);
             }
         }
         $i++;
@@ -493,7 +488,7 @@ function ldap_paged_results_supported($ldapversion, $ldapconnection = null) {
     if (empty($entries)) {
         return false;
     }
-    $info = $entries[0];
+    $info = array_change_key_case($entries[0], CASE_LOWER);
     if (isset($info['supportedcontrol']) && in_array(LDAP_PAGED_RESULTS_CONTROL, $info['supportedcontrol'])) {
         return true;
     }

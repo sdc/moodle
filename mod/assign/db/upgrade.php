@@ -79,29 +79,6 @@ function xmldb_assign_upgrade($oldversion) {
 
         $count = $DB->count_records_sql($countsql, array(1));
         if ($count == 0) {
-            // Look for grade records with no submission record.
-            // This is when a teacher has marked a student before they submitted anything.
-            $records = $DB->get_records_sql('SELECT g.id, g.assignment, g.userid, g.attemptnumber
-                                               FROM {assign_grades} g
-                                          LEFT JOIN {assign_submission} s
-                                                 ON s.assignment = g.assignment
-                                                AND s.userid = g.userid
-                                              WHERE s.id IS NULL');
-            $submissions = array();
-            foreach ($records as $record) {
-                $submission = new stdClass();
-                $submission->assignment = $record->assignment;
-                $submission->userid = $record->userid;
-                $submission->attemptnumber = $record->attemptnumber;
-                $submission->status = 'new';
-                $submission->groupid = 0;
-                $submission->latest = 0;
-                $submission->timecreated = time();
-                $submission->timemodified = time();
-                array_push($submissions, $submission);
-            }
-
-            $DB->insert_records('assign_submission', $submissions);
 
             // Mark the latest attempt for every submission in mod_assign.
             $maxattemptsql = 'SELECT assignment, userid, groupid, max(attemptnumber) AS maxattempt
@@ -128,6 +105,29 @@ function xmldb_assign_upgrade($oldversion) {
                 $select = 'id IN(' . $maxattemptidssql . ')';
                 $DB->set_field_select('assign_submission', 'latest', 1, $select);
             }
+
+            // Look for grade records with no submission record.
+            // This is when a teacher has marked a student before they submitted anything.
+            $records = $DB->get_records_sql('SELECT g.id, g.assignment, g.userid
+                                               FROM {assign_grades} g
+                                          LEFT JOIN {assign_submission} s
+                                                 ON s.assignment = g.assignment
+                                                AND s.userid = g.userid
+                                              WHERE s.id IS NULL');
+            $submissions = array();
+            foreach ($records as $record) {
+                $submission = new stdClass();
+                $submission->assignment = $record->assignment;
+                $submission->userid = $record->userid;
+                $submission->status = 'new';
+                $submission->groupid = 0;
+                $submission->latest = 1;
+                $submission->timecreated = time();
+                $submission->timemodified = time();
+                array_push($submissions, $submission);
+            }
+
+            $DB->insert_records('assign_submission', $submissions);
         }
 
         // Assign savepoint reached.
@@ -233,17 +233,64 @@ function xmldb_assign_upgrade($oldversion) {
     // Automatically generated Moodle v3.2.0 release upgrade line.
     // Put any upgrade step following this.
 
-    if ($oldversion < 2016120501) {
-        require_once($CFG->dirroot.'/mod/assign/upgradelib.php');
-        $brokenassigns = get_assignments_with_rescaled_null_grades();
+    if ($oldversion < 2017021500) {
+        // Fix event types of assign events.
+        $params = [
+            'modulename' => 'assign',
+            'eventtype' => 'close'
+        ];
+        $select = "modulename = :modulename AND eventtype = :eventtype";
+        $DB->set_field_select('event', 'eventtype', 'due', $select, $params);
 
-        // Set config value.
-        foreach ($brokenassigns as $assign) {
-            set_config('has_rescaled_null_grades_' . $assign, 1, 'assign');
+        // Delete 'open' events.
+        $params = [
+            'modulename' => 'assign',
+            'eventtype' => 'open'
+        ];
+        $DB->delete_records('event', $params);
+
+        // Assign savepoint reached.
+        upgrade_mod_savepoint(true, 2017021500, 'assign');
+    }
+
+    if ($oldversion < 2017031300) {
+        // Add a 'gradingduedate' field to the 'assign' table.
+        $table = new xmldb_table('assign');
+        $field = new xmldb_field('gradingduedate', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0, 'cutoffdate');
+
+        // Conditionally launch add field.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
         }
 
-        // Main savepoint reached.
-        upgrade_mod_savepoint(true, 2016120501, 'assign');
+        // Assign savepoint reached.
+        upgrade_mod_savepoint(true, 2017031300, 'assign');
+    }
+
+    if ($oldversion < 2017042800) {
+        // Update query to set the grading due date one week after the due date.
+        // Only assign instances with grading due date not set and with a due date of not older than 3 weeks will be updated.
+        $sql = "UPDATE {assign}
+                   SET gradingduedate = duedate + :weeksecs
+                 WHERE gradingduedate = 0
+                       AND duedate > :timelimit";
+
+        // Calculate the time limit, which is 3 weeks before the current date.
+        $interval = new DateInterval('P3W');
+        $timelimit = new DateTime();
+        $timelimit->sub($interval);
+
+        // Update query params.
+        $params = [
+            'weeksecs' => WEEKSECS,
+            'timelimit' => $timelimit->getTimestamp()
+        ];
+
+        // Execute DB update for assign instances.
+        $DB->execute($sql, $params);
+
+        // Assign savepoint reached.
+        upgrade_mod_savepoint(true, 2017042800, 'assign');
     }
 
     return true;

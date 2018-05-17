@@ -62,7 +62,7 @@ define(['jquery', 'core/event'], function($, Event) {
             .addBack(selector)
             .find('audio, video').each(function() {
                 var id = $(this).attr('id'),
-                    config = $(this).data('setup-lazy'),
+                    config = $(this).data('setup'),
                     modules = ['media_videojs/video-lazy'];
 
                 if (config.techOrder && config.techOrder.indexOf('youtube') !== -1) {

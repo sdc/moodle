@@ -229,16 +229,6 @@ $definitions = array(
         'staticaccelerationsize' => 2, // Should be current course and site course.
     ),
 
-    // Used to cache course completion status.
-    'coursecompletion' => array(
-        'mode' => cache_store::MODE_APPLICATION,
-        'simplekeys' => true,
-        'simpledata' => true,
-        'ttl' => 3600,
-        'staticacceleration' => true,
-        'staticaccelerationsize' => 30, // Will be users list of current courses in nav.
-    ),
-
     // A simple cache that stores whether a user can expand a course in the navigation.
     // The key is the course ID and the value will either be 1 or 0 (cast to bool).
     // The cache isn't always up to date, it should only ever be used to save a costly call to
@@ -320,11 +310,13 @@ $definitions = array(
         'datasource' => '\core_message\time_last_message_between_users',
     ),
 
-    // Caches processed CSS.
-    'postprocessedcss' => array(
+    // Caches font awesome icons.
+    'fontawesomeiconmapping' => array(
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
-        'staticacceleration' => false,
+        'staticacceleration' => true,
+        'staticaccelerationsize' => 1
     ),
+
 );

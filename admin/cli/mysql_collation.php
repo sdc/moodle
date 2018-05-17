@@ -53,7 +53,7 @@ Options:
 -h, --help            Print out this help
 
 Example:
-\$ sudo -u www-data /usr/bin/php admin/cli/mysql_collation.php --collation=utf8mb4_unicode_ci
+\$ sudo -u www-data /usr/bin/php admin/cli/mysql_collation.php --collation=utf8_general_ci
 ";
 
 if (!empty($options['collation'])) {
@@ -145,22 +145,9 @@ if (!empty($options['collation'])) {
             $skipped++;
 
         } else {
-            try {
-                $DB->change_database_structure("ALTER TABLE $table->name CONVERT TO CHARACTER SET $charset COLLATE $collation");
-                echo "CONVERTED\n";
-                $converted++;
-            } catch (ddl_exception $e) {
-                $result = mysql_set_row_format($table->name, $charset, $collation, $engine);
-                if ($result) {
-                    echo "CONVERTED\n";
-                    $converted++;
-                } else {
-                    // We don't know what the problem is. Stop the conversion.
-                    cli_error("Error: Tried to convert $table->name, but there was a problem. Please check the details of this
-                            table and try again.");
-                    die();
-                }
-            }
+            $DB->change_database_structure("ALTER TABLE $table->name DEFAULT CHARACTER SET $charset DEFAULT COLLATE = $collation");
+            echo "CONVERTED\n";
+            $converted++;
         }
 
         $sql = "SHOW FULL COLUMNS FROM $table->name WHERE collation IS NOT NULL";
@@ -203,7 +190,7 @@ if (!empty($options['collation'])) {
                 $DB->change_database_structure($sql);
             } else {
                 echo "ERROR (unknown column type: $column->type)\n";
-                $errors++;
+                $error++;
                 continue;
             }
             echo "CONVERTED\n";
@@ -302,27 +289,4 @@ function mysql_get_column_collations($tablename) {
     }
     $rs->close();
     return $collations;
-}
-
-function mysql_set_row_format($tablename, $charset, $collation, $engine) {
-    global $DB;
-
-    $sql = "SELECT row_format
-              FROM INFORMATION_SCHEMA.TABLES
-             WHERE table_schema = DATABASE() AND table_name = ?";
-    $rs = $DB->get_record_sql($sql, array($tablename));
-    if ($rs) {
-        if ($rs->row_format == 'Compact' || $rs->row_format == 'Redundant') {
-            $rowformat = $DB->get_row_format_sql($engine, $collation);
-            // Try to convert to compressed format and then try updating the collation again.
-            $DB->change_database_structure("ALTER TABLE $tablename $rowformat");
-            $DB->change_database_structure("ALTER TABLE $tablename CONVERT TO CHARACTER SET $charset COLLATE $collation");
-        } else {
-            // Row format may not be the problem. Can not diagnose problem. Send fail reply.
-            return false;
-        }
-    } else {
-        return false;
-    }
-    return true;
 }

@@ -859,7 +859,7 @@ function user_get_user_navigation_info($user, $page, $options = array()) {
     $myhome->url = new moodle_url('/my/');
     $myhome->title = get_string('mymoodle', 'admin');
     $myhome->titleidentifier = 'mymoodle,admin';
-    $myhome->pix = "i/course";
+    $myhome->pix = "i/dashboard";
     $returnobject->navitems[] = $myhome;
 
     // Links: My Profile.
@@ -1108,15 +1108,10 @@ function user_mygrades_url($userid = null, $courseid = SITEID) {
 }
 
 /**
- * Check if the current user has permission to view details of the supplied user.
- *
- * This function supports two modes:
- * If the optional $course param is omitted, then this function finds all shared courses and checks whether the current user has
- * permission in any of them, returning true if so.
- * If the $course param is provided, then this function checks permissions in ONLY that course.
+ * Check if a user has the permission to viewdetails in a shared course's context.
  *
  * @param object $user The other user's details.
- * @param object $course if provided, only check permissions in this course.
+ * @param object $course Use this course to see if we have permission to see this user's profile.
  * @param context $usercontext The user context if available.
  * @return bool true for ability to view this user, else false.
  */
@@ -1127,7 +1122,9 @@ function user_can_view_profile($user, $course = null, $usercontext = null) {
         return false;
     }
 
-    // Do we need to be logged in?
+    // Perform some quick checks and eventually return early.
+
+    // Number 1.
     if (empty($CFG->forceloginforprofiles)) {
         return true;
     } else {
@@ -1137,44 +1134,38 @@ function user_can_view_profile($user, $course = null, $usercontext = null) {
         }
     }
 
-    // Current user can always view their profile.
+    // Number 2.
     if ($USER->id == $user->id) {
         return true;
     }
 
-    // Course contacts have visible profiles always.
+    if (empty($usercontext)) {
+        $usercontext = context_user::instance($user->id);
+    }
+    // Number 3.
+    if (has_capability('moodle/user:viewdetails', $usercontext)) {
+        return true;
+    }
+
+    // Number 4.
     if (has_coursecontact_role($user->id)) {
         return true;
     }
 
-    // If we're only checking the capabilities in the single provided course.
     if (isset($course)) {
-        // Confirm that $user is enrolled in the $course we're checking.
-        if (is_enrolled(context_course::instance($course->id), $user)) {
-            $userscourses = array($course);
-        }
+        $sharedcourses = array($course);
     } else {
-        // Else we're checking whether the current user can view $user's profile anywhere, so check user context first.
-        if (empty($usercontext)) {
-            $usercontext = context_user::instance($user->id);
-        }
-        if (has_capability('moodle/user:viewdetails', $usercontext) || has_capability('moodle/user:viewalldetails', $usercontext)) {
-            return true;
-        }
-        // This returns context information, so we can preload below.
-        $userscourses = enrol_get_all_users_courses($user->id);
+        $sharedcourses = enrol_get_shared_courses($USER->id, $user->id, true);
     }
 
-    if (empty($userscourses)) {
+    if (empty($sharedcourses)) {
         return false;
     }
 
-    foreach ($userscourses as $userscourse) {
-        context_helper::preload_from_record($userscourse);
-        $coursecontext = context_course::instance($userscourse->id);
-        if (has_capability('moodle/user:viewdetails', $coursecontext) ||
-            has_capability('moodle/user:viewalldetails', $coursecontext)) {
-            if (!groups_user_groups_visible($userscourse, $user->id)) {
+    foreach ($sharedcourses as $sharedcourse) {
+        $coursecontext = context_course::instance($sharedcourse->id);
+        if (has_capability('moodle/user:viewdetails', $coursecontext)) {
+            if (!groups_user_groups_visible($sharedcourse, $user->id)) {
                 // Not a member of the same group.
                 continue;
             }

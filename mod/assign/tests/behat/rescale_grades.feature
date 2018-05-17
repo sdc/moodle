@@ -12,18 +12,15 @@ Feature: Check that the assignment grade can be rescaled when the max grade is c
       | username | firstname | lastname | email |
       | teacher1 | Teacher | 1 | teacher1@example.com |
       | student1 | Student | 1 | student10@example.com |
-      | student2 | Student | 2 | student10@example.com |
     And the following "course enrolments" exist:
       | user | course | role |
       | teacher1 | C1 | editingteacher |
       | student1 | C1 | student |
-      | student2 | C1 | student |
     And the following "groups" exist:
       | name | course | idnumber |
       | Group 1 | C1 | G1 |
     And I log in as "teacher1"
-    And I follow "Course 1"
-    And I turn editing mode on
+    And I am on "Course 1" course homepage with editing mode on
     And I add a "Assignment" to section "1" and I fill the form with:
       | Assignment name | Test assignment name |
       | Description | Test assignment description |
@@ -64,22 +61,6 @@ Feature: Check that the assignment grade can be rescaled when the max grade is c
     And I navigate to "View all submissions" in current page administration
     Then "Student 1" row "Grade" column of "generaltable" table should contain "40.00"
 
-  Scenario: Update an assignment without touching the max grades
-    Given I follow "Edit settings"
-    And I expand all fieldsets
-    And I set the field "Rescale existing grades" to "No"
-    And I set the field "Maximum grade" to "80"
-    And I press "Save and display"
-    And I follow "Edit settings"
-    And I press "Save and display"
-    And I follow "Edit settings"
-    And I expand all fieldsets
-    And I set the field "Rescale existing grades" to "Yes"
-    And I set the field "Maximum grade" to "80"
-    When I press "Save and display"
-    And I follow "View all submissions"
-    Then "Student 1" row "Grade" column of "generaltable" table should contain "40.00"
-
   Scenario: Update the max grade for an assignment rescaling existing grades
     Given I navigate to "Edit settings" in current page administration
     And I expand all fieldsets
@@ -88,17 +69,3 @@ Feature: Check that the assignment grade can be rescaled when the max grade is c
     When I press "Save and display"
     And I navigate to "View all submissions" in current page administration
     Then "Student 1" row "Grade" column of "generaltable" table should contain "20.00"
-
-  Scenario: Rescaling should not produce negative grades
-    Given I navigate to "View all submissions" in current page administration
-    And I click on "Grade" "link" in the "Student 2" "table_row"
-    And I wait until the page is ready
-    And I follow "Assignment: Test assignment name"
-    And I navigate to "Edit settings" in current page administration
-    And I expand all fieldsets
-    And I set the field "Rescale existing grades" to "Yes"
-    And I set the field "Maximum grade" to "50"
-    When I press "Save and display"
-    And I navigate to "View all submissions" in current page administration
-    # Make sure the student did not receive a negative grade.
-    Then "Student 2" row "Grade" column of "generaltable" table should not contain "-0.50"

@@ -329,9 +329,12 @@ class mysql_sql_generator extends sql_generator {
      * @return array of sql statements
      */
     public function getCreateTempTableSQL($xmldb_table) {
+        $engine = $this->mdb->get_dbengine();
         // Do we know collation?
         $collation = $this->mdb->get_dbcollation();
         $this->temptables->add_temptable($xmldb_table->getName());
+
+        $rowformat = $this->mdb->get_row_format_sql($engine, $collation);
 
         $sqlarr = parent::getCreateTableSQL($xmldb_table);
 
@@ -344,7 +347,7 @@ class mysql_sql_generator extends sql_generator {
                     if (strpos($collation, 'utf8_') === 0) {
                         $sqlarr[$i] .= " DEFAULT CHARACTER SET utf8";
                     }
-                    $sqlarr[$i] .= " DEFAULT COLLATE $collation ROW_FORMAT=DYNAMIC";
+                    $sqlarr[$i] .= " DEFAULT COLLATE $collation $rowformat";
                 }
             }
         }
