@@ -387,7 +387,10 @@ function xmldb_lesson_upgrade($oldversion) {
     // Moodle v3.1.0 release upgrade line.
     // Put any upgrade step following this.
 
-    if ($oldversion < 2016052301) {
+    // Automatically generated Moodle v3.2.0 release upgrade line.
+    // Put any upgrade step following this.
+
+    if ($oldversion < 2016120501) {
 
         // Delete orphaned lesson answer and response files.
         $sql = "SELECT DISTINCT f.contextid, f.component, f.filearea, f.itemid
@@ -405,7 +408,7 @@ function xmldb_lesson_upgrade($oldversion) {
         }
         $orphanedfiles->close();
 
-        upgrade_mod_savepoint(true, 2016052301, 'lesson');
+        upgrade_mod_savepoint(true, 2016120501, 'lesson');
     }
 
     return true;

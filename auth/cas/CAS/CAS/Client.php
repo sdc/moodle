@@ -3187,7 +3187,7 @@ class CAS_Client
                 false/*$no_response*/, true/*$bad_response*/, $text_response
             );
             $result = false;
-        } else if ( $tree_response->getElementsByTagName("authenticationFailure")->length != 0) {
+	} else if ( $tree_response->getElementsByTagName("authenticationFailure")->length != 0) {
             // authentication failed, extract the error code and message and throw exception
             $auth_fail_list = $tree_response
                 ->getElementsByTagName("authenticationFailure");
