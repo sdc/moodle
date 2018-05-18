@@ -97,8 +97,8 @@ $string['privacy:metadata:tag:name'] = 'The name of the tag - this is the normal
 $string['privacy:metadata:tag:rawname'] = 'The name of the tag - this is the display name.';
 $string['privacy:metadata:tag:description'] = 'The description of the tag.';
 $string['privacy:metadata:tag:flag'] = 'Whether a tag has been flagged as inappropriate.';
-$string['privacy:metadata:tag:timemodified'] = 'The last time that the tag was last modified.';
-$string['privacy:metadata:tag:userid'] = 'The user who first created the tag.';
+$string['privacy:metadata:tag:timemodified'] = 'The time that the tag was last modified.';
+$string['privacy:metadata:tag:userid'] = 'The ID of the user who created the tag.';
 $string['privacy:metadata:taginstance'] = 'The link between each tag and where it is used.';
 $string['privacy:metadata:taginstance:tagid'] = 'The link to the tag.';
 $string['privacy:metadata:taginstance:ordering'] = 'The relative order of this tag.';
@@ -161,12 +161,3 @@ $string['page-tag-index'] = 'Single tag page';
 $string['page-tag-search'] = 'Tag search page';
 $string['page-tag-manage'] = 'Manage tags page';
 
-// Deprecated since 3.1 .
-
-$string['manageofficialtags'] = 'Manage official tags';
-$string['officialtag'] = 'Official';
-$string['otags'] = 'Official tags';
-$string['othertags'] = 'Other tags';
-$string['settypeofficial'] = 'Make official';
-$string['taggedwith'] = 'tagged with "{$a}"';
-$string['tagtype'] = 'Tag type';
