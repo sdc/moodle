@@ -1325,7 +1325,6 @@ function glossary_print_entry_icons($course, $cm, $glossary, $entry, $mode='',$h
         $return .= '<div>'.$comment->output(true).'</div>';
         $output = true;
     }
-    $return .= '<hr>';
 
     //If we haven't calculated any REAL thing, delete result ($return)
     if (!$output) {
@@ -1369,11 +1368,12 @@ function  glossary_print_entry_lower_section($course, $cm, $glossary, $entry, $m
             echo '<tr valign="top"><td class="icons">'.$icons.'</td></tr>';
         }
         if (!empty($entry->rating)) {
-            echo '<tr valign="top"><td class="ratings">';
+            echo '<tr valign="top"><td class="ratings p-t-1">';
             glossary_print_entry_ratings($course, $entry);
             echo '</td></tr>';
         }
         echo '</table>';
+        echo "<hr>\n";
     }
 }
 
@@ -2383,6 +2383,16 @@ function glossary_generate_export_file($glossary, $ignored = "", $hook = 0) {
                     // Export attachments.
                     $co .= glossary_xml_export_files('ATTACHMENTFILES', 4, $context->id, 'attachment', $entry->id);
 
+                    // Export tags.
+                    $tags = core_tag_tag::get_item_tags_array('mod_glossary', 'glossary_entries', $entry->id);
+                    if (count($tags)) {
+                        $co .= glossary_start_tag("TAGS", 4, true);
+                        foreach ($tags as $tag) {
+                            $co .= glossary_full_tag("TAG", 5, false, $tag);
+                        }
+                        $co .= glossary_end_tag("TAGS", 4, true);
+                    }
+
                     $co .= glossary_end_tag("ENTRY",3,true);
                 }
             }
@@ -2787,6 +2797,9 @@ function glossary_reset_course_form_definition(&$mform) {
 
     $mform->addElement('checkbox', 'reset_glossary_comments', get_string('deleteallcomments'));
     $mform->disabledIf('reset_glossary_comments', 'reset_glossary_all', 'checked');
+
+    $mform->addElement('checkbox', 'reset_glossary_tags', get_string('removeallglossarytags', 'glossary'));
+    $mform->disabledIf('reset_glossary_tags', 'reset_glossary_all', 'checked');
 }
 
 /**
@@ -2876,6 +2889,8 @@ function glossary_reset_userdata($data) {
                 //delete ratings
                 $ratingdeloptions->contextid = $context->id;
                 $rm->delete_ratings($ratingdeloptions);
+
+                core_tag_tag::delete_instances('mod_glossary', null, $context->id);
             }
         }
 
@@ -2909,6 +2924,8 @@ function glossary_reset_userdata($data) {
                     //delete ratings
                     $ratingdeloptions->contextid = $context->id;
                     $rm->delete_ratings($ratingdeloptions);
+
+                    core_tag_tag::delete_instances('mod_glossary', null, $context->id);
                 }
             }
 
@@ -2939,6 +2956,8 @@ function glossary_reset_userdata($data) {
                     //delete ratings
                     $ratingdeloptions->contextid = $context->id;
                     $rm->delete_ratings($ratingdeloptions);
+
+                    core_tag_tag::delete_instances('mod_glossary', null, $context->id);
                 }
             }
 
@@ -3014,8 +3033,26 @@ function glossary_reset_userdata($data) {
         $status[] = array('component'=>$componentstr, 'item'=>get_string('deleteallcomments'), 'error'=>false);
     }
 
+    // Remove all the tags.
+    if (!empty($data->reset_glossary_tags)) {
+        if ($glossaries = $DB->get_records_sql($allglossariessql, $params)) {
+            foreach ($glossaries as $glossaryid => $unused) {
+                if (!$cm = get_coursemodule_from_instance('glossary', $glossaryid)) {
+                    continue;
+                }
+
+                $context = context_module::instance($cm->id);
+                core_tag_tag::delete_instances('mod_glossary', null, $context->id);
+            }
+        }
+
+        $status[] = array('component' => $componentstr, 'item' => get_string('tagsdeleted', 'glossary'), 'error' => false);
+    }
+
     /// updating dates - shift may be negative too
     if ($data->timeshift) {
+        // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
+        // See MDL-9367.
         shift_course_mod_dates('glossary', array('assesstimestart', 'assesstimefinish'), $data->timeshift, $data->courseid);
         $status[] = array('component'=>$componentstr, 'item'=>get_string('datechanged'), 'error'=>false);
     }
@@ -3819,7 +3856,7 @@ function glossary_get_entries_by_search($glossary, $context, $query, $fullsearch
     $count = $DB->count_records_sql("SELECT COUNT(DISTINCT(ge.id)) $sqlfrom $sqlwhere", $params);
 
     $query = "$sqlwrapheader $sqlselect $sqlfrom $sqlwhere $sqlwrapfooter $sqlorderby";
-    $entries = $DB->get_recordset_sql($query, $params, $from, $limit);
+    $entries = $DB->get_records_sql($query, $params, $from, $limit);
 
     return array($entries, $count);
 }

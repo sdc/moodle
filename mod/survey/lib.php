@@ -537,14 +537,15 @@ function survey_print_multi($question) {
         $P = "";
     }
 
+    echo "<colgroup colspan=\"7\"></colgroup>";
     echo "<tr class=\"smalltext\"><th scope=\"row\">$strresponses</th>";
     echo "<th scope=\"col\" class=\"hresponse\">". get_string('notyetanswered', 'survey'). "</th>";
-    while (list ($key, $val) = each ($options)) {
+    foreach ($options as $key => $val) {
         echo "<th scope=\"col\" class=\"hresponse\">$val</th>\n";
     }
     echo "</tr>\n";
 
-    echo "<tr><th scope=\"col\" colspan=\"7\">$question->intro</th></tr>\n";
+    echo "<tr><th scope=\"colgroup\" colspan=\"7\">$question->intro</th></tr>\n";
 
     $subquestions = survey_get_subquestions($question);
 
@@ -762,7 +763,10 @@ function survey_reset_userdata($data) {
         $status[] = array('component'=>$componentstr, 'item'=>get_string('deleteallanswers', 'survey'), 'error'=>false);
     }
 
-    // no date shifting
+    // No date shifting.
+    // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
+    // See MDL-9367.
+
     return $status;
 }
 

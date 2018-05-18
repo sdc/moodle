@@ -1090,6 +1090,8 @@ function quiz_update_open_attempts(array $conditions) {
 
 /**
  * Returns SQL to compute timeclose and timelimit for every attempt, taking into account user and group overrides.
+ * The query used herein is very similar to the one in function quiz_get_user_timeclose, so, in case you
+ * would change either one of them, make sure to apply your changes to both.
  *
  * @param string $redundantwhereclauses extra where clauses to add to the subquery
  *      for performance. These can use the table alias iquiza for the quiz attempts table.
@@ -1203,6 +1205,57 @@ function quiz_get_user_image_options() {
         QUIZ_SHOWIMAGE_SMALL => get_string('showsmallimage', 'quiz'),
         QUIZ_SHOWIMAGE_LARGE => get_string('showlargeimage', 'quiz'),
     );
+}
+
+/**
+ * Return an user's timeclose for all quizzes in a course, hereby taking into account group and user overrides.
+ * The query used herein is very similar to the one in function quiz_get_attempt_usertime_sql, so, in case you
+ * would change either one of them, make sure to apply your changes to both.
+ *
+ * @param int $courseid the course id.
+ * @return object An object with quizids and unixdates of the most lenient close overrides, if any.
+ */
+function quiz_get_user_timeclose($courseid) {
+    global $DB, $USER;
+
+    // For teacher and manager/admins return timeclose.
+    if (has_capability('moodle/course:update', context_course::instance($courseid))) {
+        $sql = "SELECT quiz.id, quiz.timeclose AS usertimeclose, COALESCE(quiz.timelimit, 0) AS usertimelimit
+                  FROM {quiz} quiz
+                 WHERE quiz.course = :courseid";
+
+        $results = $DB->get_records_sql($sql, array('courseid' => $courseid));
+        return $results;
+    }
+
+    // The multiple qgo JOINS are necessary because we want timeclose/timelimit = 0 (unlimited) to supercede
+    // any other group override.
+
+    $sql = "SELECT q.id,
+  COALESCE(v.oneclose, v.twoclose, v.threeclose, q.timeclose, 0) AS usertimeclose,
+  COALESCE(v.onelimit, v.twolimit, v.threelimit, q.timelimit, 0) AS usertimelimit
+  FROM (
+      SELECT quiz.id AS quizid,
+             MAX(quo.timeclose) AS oneclose, MAX(qgo1.timeclose) AS twoclose, MAX(qgo2.timeclose) AS threeclose,
+             MAX(quo.timelimit) AS onelimit, MAX(qgo3.timelimit) AS twolimit, MAX(qgo4.timelimit) AS threelimit
+       FROM {quiz} quiz
+  LEFT JOIN {quiz_overrides} quo ON quo.quiz = quiz.id
+  LEFT JOIN {groups_members} gm ON gm.userid = quo.userid
+  LEFT JOIN {quiz_overrides} qgo1 ON qgo1.timeclose = 0 AND qgo1.quiz = quiz.id
+  LEFT JOIN {quiz_overrides} qgo2 ON qgo2.timeclose > 0 AND qgo2.quiz = quiz.id
+  LEFT JOIN {quiz_overrides} qgo3 ON qgo3.timelimit = 0 AND qgo3.quiz = quiz.id
+  LEFT JOIN {quiz_overrides} qgo4 ON qgo4.timelimit > 0 AND qgo4.quiz = quiz.id
+                                  AND qgo1.groupid = gm.groupid
+                                  AND qgo2.groupid = gm.groupid
+                                  AND qgo3.groupid = gm.groupid
+                                  AND qgo4.groupid = gm.groupid
+      WHERE quiz.course = :courseid
+            AND ((quo.userid = :userid) OR ((gm.userid IS NULL) AND (quo.userid IS NULL)))
+   GROUP BY quiz.id) v
+  JOIN {quiz} q ON q.id = v.quizid";
+
+    $results = $DB->get_records_sql($sql, array('courseid' => $courseid, 'userid' => $USER->id));
+    return $results;
 }
 
 /**
@@ -2136,7 +2189,7 @@ function quiz_add_random_questions($quiz, $addonpage, $categoryid, $number,
                           FROM {quiz_slots}
                          WHERE questionid = q.id)
             ORDER BY id", array($category->id, ($includesubcategories ? '1' : '0')))) {
-            // Take as many of these as needed.
+        // Take as many of these as needed.
         while (($existingquestion = array_shift($existingquestions)) && $number > 0) {
             quiz_add_quiz_question($existingquestion->id, $quiz, $addonpage);
             $number -= 1;
@@ -2315,4 +2368,75 @@ function quiz_prepare_and_start_new_attempt(quiz $quizobj, $attemptnumber, $last
     $transaction->allow_commit();
 
     return $attempt;
+}
+
+/**
+ * Check if the given calendar_event is either a user or group override
+ * event for quiz.
+ *
+ * @param calendar_event $event The calendar event to check
+ * @return bool
+ */
+function quiz_is_overriden_calendar_event(\calendar_event $event) {
+    global $DB;
+
+    if (!isset($event->modulename)) {
+        return false;
+    }
+
+    if ($event->modulename != 'quiz') {
+        return false;
+    }
+
+    if (!isset($event->instance)) {
+        return false;
+    }
+
+    if (!isset($event->userid) && !isset($event->groupid)) {
+        return false;
+    }
+
+    $overrideparams = [
+        'quiz' => $event->instance
+    ];
+
+    if (isset($event->groupid)) {
+        $overrideparams['groupid'] = $event->groupid;
+    } else if (isset($event->userid)) {
+        $overrideparams['userid'] = $event->userid;
+    }
+
+    return $DB->record_exists('quiz_overrides', $overrideparams);
+}
+
+/**
+ * Get quiz attempt and handling error.
+ *
+ * @param int $attemptid the id of the current attempt.
+ * @param int|null $cmid the course_module id for this quiz.
+ * @return quiz_attempt $attemptobj all the data about the quiz attempt.
+ * @throws moodle_exception
+ */
+function quiz_create_attempt_handling_errors($attemptid, $cmid = null) {
+    try {
+        $attempobj = quiz_attempt::create($attemptid);
+    } catch (moodle_exception $e) {
+        if (!empty($cmid)) {
+            list($course, $cm) = get_course_and_cm_from_cmid($cmid, 'quiz');
+            $continuelink = new moodle_url('/mod/quiz/view.php', array('id' => $cmid));
+            $context = context_module::instance($cm->id);
+            if (has_capability('mod/quiz:preview', $context)) {
+                throw new moodle_exception('attempterrorcontentchange', 'quiz', $continuelink);
+            } else {
+                throw new moodle_exception('attempterrorcontentchangeforuser', 'quiz', $continuelink);
+            }
+        } else {
+            throw new moodle_exception('attempterrorinvalid', 'quiz');
+        }
+    }
+    if (!empty($cmid) && $attempobj->get_cmid() != $cmid) {
+        throw new moodle_exception('invalidcoursemodule');
+    } else {
+        return $attempobj;
+    }
 }

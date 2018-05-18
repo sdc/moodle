@@ -137,12 +137,6 @@ class mod_scorm_mod_form extends moodleform_mod {
 
         // Skip view page.
         $skipviewoptions = scorm_get_skip_view_array();
-        if ($COURSE->format == 'singleactivity') { // Remove option that would cause a constant redirect.
-            unset($skipviewoptions[SCORM_SKIPVIEW_ALWAYS]);
-            if ($cfgscorm->skipview == SCORM_SKIPVIEW_ALWAYS) {
-                $cfgscorm->skipview = SCORM_SKIPVIEW_FIRST;
-            }
-        }
         $mform->addElement('select', 'skipview', get_string('skipview', 'scorm'), $skipviewoptions);
         $mform->addHelpButton('skipview', 'skipview', 'scorm');
         $mform->setDefault('skipview', $cfgscorm->skipview);
@@ -337,15 +331,19 @@ class mod_scorm_mod_form extends moodleform_mod {
         }
 
         // Set some completion default data.
-        if (!empty($defaultvalues['completionstatusrequired']) && !is_array($defaultvalues['completionstatusrequired'])) {
+        $cvalues = array();
+        if (empty($this->_instance)) {
+            // When in add mode, set a default completion rule that requires the SCORM's status be set to "Completed".
+            $cvalues[4] = 1;
+        } else if (!empty($defaultvalues['completionstatusrequired']) && !is_array($defaultvalues['completionstatusrequired'])) {
             // Unpack values.
-            $cvalues = array();
             foreach (scorm_status_options() as $key => $value) {
                 if (($defaultvalues['completionstatusrequired'] & $key) == $key) {
                     $cvalues[$key] = 1;
                 }
             }
-
+        }
+        if (!empty($cvalues)) {
             $defaultvalues['completionstatusrequired'] = $cvalues;
         }
 
@@ -487,7 +485,6 @@ class mod_scorm_mod_form extends moodleform_mod {
             }
         }
 
-        $this->data_preprocessing($defaultvalues);
         parent::set_data($defaultvalues);
     }
 
@@ -519,10 +516,6 @@ class mod_scorm_mod_form extends moodleform_mod {
                 $firstkey = $key;
             }
             $mform->addElement('checkbox', $key, $name, $value);
-            // Default completion rule that requires the SCORM's status be set to "Completed".
-            if ($key === 'completionstatusrequired[4]') {
-                $mform->setDefault($key, 1);
-            }
             $mform->setType($key, PARAM_BOOL);
             $items[] = $key;
         }

@@ -704,10 +704,12 @@ function lesson_get_overview_report_table_and_data(lesson $lesson, $currentgroup
         list($esql, $params) = get_enrolled_sql($context, '', $currentgroup, true);
         list($sort, $sortparams) = users_order_by_sql('u');
 
+        $extrafields = get_extra_user_fields($context);
+
         $params['a1lessonid'] = $lesson->id;
         $params['b1lessonid'] = $lesson->id;
         $params['c1lessonid'] = $lesson->id;
-        $ufields = user_picture::fields('u');
+        $ufields = user_picture::fields('u', $extrafields);
         $sql = "SELECT DISTINCT $ufields
                 FROM {user} u
                 JOIN (
@@ -895,16 +897,35 @@ function lesson_get_overview_report_table_and_data(lesson $lesson, $currentgroup
 
     $table = new html_table();
 
+    $headers = [get_string('name')];
+
+    foreach ($extrafields as $field) {
+        $headers[] = get_user_field_name($field);
+    }
+
+    $headers [] = get_string('attempts', 'lesson');
+
     // Set up the table object.
     if ($data->lessonscored) {
-        $table->head = array(get_string('name'), get_string('attempts', 'lesson'), get_string('highscore', 'lesson'));
-    } else {
-        $table->head = array(get_string('name'), get_string('attempts', 'lesson'));
+        $headers [] = get_string('highscore', 'lesson');
     }
-    $table->align = array('center', 'left', 'left');
-    $table->wrap = array('nowrap', 'nowrap', 'nowrap');
+
+    $colcount = count($headers);
+
+    $table->head = $headers;
+
+    $table->align = [];
+    $table->align = array_pad($table->align, $colcount, 'center');
+    $table->align[$colcount - 1] = 'left';
+
+    if ($data->lessonscored) {
+        $table->align[$colcount - 2] = 'left';
+    }
+
+    $table->wrap = [];
+    $table->wrap = array_pad($table->wrap, $colcount, 'nowrap');
+
     $table->attributes['class'] = 'standardtable generaltable';
-    $table->size = array(null, '70%', null);
 
     // print out the $studentdata array
     // going through each student that has attempted the lesson, so, each student should have something to be displayed
@@ -991,14 +1012,21 @@ function lesson_get_overview_report_table_and_data(lesson $lesson, $currentgroup
             }
             // get line breaks in after each attempt
             $attempts = implode("<br />\n", $attempts);
+            $row = [$studentname];
+
+            foreach ($extrafields as $field) {
+                $row[] = $student->$field;
+            }
+
+            $row[] = $attempts;
 
             if ($data->lessonscored) {
                 // Add the grade if the lesson is graded.
-                $table->data[] = array($studentname, $attempts, $bestgrade . "%");
-            } else {
-                // This lesson does not have a grade.
-                $table->data[] = array($studentname, $attempts);
+                $row[] = $bestgrade."%";
             }
+
+            $table->data[] = $row;
+
             // Add the student data.
             $dataforstudent->id = $student->id;
             $dataforstudent->fullname = $studentname;
@@ -1031,6 +1059,7 @@ function lesson_get_user_detailed_report_data(lesson $lesson, $userid, $attempt)
         $lesson->update_effective_access($userid);
     }
 
+    $pageid = 0;
     $lessonpages = $lesson->load_all_pages();
     foreach ($lessonpages as $lessonpage) {
         if ($lessonpage->prevpageid == 0) {
@@ -1078,6 +1107,8 @@ function lesson_get_user_detailed_report_data(lesson $lesson, $userid, $attempt)
     while ($pageid != 0) { // EOL
         $page = $lessonpages[$pageid];
         $answerpage = new stdClass;
+        // Keep the original page object.
+        $answerpage->page = $page;
         $data ='';
 
         $answerdata = new stdClass;
@@ -2166,7 +2197,7 @@ class lesson extends lesson_base {
 
     /**
      * Returns the link for the related activity
-     * @return array|false
+     * @return string
      */
     public function link_for_activitylink() {
         global $DB;
@@ -2176,9 +2207,9 @@ class lesson extends lesson_base {
             if ($modname) {
                 $instancename = $DB->get_field($modname, 'name', array('id' => $module->instance));
                 if ($instancename) {
-                    return html_writer::link(new moodle_url('/mod/'.$modname.'/view.php', array('id'=>$this->properties->activitylink)),
-                        get_string('activitylinkname', 'lesson', $instancename),
-                        array('class'=>'centerpadded lessonbutton standardbutton'));
+                    return html_writer::link(new moodle_url('/mod/'.$modname.'/view.php',
+                        array('id' => $this->properties->activitylink)), get_string('activitylinkname',
+                        'lesson', $instancename), array('class' => 'centerpadded lessonbutton standardbutton p-r-1'));
                 }
             }
         }
@@ -2487,6 +2518,11 @@ class lesson extends lesson_base {
                     }
                     if (!array_key_exists($exitjump, $lessonpages)) {
                         return LESSON_EOL;
+                    }
+                    // Check to see that the return type is not a cluster.
+                    if ($lessonpages[$exitjump]->qtype == LESSON_PAGE_CLUSTER) {
+                        // If the exitjump is a cluster then go through this function again and try to find an unseen question.
+                        $exitjump = $this->cluster_jump($exitjump, $userid);
                     }
                     return $exitjump;
                 }
@@ -3001,7 +3037,7 @@ class lesson extends lesson_base {
                         $this->add_message(get_string('numberofpagesviewednotice', 'lesson', $a));
                     }
 
-                    if (!$reviewmode && !$this->properties->retake) {
+                    if (!$reviewmode && $this->properties->ongoing) {
                         $this->add_message(get_string("numberofcorrectanswers", "lesson", $gradeinfo->earned), 'notify');
                         if ($this->properties->grade != GRADE_TYPE_NONE) {
                             $a = new stdClass;
@@ -3676,6 +3712,11 @@ abstract class lesson_page extends lesson_base {
     const TYPE_STRUCTURE = 1;
 
     /**
+     * Constant used as a delimiter when parsing multianswer questions
+     */
+    const MULTIANSWER_DELIMITER = '@^#|';
+
+    /**
      * This method should return the integer used to identify the page type within
      * the database and throughout code. This maps back to the defines used in 1.x
      * @abstract
@@ -4092,24 +4133,83 @@ abstract class lesson_page extends lesson_base {
                 $options->context = $context;
 
                 $result->feedback .= $OUTPUT->box(format_text($this->get_contents(), $this->properties->contentsformat, $options),
-                        'generalbox boxaligncenter');
-                $studentanswer = format_text($result->studentanswer, $result->studentanswerformat,
-                        array('context' => $context, 'para' => true));
+                        'generalbox boxaligncenter p-y-1');
                 $result->feedback .= '<div class="correctanswer generalbox"><em>'
-                        . get_string("youranswer", "lesson").'</em> : ' . $studentanswer;
-                if (isset($result->responseformat)) {
-                    $result->response = file_rewrite_pluginfile_urls($result->response, 'pluginfile.php', $context->id,
-                            'mod_lesson', 'page_responses', $result->answerid);
-                    $result->feedback .= $OUTPUT->box(format_text($result->response, $result->responseformat, $options)
-                            , $class);
+                        . get_string("youranswer", "lesson").'</em> : <div class="studentanswer m-t-2 m-b-2">';
+
+                // Create a table containing the answers and responses.
+                $table = new html_table();
+                // Multianswer allowed.
+                if ($this->properties->qoption) {
+                    $studentanswerarray = explode(self::MULTIANSWER_DELIMITER, $result->studentanswer);
+                    $responsearr = explode(self::MULTIANSWER_DELIMITER, $result->response);
+                    $studentanswerresponse = array_combine($studentanswerarray, $responsearr);
+
+                    foreach ($studentanswerresponse as $answer => $response) {
+                        // Add a table row containing the answer.
+                        $studentanswer = $this->format_answer($answer, $context, $result->studentanswerformat);
+                        $table->data[] = array($studentanswer);
+                        // If the response exists, add a table row containing the response. If not, add en empty row.
+                        if (!empty(trim($response))) {
+                            $studentresponse = isset($result->responseformat) ?
+                                $this->format_response($response, $context, $result->responseformat, $options) : $response;
+                            $table->data[] = array('<em>'.get_string("response", "lesson").
+                                '</em>: <br/>'.$studentresponse);
+                        } else {
+                            $table->data[] = array('');
+                        }
+                    }
                 } else {
-                    $result->feedback .= $OUTPUT->box($result->response, $class);
+                    // Add a table row containing the answer.
+                    $studentanswer = $this->format_answer($result->studentanswer, $context, $result->studentanswerformat);
+                    $table->data[] = array($studentanswer);
+                    // If the response exists, add a table row containing the response. If not, add en empty row.
+                    if (!empty(trim($result->response))) {
+                        $studentresponse = isset($result->responseformat) ?
+                            $this->format_response($result->response, $context, $result->responseformat,
+                                $result->answerid, $options) : $result->response;
+                        $table->data[] = array('<em>'.get_string("response", "lesson").
+                            '</em>: <br/>'.$studentresponse);
+                    } else {
+                        $table->data[] = array('');
+                    }
                 }
-                $result->feedback .= '</div>';
+
+                $result->feedback .= html_writer::table($table).'</div></div>';
             }
         }
-
         return $result;
+    }
+
+    /**
+     * Formats the answer
+     *
+     * @param string $answer
+     * @param context $context
+     * @param int $answerformat
+     * @return string Returns formatted string
+     */
+    private function format_answer($answer, $context, $answerformat) {
+
+        return format_text($answer, $answerformat, array('context' => $context, 'para' => true));
+    }
+
+    /**
+     * Formats the response
+     *
+     * @param string $response
+     * @param context $context
+     * @param int $responseformat
+     * @param int $answerid
+     * @param stdClass $options
+     * @return string Returns formatted string
+     */
+    private function format_response($response, $context, $responseformat, $answerid, $options) {
+
+        $convertstudentresponse = file_rewrite_pluginfile_urls($response, 'pluginfile.php',
+            $context->id, 'mod_lesson', 'page_responses', $answerid);
+
+        return format_text($convertstudentresponse, $responseformat, $options);
     }
 
     /**
@@ -4620,7 +4720,7 @@ abstract class lesson_page extends lesson_base {
         $i = 1;
         foreach ($answers as $answer) {
             $cells = array();
-            $cells[] = "<span class=\"label\">".get_string("jump", "lesson")." $i<span>: ";
+            $cells[] = '<label>' . get_string('jump', 'lesson') . ' ' . $i . '</label>:';
             $cells[] = $this->get_jump_name($answer->jumpto);
             $table->data[] = new html_table_row($cells);
             if ($i === 1){
