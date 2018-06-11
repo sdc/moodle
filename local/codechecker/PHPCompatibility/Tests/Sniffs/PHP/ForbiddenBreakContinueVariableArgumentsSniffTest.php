@@ -13,94 +13,117 @@
  *     break $varname
  *     continue $varname
  *
- * @uses BaseSniffTest
+ * @group forbiddenBreakContinueVariableArguments
+ * @group breakContinue
+ *
+ * @covers PHPCompatibility_Sniffs_PHP_ForbiddenBreakContinueVariableArgumentsSniff
+ *
+ * @uses    BaseSniffTest
  * @package PHPCompatibility
- * @author Jansen Price <jansen.price@gmail.com>
+ * @author  Jansen Price <jansen.price@gmail.com>
  */
 class ForbiddenBreakContinueVariableArgumentsSniffTest extends BaseSniffTest
 {
-    /**
-     * Sniffed file
-     *
-     * @var PHP_CodeSniffer_File
-     */
-    protected $_sniffFile;
+    const TEST_FILE = 'sniff-examples/forbidden_break_continue_variable_argument.php';
+    const ERROR_TYPE_VARIABLE = 'a variable argument';
+    const ERROR_TYPE_ZERO = '0 as an argument';
+
 
     /**
-     * setUp
+     * testBreakAndContinueVariableArgument
+     *
+     * @dataProvider dataBreakAndContinueVariableArgument
+     *
+     * @param int    $line      The line number.
+     * @param string $errorType The error type.
      *
      * @return void
      */
-    public function setUp()
+    public function testBreakAndContinueVariableArgument($line, $errorType)
     {
-        parent::setUp();
-
-        $this->_sniffFile = $this->sniffFile('sniff-examples/forbidden_break_continue_variable_argument.php');
+        $file = $this->sniffFile(self::TEST_FILE, '5.4');
+        $this->assertError($file, $line, "Using {$errorType} on break or continue is forbidden since PHP 5.4");
     }
 
     /**
-     * Test break
+     * Data provider.
      *
-     * @return void
-     */
-    public function testBreakAndContinueAlone()
-    {
-        $this->assertNoViolation($this->_sniffFile, 6);
-        $this->assertNoViolation($this->_sniffFile, 10);
-    }
-
-    /**
-     * testBreakAndContinueWithInteger
+     * @see testBreakAndContinueVariableArgument()
      *
-     * @return void
+     * @return array
      */
-    public function testBreakAndContinueWithInteger()
+    public function dataBreakAndContinueVariableArgument()
     {
-        $this->assertNoViolation($this->_sniffFile, 18);
-        $this->assertNoViolation($this->_sniffFile, 22);
-    }
-
-    /**
-     * testBreakAndContinueWithVariable
-     *
-     * @return void
-     */
-    public function testBreakAndContinueWithVariable()
-    {
-        $this->assertError($this->_sniffFile, 32, 'Using a variable argument on break or continue is forbidden since PHP 5.4');
-        $this->assertError($this->_sniffFile, 36, 'Using a variable argument on break or continue is forbidden since PHP 5.4');
-
-    }
-
-    /**
-     * testBreakAndContinueWithFunction
-     *
-     * @return void
-     */
-    public function testBreakAndContinueWithFunction()
-    {
-        $this->assertError($this->_sniffFile, 45, 'Using a variable argument on break or continue is forbidden since PHP 5.4');
-        $this->assertError($this->_sniffFile, 49, 'Using a variable argument on break or continue is forbidden since PHP 5.4');
-
+        return array(
+            array(53, self::ERROR_TYPE_VARIABLE),
+            array(57, self::ERROR_TYPE_VARIABLE),
+            array(62, self::ERROR_TYPE_VARIABLE),
+            array(66, self::ERROR_TYPE_VARIABLE),
+            array(71, self::ERROR_TYPE_VARIABLE),
+            array(75, self::ERROR_TYPE_VARIABLE),
+            array(80, self::ERROR_TYPE_VARIABLE),
+            array(84, self::ERROR_TYPE_VARIABLE),
+            array(89, self::ERROR_TYPE_VARIABLE),
+            array(93, self::ERROR_TYPE_VARIABLE),
+            array(98, self::ERROR_TYPE_VARIABLE),
+            array(102, self::ERROR_TYPE_VARIABLE),
+            array(107, self::ERROR_TYPE_ZERO),
+            array(111, self::ERROR_TYPE_ZERO),
+            array(118, self::ERROR_TYPE_ZERO),
+            array(122, self::ERROR_TYPE_VARIABLE),
+        );
     }
 
 
     /**
-     * testBreakAndContinueWithConstant
+     * testNoFalsePositives
+     *
+     * @dataProvider dataNoFalsePositives
+     *
+     * @param int $line The line number.
      *
      * @return void
      */
-    public function testBreakAndContinueWithConstant()
+    public function testNoFalsePositives($line)
     {
-        $this->assertNoViolation($this->_sniffFile, 58);
-        $this->assertNoViolation($this->_sniffFile, 62);
+        $file = $this->sniffFile(self::TEST_FILE, '5.4');
+        $this->assertNoViolation($file, $line);
     }
 
-    public function testSettingTestVersion()
+    /**
+     * Data provider.
+     *
+     * @see testNoFalsePositives()
+     *
+     * @return array
+     */
+    public function dataNoFalsePositives()
     {
-        $file = $this->sniffFile('sniff-examples/forbidden_break_continue_variable_argument.php', '5.3');
+        return array(
+            array(8),
+            array(12),
+            array(17),
+            array(21),
+            array(26),
+            array(30),
+            array(35),
+            array(39),
+            array(44),
+            array(48),
+            array(126),
+        );
+    }
 
+
+    /**
+     * Verify no notices are thrown at all.
+     *
+     * @return void
+     */
+    public function testNoViolationsInFileOnValidVersion()
+    {
+        $file = $this->sniffFile(self::TEST_FILE, '5.3');
         $this->assertNoViolation($file);
     }
-}
 
+}

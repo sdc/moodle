@@ -118,3 +118,53 @@ if (false) {
 
 // xor
 $d = 1 xor 2;
+
+// Issue #117: Traits: alias method with changed visibility.
+class MyClass1 {
+    use HelloWorld { sayHello as protected; }
+}
+class MyClass2 {
+    use HelloWorld {
+        sayHello as private;
+    }
+}
+class MyClass3 {
+    use HelloWorld { sayHello as public; }
+}
+
+class MyClass1 {
+    use HelloWorld {
+        sayHello as protected myProtectedHello;
+    }
+}
+class MyClass2 {
+    use HelloWorld { sayHello as private myPrivateHello; }
+}
+class MyClass3 {
+    use HelloWorld { sayHello as public myPublicHello; }
+}
+
+class MyClass3 {
+    use HelloWorld { sayHello as final; }
+}
+
+class MyClass4 {
+    use HelloWorld { sayHello as final myFinalHello; }
+}
+
+// Functions declared to return by reference.
+function &mySayHello() {}
+
+// Anonymous classes.
+$a = new class {}
+
+// Nested namespace declarations.
+namespace Foo\Bar\Baz;
+namespace Foo\Bar\Baz {}
+
+/**
+ * Issue #124/#126: Valid use statements with function or const (PHP 5.6+).
+ */
+use function MyFunctionName;
+use function MyFunctionName as func;
+use const MyCONSTANT;

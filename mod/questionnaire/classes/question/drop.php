@@ -43,61 +43,142 @@ class drop extends base {
         return true;
     }
 
-    protected function question_survey_display($data, $descendantsdata, $blankquestionnaire=false) {
-        // Drop.
-        global $OUTPUT;
-        $options = array();
-
-        // To display or hide dependent questions on Preview page.
-        if ($descendantsdata) {
-            $qdropid = 'q'.$this->id;
-            $descendants = implode(',', $descendantsdata['descendants']);
-            foreach ($descendantsdata['choices'] as $key => $choice) {
-                $choices[$key] = implode(',', $choice);
-            }
-            foreach ($this->choices as $key => $choice) {
-                if ($pos = strpos($choice->content, '=')) {
-                    $choice->content = substr($choice->content, $pos + 1);
-                }
-                if (isset($choices[$key])) {
-                    $value = $choices[$key];
-                } else {
-                    $value = $key;
-                }
-                $options[$value] = $choice->content;
-            }
-            $dependdrop = "dependdrop('$qdropid', '$descendants')";
-            echo html_writer::select($options, $qdropid, (isset($data->{'q'.$this->id}) ? $data->{'q'.$this->id} : ''),
-                            array('' => 'choosedots'), array('id' => $qdropid, 'onchange' => $dependdrop));
-            // End dependents.
-        } else {
-            foreach ($this->choices as $key => $choice) {
-                if ($pos = strpos($choice->content, '=')) {
-                    $choice->content = substr($choice->content, $pos + 1);
-                }
-                $options[$key] = $choice->content;
-            }
-            echo html_writer::select($options, 'q'.$this->id,
-                (isset($data->{'q'.$this->id}) ? $data->{'q'.$this->id} : ''),
-                array('' => 'choosedots'), array('id' => $this->type . $this->id));
-        }
+    /**
+     * Override and return a form template if provided. Output of question_survey_display is iterpreted based on this.
+     * @return boolean | string
+     */
+    public function question_template() {
+        return 'mod_questionnaire/question_drop';
     }
 
+    /**
+     * Override and return a form template if provided. Output of response_survey_display is iterpreted based on this.
+     * @return boolean | string
+     */
+    public function response_template() {
+        return 'mod_questionnaire/response_drop';
+    }
+
+    /**
+     * Override this and return true if the question type allows dependent questions.
+     * @return boolean
+     */
+    public function allows_dependents() {
+        return true;
+    }
+
+    /**
+     * True if question type supports feedback options. False by default.
+     */
+    public function supports_feedback() {
+        return true;
+    }
+
+    /**
+     * Return the context tags for the check question template.
+     * @param object $data
+     * @param array $dependants Array of all questions/choices depending on this question.
+     * @param boolean $blankquestionnaire
+     * @return object The check question context tags.
+     *
+     */
+    protected function question_survey_display($data, $dependants, $blankquestionnaire=false) {
+        // Drop.
+        $output = '';
+        $options = [];
+
+        $choicetags = new \stdClass();
+        $choicetags->qelements = new \stdClass();
+        $selected = isset($data->{'q'.$this->id}) ? $data->{'q'.$this->id} : false;
+        $dqids = '';
+        $choices = [];
+        if (!empty($dependants)) {
+            foreach ($dependants as $did => $dependant) {
+                $qdropid = 'q' . $this->id;
+                $dqids .= empty($dqids) ? 'qn-' . $did : ',qn-' . $did;
+                foreach ($dependant as $choice) {
+                    $choices[$choice->id] .= isset($choices[$choice->id]) ? ',qn-' . $did : 'qn-' . $did;
+                }
+                $options[] = (object)['value' => '', 'label' => get_string('choosedots')];
+                foreach ($this->choices as $key => $choice) {
+                    if ($pos = strpos($choice->content, '=')) {
+                        $choice->content = substr($choice->content, $pos + 1);
+                    }
+                    if (isset($choices[$key])) {
+                        $value = $choices[$key];
+                    } else {
+                        $value = $key;
+                    }
+                    $option = new \stdClass();
+                    $option->value = $value;
+                    $option->label = $choice->content;
+                    if (($selected !== false) && ($value == $selected)) {
+                        $option->selected = true;
+                    }
+                    $options[] = $option;
+                }
+                $dependdrop = "dependdrop('$qdropid', '$dqids')";
+                $chobj = new \stdClass();
+                $chobj->name = $qdropid;
+                $chobj->id = $qdropid;
+                $chobj->class = 'select custom-select menu' . $qdropid;
+                $chobj->onchange = $dependdrop;
+                $chobj->options = $options;
+                $choicetags->qelements->choice = $chobj;
+                // End dependents.
+            }
+        } else {
+            $options[] = (object)['value' => '', 'label' => get_string('choosedots')];
+            foreach ($this->choices as $key => $choice) {
+                if ($pos = strpos($choice->content, '=')) {
+                    $choice->content = substr($choice->content, $pos + 1);
+                }
+                $option = new \stdClass();
+                $option->value = $key;
+                $option->label = $choice->content;
+                if (($selected !== false) && ($key == $selected)) {
+                    $option->selected = true;
+                }
+                $options[] = $option;
+            }
+            $chobj = new \stdClass();
+            $chobj->name = 'q'.$this->id;
+            $chobj->id = self::qtypename($this->type_id) . $this->id;
+            $chobj->class = 'select custom-select menu q'.$this->id;
+            $chobj->options = $options;
+            $choicetags->qelements->choice = $chobj;
+        }
+
+        return $choicetags;
+    }
+
+    /**
+     * Return the context tags for the drop response template.
+     * @param object $data
+     * @return object The check question response context tags.
+     *
+     */
     protected function response_survey_display($data) {
-        global $OUTPUT;
         static $uniquetag = 0;  // To make sure all radios have unique names.
 
-        $options = array();
+        $resptags = new \stdClass();
+        $resptags->name = 'q' . $this->id.$uniquetag++;
+        $resptags->id = 'menu' . $resptags->name;
+        $resptags->class = 'select custom-select ' . $resptags->id;
+        $resptags->options = [];
         foreach ($this->choices as $id => $choice) {
             $contents = questionnaire_choice_values($choice->content);
-            $options[$id] = format_text($contents->text, FORMAT_HTML);
+            $chobj = new \stdClass();
+            $chobj->value = $id;
+            $chobj->label = format_text($contents->text, FORMAT_HTML, ['noclean' => true]);
+            if (isset($data->{'q'.$this->id}) && ($id == $data->{'q'.$this->id})) {
+                $chobj->selected = 1;
+                $resptags->selectedlabel = $chobj->label;
+            }
+            $resptags->options[] = $chobj;
         }
-        echo '<div class="response drop">';
-        echo html_writer::select($options, 'q'.$this->id.$uniquetag++,
-                        (isset($data->{'q'.$this->id}) ? $data->{'q'.$this->id} : ''));
-        if (isset($data->{'q'.$this->id}) ) {
-            echo ': <span class="selected">'.$options[$data->{'q'.$this->id}].'</span></div>';
-        }
+
+        return $resptags;
     }
 
     protected function form_length(\MoodleQuickForm $mform, $helpname = '') {

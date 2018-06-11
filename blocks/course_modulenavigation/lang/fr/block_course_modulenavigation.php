@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the block strings
+ * Defines the block strings.
  *
  * @package    block_course_modulenavigation
  * @copyright  2016 Digidago <contact@digidago.com>
- * @author     Bas Brands
+ * @author     Sylvain Revenu | Nick Papoutsis | Bas Brands | DigiDago
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,3 +33,14 @@ $string['config_onesection_label'] = 'Si cette option est activé, une seule sec
 $string['course_modulenavigation:addinstance'] = 'Ajouter un nouveau block de sommaire du cours (course contents block)';
 $string['notusingsections'] = 'Ce format de cours n&rsquo;utilise pas de section. ';
 $string['pluginname'] = 'Sommaire du cours';
+$string['toggleclickontitle'] = 'En cliquant sur le titre';
+$string['toggleclickontitle_desc'] = "Afficher le menu ou aller à la page";
+$string['toggleclickontitle_menu'] = 'Afficher le menu';
+$string['toggleclickontitle_page'] = 'Aller à la page';
+$string['toggleshowlabels'] = 'Afficher les étiquettes';
+$string['toggleshowlabels_desc'] = 'Choisir d\'afficher ou non les étiquettes';
+$string['togglecollapse'] = 'Déplier les tabs';
+$string['togglecollapse_desc'] = 'Choisir de déplier tous les tabs par défaut';
+$string['toggletitles'] = 'Afficher les titres';
+$string['toggletitles_desc'] = 'Choisir d\'afficher que les titres ou les titres et le contenu';
+$string['privacy:null_reason'] = 'Le bloc sommaire du cours affiche seulement des données enregistrées à d\'autres endroits';

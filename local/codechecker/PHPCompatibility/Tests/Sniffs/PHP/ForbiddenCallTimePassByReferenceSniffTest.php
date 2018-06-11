@@ -9,127 +9,133 @@
 /**
  * Forbidden call time pass by reference sniff test
  *
- * @uses BaseSniffTest
+ * @group forbiddenCallTimePassByReference
+ * @group references
+ *
+ * @covers PHPCompatibility_Sniffs_PHP_ForbiddenCallTimePassByReferenceSniff
+ *
+ * @uses    BaseSniffTest
  * @package PHPCompatibility
- * @author Jansen Price <jansen.price@gmail.com>
+ * @author  Jansen Price <jansen.price@gmail.com>
  */
 class ForbiddenCallTimePassByReferenceSniffTest extends BaseSniffTest
 {
+    const TEST_FILE = 'sniff-examples/call_time_pass_by_reference.php';
+
+
     /**
-     * Sniffed file
+     * testForbiddenCallTimePassByReference
      *
-     * @var PHP_CodeSniffer_File
-     */
-    protected $_sniffFile;
-
-    /**
-     * setUp
+     * @dataProvider dataForbiddenCallTimePassByReference
      *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->_sniffFile = $this->sniffFile('sniff-examples/call_time_pass_by_reference.php');
-    }
-
-    /**
-     * Test declare parameter by reference
+     * @param int $line Line number where the error should occur.
      *
      * @return void
      */
-    public function testDeclareParameterByReference()
+    public function testForbiddenCallTimePassByReference($line)
     {
-        $this->assertNoViolation($this->_sniffFile, 9);
+        $file = $this->sniffFile(self::TEST_FILE, '5.3');
+        $this->assertWarning($file, $line, 'Using a call-time pass-by-reference is deprecated since PHP 5.3');
+
+        $file = $this->sniffFile(self::TEST_FILE, '5.4');
+        $this->assertError($file, $line, 'Using a call-time pass-by-reference is deprecated since PHP 5.3 and prohibited since PHP 5.4');
     }
 
     /**
-     * testCallTimeNormal
+     * dataForbiddenCallTimePassByReference
+     *
+     * @see testForbiddenCallTimePassByReference()
+     *
+     * @return array
+     */
+    public function dataForbiddenCallTimePassByReference()
+    {
+        return array(
+            array(10), // Bad: call time pass by reference.
+            array(14), // Bad: call time pass by reference with multi-parameter call.
+            array(17), // Bad: nested call time pass by reference.
+            array(25), // Bad: call time pass by reference with space.
+            array(44), // Bad: call time pass by reference.
+            array(45), // Bad: call time pass by reference.
+            array(49), // Bad: multiple call time pass by reference.
+            array(71), // Bad: call time pass by reference.
+        );
+    }
+
+
+    /**
+     * testNoFalsePositives
+     *
+     * @dataProvider dataNoFalsePositives
+     *
+     * @param int $line The line number.
      *
      * @return void
      */
-    public function testCallTimeNormal()
+    public function testNoFalsePositives($line)
     {
-        $this->assertNoViolation($this->_sniffFile, 14);
+        $file = $this->sniffFile(self::TEST_FILE, '5.4');
+        $this->assertNoViolation($file, $line);
     }
 
     /**
-     * testCallTimePassByReferenceSingleParam
+     * Data provider.
      *
-     * @return void
+     * @see testNoFalsePositives()
+     *
+     * @return array
      */
-    public function testCallTimePassByReferenceSingleParam()
+    public function dataNoFalsePositives()
     {
-        $this->assertError($this->_sniffFile, 15, 'Using a call-time pass-by-reference is prohibited since php 5.4');
+        return array(
+            array(4), // OK: Declaring a parameter by reference.
+            array(9), // OK: Call time passing without reference.
+
+            // OK: Bitwise operations as parameter.
+            array(20),
+            array(21),
+            array(22),
+            array(23),
+            array(24),
+            array(39),
+            array(40),
+            //array(41), // Currently not yet covered.
+
+            array(51), // OK: No variables.
+            array(53), // OK: Outside scope of this sniff.
+
+            // Assign by reference within function call.
+            array(56),
+            array(57),
+            array(58),
+            array(59),
+            array(60),
+            array(61),
+            array(62),
+            array(63),
+            array(64),
+            array(65),
+            array(66),
+            array(67),
+            array(68),
+            array(69),
+
+            // Comparison with reference.
+            array(74),
+            array(75),
+        );
     }
+
 
     /**
-     * testCallTimePassByReferenceMultiParam
+     * Verify no notices are thrown at all.
      *
      * @return void
      */
-    public function testCallTimePassByReferenceMultiParam()
+    public function testNoViolationsInFileOnValidVersion()
     {
-        $this->assertError($this->_sniffFile, 19, 'Using a call-time pass-by-reference is prohibited since php 5.4');
+        $file = $this->sniffFile(self::TEST_FILE, '5.2');
+        $this->assertNoViolation($file);
     }
 
-    /**
-     * testCallTimePassByReferenceNested
-     *
-     * @return void
-     */
-    public function testCallTimePassByReferenceNested()
-    {
-        $this->assertError($this->_sniffFile, 22, 'Using a call-time pass-by-reference is prohibited since php 5.4');
-    }
-
-    /**
-     * testCallTimePassByReferenceGlobal
-     *
-     * @return void
-     */
-    public function testCallTimePassByReferenceGlobal()
-    {
-        $this->assertError($this->_sniffFile, 44, 'Using a call-time pass-by-reference is prohibited since php 5.4');
-    }
-
-    /**
-     * testBitwiseOperationsAsParameter
-     *
-     * @return void
-     */
-    public function testBitwiseOperationsAsParameter()
-    {
-        $this->assertNoViolation($this->_sniffFile, 24);
-        $this->assertNoViolation($this->_sniffFile, 25);
-        $this->assertNoViolation($this->_sniffFile, 26);
-        $this->assertNoViolation($this->_sniffFile, 27);
-        $this->assertNoViolation($this->_sniffFile, 28);
-        $this->assertNoViolation($this->_sniffFile, 40);
-        $this->assertNoViolation($this->_sniffFile, 41);
-    }
-
-    /**
-     * testCallTimePassByReferenceWithWhiteSpace
-     *
-     * @return void
-     */
-    public function testCallTimePassByReferenceWithWhiteSpace()
-    {
-        $this->assertError($this->_sniffFile, 29, 'Using a call-time pass-by-reference is prohibited since php 5.4');
-    }
-
-    /**
-     * testSettingTestVersion
-     *
-     * @return void
-     */
-    public function testSettingTestVersion()
-    {
-        $file = $this->sniffFile('sniff-examples/call_time_pass_by_reference.php', '5.2');
-
-        $this->assertNoViolation($file, 29);
-    }
 }
-

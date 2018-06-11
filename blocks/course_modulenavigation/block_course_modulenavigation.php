@@ -14,9 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+
 /**
+ * Course contents block generates a table of course contents based on the section descriptions.
+ *
  * @package    block_course_modulenavigation
  * @copyright  2016 Digidago <contact@digidago.com>
+ * @author     Sylvain Revenu | Nick Papoutsis | Bas Brands | DigiDago
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -26,20 +30,26 @@ require_once($CFG->dirroot.'/course/lib.php');
 require_once($CFG->dirroot.'/course/format/lib.php');
 
 /**
- * Course contents block generates a table of course contents based on the
- * section descriptions
+ * Define the block course modulenavigation.
  */
 class block_course_modulenavigation extends block_base {
 
     /**
-     * Initializes the block, called by the constructor
+     * Initializes the block, called by the constructor.
      */
     public function init() {
         $this->title = get_string('pluginname', 'block_course_modulenavigation');
     }
 
     /**
-     * Amend the block instance after it is loaded
+     *  Allow parameters in admin settings
+     */
+    public function has_config() {
+        return true;
+    }
+
+    /**
+     * Amend the block instance after it is loaded.
      */
     public function specialization() {
         if (!empty($this->config->blocktitle)) {
@@ -50,7 +60,7 @@ class block_course_modulenavigation extends block_base {
     }
 
     /**
-     * Which page types this block may appear on
+     * Which page types this block may appear on.
      * @return array
      */
     public function applicable_formats() {
@@ -58,8 +68,7 @@ class block_course_modulenavigation extends block_base {
     }
 
     /**
-     * Returns the navigation
-     *
+     * Returns the navigation.
      * @return navigation_node The navigation object to display
      */
     protected function get_navigation() {
@@ -68,11 +77,11 @@ class block_course_modulenavigation extends block_base {
     }
 
     /**
-     * Populate this block's content object
+     * Populate this block's content object.
      * @return stdClass block content info
      */
     public function get_content() {
-        global $DB;
+        global $DB, $OUTPUT, $PAGE;
         if (!is_null($this->content)) {
             return $this->content;
         }
@@ -88,6 +97,10 @@ class block_course_modulenavigation extends block_base {
             return $this->content;
         }
 
+        if ($PAGE->pagelayout == 'admin') {
+            return $this->content;
+        }
+
         $format = course_get_format($this->page->course);
         $course = $format->get_course(); // Needed to have numsections property available.
 
@@ -98,8 +111,15 @@ class block_course_modulenavigation extends block_base {
             return $this->content;
         }
 
-        if ($format instanceof format_dynamictabs) {
-            $sections = $format->tabs_get_sections();
+        if (($format instanceof format_digidagotabs) or ($format instanceof format_horizontaltabs)) {
+            // Dont show the menu in a tab.
+            if ($intab) {
+                return $this->content;
+            }
+            // Only show the block inside activites of courses.
+            if ($this->page->pagelayout == 'incourse') {
+                $sections = $format->tabs_get_sections();
+            }
         } else {
             $sections = $format->get_sections();
         }
@@ -110,9 +130,6 @@ class block_course_modulenavigation extends block_base {
 
         $context = context_course::instance($course->id);
 
-        if ($format instanceof format_dynamictabs) {
-            $course = $format->get_course();
-        }
         $modinfo = get_fast_modinfo($course);
 
         $template = new stdClass();
@@ -129,6 +146,7 @@ class block_course_modulenavigation extends block_base {
 
         $inactivity = false;
         $myactivityid = 0;
+
         if ($thiscontext->get_level_name() == get_string('activitymodule')) {
             // Uh-oh we are in a activity.
             $inactivity = true;
@@ -137,6 +155,28 @@ class block_course_modulenavigation extends block_base {
                                            JOIN {modules} md ON md.id = cm.module
                                            WHERE cm.id = ?", array($thiscontext->instanceid))) {
                 $myactivityid = $cm->id;
+            }
+        }
+
+        if (($format instanceof format_digidagotabs) or ($format instanceof format_horizontaltabs)) {
+            $coursesections = $DB->get_records('course_sections', array('course' => $course->id));
+            $mysection = 0;
+            foreach ($coursesections as $cs) {
+                $csmodules = explode(',', $cs->sequence);
+                if (in_array($myactivityid, $csmodules)) {
+                    $mysection = $cs->id;
+                }
+            }
+
+            if ($mysection) {
+                if ( $DB->get_records('format_digidagotabs_tabs', array('courseid' => $course->id,
+                 'sectionid' => $mysection)) ||
+                    $DB->get_records('format_horizontaltabs_tabs', array('courseid' => $course->id,
+                 'sectionid' => $mysection))) {
+                    // This is a module inside a tab of the Dynamic tabs course format.
+                    // Prevent showing of this menu.
+                    return $this->content;
+                }
             }
         }
 
@@ -154,19 +194,14 @@ class block_course_modulenavigation extends block_base {
         foreach ($sections as $section) {
             $sectionnums[] = $section->section;
         }
-
         foreach ($sections as $section) {
             $i = $section->section;
-            if ($i > $course->numsections) {
-                break;
-            }
             if (!$section->uservisible) {
                 continue;
             }
 
             if (!empty($section->name)) {
                 $title = format_string($section->name, true, array('context' => $context));
-
             } else {
                 $summary = file_rewrite_pluginfile_urls($section->summary, 'pluginfile.php', $context->id, 'course',
                     'section', $section->id);
@@ -180,6 +215,27 @@ class block_course_modulenavigation extends block_base {
             $thissection->url = $format->get_view_url($section);
             $thissection->selected = false;
 
+            if (get_config('block_course_modulenavigation', 'toggleclickontitle') == 2) {
+                // Display the menu.
+                $thissection->collapse = true;
+            } else {
+                // Go to link.
+                $thissection->collapse = false;
+            }
+
+            if (get_config('block_course_modulenavigation', 'togglecollapse') == 2) {
+                $thissection->selected = true;
+            }
+
+            // Show only titles.
+            if (get_config('block_course_modulenavigation', 'toggletitles') == 2) {
+                // Show only titles.
+                $thissection->onlytitles = true;
+            } else {
+                // Show  titles and contents.
+                $thissection->onlytitles = false;
+            }
+
             if ($i == $selected && !$inactivity) {
                 $thissection->selected = true;
             }
@@ -188,7 +244,7 @@ class block_course_modulenavigation extends block_base {
             if (!empty($modinfo->sections[$i])) {
                 foreach ($modinfo->sections[$i] as $modnumber) {
                     $module = $modinfo->cms[$modnumber];
-                    if ($module->modname == 'label' || $module->modname == 'url') {
+                    if ( (get_config('block_course_modulenavigation', 'toggleshowlabels') == 1) && ($module->modname == 'label') ) {
                         continue;
                     }
                     if (! $module->uservisible) {
@@ -203,8 +259,12 @@ class block_course_modulenavigation extends block_base {
                         }
                     }
 
-                    $thismod->name = $module->name;
+                    $thismod->name = format_string($module->name, true, array('context' => $context));
                     $thismod->url = $module->url;
+                    if ($module->modname == 'label') {
+                        $thismod->url = '';
+                        $thismod->label = 'true';
+                    }
                     $hascompletion = $completioninfo->is_enabled($module);
                     if ($hascompletion) {
                         $thismod->completeclass = 'incomplete';
@@ -216,6 +276,7 @@ class block_course_modulenavigation extends block_base {
                     }
                     $thissection->modules[] = $thismod;
                 }
+                $thissection->hasmodules = (count($thissection->modules) > 0);
                 $template->sections[] = $thissection;
             }
 
@@ -254,7 +315,8 @@ class block_course_modulenavigation extends block_base {
     }
 
     /**
-     * Function to get the previous and next values in an array
+     * Function to get the previous and next values in an array.
+     *
      * @param array array to search
      * @param string
      * @return object $pn with prev and next values.

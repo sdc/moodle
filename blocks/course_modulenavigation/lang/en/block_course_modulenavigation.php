@@ -15,9 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Defines the block strings.
+ *
  * @package    block_course_modulenavigation
  * @copyright  2016 Digidago <contact@digidago.com>
- * @author     Bas Brands
+ * @author     Sylvain Revenu | Nick Papoutsis | Bas Brands | DigiDago
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,3 +33,14 @@ $string['config_onesection_label'] = 'If enabled show one section only. If disab
 $string['course_modulenavigation:addinstance'] = 'Add a new course contents block';
 $string['notusingsections'] = 'This course format does not use sections.';
 $string['pluginname'] = 'Course Module Navigation';
+$string['toggleclickontitle'] = 'Clicking on the title';
+$string['toggleclickontitle_desc'] = "'Displays the menu' or 'Goes to that page'.";
+$string['toggleclickontitle_menu'] = 'Displays the menu';
+$string['toggleclickontitle_page'] = 'Goes to that page';
+$string['toggleshowlabels'] = 'Show labels';
+$string['toggleshowlabels_desc'] = 'Choose whether to display labels or not';
+$string['togglecollapse'] = 'Collapse tabs';
+$string['togglecollapse_desc'] = 'Choose whether to display all tabs not collapsed';
+$string['toggletitles'] = 'Show only titles';
+$string['toggletitles_desc'] = 'Choose whether to display only titles or titles and content';
+$string['privacy:null_reason'] = 'The Blog Course Module Navigation block only shows data stored in other locations';

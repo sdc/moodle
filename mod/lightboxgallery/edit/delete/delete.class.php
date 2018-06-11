@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 class edit_delete extends edit_base {
 
     public function __construct($gallery, $cm, $image, $tab) {
@@ -29,7 +31,7 @@ class edit_delete extends edit_base {
     }
 
     public function process_form() {
-        global $CFG, $DB, $page;
+        global $CFG, $page;
         $fs = get_file_storage();
         $storedfile = $fs->get_file($this->context->id, 'mod_lightboxgallery', 'gallery_images', '0', '/', $this->image);
         $image = new lightboxgallery_image($storedfile, $this->gallery, $this->cm);

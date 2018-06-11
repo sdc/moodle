@@ -15,6 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_questionnaire\question;
+use mod_questionnaire\edit_question_form;
+use \questionnaire;
+
 defined('MOODLE_INTERNAL') || die();
 use \html_writer;
 
@@ -68,9 +71,12 @@ abstract class base {
     public $type        = '';
 
     /** @var array $choices Array holding any choices for this question. */
-    public $choices     = array();
+    public $choices     = [];
 
-    /** @var string $response_table The table name for responses. */
+    /** @var array $dependencies Array holding any dependencies for this question. */
+    public $dependencies = [];
+
+    /** @var string $responsetable The table name for responses. */
     public $responsetable = '';
 
     /** @var int $length The length field. */
@@ -95,7 +101,7 @@ abstract class base {
     public $deleted     = 'n';
 
     /** @var array $qtypenames List of all question names. */
-    private static $qtypenames = array(
+    private static $qtypenames = [
         QUESYESNO => 'yesno',
         QUESTEXT => 'text',
         QUESESSAY => 'essay',
@@ -104,10 +110,13 @@ abstract class base {
         QUESDROP => 'drop',
         QUESRATE => 'rate',
         QUESDATE => 'date',
-        QUESNUMERIC => 'numeric',
+        QUESNUMERIC => 'numerical',
         QUESPAGEBREAK => 'pagebreak',
         QUESSECTIONTEXT => 'sectiontext'
-    );
+    ];
+
+    /** @var array $notifications Array of extra messages for display purposes. */
+    private $notifications = [];
 
     // Class Methods.
 
@@ -115,26 +124,23 @@ abstract class base {
      * The class constructor
      *
      */
-    public function __construct($id = 0, $question = null, $context = null, $params = array()) {
+    public function __construct($id = 0, $question = null, $context = null, $params = []) {
         global $DB;
         static $qtypes = null;
 
         if ($qtypes === null) {
-            $qtypes = $DB->get_records('questionnaire_question_type', array(), 'typeid',
+            $qtypes = $DB->get_records('questionnaire_question_type', [], 'typeid',
                                        'typeid, type, has_choices, response_table');
         }
 
         if ($id) {
-            $question = $DB->get_record('questionnaire_question', array('id' => $id));
+            $question = $DB->get_record('questionnaire_question', ['id' => $id]);
         }
 
         if (is_object($question)) {
             $this->id = $question->id;
             $this->survey_id = $question->survey_id;
             $this->name = $question->name;
-            // Added for skip feature.
-            $this->dependquestion = $question->dependquestion;
-            $this->dependchoice = $question->dependchoice;
             $this->length = $question->length;
             $this->precise = $question->precise;
             $this->position = $question->position;
@@ -144,10 +150,12 @@ abstract class base {
 
             $this->type_id = $question->type_id;
             $this->type = $qtypes[$this->type_id]->type;
-            $this->response_table = $qtypes[$this->type_id]->response_table;
+            $this->responsetable = $qtypes[$this->type_id]->response_table;
             if ($qtypes[$this->type_id]->has_choices == 'y') {
                 $this->get_choices();
             }
+            // Added for dependencies.
+            $this->get_dependencies();
         }
         $this->context = $context;
 
@@ -166,14 +174,22 @@ abstract class base {
      */
     abstract public function helpname();
 
-    static public function question_builder($qtype, $params = null) {
-        global $CFG;
-
+    /**
+     * Build a question from data.
+     * @var int $qtype The question type code.
+     * @var int|array|object $qdata Either the id of the record, or a structure containing the question data, or null.
+     * @var object $context The context for the question.
+     * @return A question object.
+     */
+    static public function question_builder($qtype, $qdata = null, $context = null) {
         $qclassname = '\\mod_questionnaire\\question\\'.self::qtypename($qtype);
-        if (!empty($params) && is_array($params)) {
-            $params = (object)$params;
+        $qid = 0;
+        if (!empty($qdata) && is_array($qdata)) {
+            $qdata = (object)$qdata;
+        } else if (!empty($qdata) && is_int($qdata)) {
+            $qid = $qdata;
         }
-        return new $qclassname(0, $params, null, array('type_id' => $qtype));
+        return new $qclassname($qid, $qdata, $context, ['type_id' => $qtype]);
     }
 
     /**
@@ -198,15 +214,156 @@ abstract class base {
     private function get_choices() {
         global $DB;
 
-        if ($choices = $DB->get_records('questionnaire_quest_choice', array('question_id' => $this->id), 'id ASC')) {
+        if ($choices = $DB->get_records('questionnaire_quest_choice', ['question_id' => $this->id], 'id ASC')) {
             foreach ($choices as $choice) {
                 $this->choices[$choice->id] = new \stdClass();
                 $this->choices[$choice->id]->content = $choice->content;
                 $this->choices[$choice->id]->value = $choice->value;
             }
         } else {
-            $this->choices = array();
+            $this->choices = [];
         }
+    }
+
+    /**
+     * Return true if this question has been marked as required.
+     * @return boolean
+     */
+    public function required() {
+        return ($this->required == 'y');
+    }
+
+    /**
+     * Return true if the question has defined dependencies.
+     * @return boolean
+     */
+    public function has_dependencies() {
+        return !empty($this->dependencies);
+    }
+
+    /**
+     * Override this and return true if the question type allows dependent questions.
+     * @return boolean
+     */
+    public function allows_dependents() {
+        return false;
+    }
+
+    private function get_dependencies() {
+        global $DB;
+
+        $this->dependencies = [];
+        $dependencies = $DB->get_records('questionnaire_dependency',
+            ['questionid' => $this->id , 'surveyid' => $this->survey_id], 'id ASC');
+        foreach ($dependencies as $dependency) {
+            $this->dependencies[$dependency->id] = new \stdClass();
+            $this->dependencies[$dependency->id]->dependquestionid = $dependency->dependquestionid;
+            $this->dependencies[$dependency->id]->dependchoiceid = $dependency->dependchoiceid;
+            $this->dependencies[$dependency->id]->dependlogic = $dependency->dependlogic;
+            $this->dependencies[$dependency->id]->dependandor = $dependency->dependandor;
+        }
+    }
+
+    /**
+     * Returns an array of dependency options for the question as an array of id value / display value pairs. Override in specific
+     * question types that support this differently.
+     * @return array An array of valid pair options.
+     */
+    protected function get_dependency_options() {
+        $options = [];
+        if ($this->allows_dependents() && $this->has_choices()) {
+            foreach ($this->choices as $key => $choice) {
+                $contents = questionnaire_choice_values($choice->content);
+                if (!empty($contents->modname)) {
+                    $choice->content = $contents->modname;
+                } else if (!empty($contents->title)) { // Must be an image; use its title for the dropdown list.
+                    $choice->content = $contents->title;
+                } else {
+                    $choice->content = $contents->text;
+                }
+                $options[$this->id . ',' . $key] = $this->name . '->' . $choice->content;
+            }
+        }
+        return $options;
+    }
+
+    /**
+     * Return true if all dependencies or this question have been fulfilled, or there aren't any.
+     * @param int $rid The response ID to check.
+     * @param array $questions An array containing all possible parent question objects.
+     * @return bool
+     */
+    public function dependency_fulfilled($rid, $questions) {
+        if (!$this->has_dependencies()) {
+            $fulfilled = true;
+        } else {
+            foreach ($this->dependencies as $dependency) {
+                $choicematches = $questions[$dependency->dependquestionid]->response_has_choice($rid, $dependency->dependchoiceid);
+
+                // Note: dependencies are sorted, first all and-dependencies, then or-dependencies.
+                if ($dependency->dependandor == 'and') {
+                    $dependencyandfulfilled = false;
+                    // This answer given.
+                    if (($dependency->dependlogic == 1) && $choicematches) {
+                        $dependencyandfulfilled = true;
+                    }
+
+                    // This answer NOT given.
+                    if (($dependency->dependlogic == 0) && !$choicematches) {
+                        $dependencyandfulfilled = true;
+                    }
+
+                    // Something mandatory not fulfilled? Stop looking and continue to next question.
+                    if ($dependencyandfulfilled == false) {
+                        break;
+                    }
+
+                    // In case we have no or-dependencies.
+                    $dependencyorfulfilled = true;
+                }
+
+                // Note: dependencies are sorted, first all and-dependencies, then or-dependencies.
+                if ($dependency->dependandor == 'or') {
+                    $dependencyorfulfilled = false;
+                    // To reach this point, the and-dependencies have all been fultilled or do not exist, so set them ok.
+                    $dependencyandfulfilled = true;
+                    // This answer given
+                    if (($dependency->dependlogic == 1) && $choicematches) {
+                        $dependencyorfulfilled = true;
+                    }
+
+                    // This answer NOT given
+                    if (($dependency->dependlogic == 0) && !$choicematches) {
+                        $dependencyorfulfilled = true;
+                    }
+
+                    // Something fulfilled? A single match is sufficient so continue to next question.
+                    if ($dependencyorfulfilled == true) {
+                        break;
+                    }
+                }
+
+            }
+            $fulfilled = ($dependencyandfulfilled && $dependencyorfulfilled);
+        }
+        return $fulfilled;
+    }
+
+    public function response_table() {
+        return $this->response->response_table();
+    }
+
+    /**
+     * Return true if the specified response for this question contains the specified choice.
+     * @param $rid
+     * @param $choiceid
+     * @return bool
+     */
+    public function response_has_choice($rid, $choiceid) {
+        global $DB;
+        $choiceval = $this->response->transform_choiceid($choiceid);
+        return $DB->record_exists($this->response_table(),
+            ['response_id' => $rid, 'question_id' => $this->id, 'choice_id' => $choiceval]);
     }
 
     /**
@@ -236,12 +393,32 @@ abstract class base {
     /**
      * Display results method.
      */
-    public function display_results($rids=false, $sort='') {
+    public function display_results($rids=false, $sort='', $anonymous=false) {
         if (isset ($this->response) && is_object($this->response) &&
             is_subclass_of($this->response, '\\mod_questionnaire\\response\\base')) {
-            return $this->response->display_results($rids, $sort);
+            return $this->response->display_results($rids, $sort, $anonymous);
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Add a notification.
+     * @param string $message
+     */
+    public function add_notification($message) {
+        $this->notifications[] = $message;
+    }
+
+    /**
+     * Get any notifications.
+     * @return array | boolean The notifications array or false.
+     */
+    public function get_notifications() {
+        if (empty($this->notifications)) {
+            return false;
+        } else {
+            return $this->notifications;
         }
     }
 
@@ -254,24 +431,74 @@ abstract class base {
     abstract protected function responseclass();
 
     /**
-     * Question specific display method.
-     *
-     * @param object $formdata
-     * @param string $descendantdata
-     * @param integer $qnum
-     * @param boolean $blankquestionnaire
-     *
+     * True if question type allows responses.
      */
-    abstract protected function question_survey_display($formdata, $descendantsdata, $blankquestionnaire);
+    public function supports_responses() {
+        return !empty($this->responseclass());
+    }
 
     /**
-     * Question specific response display method.
-     *
-     * @param object $data
-     * @param integer $qnum
-     *
+     * True if question type supports feedback options. False by default.
      */
-    abstract protected function response_survey_display($data);
+    public function supports_feedback() {
+        return false;
+    }
+
+    /**
+     * True if question type supports feedback scores and weights. Same as supports_feedback() by default.
+     */
+    public function supports_feedback_scores() {
+        return $this->supports_feedback();
+    }
+
+    /**
+     * True if the question supports feedback and has valid settings for feedback. Override if the default logic is not enough.
+     */
+    public function valid_feedback() {
+        if ($this->supports_feedback() && $this->has_choices() && $this->required()) {
+            foreach ($this->choices as $choice) {
+                if ($choice->value != null) {
+                    return true;
+                }
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Provide the feedback scores for all requested response id's. This should be provided only by questions that provide feedback.
+     * @param array $rids
+     * @return array | boolean
+     */
+    public function get_feedback_scores(array $rids) {
+        if ($this->valid_feedback() && isset($this->response) && is_object($this->response) &&
+            is_subclass_of($this->response, '\\mod_questionnaire\\response\\base')) {
+            return $this->response->get_feedback_scores($rids);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Get the maximum score possible for feedback if appropriate. Override if default behaviour is not correct.
+     * @return int | boolean
+     */
+    public function get_feedback_maxscore() {
+        if ($this->valid_feedback()) {
+            $maxscore = 0;
+            foreach ($this->choices as $choice) {
+                if (isset($choice->value) && ($choice->value != null)) {
+                    if ($choice->value > $maxscore) {
+                        $maxscore = $choice->value;
+                    }
+                }
+            }
+        } else {
+            $maxscore = false;
+        }
+        return $maxscore;
+    }
 
     /**
      * Check question's form data for complete response.
@@ -280,12 +507,12 @@ abstract class base {
      * @return boolean
      */
     public function response_complete($responsedata) {
-        return !(($this->required == 'y') && ($this->deleted == 'n') &&
+        return !($this->required() && ($this->deleted == 'n') &&
                  (!isset($responsedata->{'q'.$this->id}) || $responsedata->{'q'.$this->id} == ''));
     }
 
     /**
-     * Check question's form data for valid response. Override this is type has specific format requirements.
+     * Check question's form data for valid response. Override this if type has specific format requirements.
      *
      * @param object $responsedata The data entered into the response.
      * @return boolean
@@ -339,13 +566,8 @@ abstract class base {
      * @param array $choicerecords An array of choice records with 'content' and 'value' properties.
      * @param boolean $calcposition Whether or not to calculate the next available position in the survey.
      */
-    public function add($questionrecord, array $choicerecords = null, boolean $calcposition = null) {
+    public function add($questionrecord, array $choicerecords = null, $calcposition = true) {
         global $DB;
-
-        // Default boolean parameter to "true".
-        if ($calcposition === null) {
-            $calcposition = true;
-        }
 
         // Create new question.
         if ($calcposition) {
@@ -353,7 +575,7 @@ abstract class base {
             $sql = 'SELECT MAX(position) as maxpos '.
                    'FROM {questionnaire_question} '.
                    'WHERE survey_id = ? AND deleted = ?';
-            $params = array('survey_id' => $questionrecord->survey_id, 'deleted' => 'n');
+            $params = ['survey_id' => $questionrecord->survey_id, 'deleted' => 'n'];
             if ($record = $DB->get_record_sql($sql, $params)) {
                 $questionrecord->position = $record->maxpos + 1;
             } else {
@@ -388,7 +610,7 @@ abstract class base {
                 $qid = $this->id;
             }
             foreach ($this->choices as $key => $choice) {
-                $choicrecord = new \stdClass();
+                $choicerecord = new \stdClass();
                 $choicerecord->id = $key;
                 $choicerecord->question_id = $qid;
                 $choicerecord->content = $choice->content;
@@ -424,14 +646,58 @@ abstract class base {
      */
     public function delete_choice($choice) {
         global $DB;
+
         $retvalue = true;
         if (is_int($choice)) {
             $cid = $choice;
         } else {
             $cid = $choice->id;
         }
-        if ($DB->delete_records('questionnaire_quest_choice', array('id' => $cid))) {
+        if ($DB->delete_records('questionnaire_quest_choice', ['id' => $cid])) {
             unset($this->choices[$cid]);
+        } else {
+            $retvalue = false;
+        }
+        return $retvalue;
+    }
+
+    public function update_dependency($dependencyrecord) {
+        global $DB;
+        return $DB->update_record('questionnaire_dependency', $dependencyrecord);
+    }
+
+    public function add_dependency($dependencyrecord) {
+        global $DB;
+
+        $retvalue = true;
+        if ($did = $DB->insert_record('questionnaire_dependency', $dependencyrecord)) {
+            $this->dependencies[$did] = new \stdClass();
+            $this->dependencies[$did]->dependquestionid = $dependencyrecord->dependquestionid;
+            $this->dependencies[$did]->dependchoiceid = $dependencyrecord->dependchoiceid;
+            $this->dependencies[$did]->dependlogic = $dependencyrecord->dependlogic;
+            $this->dependencies[$did]->dependandor = $dependencyrecord->dependandor;
+        } else {
+            $retvalue = false;
+        }
+        return $retvalue;
+    }
+
+    /**
+     * Delete the dependency from the question object and the database.
+     *
+     * @param integer|object $dependency Either the integer id of the dependency, or the dependency record.
+     */
+    public function delete_dependency($dependency) {
+        global $DB;
+
+        $retvalue = true;
+        if (is_int($dependency)) {
+            $did = $dependency;
+        } else {
+            $did = $dependency->id;
+        }
+        if ($DB->delete_records('questionnaire_dependency', ['id' => $did])) {
+            unset($this->dependencies[$did]);
         } else {
             $retvalue = false;
         }
@@ -453,35 +719,79 @@ abstract class base {
             $qid = $this->id;
         }
         $this->required = $rval;
-        return $DB->set_field('questionnaire_question', 'required', $rval, array('id' => $qid));
+        return $DB->set_field('questionnaire_question', 'required', $rval, ['id' => $qid]);
     }
+
     /**
-     * Main function for displaying a question.
+     * Question specific display method.
      *
+     * @param object $formdata
+     * @param array $descendantdata
+     * @param boolean $blankquestionnaire
+     *
+     */
+    abstract protected function question_survey_display($formdata, $descendantsdata, $blankquestionnaire);
+
+    /**
+     * Question specific response display method.
+     *
+     * @param object $data
+     * @param integer $qnum
+     *
+     */
+    abstract protected function response_survey_display($data);
+
+    /**
+     * Override and return a form template if provided. Output of question_survey_display is iterpreted based on this.
+     * @return boolean | string
+     */
+    public function question_template() {
+        return false;
+    }
+
+    /**
+     * Override and return a form template if provided. Output of response_survey_display is iterpreted based on this.
+     * @return boolean | string
+     */
+    public function response_template() {
+        return false;
+    }
+
+    /**
+     * Get the output for question renderers / templates.
+     * @param object $formdata
+     * @param array $dependants Array of all questions/choices depending on this question.
+     * @param integer $qnum
+     * @param boolean $blankquestionnaire
+     */
+    public function question_output($formdata, $dependants=[], $qnum='', $blankquestionnaire) {
+        $pagetags = $this->questionstart_survey_display($qnum, $formdata);
+        $pagetags->qformelement = $this->question_survey_display($formdata, $dependants, $blankquestionnaire);
+        return $pagetags;
+    }
+
+    /**
+     * Get the output for question renderers / templates.
      * @param object $formdata
      * @param string $descendantdata
      * @param integer $qnum
      * @param boolean $blankquestionnaire
-     *
      */
-    private function question_display($formdata, $descendantsdata, $qnum='', $blankquestionnaire) {
-        $this->questionstart_survey_display($qnum, $formdata, $descendantsdata);
-        $this->question_survey_display($formdata, $descendantsdata, $blankquestionnaire);
-        $this->questionend_survey_display($qnum);
+    public function response_output($data, $qnum='') {
+        $pagetags = $this->questionstart_survey_display($qnum, $data);
+        $pagetags->qformelement = $this->response_survey_display($data);
+        return $pagetags;
     }
 
-    public function survey_display($formdata, $descendantsdata, $qnum='', $blankquestionnaire=false) {
-        $this->question_display($formdata, $descendantsdata, $qnum, $blankquestionnaire);
-    }
-
-    public function response_display($data, $qnum='') {
-        $this->questionstart_survey_display($qnum, $data);
-        $this->response_survey_display($data);
-        $this->questionend_survey_display($qnum);
-    }
-
+    /**
+     * Get the output for the start of the questions in a survey.
+     * @param integer $qnum
+     * @param object $formdata
+     */
     public function questionstart_survey_display($qnum, $formdata='') {
         global $OUTPUT, $SESSION, $questionnaire, $PAGE;
+
+        $pagetags = new \stdClass();
         $currenttab = $SESSION->questionnaire->current_tab;
         $pagetype = $PAGE->pagetype;
         $skippedquestion = false;
@@ -494,10 +804,9 @@ abstract class base {
             $nonumbering = true;
         }
         // If we are on report page and this questionnaire has dependquestions and this question was skipped.
-        if ( ($pagetype == 'mod-questionnaire-myreport' || $pagetype == 'mod-questionnaire-report')
-                        && $nonumbering == false
-                        && $formdata
-                        && $this->dependquestion != 0 && !array_key_exists('q'.$this->id, $formdata)) {
+        if (($pagetype == 'mod-questionnaire-myreport' || $pagetype == 'mod-questionnaire-report') &&
+            ($nonumbering == false) && !empty($formdata) && !empty($this->dependencies) &&
+            !array_key_exists('q'.$this->id, $formdata)) {
             $skippedquestion = true;
             $skippedclass = ' unselected';
             $qnum = '<span class="'.$skippedclass.'">('.$qnum.')</span>';
@@ -506,94 +815,50 @@ abstract class base {
         // In report mode, If questionnaire is set to no numbering,
         // also hide answers to questions that have not been answered.
         $displayclass = 'qn-container';
-        if ($pagetype == 'mod-questionnaire-preview' || ($nonumbering
-                        && ($currenttab == 'mybyresponse' || $currenttab == 'individualresp'))) {
-            $parent = questionnaire_get_parent ($this);
-            if ($parent) {
-                $dependquestion = $parent[$this->id]['qdependquestion'];
-                $dependchoice = $parent[$this->id]['qdependchoice'];
-                $parenttype = $parent[$this->id]['parenttype'];
-                $displayclass = 'hidedependquestion';
-                if (isset($formdata->{'q'.$this->id}) && $formdata->{'q'.$this->id}) {
-                    $displayclass = 'qn-container';
-                }
-
-                if ($this->type_id == QUESRATE) {
-                    foreach ($this->choices as $key => $choice) {
-                        if (isset($formdata->{'q'.$this->id.'_'.$key})) {
-                            $displayclass = 'qn-container';
-                            break;
-                        }
-                    }
-                }
-
-                if (isset($formdata->$dependquestion) && $formdata->$dependquestion == $dependchoice) {
-                    $displayclass = 'qn-container';
-                }
-
-                if ($parenttype == QUESDROP) {
-                    $qnid = preg_quote('qn-'.$this->id, '/');
-                    if (isset($formdata->$dependquestion) && preg_match("/$qnid/", $formdata->$dependquestion)) {
-                        $displayclass = 'qn-container';
-                    }
-                }
-            }
+        if ($pagetype == 'mod-questionnaire-preview' || ($nonumbering &&
+            ($currenttab == 'mybyresponse' || $currenttab == 'individualresp'))) {
+            // This needs to be done to ensure all dependency data is loaded.
+            // TODO - Perhaps this should be a function called by the questionnaire after it loads all questions?
+            $questionnaire->load_parents($this);
+            // Want this to come from the renderer, meaning we need $questionnaire.
+            $pagetags->dependencylist = $questionnaire->renderer->get_dependency_html($this->id, $this->dependencies);
         }
 
-        echo html_writer::start_tag('fieldset', array('class' => $displayclass, 'id' => 'qn-'.$this->id));
-        echo html_writer::start_tag('legend', array('class' => 'qn-legend'));
+        $pagetags->fieldset = (object)['id' => $this->id, 'class' => $displayclass];
 
         // Do not display the info box for the label question type.
         if ($this->type_id != QUESSECTIONTEXT) {
             if (!$nonumbering) {
-                echo html_writer::start_tag('div', array('class' => 'qn-info'));
-                echo html_writer::start_tag('div', array('class' => 'accesshide'));
-                echo get_string('questionnum', 'questionnaire');
-                echo html_writer::end_tag('div');
-                echo html_writer::tag('h2', $qnum, array('class' => 'qn-number'));
-                echo html_writer::end_tag('div');
+                $pagetags->qnum = $qnum;
             }
             $required = '';
-            if ($this->required == 'y') {
-                $required = html_writer::start_tag('div', array('class' => 'accesshide'));
+            if ($this->required()) {
+                $required = html_writer::start_tag('div', ['class' => 'accesshide']);
                 $required .= get_string('required', 'questionnaire');
                 $required .= html_writer::end_tag('div');
-                $required .= html_writer::empty_tag('img',
-                        array('class' => 'req',
-                                'title' => get_string('required', 'questionnaire'),
-                                'alt' => get_string('required', 'questionnaire'),
-                                'src' => $OUTPUT->pix_url('req')));
+                $required .= html_writer::empty_tag('img', ['class' => 'req', 'title' => get_string('required', 'questionnaire'),
+                    'alt' => get_string('required', 'questionnaire'), 'src' => $OUTPUT->image_url('req')]);
             }
-            echo $required;
+            $pagetags->required = $required; // Need to replace this with better renderer / template?
         }
         // If question text is "empty", i.e. 2 non-breaking spaces were inserted, empty it.
         if ($this->content == '<p>  </p>') {
             $this->content = '';
         }
-        echo html_writer::end_tag('legend');
-        echo html_writer::start_tag('div', array('class' => 'qn-content'));
-        echo html_writer::start_tag('div', array('class' => 'qn-question '.$skippedclass));
+        $pagetags->skippedclass = $skippedclass;
         if ($this->type_id == QUESNUMERIC || $this->type_id == QUESTEXT ||
             $this->type_id == QUESDROP) {
-            echo html_writer::start_tag('label', array('for' => $this->type . $this->id));
+            $pagetags->label = (object)['for' => self::qtypename($this->type_id) . $this->id];
         }
         if ($this->type_id == QUESESSAY) {
-            echo html_writer::start_tag('label', array('for' => 'edit-q' . $this->id));
+            $pagetags->label = (object)['for' => 'edit-q' . $this->id];
         }
-        $options = array('noclean' => true, 'para' => false, 'filter' => true, 'context' => $this->context, 'overflowdiv' => true);
-        echo format_text(file_rewrite_pluginfile_urls($this->content, 'pluginfile.php',
+        $options = ['noclean' => true, 'para' => false, 'filter' => true, 'context' => $this->context, 'overflowdiv' => true];
+        $content = format_text(file_rewrite_pluginfile_urls($this->content, 'pluginfile.php',
             $this->context->id, 'mod_questionnaire', 'question', $this->id), FORMAT_HTML, $options);
-        if ($this->type_id == QUESNUMERIC || $this->type_id == QUESTEXT ||
-            $this->type_id == QUESESSAY || $this->type_id == QUESDROP) {
-            echo html_writer::end_tag('label');
-        }
-        echo html_writer::end_tag('div');
-        echo html_writer::start_tag('div', array('class' => 'qn-answer'));
-    }
+        $pagetags->qcontent = $content;
 
-    public function questionend_survey_display() {
-        echo html_writer::end_tag('div');
-        echo html_writer::end_tag('fieldset');
+        return $pagetags;
     }
 
     private function response_check_required ($data) {
@@ -606,7 +871,7 @@ abstract class base {
                 }
             }
         }
-        if ( ($this->required == 'y') &&  empty($data->{'q'.$this->id}) ) {
+        if ($this->required() &&  empty($data->{'q'.$this->id}) ) {
             return ('*');
         } else {
             return ('&nbsp;');
@@ -621,19 +886,30 @@ abstract class base {
     /**
      * Override this, or any of the internal methods, to provide specific form data for editing the question type.
      * The structure of the elements here is the default layout for the question form.
+     * @param edit_question_form $form The main moodleform object.
+     * @param questionnaire $questionnaire The questionnaire being edited.
+     * @return bool
      */
-    public function edit_form(\MoodleQuickForm $mform, $questionnaire, $modcontext) {
+    public function edit_form(edit_question_form $form, questionnaire $questionnaire) {
+        $mform =& $form->_form;
         $this->form_header($mform);
         $this->form_name($mform);
         $this->form_required($mform);
         $this->form_length($mform);
         $this->form_precise($mform);
-        $this->form_dependencies($mform, $questionnaire);
-        $this->form_question_text($mform, $modcontext);
+        $this->form_question_text($mform, $form->_customdata['modcontext']);
 
         if ($this->has_choices()) {
             $this->allchoices = $this->form_choices($mform, $this->choices);
         }
+
+        // Added for advanced dependencies, parameter $editformobject is needed to use repeat_elements.
+        if ($questionnaire->navigate > 0) {
+            $this->form_dependencies($form, $questionnaire->questions);
+        }
+
+        // Exclude the save/cancel buttons from any collapsing sections.
+        $mform->closeHeaderBefore('buttonar');
 
         // Hidden fields.
         $mform->addElement('hidden', 'id', 0);
@@ -653,7 +929,7 @@ abstract class base {
             $buttonarray[] = &$mform->createElement('submit', 'makecopy', get_string('saveasnew', 'questionnaire'));
         }
         $buttonarray[] = &$mform->createElement('cancel');
-        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
+        $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
 
         return true;
     }
@@ -675,14 +951,14 @@ abstract class base {
 
     protected function form_name(\MoodleQuickForm $mform) {
         $mform->addElement('text', 'name', get_string('optionalname', 'questionnaire'),
-                        array('size' => '30', 'maxlength' => '30'));
+                        ['size' => '30', 'maxlength' => '30']);
         $mform->setType('name', PARAM_TEXT);
         $mform->addHelpButton('name', 'optionalname', 'questionnaire');
         return $mform;
     }
 
     protected function form_required(\MoodleQuickForm $mform) {
-        $reqgroup = array();
+        $reqgroup = [];
         $reqgroup[] =& $mform->createElement('radio', 'required', '', get_string('yes'), 'y');
         $reqgroup[] =& $mform->createElement('radio', 'required', '', get_string('no'), 'n');
         $mform->addGroup($reqgroup, 'reqgroup', get_string('required', 'questionnaire'), ' ', false);
@@ -698,39 +974,97 @@ abstract class base {
         self::form_precise_text($mform, $helpname);
     }
 
-    protected function form_dependencies(\MoodleQuickForm $mform, $questionnaire) {
-        // Dependence fields.
-
-        if ($questionnaire->navigate) {
-            $position = isset($this->position) ? $this->position : count($questionnaire->questions) + 1;
-            $dependencies = questionnaire_get_dependencies($questionnaire->questions, $position);
-            $canchangeparent = true;
-            if (count($dependencies) > 1) {
-                if (isset($this->qid)) {
-                    $haschildren = questionnaire_get_descendants ($questionnaire->questions, $this->qid);
-                    if (count($haschildren) !== 0) {
-                        $canchangeparent = false;
-                        $parent = questionnaire_get_parent ($this);
-                        $fixeddependency = $parent [$this->id]['parent'];
-                    }
-                }
-                if ($canchangeparent) {
-                    $this->dependquestion = isset($this->dependquestion) ? $this->dependquestion.','.
-                                    $this->dependchoice : '0,0';
-                    $group = array($mform->createElement('selectgroups', 'dependquestion', '', $dependencies) );
-                    $mform->addGroup($group, 'selectdependency', get_string('dependquestion', 'questionnaire'), '', false);
-                    $mform->addHelpButton('selectdependency', 'dependquestion', 'questionnaire');
-                } else {
-                    $mform->addElement('static', 'selectdependency', get_string('dependquestion', 'questionnaire'),
-                                    '<div class="dimmed_text">'.$fixeddependency.'</div>');
-                }
-                $mform->addHelpButton('selectdependency', 'dependquestion', 'questionnaire');
+    /**
+     * @param \MoodleQuickForm $mform The moodle form to add elements to.
+     * @param $questionnaire
+     * @param $editquestionformobject
+     * @return bool
+     */
+    protected function form_dependencies($form, $questions) {
+        // Create a new area for multiple dependencies.
+        $mform = $form->_form;
+        $position = ($this->position !== 0) ? $this->position : count($questions) + 1;
+        $dependencies = [];
+        $dependencies[''][0] = get_string('choosedots');
+        foreach ($questions as $question) {
+            if (($question->position < $position) && !empty($question->name) &&
+                !empty($dependopts = $question->get_dependency_options())) {
+                $dependencies[$question->name] = $dependopts;
             }
         }
+
+        $children = [];
+        if (isset($this->qid)) {
+            // Use also for the delete dialogue later.
+            foreach ($questions as $questionlistitem) {
+                if ($questionlistitem->has_dependencies()) {
+                    foreach ($questionlistitem->dependencies as $key => $outerdependencies) {
+                        if ($outerdependencies->dependquestionid == $this->qid) {
+                            $children[$key] = $outerdependencies;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (count($dependencies) > 1) {
+            $mform->addElement('header', 'dependencies_hdr', get_string('dependencies', 'questionnaire'));
+            $mform->setExpanded('dependencies_hdr');
+            $mform->closeHeaderBefore('qst_and_choices_hdr');
+
+            $dependenciescountand = 0;
+            $dependenciescountor = 0;
+
+            foreach ($this->dependencies as $dependency) {
+                if ($dependency->dependandor == "and") {
+                    $dependenciescountand++;
+                } else if ($dependency->dependandor == "or") {
+                    $dependenciescountor++;
+                }
+            }
+
+            /* I decided to allow changing dependencies of parent questions, because forcing the editor to remove dependencies
+             * bottom up, starting at the lowest child question is a pain for large questionnaires.
+             * So the following "if" becomes the default and the else-branch is completely commented.
+             * TODO Since the best way to get the list of child questions is currently to click on delete (and choose not to
+             * delete), one might consider to list the child questions in addition here.
+             */
+
+            // Area for "must"-criteria.
+            $mform->addElement('static', 'mandatory', '',
+                '<div class="dimmed_text">' . get_string('mandatory', 'questionnaire') . '</div>');
+            $selectand = $mform->createElement('select', 'dependlogic_and', get_string('condition', 'questionnaire'),
+                [get_string('answernotgiven', 'questionnaire'), get_string('answergiven', 'questionnaire')]);
+            $selectand->setSelected('1');
+            $groupitemsand = [];
+            $groupitemsand[] =& $mform->createElement('selectgroups', 'dependquestions_and',
+                get_string('parent', 'questionnaire'), $dependencies);
+            $groupitemsand[] =& $selectand;
+            $groupand = $mform->createElement('group', 'selectdependencies_and', get_string('dependquestion', 'questionnaire'),
+                $groupitemsand, ' ', false);
+            $form->repeat_elements([$groupand], $dependenciescountand + 1, [],
+                'numdependencies_and', 'adddependencies_and', 2, null, true);
+
+            // Area for "can"-criteria.
+            $mform->addElement('static', 'optional', '',
+                '<div class="dimmed_text">' . get_string('optional', 'questionnaire') . '</div>');
+            $selector = $mform->createElement('select', 'dependlogic_or', get_string('condition', 'questionnaire'),
+                [get_string('answernotgiven', 'questionnaire'), get_string('answergiven', 'questionnaire')]);
+            $selector->setSelected('1');
+            $groupitemsor = [];
+            $groupitemsor[] =& $mform->createElement('selectgroups', 'dependquestions_or',
+                get_string('parent', 'questionnaire'), $dependencies);
+            $groupitemsor[] =& $selector;
+            $groupor = $mform->createElement('group', 'selectdependencies_or', get_string('dependquestion', 'questionnaire'),
+                $groupitemsor, ' ', false);
+            $form->repeat_elements([$groupor], $dependenciescountor + 1, [], 'numdependencies_or',
+                'adddependencies_or', 2, null, true);
+        }
+        return true;
     }
 
     protected function form_question_text(\MoodleQuickForm $mform, $context) {
-        $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'trusttext' => true, 'context' => $context);
+        $editoroptions = ['maxfiles' => EDITOR_UNLIMITED_FILES, 'trusttext' => true, 'context' => $context];
         $mform->addElement('editor', 'content', get_string('text', 'questionnaire'), null, $editoroptions);
         $mform->setType('content', PARAM_RAW);
         $mform->addRule('content', null, 'required', null, 'client');
@@ -751,7 +1085,7 @@ abstract class base {
         }
 
         $mform->addElement('html', '<div class="qoptcontainer">');
-        $options = array('wrap' => 'virtual', 'class' => 'qopts');
+        $options = ['wrap' => 'virtual', 'class' => 'qopts'];
         $mform->addElement('textarea', 'allchoices', get_string('possibleanswers', 'questionnaire'), $options);
         $mform->setType('allchoices', PARAM_RAW);
         $mform->addRule('allchoices', null, 'required', null, 'client');
@@ -771,7 +1105,7 @@ abstract class base {
     }
 
     static public function form_length_text(\MoodleQuickForm $mform, $helpname = '', $value = 0) {
-        $mform->addElement('text', 'length', get_string($helpname, 'questionnaire'), array('size' => '1'), $value);
+        $mform->addElement('text', 'length', get_string($helpname, 'questionnaire'), ['size' => '1'], $value);
         $mform->setType('length', PARAM_INT);
         if (!empty($helpname)) {
             $mform->addHelpButton('length', $helpname, 'questionnaire');
@@ -786,7 +1120,7 @@ abstract class base {
     }
 
     static public function form_precise_text(\MoodleQuickForm $mform, $helpname = '', $value = 0) {
-        $mform->addElement('text', 'precise', get_string($helpname, 'questionnaire'), array('size' => '1'));
+        $mform->addElement('text', 'precise', get_string($helpname, 'questionnaire'), ['size' => '1']);
         $mform->setType('precise', PARAM_INT);
         if (!empty($helpname)) {
             $mform->addHelpButton('precise', $helpname, 'questionnaire');
@@ -801,7 +1135,6 @@ abstract class base {
         global $DB;
 
         $this->form_preprocess_data($formdata);
-
         if (!empty($formdata->qid)) {
 
             // Update existing question.
@@ -810,9 +1143,9 @@ abstract class base {
             $formdata->format  = $formdata->content['format'];
             $formdata->content = $formdata->content['text'];
             $formdata->content = file_save_draft_area_files($formdata->itemid, $questionnaire->context->id, 'mod_questionnaire',
-                'question', $formdata->qid, array('subdirs' => true), $formdata->content);
+                'question', $formdata->qid, ['subdirs' => true], $formdata->content);
 
-            $fields = array('name', 'type_id', 'length', 'precise', 'required', 'content', 'dependquestion', 'dependchoice');
+            $fields = ['name', 'type_id', 'length', 'precise', 'required', 'content'];
             $questionrecord = new \stdClass();
             $questionrecord->id = $formdata->qid;
             foreach ($fields as $f) {
@@ -820,17 +1153,17 @@ abstract class base {
                     $questionrecord->$f = trim($formdata->$f);
                 }
             }
-            $result = $this->update($questionrecord, false);
 
-            if (questionnaire_has_dependencies($questionnaire->questions)) {
+            $this->update($questionrecord, false);
+
+            if ($questionnaire->has_dependencies()) {
                 questionnaire_check_page_breaks($questionnaire);
             }
         } else {
             // Create new question:
             // Need to update any image content after the question is created, so create then update the content.
             $formdata->survey_id = $formdata->sid;
-            $fields = array('survey_id', 'name', 'type_id', 'length', 'precise', 'required', 'position',
-                            'dependquestion', 'dependchoice');
+            $fields = ['survey_id', 'name', 'type_id', 'length', 'precise', 'required', 'position'];
             $questionrecord = new \stdClass();
             foreach ($fields as $f) {
                 if (isset($formdata->$f)) {
@@ -846,8 +1179,8 @@ abstract class base {
             $formdata->format  = $formdata->content['format'];
             $formdata->content = $formdata->content['text'];
             $content           = file_save_draft_area_files($formdata->itemid, $questionnaire->context->id, 'mod_questionnaire',
-                'question', $this->qid, array('subdirs' => true), $formdata->content);
-            $result = $DB->set_field('questionnaire_question', 'content', $content, array('id' => $this->qid));
+                'question', $this->qid, ['subdirs' => true], $formdata->content);
+            $DB->set_field('questionnaire_question', 'content', $content, ['id' => $this->qid]);
         }
 
         if ($this->has_choices()) {
@@ -908,6 +1241,72 @@ abstract class base {
                 $cidx++;
             }
         }
+
+        // Now handle the dependencies the same way as choices.
+        // Shouldn't the MOODLE-API provide this case of insert/update/delete?.
+        // First handle dependendies updates.
+        if (!isset($formdata->fixed_deps)) {
+            if ($this->has_dependencies() && !isset($formdata->makecopy)) {
+                $oldcount = count($this->dependencies);
+                $edependency = reset($this->dependencies);
+                $ekey = key($this->dependencies);
+            } else {
+                $oldcount = 0;
+            }
+
+            $cidx = 0;
+            $nidx = 0;
+
+            // All 3 arrays in this object have the same length.
+            if (isset($formdata->dependquestion)) {
+                $newcount = count($formdata->dependquestion);
+            } else {
+                $newcount = 0;
+            }
+            while (($nidx < $newcount) && ($cidx < $oldcount)) {
+                if ($formdata->dependquestion[$nidx] != $edependency->dependquestionid ||
+                    $formdata->dependchoice[$nidx] != $edependency->dependchoiceid ||
+                    $formdata->dependlogic_cleaned[$nidx] != $edependency->dependlogic ||
+                    $formdata->dependandor[$nidx] != $edependency->dependandor) {
+
+                    $dependencyrecord = new \stdClass();
+                    $dependencyrecord->id = $ekey;
+                    $dependencyrecord->questionid = $this->qid;
+                    $dependencyrecord->surveyid = $this->survey_id;
+                    $dependencyrecord->dependquestionid = $formdata->dependquestion[$nidx];
+                    $dependencyrecord->dependchoiceid = $formdata->dependchoice[$nidx];
+                    $dependencyrecord->dependlogic = $formdata->dependlogic_cleaned[$nidx];
+                    $dependencyrecord->dependandor = $formdata->dependandor[$nidx];
+
+                    $this->update_dependency($dependencyrecord);
+                }
+                $nidx++;
+                $edependency = next($this->dependencies);
+                $ekey = key($this->dependencies);
+                $cidx++;
+            }
+
+            while ($nidx < $newcount) {
+                // New dependencies.
+                $dependencyrecord = new \stdClass();
+                $dependencyrecord->questionid = $this->qid;
+                $dependencyrecord->surveyid = $formdata->sid;
+                $dependencyrecord->dependquestionid = $formdata->dependquestion[$nidx];
+                $dependencyrecord->dependchoiceid = $formdata->dependchoice[$nidx];
+                $dependencyrecord->dependlogic = $formdata->dependlogic_cleaned[$nidx];
+                $dependencyrecord->dependandor = $formdata->dependandor[$nidx];
+
+                $this->add_dependency($dependencyrecord);
+                $nidx++;
+            }
+
+            while ($cidx < $oldcount) {
+                end($this->dependencies);
+                $ekey = key($this->dependencies);
+                $this->delete_dependency($ekey);
+                $cidx++;
+            }
+        }
     }
 
     /**
@@ -921,11 +1320,35 @@ abstract class base {
             $formdata->allchoices = trim($formdata->allchoices);
             $this->form_preprocess_choicedata($formdata);
         }
-        $dependency = array();
-        if (isset($formdata->dependquestion) && $formdata->dependquestion != 0) {
-            $dependency = explode(",", $formdata->dependquestion);
-            $formdata->dependquestion = $dependency[0];
-            $formdata->dependchoice = $dependency[1];
+
+        // Dependencies logic does not (yet) need preprocessing, might change with more complex conditions.
+        // Check, if entries exist and whether they are not only 0 (form elements created but no value selected).
+        if (isset($formdata->dependquestions_and) &&
+            !(count(array_keys($formdata->dependquestions_and, 0, true)) == count($formdata->dependquestions_and))) {
+            for ($i = 0; $i < count($formdata->dependquestions_and); $i++) {
+                $dependency = explode(",", $formdata->dependquestions_and[$i]);
+
+                if ($dependency[0] != 0) {
+                    $formdata->dependquestion[] = $dependency[0];
+                    $formdata->dependchoice[] = $dependency[1];
+                    $formdata->dependlogic_cleaned[] = $formdata->dependlogic_and[$i];
+                    $formdata->dependandor[] = "and";
+                }
+            }
+        }
+
+        if (isset($formdata->dependquestions_or) &&
+            !(count(array_keys($formdata->dependquestions_or, 0, true)) == count($formdata->dependquestions_or))) {
+            for ($i = 0; $i < count($formdata->dependquestions_or); $i++) {
+                $dependency = explode(",", $formdata->dependquestions_or[$i]);
+
+                if ($dependency[0] != 0) {
+                    $formdata->dependquestion[] = $dependency[0];
+                    $formdata->dependchoice[] = $dependency[1];
+                    $formdata->dependlogic_cleaned[] = $formdata->dependlogic_or[$i];
+                    $formdata->dependandor[] = "or";
+                }
+            }
         }
         return true;
     }
@@ -954,7 +1377,7 @@ abstract class base {
             $userfields .= $userfields === '' ? '' : ', ';
             $userfields .= 'u.'.$field;
         }
-        $userfields .= ', u.id as userid';
+        $userfields .= ', u.id as usrid';
         return $userfields;
     }
 }

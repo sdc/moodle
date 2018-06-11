@@ -33,3 +33,53 @@ function gen_one_to_three() {
         yield $i;
     }
 }
+
+const TEST = 'Hello';
+
+class testing {
+    const TEST = 'Hello';
+    const ok = 'a';
+
+    public function something() {
+        const TEST = 'This is not a class constant';
+    }
+}
+
+interface testing {
+    const TEST = 'Hello';
+    const ok = 'a';
+
+    public function something() {
+        const TEST = 'This is not an interface constant';
+    }
+}
+
+$a = new class {
+    const TEST = 'Hello';
+    const ok = 'a';
+
+    public function something() {
+        const TEST = 'This is not a class constant';
+    }
+}
+
+
+function myTest(callable $callableMethod) {}
+
+goto end;
+
+end:
+echo 'something';
+
+function testYieldFrom() {
+    yield from [3, 4];
+    yield
+		from [3, 4]; // This is yield from, but tokenized as two T_YIELD_FROM tokens.
+    yield /*something*/ from [3, 4]; // Test against false positive.
+}
+
+
+__halt_compiler();
+
+bla();
+const ok = 'a';

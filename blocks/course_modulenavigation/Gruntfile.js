@@ -15,12 +15,12 @@
 /* jshint node: true, browser: false */
 
 /**
- * @copyright  2014 Andrew Nicols
+ * Grunt config.
+ *
+ * @package    block_course_modulenavigation
+ * @copyright  2016 Digidago <contact@digidago.com><www.digidago.com>
+ * @author     Sylvain Revenu | Nick Papoutsis | Bas Brands | DigiDago
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
- * Grunt configuration
  */
 
 
@@ -75,6 +75,20 @@ module.exports = function(grunt) {
                 spawn: false,
                 livereload: true
             }
+        },
+        csslint: {
+            strict: {
+                options: {
+                    import: 2
+                },
+                src: ['styles.css']
+            },
+            lax: {
+                options: {
+                    import: false
+                },
+                src: ['styles.css']
+            }
         }
     });
 
@@ -83,6 +97,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("grunt-text-replace");
     grunt.loadNpmTasks("grunt-exec");
+    grunt.loadNpmTasks('grunt-contrib-csslint');
 
     // Register tasks.
     grunt.registerTask("default", ["watch"]);

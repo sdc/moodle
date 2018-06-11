@@ -13,6 +13,11 @@
 
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+    @package    block_course_modulenavigation
+    @copyright  2016 Digidago <contact@digidago.com>
+    @author     Sylvain Revenu | Nick Papoutsis | Bas Brands | DigiDago
+    @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 }}
 {{!
     @template block-course_modulenavigation/coursenave
@@ -35,7 +40,7 @@
     {{#sections}}
         {{#selected}}
         <div class="section section-default">
-            <div class="section-heading" role="tab" id="heading{{number}}">
+            <div class="module-navigation-section-heading" role="tab" id="heading{{number}}">
               <div class="section-title">
                 <ul class="pagination">
                     {{#hasprev}}
@@ -72,7 +77,7 @@
                           </div>
                       {{/completionon}}
                           <div class="activityname">
-                          {{name}}
+                          {{{name}}}
                           </div>
                     </a>
                     </li>

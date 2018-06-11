@@ -202,7 +202,7 @@ class moodlestandard_testcase extends local_codechecker_testcase {
             22 => 'T_FINAL',
             23 => 1,
             24 => 1,
-            25 => 1,
+            25 => 0,
             26 => 1));
         $this->set_warnings(array());
 
@@ -279,9 +279,10 @@ class moodlestandard_testcase extends local_codechecker_testcase {
         // - line => number of problems,  or
         // - line => array of contents for message / source problem matching.
         // - line => string of contents for message / source problem matching (only 1).
-        $this->set_errors(array());
-        $this->set_warnings(array(
-            5 => array('function ereg_replace', 'use call_user_func instead', '@Source: PHPCompat')));
+        $this->set_errors(array(
+            5 => array('Function ereg_replace', 'Use call_user_func instead', '@Source: PHPCompat')
+        ));
+        $this->set_warnings(array());
 
         // Let's do all the hard work!
         $this->verify_cs_results();
@@ -302,7 +303,7 @@ class moodlestandard_testcase extends local_codechecker_testcase {
         // - line => array of contents for message / source problem matching.
         // - line => string of contents for message / source problem matching (only 1).
         $this->set_errors(array(
-            6 => array('call-time pass-by-reference is prohibited'),
+            6 => array('call-time pass-by-reference is deprecated'),
             7 => array('@Source: PHPCompat')));
         $this->set_warnings(array());
 
@@ -405,7 +406,21 @@ class moodlestandard_testcase extends local_codechecker_testcase {
                                45 => 0,
                                46 => 'Expected 1 space after "/"; 2 found',
                                47 => 'Expected 1 space before "/"; 2 found',
-
+                               48 => 0,
+                               49 => 0,
+                               50 => 0,
+                               51 => 0,
+                               52 => 0,
+                               53 => 0,
+                               54 => 0,
+                               55 => 0,
+                               56 => 0,
+                               57 => 0,
+                               58 => 0,
+                               59 => 0,
+                               60 => 0,
+                               61 => 0,
+                               62 => 0
                           ));
         $this->set_warnings(array());
 
@@ -446,9 +461,22 @@ class moodlestandard_testcase extends local_codechecker_testcase {
         // - line => number of problems,  or
         // - line => array of contents for message / source problem matching.
         // - line => string of contents for message / source problem matching (only 1).
+        $this->set_errors(array(
+            19 => 'Expected MOODLE_INTERNAL check or config.php inclusion'
+        ));
+        $this->set_warnings(array());
+
+        $this->verify_cs_results();
+    }
+
+    public function test_moodle_files_moodleinternal_warning() {
+        $this->set_standard('moodle');
+        $this->set_sniff('moodle.Files.MoodleInternal');
+        $this->set_fixture(__DIR__ . '/fixtures/moodle_files_moodleinternal/warning.php');
+
         $this->set_errors(array());
         $this->set_warnings(array(
-            19 => 'Expected MOODLE_INTERNAL check or config.php inclusion'
+            32 => 'Expected MOODLE_INTERNAL check or config.php inclusion'
         ));
 
         $this->verify_cs_results();
@@ -517,6 +545,74 @@ class moodlestandard_testcase extends local_codechecker_testcase {
         $this->set_standard('moodle');
         $this->set_sniff('moodle.Files.MoodleInternal');
         $this->set_fixture(__DIR__ . '/fixtures/moodle_files_moodleinternal/old_style_if_die_ok.php');
+
+        $this->set_errors(array());
+        $this->set_warnings(array());
+
+        $this->verify_cs_results();
+    }
+
+    public function test_moodle_files_requirelogin_problem() {
+        $this->set_standard('moodle');
+        $this->set_sniff('moodle.Files.RequireLogin');
+        $this->set_fixture(__DIR__ . '/fixtures/moodle_files_requirelogin/problem.php');
+
+        $this->set_errors(array());
+        $this->set_warnings(array(
+            25 => 'check (require_login, require_course_login, admin_externalpage_setup) following config inclusion. None found'
+        ));
+
+        $this->verify_cs_results();
+    }
+
+    public function test_moodle_files_requirelogin_require_login_ok() {
+        $this->set_standard('moodle');
+        $this->set_sniff('moodle.Files.RequireLogin');
+        $this->set_fixture(__DIR__ . '/fixtures/moodle_files_requirelogin/require_login_ok.php');
+
+        $this->set_errors(array());
+        $this->set_warnings(array());
+
+        $this->verify_cs_results();
+    }
+
+    public function test_moodle_files_requirelogin_require_course_login_ok() {
+        $this->set_standard('moodle');
+        $this->set_sniff('moodle.Files.RequireLogin');
+        $this->set_fixture(__DIR__ . '/fixtures/moodle_files_requirelogin/require_course_login_ok.php');
+
+        $this->set_errors(array());
+        $this->set_warnings(array());
+
+        $this->verify_cs_results();
+    }
+
+    public function test_moodle_files_requirelogin_admin_externalpage_setup_ok() {
+        $this->set_standard('moodle');
+        $this->set_sniff('moodle.Files.RequireLogin');
+        $this->set_fixture(__DIR__ . '/fixtures/moodle_files_requirelogin/admin_externalpage_setup_ok.php');
+
+        $this->set_errors(array());
+        $this->set_warnings(array());
+
+        $this->verify_cs_results();
+    }
+
+    public function test_moodle_files_requirelogin_cliscript_ok() {
+        $this->set_standard('moodle');
+        $this->set_sniff('moodle.Files.RequireLogin');
+        $this->set_fixture(__DIR__ . '/fixtures/moodle_files_requirelogin/cliscript_ok.php');
+
+        $this->set_errors(array());
+        $this->set_warnings(array());
+
+        $this->verify_cs_results();
+    }
+
+    public function test_moodle_files_requirelogin_nomoodlecookies_ok() {
+        $this->set_standard('moodle');
+        $this->set_sniff('moodle.Files.RequireLogin');
+        $this->set_fixture(__DIR__ . '/fixtures/moodle_files_requirelogin/nomoodlecookies_ok.php');
 
         $this->set_errors(array());
         $this->set_warnings(array());

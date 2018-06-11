@@ -9,104 +9,105 @@
 /**
  * Removed hash algorithms sniff tests
  *
- * @uses BaseSniffTest
+ * @group removedHashAlgorithms
+ * @group hashAlgorithms
+ *
+ * @covers PHPCompatibility_Sniffs_PHP_RemovedHashAlgorithmsSniff
+ *
+ * @uses    BaseSniffTest
  * @package PHPCompatibility
- * @author Jansen Price <jansen.price@gmail.com>
+ * @author  Jansen Price <jansen.price@gmail.com>
  */
 class RemovedHashAlgorithmsSniffTest extends BaseSniffTest
 {
-    /**
-     * Sniffed file
-     *
-     * @var PHP_CodeSniffer_File
-     */
-    protected $_sniffFile;
+    const TEST_FILE = 'sniff-examples/removed_hash_algorithms.php';
 
     /**
-     * setUp
+     * testRemovedHashAlgorithms
+     *
+     * @dataProvider dataRemovedHashAlgorithms
+     *
+     * @param string $algorithm Name of the algorithm.
+     * @param string $removedIn The PHP version in which the algorithm was removed.
+     * @param array  $line      The line number on which the error should occur.
+     * @param string $okVersion A PHP version in which the algorithm was still valid.
      *
      * @return void
      */
-    public function setUp()
+    public function testRemovedHashAlgorithms($algorithm, $removedIn, $line, $okVersion)
     {
-        parent::setUp();
+        $file = $this->sniffFile(self::TEST_FILE, $okVersion);
+        $this->assertNoViolation($file, $line);
 
-        $this->_sniffFile = $this->sniffFile('sniff-examples/removed_hash_algorithms.php');
+        $file = $this->sniffFile(self::TEST_FILE, $removedIn);
+        $this->assertError($file, $line, "The {$algorithm} hash algorithm is removed since PHP {$removedIn}");
     }
 
     /**
-     * testHashFile
+     * Data provider.
+     *
+     * @see testRemovedHashAlgorithms()
+     *
+     * @return array
+     */
+    public function dataRemovedHashAlgorithms()
+    {
+        return array(
+            array('salsa10', '5.4', 13, '5.3'),
+            array('salsa20', '5.4', 14, '5.3'),
+            array('salsa10', '5.4', 15, '5.3'),
+            array('salsa20', '5.4', 16, '5.3'),
+            array('salsa10', '5.4', 18, '5.3'),
+            array('salsa20', '5.4', 19, '5.3'),
+            array('salsa10', '5.4', 20, '5.3'),
+            array('salsa10', '5.4', 22, '5.3'),
+            array('salsa10', '5.4', 23, '5.3'),
+            array('salsa20', '5.4', 25, '5.3'),
+        );
+    }
+
+
+    /**
+     * testNoFalsePositives
+     *
+     * @dataProvider dataNoFalsePositives
+     *
+     * @param int $line The line number.
      *
      * @return void
      */
-    public function testHashFile()
+    public function testNoFalsePositives($line)
     {
-        $this->assertNoViolation($this->_sniffFile, 3);
-        $this->assertError($this->_sniffFile, 4, "The Salsa10 and Salsa20 hash algorithms have been removed since PHP 5.4");
-        $this->assertError($this->_sniffFile, 5, "The Salsa10 and Salsa20 hash algorithms have been removed since PHP 5.4");
-        $this->assertError($this->_sniffFile, 6, "The Salsa10 and Salsa20 hash algorithms have been removed since PHP 5.4");
-        $this->assertError($this->_sniffFile, 7, "The Salsa10 and Salsa20 hash algorithms have been removed since PHP 5.4");
+        $file = $this->sniffFile(self::TEST_FILE, '99.0'); // High version beyond latest deprecation.
+        $this->assertNoViolation($file, $line);
     }
 
     /**
-     * testHashHmacFile
+     * Data provider.
      *
-     * @return void
+     * @see testNoFalsePositives()
+     *
+     * @return array
      */
-    public function testHashHmacFile()
+    public function dataNoFalsePositives()
     {
-        $this->assertError($this->_sniffFile, 9, "The Salsa10 and Salsa20 hash algorithms have been removed since PHP 5.4");
+        return array(
+            array(6),
+            array(7),
+            array(8),
+        );
     }
 
-    /**
-     * testHashHmac
-     *
-     * @return void
-     */
-    public function testHashHmac()
-    {
-        $this->assertError($this->_sniffFile, 11, "The Salsa10 and Salsa20 hash algorithms have been removed since PHP 5.4");
-    }
 
     /**
-     * testHashInit
+     * Verify no notices are thrown at all.
      *
      * @return void
      */
-    public function testHashInit()
+    public function testNoViolationsInFileOnValidVersion()
     {
-        $this->assertError($this->_sniffFile, 13, "The Salsa10 and Salsa20 hash algorithms have been removed since PHP 5.4");
-    }
-
-    /**
-     * testHash
-     *
-     * @return void
-     */
-    public function testHash()
-    {
-        $this->assertError($this->_sniffFile, 15, "The Salsa10 and Salsa20 hash algorithms have been removed since PHP 5.4");
-        $this->assertError($this->_sniffFile, 16, "The Salsa10 and Salsa20 hash algorithms have been removed since PHP 5.4");
-    }
-
-    /**
-     * testIgnoreSecondParameter
-     *
-     * @return void
-     */
-    public function testIgnoreSecondParameter()
-    {
-        $this->assertNoViolation($this->_sniffFile, 17);
-    }
-
-    /**
-     * testIgnoreNonFunctionCall
-     *
-     * @return void
-     */
-    public function testIgnoreNonFunctionCall()
-    {
-        $this->assertNoViolation($this->_sniffFile, 18);
+        $file = $this->sniffFile(self::TEST_FILE, '5.3'); // Low version below the first removal.
+        $this->assertNoViolation($file);
     }
 
 }

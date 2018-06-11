@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Base class to be extended for edit plugins
@@ -34,8 +35,6 @@ class edit_base {
     public $context;
 
     public function __construct($gallery, $cm, $image, $tab, $showthumb = true) {
-        global $CFG;
-
         $this->gallery = $gallery;
         $this->cm = $cm;
         $this->image = $image;

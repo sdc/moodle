@@ -80,9 +80,14 @@ class checklist_completed extends \core\event\base {
      * @return array|null
      */
     protected function get_legacy_logdata() {
-        return array($this->courseid, 'checklist', 'complete', 'view.php?id='.$this->contextinstanceid,
-            $this->objectid, $this->contextinstanceid);
+        return array(
+            $this->courseid, 'checklist', 'complete', 'view.php?id='.$this->contextinstanceid,
+            $this->objectid, $this->contextinstanceid
+        );
     }
 
+    public static function get_objectid_mapping() {
+        return ['db' => 'checklist', 'restore' => 'checklist'];
+    }
 }
 

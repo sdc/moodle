@@ -1,8 +1,8 @@
 @section-bg:                    #fff;
-@section-body-padding:          0px;
+@section-body-padding:          0;
 @section-heading-padding:       10px 15px;
 @section-footer-padding:        @section-heading-padding;
-@section-border-radius:         0px;
+@section-border-radius:         0;
 
 //** Border color for elements within sections
 @section-inner-border:          #ddd;
@@ -15,15 +15,15 @@
 
 .border-top-radius(@radius) {
     border-top-right-radius: @radius;
-     border-top-left-radius: @radius;
+    border-top-left-radius: @radius;
 }
 .border-right-radius(@radius) {
     border-bottom-right-radius: @radius;
-         border-top-right-radius: @radius;
+    border-top-right-radius: @radius;
 }
 .border-bottom-radius(@radius) {
     border-bottom-right-radius: @radius;
-     border-bottom-left-radius: @radius;
+    border-bottom-left-radius: @radius;
 }
 .border-left-radius(@radius) {
     border-bottom-left-radius: @radius;
@@ -35,10 +35,11 @@
     .content {
         white-space: normal;
         padding: 5px;
-        background-color: #FFF;
+        background-color: #fff;
     }
 
-    .pagination {
+    .pagination,
+    .allpagination {
         margin: 0;
         padding: 0;
         width: 100%;
@@ -46,20 +47,25 @@
         .next {
             width: 10%;
             a {
-                background-color: #FFF;
+                background-color: inherit;
 
             }
         }
-        .sectionname {
-            width: 80%;
+        .sectionname,
+        .allsectionames {
+            width: 90%;
             border-radius: 0;
             border: 0;
         }
+        .expand-arrow {
+            width: 18px;
+            float: right;
+        }
         display: table;
-        &>li {
+        & > li {
             display: table-cell;
             a {
-                padding: @section-heading-padding;
+                padding: 0;
                 float: none;
                 display: block;
                 background-color: transparent;
@@ -72,6 +78,7 @@
 
     ul.activities {
         margin: 0;
+        padding: 0;
         list-style: none;
         li > a {
             padding: 5px 10px;
@@ -98,7 +105,6 @@
             content: '';
             width: 10px;
             height: 10px;
-            
             border-radius: 5px;
             display: inline-block;
             &.incomplete {
@@ -108,6 +114,12 @@
                 border: 1px solid #5cb85c;
                 background-color: #5cb85c;
             }
+        }
+        .modulenavigationlabel {
+            pointer-events: none;
+            cursor: default;
+            color: black;
+            font-weight: 700;
         }
     }
 
@@ -126,7 +138,7 @@
     }
 
     // Optional heading
-    .section-heading {
+    .module-navigation-section-heading {
         padding: @section-heading-padding;
         border-bottom: 1px solid transparent;
         .border-top-radius((@section-border-radius - 1));
@@ -141,8 +153,12 @@
         background-color: @section-default-heading-bg;
         border: 1px solid @section-default-border;
         margin-bottom: 3px;
+
+        &:hover {
+            text-decoration: none;
+        }
     }
-    .onesection .section-heading {
+    .onesection .module-navigation-section-heading {
         padding: 0;
     }
 
@@ -201,14 +217,14 @@
                 }
             }
         }
-        > .section-heading + .section-collapse > .list-group {
+        > .module-navigation-section-heading + .section-collapse > .list-group {
             .list-group-item:first-child {
                 .border-top-radius(0);
             }
         }
     }
     // Collapse space between when there's no additional content.
-    .section-heading + .list-group {
+    .module-navigation-section-heading + .list-group {
         .list-group-item:first-child {
             border-top-width: 0;
         }
@@ -236,7 +252,7 @@
             }
         }
 
-        .section-heading {
+        .module-navigation-section-heading {
             border-bottom: 0;
 
             + .section-collapse > .section-body,
@@ -256,7 +272,7 @@
     .section-variant(@border; @heading-text-color; @heading-bg-color; @heading-border) {
         border-color: @border;
 
-        & > .section-heading {
+        & > .module-navigation-section-heading {
             color: @heading-text-color;
             background-color: @heading-bg-color;
             border-color: @heading-border;
