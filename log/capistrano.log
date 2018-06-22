@@ -1,0 +1,257 @@
+# Logfile created on 2018-06-21 14:11:54 +0100 by logger.rb/41954
+  INFO ---------------------------------------------------------------------------
+  INFO START 2018-06-21 14:11:54 +0100 cap staging deploy:check
+  INFO ---------------------------------------------------------------------------
+  INFO [d89b0838] Running /usr/bin/env mkdir -p /tmp as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [d89b0838] Command: /usr/bin/env mkdir -p /tmp
+  INFO ---------------------------------------------------------------------------
+  INFO START 2018-06-21 14:15:01 +0100 cap staging deploy:check
+  INFO ---------------------------------------------------------------------------
+  INFO [c4f905f5] Running /usr/bin/env mkdir -p /tmp as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [c4f905f5] Command: /usr/bin/env mkdir -p /tmp
+  INFO [c4f905f5] Finished in 5.323 seconds with exit status 0 (successful).
+ DEBUG Uploading /tmp/git-ssh-moodle2-staging-root.sh 0.0%
+  INFO Uploading /tmp/git-ssh-moodle2-staging-root.sh 100.0%
+  INFO [c13680f0] Running /usr/bin/env chmod 700 /tmp/git-ssh-moodle2-staging-root.sh as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [c13680f0] Command: /usr/bin/env chmod 700 /tmp/git-ssh-moodle2-staging-root.sh
+  INFO [c13680f0] Finished in 0.075 seconds with exit status 0 (successful).
+  INFO [4c55ca3b] Running /usr/bin/env git ls-remote --heads git@github.com:sdc/moodle.git as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [4c55ca3b] Command: ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-moodle2-staging-root.sh" ; /usr/bin/env git ls-remote --heads git@github.com:sdc/moodle.git )
+ DEBUG [4c55ca3b] 	8103058154ef2aad68e28d9316f5c327232a4ea8	refs/heads/3.1.10
+e25e165231ed061c4278ce3694d2e1e4d4d3d142	refs/heads/3.1.11
+ca3afd41bef077ede6dae4399d2a1daec0303235	refs/heads/3.1.3
+6d0649e5371dd2c6acd7b6e6fc43369940cda83d	refs/heads/3.1.6
+687aad78bdf56bd5411185534ad3013c7b3f12ed	refs/heads/3.1.9
+ec6ed8e4cfa7babc64039869ccc7fa7869a9dc53	refs/heads/MOODLE_13_STABLE
+ff8ed9e11863df18a2ca571195e8c9b0e660a9bf	refs/heads/MOODLE_14_STABLE
+20ea0682124c3117ea04f8d83a4fb84747b30437	refs/heads/MOODLE_15_STABLE
+fb1a72d5c2fc61a4dbb9a213d78c6b75fc0098d6	refs/heads/MOODLE_16_STABLE
+cb6d0894c33e0cf9193f05f7c615b1902b371c75	refs/heads/MOODLE_17_STABLE
+91a49999829e23f08502a646d84eb0333405cc16	refs/heads/MOODLE_18_STABLE
+1033e1e2f21a02612fc064d685d9ba62504533db	refs/heads/MOODLE_19_STABLE
+c4f6df5a1ac39818b6988890d36896e049b0e99d	refs/heads/MOODLE_20_STABLE
+f24293bf1a82ad82bcd1cda15182646030cebc7c	refs/heads/MOODLE_21_STABLE
+b969895cb6c1cb4b1e55445231e16f1448e33e9e	refs/heads/MOODLE_22_STABLE
+6548ce091566295f49aeecec8519e78620e6cadc	refs/heads/MOODLE_23_STABLE
+29f8c0937ab91b87da4f27d2529f1f7423948980	refs/heads/MOODLE_24_STABLE
+ba9a5417973cbc6ee1e93fbdccab03b26cf0d9e9	refs/heads/MOODLE_27_STABLE
+e25e165231ed061c4278ce3694d2e1e4d4d3d142	refs/heads/MOODLE_31_STABLE
+40c64cf9ff60e3556be60e84cec68e78e67dd522	refs/heads/MOODLE_32_STABLE
+b87a580aa3eb23d5f05d7f619fc40a89e0f86fe5	refs/heads/MOODLE_33_STABLE
+9a6b854e5ce7375b62e01bee46c8eed165077005	refs/heads/MOODLE_34_STABLE
+46574904afd39578fa4146bf1fc5c401ac680aa6	refs/heads/MOODLE_35_STABLE
+6ad9f4ad096a91420c27d49aa6c37d94339f75d5	refs/heads/master
+d90cbb1d917d87313b7e1767f8bf60a06d930c78	refs/heads/sdc_24
+1862e8cfb0ccccda0cf4786277cc6c461ce8a5a1	refs/heads/sdc_25
+749741557b5d5640b75de5e6eef5aa9cf017869c	refs/heads/sdc_26
+181f3cacbe5d5e465071e4ef63fd3d418c6d3dbd	refs/heads/sdc_27
+219f5dfd7b5b68a654a3d075df9539ea97348e2e	refs/heads/sdc_28
+7f7a2de1bec911fa1651e85eac35a8c40b811153	refs/heads/sdc_29
+64ade6995eee36d130df1de4d520b84802edf647	refs/heads/sdc_31
+b5af7147bbdedabc69a18d5608a6da55ff8b478d	refs/heads/sdc_3110
+ff8b294cba31d588ac66aa99eaa62a52dd93f24f	refs/heads/sdc_3111
+02ee2babf17617f2dcb833679b0d1e4a9b42a465	refs/heads/sdc_319
+9d7590bf75ae0384a7a51193d3e7033fbc4c4be1	refs/heads/sdc_32
+048626eb7212f2cf8f5ff884f41c4e0003544a20	refs/heads/sdc_33
+94fa02430a42f8dd51842d1d5231854df4c7d9fd	refs/heads/sdc_34
+c896c56164f682b61ecfbbdaed0560940d5cd722	refs/heads/sdc_35
+d01f75eb4a58e108b9dfb2a89bff89a6b9ecc332	refs/heads/sdc_35_orig
+31dce5b8778fba9144253fb15eaa0615833a3848	refs/heads/sdc_3_1_6
+  INFO [4c55ca3b] Finished in 11.253 seconds with exit status 0 (successful).
+  INFO [39c00a34] Running /usr/bin/env mkdir -p /srv/moodle2/shared /srv/moodle2/releases as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [39c00a34] Command: /usr/bin/env mkdir -p /srv/moodle2/shared /srv/moodle2/releases
+  INFO [39c00a34] Finished in 0.015 seconds with exit status 0 (successful).
+  INFO [4b1dce82] Running /usr/bin/env mkdir -p /srv/moodle2/shared/admin /srv/moodle2/shared/clickheat/config /srv/moodle2/shared as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [4b1dce82] Command: /usr/bin/env mkdir -p /srv/moodle2/shared/admin /srv/moodle2/shared/clickheat/config /srv/moodle2/shared
+  INFO [4b1dce82] Finished in 0.051 seconds with exit status 0 (successful).
+ DEBUG [daa18de9] Running [ -f /srv/moodle2/shared/admin/apc.php ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [daa18de9] Command: [ -f /srv/moodle2/shared/admin/apc.php ]
+ DEBUG [daa18de9] Finished in 0.046 seconds with exit status 0 (successful).
+ DEBUG [5f5a5383] Running [ -f /srv/moodle2/shared/clickheat/config/config.php ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [5f5a5383] Command: [ -f /srv/moodle2/shared/clickheat/config/config.php ]
+ DEBUG [5f5a5383] Finished in 0.048 seconds with exit status 0 (successful).
+ DEBUG [68a0e381] Running [ -f /srv/moodle2/shared/config.php ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [68a0e381] Command: [ -f /srv/moodle2/shared/config.php ]
+ DEBUG [68a0e381] Finished in 0.047 seconds with exit status 0 (successful).
+  INFO ---------------------------------------------------------------------------
+  INFO START 2018-06-21 14:16:03 +0100 cap staging deploy
+  INFO ---------------------------------------------------------------------------
+  INFO [580fe37b] Running /usr/bin/env mkdir -p /tmp as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [580fe37b] Command: /usr/bin/env mkdir -p /tmp
+  INFO [580fe37b] Finished in 5.238 seconds with exit status 0 (successful).
+ DEBUG Uploading /tmp/git-ssh-moodle2-staging-root.sh 0.0%
+  INFO Uploading /tmp/git-ssh-moodle2-staging-root.sh 100.0%
+  INFO [f77273be] Running /usr/bin/env chmod 700 /tmp/git-ssh-moodle2-staging-root.sh as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [f77273be] Command: /usr/bin/env chmod 700 /tmp/git-ssh-moodle2-staging-root.sh
+  INFO [f77273be] Finished in 0.052 seconds with exit status 0 (successful).
+  INFO [2293dbaf] Running /usr/bin/env git ls-remote --heads git@github.com:sdc/moodle.git as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [2293dbaf] Command: ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-moodle2-staging-root.sh" ; /usr/bin/env git ls-remote --heads git@github.com:sdc/moodle.git )
+ DEBUG [2293dbaf] 	8103058154ef2aad68e28d9316f5c327232a4ea8	refs/heads/3.1.10
+e25e165231ed061c4278ce3694d2e1e4d4d3d142	refs/heads/3.1.11
+ca3afd41bef077ede6dae4399d2a1daec0303235	refs/heads/3.1.3
+6d0649e5371dd2c6acd7b6e6fc43369940cda83d	refs/heads/3.1.6
+687aad78bdf56bd5411185534ad3013c7b3f12ed	refs/heads/3.1.9
+ec6ed8e4cfa7babc64039869ccc7fa7869a9dc53	refs/heads/MOODLE_13_STABLE
+ff8ed9e11863df18a2ca571195e8c9b0e660a9bf	refs/heads/MOODLE_14_STABLE
+20ea0682124c3117ea04f8d83a4fb84747b30437	refs/heads/MOODLE_15_STABLE
+fb1a72d5c2fc61a4dbb9a213d78c6b75fc0098d6	refs/heads/MOODLE_16_STABLE
+cb6d0894c33e0cf9193f05f7c615b1902b371c75	refs/heads/MOODLE_17_STABLE
+91a49999829e23f08502a646d84eb0333405cc16	refs/heads/MOODLE_18_STABLE
+1033e1e2f21a02612fc064d685d9ba62504533db	refs/heads/MOODLE_19_STABLE
+c4f6df5a1ac39818b6988890d36896e049b0e99d	refs/heads/MOODLE_20_STABLE
+f24293bf1a82ad82bcd1cda15182646030cebc7c	refs/heads/MOODLE_21_STABLE
+b969895cb6c1cb4b1e55445231e16f1448e33e9e	refs/heads/MOODLE_22_STABLE
+6548ce091566295f49aeecec8519e78620e6cadc	refs/heads/MOODLE_23_STABLE
+29f8c0937ab91b87da4f27d2529f1f7423948980	refs/heads/MOODLE_24_STABLE
+ba9a5417973cbc6ee1e93fbdccab03b26cf0d9e9	refs/heads/MOODLE_27_STABLE
+e25e165231ed061c4278ce3694d2e1e4d4d3d142	refs/heads/MOODLE_31_STABLE
+40c64cf9ff60e3556be60e84cec68e78e67dd522	refs/heads/MOODLE_32_STABLE
+b87a580aa3eb23d5f05d7f619fc40a89e0f86fe5	refs/heads/MOODLE_33_STABLE
+9a6b854e5ce7375b62e01bee46c8eed165077005	refs/heads/MOODLE_34_STABLE
+46574904afd39578fa4146bf1fc5c401ac680aa6	refs/heads/MOODLE_35_STABLE
+6ad9f4ad096a91420c27d49aa6c37d94339f75d5	refs/heads/master
+d90cbb1d917d87313b7e1767f8bf60a06d930c78	refs/heads/sdc_24
+1862e8cfb0ccccda0cf4786277cc6c461ce8a5a1	refs/heads/sdc_25
+749741557b5d5640b75de5e6eef5aa9cf017869c	refs/heads/sdc_26
+181f3cacbe5d5e465071e4ef63fd3d418c6d3dbd	refs/heads/sdc_27
+219f5dfd7b5b68a654a3d075df9539ea97348e2e	refs/heads/sdc_28
+7f7a2de1bec911fa1651e85eac35a8c40b811153	refs/heads/sdc_29
+64ade6995eee36d130df1de4d520b84802edf647	refs/heads/sdc_31
+b5af7147bbdedabc69a18d5608a6da55ff8b478d	refs/heads/sdc_3110
+ff8b294cba31d588ac66aa99eaa62a52dd93f24f	refs/heads/sdc_3111
+02ee2babf17617f2dcb833679b0d1e4a9b42a465	refs/heads/sdc_319
+9d7590bf75ae0384a7a51193d3e7033fbc4c4be1	refs/heads/sdc_32
+048626eb7212f2cf8f5ff884f41c4e0003544a20	refs/heads/sdc_33
+94fa02430a42f8dd51842d1d5231854df4c7d9fd	refs/heads/sdc_34
+c896c56164f682b61ecfbbdaed0560940d5cd722	refs/heads/sdc_35
+d01f75eb4a58e108b9dfb2a89bff89a6b9ecc332	refs/heads/sdc_35_orig
+31dce5b8778fba9144253fb15eaa0615833a3848	refs/heads/sdc_3_1_6
+  INFO [2293dbaf] Finished in 6.694 seconds with exit status 0 (successful).
+  INFO [26442b24] Running /usr/bin/env mkdir -p /srv/moodle2/shared /srv/moodle2/releases as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [26442b24] Command: /usr/bin/env mkdir -p /srv/moodle2/shared /srv/moodle2/releases
+  INFO [26442b24] Finished in 0.014 seconds with exit status 0 (successful).
+  INFO [03071daf] Running /usr/bin/env mkdir -p /srv/moodle2/shared/admin /srv/moodle2/shared/clickheat/config /srv/moodle2/shared as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [03071daf] Command: /usr/bin/env mkdir -p /srv/moodle2/shared/admin /srv/moodle2/shared/clickheat/config /srv/moodle2/shared
+  INFO [03071daf] Finished in 0.051 seconds with exit status 0 (successful).
+ DEBUG [0186aa16] Running [ -f /srv/moodle2/shared/admin/apc.php ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [0186aa16] Command: [ -f /srv/moodle2/shared/admin/apc.php ]
+ DEBUG [0186aa16] Finished in 0.050 seconds with exit status 0 (successful).
+ DEBUG [087032e3] Running [ -f /srv/moodle2/shared/clickheat/config/config.php ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [087032e3] Command: [ -f /srv/moodle2/shared/clickheat/config/config.php ]
+ DEBUG [087032e3] Finished in 0.048 seconds with exit status 0 (successful).
+ DEBUG [5867db0c] Running [ -f /srv/moodle2/shared/config.php ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [5867db0c] Command: [ -f /srv/moodle2/shared/config.php ]
+ DEBUG [5867db0c] Finished in 0.058 seconds with exit status 0 (successful).
+ DEBUG [96d0bdda] Running [ -f /srv/moodle2/current/REVISION ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [96d0bdda] Command: [ -f /srv/moodle2/current/REVISION ]
+ DEBUG [96d0bdda] Finished in 0.051 seconds with exit status 0 (successful).
+ DEBUG [6fc86f62] Running /usr/bin/env cat /srv/moodle2/current/REVISION 2>/dev/null as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [6fc86f62] Command: /usr/bin/env cat /srv/moodle2/current/REVISION 2>/dev/null
+ DEBUG [6fc86f62] 	ff8b294cba31d588ac66aa99eaa62a52dd93f24f
+ DEBUG [6fc86f62] Finished in 0.056 seconds with exit status 0 (successful).
+ DEBUG [48bac558] Running [ -f /srv/moodle2/repo/HEAD ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [48bac558] Command: [ -f /srv/moodle2/repo/HEAD ]
+ DEBUG [48bac558] Finished in 0.055 seconds with exit status 0 (successful).
+  INFO The repository mirror is at /srv/moodle2/repo
+ DEBUG [453cbce0] Running if test ! -d /srv/moodle2/repo; then echo "Directory does not exist '/srv/moodle2/repo'" 1>&2; false; fi as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [453cbce0] Command: if test ! -d /srv/moodle2/repo; then echo "Directory does not exist '/srv/moodle2/repo'" 1>&2; false; fi
+ DEBUG [453cbce0] Finished in 0.049 seconds with exit status 0 (successful).
+  INFO [910bab65] Running /usr/bin/env git remote update --prune as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [910bab65] Command: cd /srv/moodle2/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-moodle2-staging-root.sh" ; /usr/bin/env git remote update --prune )
+ DEBUG [910bab65] 	error: cannot open FETCH_HEAD: Permission denied
+  INFO ---------------------------------------------------------------------------
+  INFO START 2018-06-21 14:23:50 +0100 cap staging deploy
+  INFO ---------------------------------------------------------------------------
+  INFO [07273936] Running /usr/bin/env mkdir -p /tmp as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [07273936] Command: /usr/bin/env mkdir -p /tmp
+  INFO [07273936] Finished in 5.164 seconds with exit status 0 (successful).
+ DEBUG Uploading /tmp/git-ssh-moodle2-staging-jameskamradcliffe.sh 0.0%
+  INFO Uploading /tmp/git-ssh-moodle2-staging-jameskamradcliffe.sh 100.0%
+  INFO [4db30ca1] Running /usr/bin/env chmod 700 /tmp/git-ssh-moodle2-staging-jameskamradcliffe.sh as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [4db30ca1] Command: /usr/bin/env chmod 700 /tmp/git-ssh-moodle2-staging-jameskamradcliffe.sh
+  INFO [4db30ca1] Finished in 0.054 seconds with exit status 0 (successful).
+  INFO [7d988368] Running /usr/bin/env git ls-remote git@github.com:sdc/moodle.git HEAD as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [7d988368] Command: ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-moodle2-staging-jameskamradcliffe.sh" ; /usr/bin/env git ls-remote git@github.com:sdc/moodle.git HEAD )
+ DEBUG [7d988368] 	64ade6995eee36d130df1de4d520b84802edf647	HEAD
+  INFO [7d988368] Finished in 3.168 seconds with exit status 0 (successful).
+  INFO [db332606] Running /usr/bin/env mkdir -p /srv/moodle2/shared /srv/moodle2/releases as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [db332606] Command: /usr/bin/env mkdir -p /srv/moodle2/shared /srv/moodle2/releases
+  INFO [db332606] Finished in 0.054 seconds with exit status 0 (successful).
+  INFO [27f2f860] Running /usr/bin/env mkdir -p /srv/moodle2/shared/admin /srv/moodle2/shared/clickheat/config /srv/moodle2/shared as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [27f2f860] Command: /usr/bin/env mkdir -p /srv/moodle2/shared/admin /srv/moodle2/shared/clickheat/config /srv/moodle2/shared
+  INFO [27f2f860] Finished in 0.053 seconds with exit status 0 (successful).
+ DEBUG [8f6c0933] Running [ -f /srv/moodle2/shared/admin/apc.php ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [8f6c0933] Command: [ -f /srv/moodle2/shared/admin/apc.php ]
+ DEBUG [8f6c0933] Finished in 0.044 seconds with exit status 0 (successful).
+ DEBUG [4b38f37f] Running [ -f /srv/moodle2/shared/clickheat/config/config.php ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [4b38f37f] Command: [ -f /srv/moodle2/shared/clickheat/config/config.php ]
+ DEBUG [4b38f37f] Finished in 0.051 seconds with exit status 0 (successful).
+ DEBUG [916386b1] Running [ -f /srv/moodle2/shared/config.php ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [916386b1] Command: [ -f /srv/moodle2/shared/config.php ]
+ DEBUG [916386b1] Finished in 0.049 seconds with exit status 0 (successful).
+ DEBUG [3f9fdd40] Running [ -f /srv/moodle2/current/REVISION ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [3f9fdd40] Command: [ -f /srv/moodle2/current/REVISION ]
+ DEBUG [3f9fdd40] Finished in 0.057 seconds with exit status 0 (successful).
+ DEBUG [eb957ab4] Running /usr/bin/env cat /srv/moodle2/current/REVISION 2>/dev/null as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [eb957ab4] Command: /usr/bin/env cat /srv/moodle2/current/REVISION 2>/dev/null
+ DEBUG [eb957ab4] 	ff8b294cba31d588ac66aa99eaa62a52dd93f24f
+ DEBUG [eb957ab4] Finished in 0.055 seconds with exit status 0 (successful).
+ DEBUG [b6c587b0] Running [ -f /srv/moodle2/repo/HEAD ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [b6c587b0] Command: [ -f /srv/moodle2/repo/HEAD ]
+ DEBUG [b6c587b0] Finished in 0.052 seconds with exit status 0 (successful).
+  INFO The repository mirror is at /srv/moodle2/repo
+ DEBUG [20784fb2] Running if test ! -d /srv/moodle2/repo; then echo "Directory does not exist '/srv/moodle2/repo'" 1>&2; false; fi as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [20784fb2] Command: if test ! -d /srv/moodle2/repo; then echo "Directory does not exist '/srv/moodle2/repo'" 1>&2; false; fi
+ DEBUG [20784fb2] Finished in 0.047 seconds with exit status 0 (successful).
+  INFO [ba8d24e2] Running /usr/bin/env git remote set-url origin git@github.com:sdc/moodle.git as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [ba8d24e2] Command: cd /srv/moodle2/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-moodle2-staging-jameskamradcliffe.sh" ; /usr/bin/env git remote set-url origin git@github.com:sdc/moodle.git )
+ DEBUG [ba8d24e2] 	error: could not lock config file config: Permission denied
+fatal: could not set 'remote.origin.url' to 'git@github.com:sdc/moodle.git'
+  INFO ---------------------------------------------------------------------------
+  INFO START 2018-06-21 14:26:44 +0100 cap staging deploy
+  INFO ---------------------------------------------------------------------------
+  INFO [e4598e79] Running /usr/bin/env mkdir -p /tmp as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [e4598e79] Command: /usr/bin/env mkdir -p /tmp
+  INFO [e4598e79] Finished in 6.760 seconds with exit status 0 (successful).
+ DEBUG Uploading /tmp/git-ssh-moodle2-staging-jameskamradcliffe.sh 0.0%
+  INFO Uploading /tmp/git-ssh-moodle2-staging-jameskamradcliffe.sh 100.0%
+  INFO [137b660a] Running /usr/bin/env chmod 700 /tmp/git-ssh-moodle2-staging-jameskamradcliffe.sh as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [137b660a] Command: /usr/bin/env chmod 700 /tmp/git-ssh-moodle2-staging-jameskamradcliffe.sh
+  INFO [137b660a] Finished in 0.051 seconds with exit status 0 (successful).
+  INFO [27dfb70d] Running /usr/bin/env git ls-remote git@github.com:sdc/moodle.git HEAD as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [27dfb70d] Command: ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-moodle2-staging-jameskamradcliffe.sh" ; /usr/bin/env git ls-remote git@github.com:sdc/moodle.git HEAD )
+ DEBUG [27dfb70d] 	64ade6995eee36d130df1de4d520b84802edf647	HEAD
+  INFO [27dfb70d] Finished in 1.600 seconds with exit status 0 (successful).
+  INFO [d61d684f] Running /usr/bin/env mkdir -p /srv/moodle2/shared /srv/moodle2/releases as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [d61d684f] Command: /usr/bin/env mkdir -p /srv/moodle2/shared /srv/moodle2/releases
+  INFO [d61d684f] Finished in 0.053 seconds with exit status 0 (successful).
+  INFO [4d1a12f8] Running /usr/bin/env mkdir -p /srv/moodle2/shared/admin /srv/moodle2/shared/clickheat/config /srv/moodle2/shared as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [4d1a12f8] Command: /usr/bin/env mkdir -p /srv/moodle2/shared/admin /srv/moodle2/shared/clickheat/config /srv/moodle2/shared
+  INFO [4d1a12f8] Finished in 0.048 seconds with exit status 0 (successful).
+ DEBUG [e7331919] Running [ -f /srv/moodle2/shared/admin/apc.php ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [e7331919] Command: [ -f /srv/moodle2/shared/admin/apc.php ]
+ DEBUG [e7331919] Finished in 0.048 seconds with exit status 0 (successful).
+ DEBUG [89c93293] Running [ -f /srv/moodle2/shared/clickheat/config/config.php ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [89c93293] Command: [ -f /srv/moodle2/shared/clickheat/config/config.php ]
+ DEBUG [89c93293] Finished in 0.048 seconds with exit status 0 (successful).
+ DEBUG [8896ce4c] Running [ -f /srv/moodle2/shared/config.php ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [8896ce4c] Command: [ -f /srv/moodle2/shared/config.php ]
+ DEBUG [8896ce4c] Finished in 0.048 seconds with exit status 0 (successful).
+ DEBUG [dd12ea56] Running [ -f /srv/moodle2/current/REVISION ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [dd12ea56] Command: [ -f /srv/moodle2/current/REVISION ]
+ DEBUG [dd12ea56] Finished in 0.051 seconds with exit status 0 (successful).
+ DEBUG [a8a9a495] Running /usr/bin/env cat /srv/moodle2/current/REVISION 2>/dev/null as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [a8a9a495] Command: /usr/bin/env cat /srv/moodle2/current/REVISION 2>/dev/null
+ DEBUG [a8a9a495] 	ff8b294cba31d588ac66aa99eaa62a52dd93f24f
+ DEBUG [a8a9a495] Finished in 0.049 seconds with exit status 0 (successful).
+ DEBUG [b3c9769a] Running [ -f /srv/moodle2/repo/HEAD ] as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [b3c9769a] Command: [ -f /srv/moodle2/repo/HEAD ]
+ DEBUG [b3c9769a] Finished in 0.049 seconds with exit status 0 (successful).
+  INFO The repository mirror is at /srv/moodle2/repo
+ DEBUG [de35fc66] Running if test ! -d /srv/moodle2/repo; then echo "Directory does not exist '/srv/moodle2/repo'" 1>&2; false; fi as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [de35fc66] Command: if test ! -d /srv/moodle2/repo; then echo "Directory does not exist '/srv/moodle2/repo'" 1>&2; false; fi
+ DEBUG [de35fc66] Finished in 0.050 seconds with exit status 0 (successful).
+  INFO [7481de69] Running /usr/bin/env git remote set-url origin git@github.com:sdc/moodle.git as deploy@moodle-clone.southdevon.ac.uk
+ DEBUG [7481de69] Command: cd /srv/moodle2/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-moodle2-staging-jameskamradcliffe.sh" ; /usr/bin/env git remote set-url origin git@github.com:sdc/moodle.git )
+ DEBUG [7481de69] 	error: could not lock config file config: Permission denied
+fatal: could not set 'remote.origin.url' to 'git@github.com:sdc/moodle.git'

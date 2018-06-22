@@ -19,7 +19,7 @@
  * Built on: Essential by Julian Ridden
  *
  * @package   theme_lambda
- * @copyright 2016 redPIthemes
+ * @copyright 2018 redPIthemes
  *
  */
  
@@ -34,7 +34,7 @@
         if (isloggedin() && !isguestuser()  && $hasdisplaymycourses) { 
  
             $branchlabel = get_string('mycourses') ;
-            $branchurl   = new moodle_url('#');
+            $branchurl   = new moodle_url('');
             $branchtitle = $branchlabel;
             $branchsort  = 10000 ; 
             $branch = $menu->add($branchlabel, $branchurl, $branchtitle, $branchsort);
@@ -42,13 +42,15 @@
             if (!$sortorder = $CFG->navsortmycoursessort) {
                 $sortorder = 'sortorder';
             }
-            if (!$courses_limit = $CFG->navcourselimit) {
-                $courses_limit = 20;
-            }
-			
+            $courses_limit = $CFG->navcourselimit;
  			if ($mycourses = enrol_get_my_courses(NULL, 'visible DESC, '.$sortorder.' ASC', $courses_limit)) {
 				foreach ($mycourses as $mycourse) {
-                	$branch->add($mycourse->shortname, new moodle_url('/course/view.php', array('id' => $mycourse->id)), $mycourse->fullname);
+					if ($CFG->navshowfullcoursenames) {
+						$current_menu_item = $mycourse->fullname;
+					} else {
+						$current_menu_item = $mycourse->shortname;
+					}
+                	$branch->add($current_menu_item, new moodle_url('/course/view.php', array('id' => $mycourse->id)), $mycourse->fullname);
             	}
 			}
 			else {
@@ -65,19 +67,13 @@
     
     public function footer() {
         global $CFG, $DB, $USER;
-
         $output = $this->container_end_all(true);
-
         $footer = $this->opencontainers->pop('header/footer');
 
         if (debugging() and $DB and $DB->is_transaction_started()) {
-
         }
-
         $footer = str_replace($this->unique_end_html_token, $this->page->requires->get_end_code(), $footer);
-
         $this->page->set_state(moodle_page::STATE_DONE);
-
         if(!empty($this->page->theme->settings->persistentedit) && property_exists($USER, 'editing') && $USER->editing && !$this->really_editing) {
             $USER->editing = false;
         }
@@ -98,150 +94,171 @@
     }
     
     public function edit_button(moodle_url $url) {
-        $url->param('sesskey', sesskey());    
-        if ($this->page->user_is_editing()) {
-            $url->param('edit', 'off');
-            $btn = 'btn-danger';
-            $title = get_string('turneditingoff');
-            $icon = 'fa-power-off';
+        $context = $this->page->context;
+        $menu = new action_menu();
+
+        $items = $this->page->navbar->get_items();
+        $currentnode = end($items);
+
+        $showcoursemenu = false;
+        // We are on the course home page.
+        if (($context->contextlevel == CONTEXT_COURSE) &&
+                !empty($currentnode) &&
+                ($currentnode->type == navigation_node::TYPE_COURSE || $currentnode->type == navigation_node::TYPE_SECTION)) {
+            $showcoursemenu = true;
+        }
+        $courseformat = course_get_format($this->page->course);
+        // This is a single activity course format, always show the course menu on the activity main page.
+        if ($context->contextlevel == CONTEXT_MODULE &&
+                !$courseformat->has_view_page()) {
+            $this->page->navigation->initialise();
+            $activenode = $this->page->navigation->find_active_node();
+            // If the settings menu has been forced then show the menu.
+            if ($this->page->is_settings_menu_forced()) {
+                $showcoursemenu = true;
+            } else if (!empty($activenode) && ($activenode->type == navigation_node::TYPE_ACTIVITY ||
+                    $activenode->type == navigation_node::TYPE_RESOURCE)) {
+                // We only want to show the menu on the first page of the activity. This means
+                // the breadcrumb has no additional nodes.
+                if ($currentnode && ($currentnode->key == $activenode->key && $currentnode->type == $activenode->type)) {
+                    $showcoursemenu = true;
+                }
+            }
+        }
+        if ($showcoursemenu) {
+            $settingsnode = $this->page->settingsnav->find('courseadmin', navigation_node::TYPE_COURSE);
+            if ($settingsnode) {
+                // Build an action menu based on the visible nodes from this navigation tree.
+                $skipped = $this->build_action_menu_from_navigation($menu, $settingsnode, false, true);
+
+                // We only add a list to the full settings menu if we didn't include every node in the short menu.
+                if ($skipped) {
+                    $text = get_string('morenavigationlinks');
+                    $url = new moodle_url('/course/admin.php', array('courseid' => $this->page->course->id));
+                    $link = new action_link($url, $text, null, null, new pix_icon('t/edit', $text));
+                    $menu->add_secondary_action($link);
+                }
+            }
+        }
+        return $this->render($menu);
+    }
+	
+	public function context_header_settings_menu() {
+        $context = $this->page->context;
+        $menu = new action_menu();
+		
+		$showusermenu = false;
+		$buildmenu = false;
+		$participantsmenu = false;
+
+        $items = $this->page->navbar->get_items();
+        $currentnode = end($items);        
+        // This is the user profile page.
+        if ($context->contextlevel == CONTEXT_USER &&
+                !empty($currentnode) &&
+                ($currentnode->key === 'myprofile')) {
+            $showusermenu = true;
+        }	
+        if ($showusermenu) {
+            // Get the course admin node from the settings navigation.
+            $settingsnode = $this->page->settingsnav->find('useraccount', navigation_node::TYPE_CONTAINER);
+            if ($settingsnode) {
+                // Build an action menu based on the visible nodes from this navigation tree.
+                $this->build_action_menu_from_navigation($menu, $settingsnode);
+            }
+        }
+		
+		if ($context->contextlevel == CONTEXT_MODULE) {
+            $this->page->navigation->initialise();
+            $node = $this->page->navigation->find_active_node();
+            // If the settings menu has been forced then show the menu.
+            if ($this->page->is_settings_menu_forced()) {
+                $buildmenu = true;
+            } else if (!empty($node) && ($node->type == navigation_node::TYPE_ACTIVITY ||
+                    $node->type == navigation_node::TYPE_RESOURCE)) {
+                $items = $this->page->navbar->get_items();
+                $navbarnode = end($items);
+                // We only want to show the menu on the first page of the activity. This means
+                // the breadcrumb has no additional nodes.
+                if ($navbarnode && ($navbarnode->key === $node->key && $navbarnode->type == $node->type)) {
+                    $buildmenu = true;
+                }
+            }
+            if ($buildmenu) {
+                // Get the course admin node from the settings navigation.
+                $node = $this->page->settingsnav->find('modulesettings', navigation_node::TYPE_SETTING);
+                if ($node) {
+                    // Build an action menu based on the visible nodes from this navigation tree.
+                    $this->build_action_menu_from_navigation($menu, $node);
+                }
+            }
+        } else if ($context->contextlevel == CONTEXT_COURSECAT) {
+            // For course category context, show category settings menu, if we're on the course category page.
+            if ($this->page->pagetype === 'course-index-category') {
+                $node = $this->page->settingsnav->find('categorysettings', navigation_node::TYPE_CONTAINER);
+                if ($node) {
+                    // Build an action menu based on the visible nodes from this navigation tree.
+                    $this->build_action_menu_from_navigation($menu, $node);
+                }
+            }
         } else {
-            $url->param('edit', 'on');
-            $btn = 'btn-success';
-            $title = get_string('turneditingon');
-            $icon = 'fa-edit';
-        }		
-		return html_writer::tag('a', $title, array('href' => $url, 'class' => 'btn ' . $btn, 'title' => $title));
-    }
-}
+            $items = $this->page->navbar->get_items();
+            $navbarnode = end($items);
 
-include_once($CFG->dirroot . "/course/format/topics/renderer.php");
- 
-class theme_lambda_format_topics_renderer extends format_topics_renderer {
-    
-    protected function get_nav_links($course, $sections, $sectionno) {
-        $course = course_get_format($course)->get_course();
-        $previousarrow= '<i class="fa fa-chevron-left" aria-hidden="true" style="float: left; margin-right: 10px;"></i>';
-        $nextarrow= '<i class="fa fa-chevron-right" aria-hidden="true" style="float: right; margin-left: 10px;"></i>';
-        $canviewhidden = has_capability('moodle/course:viewhiddensections', context_course::instance($course->id))
-            or !$course->hiddensections;
-
-        $links = array('previous' => '', 'next' => '');
-        $back = $sectionno - 1;
-        while ($back > 0 and empty($links['previous'])) {
-            if ($canviewhidden || $sections[$back]->uservisible) {
-                $params = array('id' => 'previous_section');
-                if (!$sections[$back]->visible) {
-                    $params = array('class' => 'dimmed_text');
+            if ($navbarnode && ($navbarnode->key === 'participants')) {
+				$participantsmenu = true;
+                $node = $this->page->settingsnav->find('users', navigation_node::TYPE_CONTAINER);
+                if ($node) {
+                    // Build an action menu based on the visible nodes from this navigation tree.
+                    $this->build_action_menu_from_navigation($menu, $node);
                 }
-                $previouslink = html_writer::start_tag('div', array('class' => 'nav_icon'));
-                $previouslink .= $previousarrow;
-                $previouslink .= html_writer::end_tag('div');
-                $previouslink .= html_writer::start_tag('span', array('class' => 'text'));
-                $previouslink .= html_writer::start_tag('span', array('class' => 'nav_guide'));
-                $previouslink .= get_string('previoussection', 'theme_lambda');
-                $previouslink .= html_writer::end_tag('span');
-                $previouslink .= html_writer::empty_tag('br');
-                $previouslink .= get_section_name($course, $sections[$back]);
-                $previouslink .= html_writer::end_tag('span');
-                $links['previous'] = html_writer::link(course_get_url($course, $back), $previouslink, $params);
-            }
-            $back--;
-        }
 
-        $forward = $sectionno + 1;
-        while ($forward <= $course->numsections and empty($links['next'])) {
-            if ($canviewhidden || $sections[$forward]->uservisible) {
-                $params = array('id' => 'next_section');
-                if (!$sections[$forward]->visible) {
-                    $params = array('class' => 'dimmed_text');
+            }
+        }
+		
+        if ((!$menu->is_empty()) && ($showusermenu || $buildmenu || $participantsmenu)) {return $this->render($menu);}
+    }
+	
+	private function build_action_menu_from_navigation(action_menu $menu,
+                                                       navigation_node $node,
+                                                       $indent = false,
+                                                       $onlytopleafnodes = false) {
+        $skipped = false;
+        // Build an action menu based on the visible nodes from this navigation tree.
+        foreach ($node->children as $menuitem) {
+            if ($menuitem->display) {
+                if ($onlytopleafnodes && $menuitem->children->count()) {
+                    $skipped = true;
+                    continue;
                 }
-                $nextlink = html_writer::start_tag('div', array('class' => 'nav_icon'));
-                $nextlink .= $nextarrow;
-                $nextlink .= html_writer::end_tag('div');
-                $nextlink .= html_writer::start_tag('span', array('class' => 'text'));
-                $nextlink .= html_writer::start_tag('span', array('class' => 'nav_guide'));
-                $nextlink .= get_string('nextsection', 'theme_lambda');
-                $nextlink .= html_writer::end_tag('span');
-                $nextlink .= html_writer::empty_tag('br');
-                $nextlink .= get_section_name($course, $sections[$forward]);
-                $nextlink .= html_writer::end_tag('span');
-                $links['next'] = html_writer::link(course_get_url($course, $forward), $nextlink, $params);
+                if ($menuitem->action) {
+                    if ($menuitem->action instanceof action_link) {
+                        $link = $menuitem->action;
+                        // Give preference to setting icon over action icon.
+                        if (!empty($menuitem->icon)) {
+                            $link->icon = $menuitem->icon;
+                        }
+                    } else {
+                        $link = new action_link($menuitem->action, $menuitem->text, null, null, $menuitem->icon);
+                    }
+                } else {
+                    if ($onlytopleafnodes) {
+                        $skipped = true;
+                        continue;
+                    }
+                    $link = new action_link(new moodle_url('#'), $menuitem->text, null, ['disabled' => true], $menuitem->icon);
+                }
+                if ($indent) {
+                    $link->add_class('m-l-1');
+                }
+                if (!empty($menuitem->classes)) {
+                    $link->add_class(implode(" ", $menuitem->classes));
+                }
+                $menu->add_secondary_action($link);
+                $skipped = $skipped || $this->build_action_menu_from_navigation($menu, $menuitem, true);
             }
-            $forward++;
         }
-
-        return $links;
+        return $skipped;
     }
-    
-    public function print_single_section_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection) {
-        global $PAGE;
-
-        $modinfo = get_fast_modinfo($course);
-        $course = course_get_format($course)->get_course();
-
-        if (!($sectioninfo = $modinfo->get_section_info($displaysection))) {
-            print_error('unknowncoursesection', 'error', null, $course->fullname);
-            return;
-        }
-
-        if (!$sectioninfo->uservisible) {
-            if (!$course->hiddensections) {
-                echo $this->start_section_list();
-                echo $this->section_hidden($displaysection);
-                echo $this->end_section_list();
-            }
-            return;
-        }
-
-        echo $this->course_activity_clipboard($course, $displaysection);
-        $thissection = $modinfo->get_section_info(0);
-        if ($thissection->summary or !empty($modinfo->sections[0]) or $PAGE->user_is_editing()) {
-            echo $this->start_section_list();
-            echo $this->section_header($thissection, $course, true, $displaysection);
-            echo $this->courserenderer->course_section_cm_list($course, $thissection, $displaysection);
-            echo $this->courserenderer->course_section_add_cm_control($course, 0, $displaysection);
-            echo $this->section_footer();
-            echo $this->end_section_list();
-        }
-
-        echo html_writer::start_tag('div', array('class' => 'single-section'));
-
-        $thissection = $modinfo->get_section_info($displaysection);
-
-        $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
-        $sectiontitle = '';
-        $sectiontitle .= html_writer::start_tag('div', array('class' => 'section-navigation header headingblock'));
-
-        $titleattr = 'mdl-align title';
-        if (!$thissection->visible) {
-            $titleattr .= ' dimmed_text';
-        }
-        $sectiontitle .= html_writer::tag('div', get_section_name($course, $displaysection), array('class' => $titleattr));
-        $sectiontitle .= html_writer::end_tag('div');
-        echo $sectiontitle;
-
-        echo $this->start_section_list();
-
-        echo $this->section_header($thissection, $course, true, $displaysection);
-
-        $completioninfo = new completion_info($course);
-        echo $completioninfo->display_help_icon();
-
-        echo $this->courserenderer->course_section_cm_list($course, $thissection, $displaysection);
-        echo $this->courserenderer->course_section_add_cm_control($course, $displaysection, $displaysection);
-        echo $this->section_footer();
-        echo $this->end_section_list();
-
-        $sectionbottomnav = '';
-        $sectionbottomnav .= html_writer::start_tag('nav', array('id' => 'section_footer'));
-        $sectionbottomnav .= $sectionnavlinks['previous']; 
-        $sectionbottomnav .= $sectionnavlinks['next']; 
-
-        $sectionbottomnav .= html_writer::empty_tag('br', array('style'=>'clear:both'));
-        $sectionbottomnav .= html_writer::end_tag('nav');
-        echo $sectionbottomnav;
-
-        echo html_writer::end_tag('div');
-    }
-
+	
 }

@@ -19,14 +19,19 @@
  * Built on: Essential by Julian Ridden
  *
  * @package   theme_lambda
- * @copyright 2016 redPIthemes
+ * @copyright 2018 redPIthemes
  *
  */
  
 $hasfrontpageblocks = ($PAGE->blocks->region_has_content('side-pre', $OUTPUT) || $PAGE->blocks->region_has_content('side-post', $OUTPUT));
 $carousel_pos = $PAGE->theme->settings->carousel_position;
-$haslogo = (!empty($PAGE->theme->settings->logo));
-$standardlayout = (empty($PAGE->theme->settings->layout)) ? false : $PAGE->theme->settings->layout;
+$pagewidth = $PAGE->theme->settings->pagewidth;
+$standardlayout = FALSE;
+if ($PAGE->theme->settings->block_layout == 1) {$standardlayout = TRUE;}
+$sidebar = FALSE;
+if ($PAGE->theme->settings->block_layout == 2) {$sidebar = TRUE;}
+if (($sidebar) && (strpos($OUTPUT->body_attributes(), 'empty-region-side-pre') !== FALSE) && (strpos($OUTPUT->body_attributes(), 'editing') == FALSE)) {$sidebar = FALSE;}
+if ($sidebar) {theme_lambda_init_sidebar($PAGE); $sidebar_stat = theme_lambda_get_sidebar_stat();}
 
 if (right_to_left()) {
     $regionbsid = 'region-bs-main-and-post';
@@ -48,17 +53,27 @@ echo $OUTPUT->doctype() ?>
     <?php require_once(dirname(__FILE__).'/includes/fonts.php'); ?>
 </head>
 
-<body <?php echo $OUTPUT->body_attributes('two-column'); ?>>
+<?php 
+	$lambda_body_attributes = '';
+	if ($sidebar) {$lambda_body_attributes .= ' sidebar-enabled '.$sidebar_stat;}
+?>
+<body <?php echo $OUTPUT->body_attributes("$lambda_body_attributes"); ?>>
 
-<?php echo $OUTPUT->standard_top_of_body_html() ?>
+<?php echo $OUTPUT->standard_top_of_body_html(); ?>
+
+<?php if ($sidebar) { ?>
+<div id="sidebar" class="">
+	<?php echo $OUTPUT->blocks('side-pre');?>
+    <div id="sidebar-btn"><span></span><span></span><span></span></div>
+</div>
+<?php } ?>
 
 <div id="wrapper">
 <?php require_once(dirname(__FILE__).'/includes/header.php'); ?>
-
+<?php if ($pagewidth == 100) {require_once(dirname(__FILE__).'/includes/slideshow.php');} ?>
 <div id="page" class="container-fluid">
-
-<?php require_once(dirname(__FILE__).'/includes/slideshow.php');?>
-	<header id="page-header" class="clearfix"> </header>
+	<?php if ($pagewidth != 100) {require_once(dirname(__FILE__).'/includes/slideshow.php');} ?>
+	<div id ="page-header-nav" class="clearfix"> </div>
     <div id="page-content" class="row-fluid">
     	<?php if ($hasfrontpageblocks==1) { ?>
             <div id="<?php echo $regionbsid ?>" class="span9">
@@ -84,7 +99,7 @@ echo $OUTPUT->doctype() ?>
         	<?php
         	if ($hasfrontpageblocks==1) { 
 				if ($standardlayout) {echo $OUTPUT->blocks('side-pre', 'span4 desktop-first-column pull-left');}
-				else {echo $OUTPUT->blocks('side-pre', 'span4 desktop-first-column pull-right');}
+				else if (!$sidebar) {echo $OUTPUT->blocks('side-pre', 'span4 desktop-first-column pull-right');}
 			} ?>
             </div>
         	</div>
@@ -102,12 +117,12 @@ echo $OUTPUT->doctype() ?>
 	</div>
 	<?php } ?>
 
-	<a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><p><?php print_string('backtotop', 'theme_lambda'); ?></p></a>
+	<a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><span class="lambda-sr-only"><?php echo get_string('back'); ?></span></a>
 
 </div>
 
 	<footer id="page-footer" class="container-fluid">
-		<?php require_once(dirname(__FILE__).'/includes/footer.php'); ?>
+		<?php require_once(dirname(__FILE__).'/includes/footer.php'); echo $OUTPUT->login_info();?>
 	</footer>
 
     <?php echo $OUTPUT->standard_end_of_body_html() ?>
@@ -117,34 +132,6 @@ echo $OUTPUT->doctype() ?>
 <![endif]-->
 
 <script>
-$(window).on('load resize', function () {
-if (window.matchMedia('(min-width: 980px)').matches) {
-$('.navbar .dropdown').hover(function() {
-	$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
-}, function() {
-	$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp();
-});
-} else {$('.dropdown-menu').removeAttr("style"); $('.navbar .dropdown').unbind('mouseenter mouseleave');}
-});
-
-jQuery(document).ready(function() {
-    var offset = 220;
-    var duration = 500;
-    jQuery(window).scroll(function() {
-        if (jQuery(this).scrollTop() > offset) {
-            jQuery('.back-to-top').fadeIn(duration);
-        } else {
-            jQuery('.back-to-top').fadeOut(duration);
-        }
-    });
-    
-    jQuery('.back-to-top').click(function(event) {
-        event.preventDefault();
-        jQuery('html, body').animate({scrollTop: 0}, duration);
-        return false;
-    })
-});
-
 <?php if ($hasslideshow) { ?>
 	jQuery(function(){
 		jQuery('#camera_wrap').camera({
@@ -156,6 +143,7 @@ jQuery(document).ready(function() {
 			autoAdvance: <?php echo $advance; ?>,
 			hover: false,
 			navigationHover: <?php echo $navhover; ?>,
+			mobileNavHover: <?php echo $navhover; ?>,
 			opacityOnGrid: false
 		});
 	});
@@ -169,7 +157,7 @@ jQuery(document).ready(function() {
 			prevSelector: '#slider-prev',
 			nextText: '>',
 			prevText: '<',
-			slideWidth: 240,
+			slideWidth: 260,
     		minSlides: 1,
     		maxSlides: 6,
 			moveSlides: 1,
@@ -177,7 +165,6 @@ jQuery(document).ready(function() {
   		});
 	});
 <?php } ?>
-
 </script>
 
 </body>

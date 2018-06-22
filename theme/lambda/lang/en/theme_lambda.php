@@ -19,7 +19,7 @@
  * Built on: Essential by Julian Ridden
  *
  * @package   theme_lambda
- * @copyright 2016 redPIthemes
+ * @copyright 2018 redPIthemes
  *
  */
 
@@ -37,7 +37,7 @@ $string['choosereadme'] = '
 </div>
 <h4>Theme Summary</h4>
 <div style="color: #888; text-transform: uppercase; margin-bottom:20px;">
-<p>Compatibility: Moodle 2.5/2.6/2.7/2.8/2.9/3.0/3.1<br />Theme Version: 1.54<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
+<p>Compatibility: Moodle 2.5/2.6/2.7/2.8/2.9/3.0/3.1/3.2/3.3/3.4<br />Theme Version: 1.74<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
 </div>
 <hr />
 <p style="text-align:center;"><img class="img-polaroid" src="lambda/pix/redPIthemes.jpg" /></p>';
@@ -59,21 +59,35 @@ $string['boxed_wide'] = 'Boxed - fixed width wide';
 $string['boxed_narrow'] = 'Boxed - fixed width narrow';
 $string['boxed_variable'] = 'Boxed - variable width';
 $string['full_wide'] = 'Wide - variable width';
-$string['layout'] = 'Use standard block layout';
-$string['layoutdesc'] = 'This theme is designed to put both block columns on the side. If you prefer the standard Moodle course layout you can check to use the standard three column layout.';
+$string['page_centered_logo'] = 'Header with centered logo';
+$string['page_centered_logo_desc'] = 'Mark the checkbox to use a variation for the header with a centered logo.';
 $string['footnote'] = 'Footnote';
 $string['footnotedesc'] = 'Whatever you add to this textarea will be displayed in the footer throughout your Moodle site, e.g. Copyright and the name of your organisation.';
 $string['customcss'] = 'Custom CSS';
 $string['customcssdesc'] = 'Whatever CSS rules you add to this textarea will be reflected in every page, making for easier customization of this theme.';
 
-/* Settings - Background */
-$string['settings_background'] = 'Page Background';
-$string['list_bg'] = 'Select from list';
+/* Settings - Background images */
+$string['settings_background'] = 'Background images';
+$string['list_bg'] = 'Page Background';
 $string['list_bg_desc'] = 'Select the Page Background from a list of included background images.<br /><strong>Note: </strong>If you upload an image below, your choice here on the list will be discarded.';
-$string['pagebackground'] = 'Upload custom image';
+$string['pagebackground'] = 'Upload custom background image';
 $string['pagebackgrounddesc'] = 'Upload your own background image. If none is uploaded a default image from the above list is used.';
 $string['page_bg_repeat'] = 'Repeat uploaded image?';
 $string['page_bg_repeat_desc'] = 'If you have uploaded a tiled background (like a pattern), you should mark the checkbox to repeat the image over the page background.<br />Otherwise, if you leave the box unchecked, the image will be used as a full page background image that covers the entire browser window.';
+$string['header_background'] = 'Upload custom header image';
+$string['header_background_desc'] = 'Upload your own header image. If none is uploaded a default white background will be used for the header.';
+$string['header_bg_repeat'] = 'Repeat header image?';
+$string['header_bg_repeat_desc'] = 'If you have uploaded a tiled background (like a pattern), you should mark the checkbox to repeat the image over the background at the header.<br />Otherwise the image will scaled to be as large as possible so that the header area is completely covered by the background image.';
+$string['category_background'] = 'Course category background banner';
+$string['category_background_desc'] = 'Upload your own background banner image for the Moodle course category view. If none is uploaded a default image is used.';
+$string['banner_font_color'] = 'Font color for the banner';
+$string['banner_font_color_desc'] = 'The default background banner image for the Moodle course category view is dimmed. Therefore is white font color is used there. If you upload your own banner image, you might want to use a different font color.';
+$string['banner_font_color_opt0'] = 'white (default)';
+$string['banner_font_color_opt1'] = 'dark';
+$string['banner_font_color_opt2'] = 'main theme color';
+$string['hide_category_background'] = 'Hide the category background banner?';
+$string['hide_category_background_desc'] = 'Mark the checkbox if you want to completely hide the category background banner.';
+
 
 /* Settings - Colors */
 $string['settings_colors'] = 'Colors';
@@ -87,6 +101,8 @@ $string['def_buttoncolor'] = 'Default Button';
 $string['def_buttoncolordesc'] = 'Color for the default button used in moodle';
 $string['def_buttonhovercolor'] = 'Default Button (Hover)';
 $string['def_buttonhovercolordesc'] = 'Color for the hover effect on the default button';
+$string['headercolor'] = 'Header Color';
+$string['headercolor_desc'] = 'Color for the header area';
 $string['menufirstlevelcolor'] = 'Menu 1. Level';
 $string['menufirstlevelcolordesc'] = 'Color for the navigation bar';
 $string['menufirstlevel_linkcolor'] = 'Menu 1. Level - Links';
@@ -105,6 +121,26 @@ $string['copyrightcolor'] = 'Footer Copyright Color';
 $string['copyrightcolordesc'] = 'Set what color the background of the copyright box in the footer should be';
 $string['copyright_textcolor'] = 'Copyright Text Colour';
 $string['copyright_textcolordesc'] = 'Set the color you want your text to be in the copyright box';
+
+/* Settings - blocks */
+$string['settings_blocks'] = 'Moodle Blocks';
+$string['block_layout'] = 'Choose block layout';
+$string['block_layout_opt0'] = 'Default Lambda block layout';
+$string['block_layout_opt1'] = 'Standard Moodle block layout';
+$string['block_layout_opt2'] = 'Collapsible left block region';
+$string['block_layout_desc'] = 'You can choose between:<br /><ul><li>Default Lambda block layout: both block columns left and right on the side of the main content area</li><li>Standard Moodle block layout: block regions left and right of the main content</li><li>Collapsible left block region: You can use a collapsible sidebar for the left block region</li></ul><strong>Please note:</strong>The Moodle dock for the blocks can only be used with the <em>Default Lambda block layout</em> or the <em>Standard Moodle block layout</em>.';
+$string['sidebar_frontpage'] = 'Enable collapsible sidebar for the front page';
+$string['sidebar_frontpage_desc'] = 'If you have selected the collapsible sidebar for the block layout from the dropdown above, you can choose whether this sidebar should also be enabled for the Moodle front page or not. The front page provides an additional block region for admins, so you might find that the sidebar is not necessary there.<br /><strong>Please note: </strong>If you have selected any other block layout than the collapsible sidebar, then this setting will not have any effect.';
+$string['block_style'] = 'Choose block style';
+$string['block_style_opt0'] = 'block style 01';
+$string['block_style_opt1'] = 'block style 02';
+$string['block_style_opt2'] = 'block style 03';
+$string['block_style_desc'] = 'You can choose between the following block style variations:<div class="row-fluid"><div class="span4"><p><img class="img-responsive img-polaroid" src="http://redpithemes.com/Documentation/assets/img/options-blocks-1.jpg" /><p>block style 01</div><div class="span4"><p><img class="img-responsive img-polaroid" src="http://redpithemes.com/Documentation/assets/img/options-blocks-2.jpg" /><p>block style 02</div><div class="span4"><p><img class="img-responsive img-polaroid" src="http://redpithemes.com/Documentation/assets/img/options-blocks-3.jpg" /><p>block style 03</div></div>';
+$string['block_icons'] = 'Theme Lambda block icons';
+$string['block_icons_opt0'] = 'colored (default)';
+$string['block_icons_opt1'] = 'monochrome';
+$string['block_icons_opt2'] = 'none (hide block icons)';
+$string['block_icons_desc'] = 'Choose a style for the block icons.';
 
 /* Settings - Socials */
 $string['settings_socials'] = 'Social Media';
@@ -131,7 +167,7 @@ $string['websitedesc'] = 'Enter the URL of your own website. (i.e http://www.myc
 $string['socials_mail'] = 'Email Address';
 $string['socials_mail_desc'] = 'Enter the HTML Email Address Hyperlink Code. (i.e info@mycollege.com)';
 $string['socials_color'] = 'Social Icons Color';
-$string['socials_color_desc'] = 'Set the color for your social media icons.<br /><strong>Note: </strong>This is ';
+$string['socials_color_desc'] = 'Set the color for your social media icons.';
 $string['socials_position'] = 'Icons Position';
 $string['socials_position_desc'] = 'Choose where to place the social media icons: at the bottom of the page (footer) or at the top (header).';
 
@@ -141,6 +177,8 @@ $string['fontselect_heading'] = 'Font Selector - Headings';
 $string['fontselectdesc_heading'] = 'Choose from the list of availble fonts.';
 $string['fontselect_body'] = 'Font Selector - Body';
 $string['fontselectdesc_body'] = 'Choose from the list of availble fonts.';
+$string['font_body_size'] = 'Body Text Size';
+$string['font_body_size_desc'] = 'Adjust the global font size for the body text.';
 $string['font_languages'] = 'Additional character sets';
 $string['font_languages_desc'] = 'Some of the fonts in the Google Font Directory support additional character sets for different languages. Using many character sets can slow down your Moodle, so only select the character sets that you actually need.<br /><strong>Please note: </strong>The Google Font Directory does not provide each additional character sets for every font. In case of doubt you should select <i>Open Sans</i>.';
 $string['font_languages_latinext'] = 'Latin Extended';
@@ -148,6 +186,8 @@ $string['font_languages_cyrillic'] = 'Cyrillic';
 $string['font_languages_cyrillicext'] = 'Cyrillic Extended';
 $string['font_languages_greek'] = 'Greek';
 $string['font_languages_greekext'] = 'Greek Extended';
+$string['use_fa5'] = 'Font Awesome 5';
+$string['use_fa5_desc'] = 'Use the new Font Awesome 5 Web Font icons.<br /><strong>Please note:</strong> Font Awesome Version 5 has been re-written and re-designed completely from scratch. So there will be a few steps you will need to do if you have used the icons before with a previous version of Theme Lambda. It will be necessary to find and replace any icons that have different names between version 4 and 5. Make sure to read this <a href="https://fontawesome.com/how-to-use/upgrading-from-4#icon-name-changes" target="_blank">list with name changes</a>.<br />If you are installing Lambda for the first time on your Moodle site, the new version 5 is recommended.';
 
 /* Settings - Slider */
 $string['settings_slider'] = 'Slideshow';
@@ -231,7 +271,7 @@ $string['custom_login_link_url_desc'] = 'Here you can enter a custom URL for you
 $string['custom_login_link_txt'] = 'Custom Login Link Text';
 $string['custom_login_link_txt_desc'] = 'Here you can enter a custom text for your additional link at the login form. This will override the setting from the dropdown.';
 $string['auth_googleoauth2'] = 'Oauth2';
-$string['auth_googleoauth2_desc'] = 'Use the Moodle Oauth2 authentication plugin instead of the default login form?<br /><strong>Please note: </strong>You have to install this additional plugin first from the Moodle plugins directory. This plugin allows your users to sign-in with a Google / Facebook / Github / Linkedin / Windows Live / VK / Battle.net account. The first time a user signs in, a new account is created.';
+$string['auth_googleoauth2_desc'] = 'Use the Moodle Oauth2 authentication plugin instead of the default login form?<br /><strong>Please note: </strong>For all Moodle versions prior to 3.3 you have to install this additional plugin first from the Moodle plugins directory. This plugin allows your users to sign-in with a Google / Facebook / Github / Linkedin / Windows Live / VK / Battle.net account. The first time a user signs in, a new account is created.';
 
 
 /* Theme */

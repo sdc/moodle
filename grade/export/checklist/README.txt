@@ -6,6 +6,10 @@ http://moodle.org/plugins/view.php?plugin=mod_checklist
 
 ==Changes==
 
+* 2018-04-02 - declare plugin stores no user data (for GDPR), this version only compatible with M3.4+
+* 2017-11-09 - Minor behat test fix to work with Moodle 3.4
+* 2017-05-12 - Update behat test to work with Moodle 3.3
+* 2016-11-21 - Minor M3.2 compatibility fix (only behat affected)
 * 2015-09-07 - Fix M2.7+ compatibility (gradeexport/checklist:publish + calculation of 'start date'); fix PostgreSQL compatibility (Thanks to Nick Phillips, Kathrin Osswald)
 * 2013-03-20 - Fix assign-by-reference error
 * 2012-09-19 - Split the 3 plugins (mod / block / grade report) into separate repos for better maintenance

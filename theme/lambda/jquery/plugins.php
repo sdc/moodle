@@ -19,12 +19,13 @@
  * Built on: Essential by Julian Ridden
  *
  * @package   theme_lambda
- * @copyright 2016 redPIthemes
+ * @copyright 2018 redPIthemes
  *
  */
 
 $plugins = array(
-	'jquery.easing.1.3'	=> array('files' => array('jquery.easing.1.3.js')),
-	'camera_slider' => array('files' => array('camera.min.1.11.js')),
-	'jquery.bxslider' => array('files' => array('jquery.bxslider.js'))		
+	'jquery.easing.min.1.4'	=> array('files' => array('jquery.easing.min.1.4.js')),
+	'camera_main_slider' => array('files' => array('camera.js')),
+	'jquery.bxslider' => array('files' => array('jquery.bxslider32.js')),
+	'lambda_customjs' => array('files' => array('lambda_customjs.js'))
 );

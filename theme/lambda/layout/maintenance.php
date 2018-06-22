@@ -19,7 +19,7 @@
  * Built on: Essential by Julian Ridden
  *
  * @package   theme_lambda
- * @copyright 2016 redPIthemes
+ * @copyright 2018 redPIthemes
  *
  */
 
@@ -42,9 +42,9 @@ echo $OUTPUT->doctype() ?>
 
 <div id="page" class="container-fluid">
 
-    <header id="page-header" class="clearfix">
+    <div id ="page-header-nav" class="clearfix">
         <?php echo $OUTPUT->page_heading(); ?>
-    </header>
+    </div>
 
     <div id="page-content" class="row-fluid">
         <section id="region-main" class="span12">

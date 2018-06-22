@@ -10,7 +10,11 @@ $has_additional_html = (!empty($PAGE->theme->settings->carousel_add_html));
 <?php if ($has_additional_html) { ?>
 <div class="row-fluid frontpage">
   <div class="span4">
-  <?php echo $PAGE->theme->settings->carousel_add_html; ?>  
+  <?php 
+  		$additional_html = $PAGE->theme->settings->carousel_add_html;
+		$additional_html = format_text($additional_html, FORMAT_HTML);
+  		echo $additional_html;
+	?>  
   </div>
 <div class="span8">
 <?php } ?>
@@ -62,6 +66,7 @@ $has_additional_html = (!empty($PAGE->theme->settings->carousel_add_html));
 					$url = $PAGE->theme->settings->$current_url;
 					$current_btntext = 'carousel_btntext_'.$i;
 					$btntext = $PAGE->theme->settings->$current_btntext;
+					$btntext = format_text($btntext, FORMAT_HTML);
 					if ($url!='') echo '<a class="info" href="'.$url.'">'.$btntext.'</a>';
 					echo '</div></div>';
 				}

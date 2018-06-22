@@ -6,7 +6,7 @@ set :repo_url, 'git@github.com:sdc/moodle.git'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
-set :branch, 'sdc_31'
+set :branch, 'sdc_35'
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/srv/moodle2'

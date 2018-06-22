@@ -19,7 +19,7 @@
  * Built on: Essential by Julian Ridden
  *
  * @package   theme_lambda
- * @copyright 2016 redPIthemes
+ * @copyright 2018 redPIthemes
  *
  */
  
@@ -47,14 +47,14 @@ echo $OUTPUT->doctype() ?>
 
 <div id="page" class="container-fluid">
 
-    <header id="page-header" class="clearfix">
+    <div id ="page-header-nav" class="clearfix">
     	<?php if (!($hide_breadrumb)) { ?>
         <div id="page-navbar" class="clearfix">
             <div class="breadcrumb-nav"><?php echo $OUTPUT->navbar(); ?></div>
-            <nav class="breadcrumb-button"><?php echo $OUTPUT->page_heading_button(); ?></nav>
+            <nav class="breadcrumb-button"><?php echo $OUTPUT->page_heading_button(); echo $OUTPUT->context_header_settings_menu(); ?></nav>
         </div>
         <?php } ?>
-    </header>
+    </div>
 
     <div id="page-content" class="row-fluid">
         <section id="region-main" class="span12">
@@ -66,58 +66,19 @@ echo $OUTPUT->doctype() ?>
         </section>
     </div>
 
-    <a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><p><?php print_string('backtotop', 'theme_lambda'); ?></p></a>
+    <a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><span class="lambda-sr-only"><?php echo get_string('back'); ?></span></a>
     
 </div>
 
 	<footer id="page-footer" class="container-fluid">
-		<?php require_once(dirname(__FILE__).'/includes/footer.php'); ?>
+		<?php require_once(dirname(__FILE__).'/includes/footer.php'); echo $OUTPUT->login_info();?>
 	</footer>
 
     <?php echo $OUTPUT->standard_end_of_body_html() ?>
 
-
 <!--[if lte IE 9]>
 <script src="<?php echo $CFG->wwwroot;?>/theme/lambda/javascript/ie/iefix.js"></script>
 <![endif]-->
-
-
-<script>
-$(window).on('load resize', function () {
-if (window.matchMedia('(min-width: 980px)').matches) {
-$('.navbar .dropdown').hover(function() {
-	$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
-}, function() {
-	$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp();
-});
-} else {$('.dropdown-menu').removeAttr("style"); $('.navbar .dropdown').unbind('mouseenter mouseleave');}
-});
-
-jQuery(document).ready(function() {
-    var offset = 220;
-    var duration = 500;
-    jQuery(window).scroll(function() {
-        if (jQuery(this).scrollTop() > offset) {
-            jQuery('.back-to-top').fadeIn(duration);
-        } else {
-            jQuery('.back-to-top').fadeOut(duration);
-        }
-    });
-    
-    jQuery('.back-to-top').click(function(event) {
-        event.preventDefault();
-        jQuery('html, body').animate({scrollTop: 0}, duration);
-        return false;
-    })
-});
-
-// When connecting to office 365, this is called to refresh filepicker
-   function refreshFilePicker() {
-       console.log("test");
-       document.getElementById('filepicker-refresh').click();
-   }
-</script>
-
 
 </body>
 </html>

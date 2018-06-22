@@ -12,7 +12,7 @@ M.block_heatmap = {
         this.config = JSON.parse(config);
         this.min = min;
         this.max = max;
-        this.diff = max - min;
+        this.diff = max - min + 1;
         this.toggleState = toggledon == 1;
         this.viewsicon = viewsicon;
         this.usersicon = usersicon;
@@ -28,7 +28,7 @@ M.block_heatmap = {
         var info;
         for (var i = 0; i < this.config.length; i++) {
             module = document.getElementById('module-' + this.config[i].cmid);
-            weight = parseInt(this.config[i].numviews / this.diff * this.numColours - 1);
+            weight = parseInt((this.config[i].numviews - this.min) / this.diff * this.numColours);
             if (module) {
                 if (this.whattoshow != 'showicons') {
                     module.className += ' block_heatmap_heat_' + weight;

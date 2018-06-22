@@ -19,7 +19,7 @@
  * Built on: Essential by Julian Ridden
  *
  * @package   theme_lambda
- * @copyright 2016 redPIthemes
+ * @copyright 2018 redPIthemes
  *
  */
 
@@ -37,7 +37,7 @@ $string['choosereadme'] = '
 </div>
 <h4>Caracter&iacute;sticas del tema</h4>
 <div style="color: #888; text-transform: uppercase; margin-bottom:20px;">
-<p>Compatibilidad: Moodle 2.5/2.6/2.7/2.8/2.9/3.0/3.1<br />Versi&oacute;n del tema: 1.54<br />Tema matriz: Bootstrapbase de Bas Brands<br />Basado en: Essential de Julian Ridden</p>
+<p>Compatibilidad: Moodle 2.5/2.6/2.7/2.8/2.9/3.0/3.1/3.2/3.3/3.4<br />Versi&oacute;n del tema: 1.74<br />Tema matriz: Bootstrapbase de Bas Brands<br />Basado en: Essential de Julian Ridden</p>
 </div>
 <hr />
 <p style="text-align:center;"><img class="img-polaroid" src="lambda/pix/redPIthemes.jpg" /></p>';
@@ -122,7 +122,7 @@ $string['websitedesc'] = 'Introduce la URL de tu sitio web. (p.ej. http://www.mi
 $string['socials_mail'] = 'Direcci&oacute;n de email';
 $string['socials_mail_desc'] = 'Introduce tu direcci&oacute;n de correo electr&oacute;nico. (p.ej. info@miescuela.com)';
 $string['socials_color'] = 'Color de los enlaces sociales';
-$string['socials_color_desc'] = 'Color del icono de los enlaces sociales.<br /><strong>Nota: </strong>Este es ';
+$string['socials_color_desc'] = 'Color del icono de los enlaces sociales.';
 $string['socials_position'] = 'Posición de los iconos';
 $string['socials_position_desc'] = 'Selecciona d&oacute;nde colocar los iconos de los enlaces sociales: abajo (en el pie de p&aacute;gina) o arriba (en el encabezado).';
 
