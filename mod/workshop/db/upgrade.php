@@ -65,7 +65,8 @@ function xmldb_workshop_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2018042700, 'workshop');
     }
 
-    // Automatically generated Moodle v3.4.0 release upgrade line.
+
+    // Automatically generated Moodle v3.5.0 release upgrade line.
     // Put any upgrade step following this.
 
     return true;
