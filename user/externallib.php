@@ -103,7 +103,7 @@ class core_user_external extends external_api {
                             'preferences' => new external_multiple_structure(
                                 new external_single_structure(
                                     array(
-                                        'type'  => new external_value(PARAM_ALPHANUMEXT, 'The name of the preference'),
+                                        'type'  => new external_value(PARAM_RAW, 'The name of the preference'),
                                         'value' => new external_value(PARAM_RAW, 'The value of the preference')
                                     )
                                 ), 'User preferences', VALUE_OPTIONAL),
@@ -342,7 +342,7 @@ class core_user_external extends external_api {
                 'preferences' => new external_multiple_structure(
                     new external_single_structure(
                         array(
-                            'type'  => new external_value(PARAM_ALPHANUMEXT, 'The name of the preference'),
+                            'type'  => new external_value(PARAM_RAW, 'The name of the preference'),
                             'value' => new external_value(PARAM_RAW, 'The value of the preference')
                         )
                     ), 'User preferences', VALUE_DEFAULT, array()
@@ -497,7 +497,7 @@ class core_user_external extends external_api {
                             'preferences' => new external_multiple_structure(
                                 new external_single_structure(
                                     array(
-                                        'type'  => new external_value(PARAM_ALPHANUMEXT, 'The name of the preference'),
+                                        'type'  => new external_value(PARAM_RAW, 'The name of the preference'),
                                         'value' => new external_value(PARAM_RAW, 'The value of the preference')
                                     )
                                 ), 'User preferences', VALUE_OPTIONAL),
@@ -1070,8 +1070,8 @@ class core_user_external extends external_api {
             'preferences' => new external_multiple_structure(
                 new external_single_structure(
                     array(
-                        'name'  => new external_value(PARAM_ALPHANUMEXT, 'The name of the preferences'),
-                        'value' => new external_value(PARAM_RAW, 'The value of the custom field'),
+                        'name'  => new external_value(PARAM_RAW, 'The name of the preferences'),
+                        'value' => new external_value(PARAM_RAW, 'The value of the preference'),
                     )
             ), 'Users preferences', VALUE_OPTIONAL)
         );
@@ -1831,15 +1831,8 @@ class core_user_external extends external_api {
             }
         }
 
-        if (empty($CFG->sitepolicy)) {
-            $status = false;
-            $warnings[] = array(
-                'item' => 'user',
-                'itemid' => $USER->id,
-                'warningcode' => 'nositepolicy',
-                'message' => 'The site does not have a site policy configured.'
-            );
-        } else if (!empty($USER->policyagreed)) {
+        $manager = new \core_privacy\local\sitepolicy\manager();
+        if (!empty($USER->policyagreed)) {
             $status = false;
             $warnings[] = array(
                 'item' => 'user',
@@ -1847,10 +1840,16 @@ class core_user_external extends external_api {
                 'warningcode' => 'alreadyagreed',
                 'message' => 'The user already agreed the site policy.'
             );
+        } else if (!$manager->is_defined()) {
+            $status = false;
+            $warnings[] = array(
+                'item' => 'user',
+                'itemid' => $USER->id,
+                'warningcode' => 'nositepolicy',
+                'message' => 'The site does not have a site policy configured.'
+            );
         } else {
-            $DB->set_field('user', 'policyagreed', 1, array('id' => $USER->id));
-            $USER->policyagreed = 1;
-            $status = true;
+            $status = $manager->accept();
         }
 
         $result = array();

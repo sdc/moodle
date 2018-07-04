@@ -285,6 +285,9 @@ class assign_grading_table extends table_sql implements renderable {
                 $where .= '))';
                 $params['submitted'] = ASSIGN_SUBMISSION_STATUS_SUBMITTED;
 
+            } else if ($filter == ASSIGN_FILTER_GRANTED_EXTENSION) {
+                $where .= ' AND uf.extensionduedate > 0 ';
+
             } else if (strpos($filter, ASSIGN_FILTER_SINGLE_USER) === 0) {
                 $userfilter = (int) array_pop(explode('=', $filter));
                 $where .= ' AND (u.id = :userid)';
@@ -851,8 +854,7 @@ class assign_grading_table extends table_sql implements renderable {
 
         if (!$this->assignment->is_active_user($row->id)) {
             $suspendedstring = get_string('userenrolmentsuspended', 'grades');
-            $fullname .= ' ' . html_writer::empty_tag('img', array('src' => $this->output->pix_url('i/enrolmentsuspended'),
-                'title' => $suspendedstring, 'alt' => $suspendedstring, 'class' => 'usersuspendedicon'));
+            $fullname .= ' ' . $this->output->pix_icon('i/enrolmentsuspended', $suspendedstring);
             $fullname = html_writer::tag('span', $fullname, array('class' => 'usersuspended'));
         }
         return $fullname;
@@ -1040,7 +1042,10 @@ class assign_grading_table extends table_sql implements renderable {
 
         $group = false;
         $submission = false;
-        $this->get_group_and_submission($row->id, $group, $submission, -1);
+
+        if ($instance->teamsubmission) {
+            $this->get_group_and_submission($row->id, $group, $submission, -1);
+        }
 
         if ($instance->teamsubmission && !$group && !$instance->preventsubmissionnotingroup) {
             $group = true;

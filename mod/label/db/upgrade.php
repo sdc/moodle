@@ -62,7 +62,10 @@ function xmldb_label_upgrade($oldversion) {
     // Automatically generated Moodle v3.2.0 release upgrade line.
     // Put any upgrade step following this.
 
-    if ($oldversion < 2016120501) {
+    // Automatically generated Moodle v3.3.0 release upgrade line.
+    // Put any upgrade step following this.
+
+    if ($oldversion < 2017051501) {
         // Update all records in 'course_modules' for labels to have showdescription = 1.
         if ($modid = $DB->get_field('modules', 'id', ['name' => 'label'])) {
             $DB->execute("UPDATE {course_modules} SET showdescription = ? WHERE module = ?",
@@ -70,7 +73,7 @@ function xmldb_label_upgrade($oldversion) {
         }
 
         // Label savepoint reached.
-        upgrade_mod_savepoint(true, 2016120501, 'label');
+        upgrade_mod_savepoint(true, 2017051501, 'label');
     }
 
     return true;

@@ -40,6 +40,7 @@ class restore_forum_activity_structure_step extends restore_activity_structure_s
         if ($userinfo) {
             $paths[] = new restore_path_element('forum_discussion', '/activity/forum/discussions/discussion');
             $paths[] = new restore_path_element('forum_post', '/activity/forum/discussions/discussion/posts/post');
+            $paths[] = new restore_path_element('forum_tag', '/activity/forum/poststags/tag');
             $paths[] = new restore_path_element('forum_discussion_sub', '/activity/forum/discussions/discussion/discussion_subs/discussion_sub');
             $paths[] = new restore_path_element('forum_rating', '/activity/forum/discussions/discussion/posts/post/ratings/rating');
             $paths[] = new restore_path_element('forum_subscription', '/activity/forum/subscriptions/subscription');
@@ -117,6 +118,23 @@ class restore_forum_activity_structure_step extends restore_activity_structure_s
         }
     }
 
+    protected function process_forum_tag($data) {
+        $data = (object)$data;
+
+        if (!core_tag_tag::is_enabled('mod_forum', 'forum_posts')) { // Tags disabled in server, nothing to process.
+            return;
+        }
+
+        $tag = $data->rawname;
+        if (!$itemid = $this->get_mappingid('forum_post', $data->itemid)) {
+            // Some orphaned tag, we could not find the restored post for it - ignore.
+            return;
+        }
+
+        $context = context_module::instance($this->task->get_moduleid());
+        core_tag_tag::add_item_tag('mod_forum', 'forum_posts', $itemid, $context, $tag);
+    }
+
     protected function process_forum_rating($data) {
         global $DB;
 
@@ -153,8 +171,14 @@ class restore_forum_activity_structure_step extends restore_activity_structure_s
         $data->forum = $this->get_new_parentid('forum');
         $data->userid = $this->get_mappingid('user', $data->userid);
 
-        $newitemid = $DB->insert_record('forum_subscriptions', $data);
-        $this->set_mapping('forum_subscription', $oldid, $newitemid, true);
+        // Create only a new subscription if it does not already exist (see MDL-59854).
+        if ($subscription = $DB->get_record('forum_subscriptions',
+                array('forum' => $data->forum, 'userid' => $data->userid))) {
+            $this->set_mapping('forum_subscription', $oldid, $subscription->id, true);
+        } else {
+            $newitemid = $DB->insert_record('forum_subscriptions', $data);
+            $this->set_mapping('forum_subscription', $oldid, $newitemid, true);
+        }
 
     }
 

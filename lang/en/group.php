@@ -107,7 +107,7 @@ $string['groupmembersselected'] = 'Members of selected group';
 $string['groupmode'] = 'Group mode';
 $string['groupmode_help'] = 'This setting has 3 options:
 
-* No groups - There are no sub groups, everyone is part of one big community
+* No groups
 * Separate groups - Each group member can only see their own group, others are invisible
 * Visible groups - Each group member works in their own group, but can also see other groups
 
@@ -172,6 +172,10 @@ $string['overview'] = 'Overview';
 $string['potentialmembers'] = 'Potential members: {$a}';
 $string['potentialmembs'] = 'Potential members';
 $string['printerfriendly'] = 'Printer-friendly display';
+$string['privacy:metadata:groups'] = 'A record of group membership.';
+$string['privacy:metadata:groups:groupid'] = 'The ID of the group.';
+$string['privacy:metadata:groups:timeadded'] = 'The timestamp indicating when the user was added to the group.';
+$string['privacy:metadata:groups:userid'] = 'The ID of the user which is associated to the group.';
 $string['random'] = 'Randomly';
 $string['removegroupfromselectedgrouping'] = 'Remove group from grouping';
 $string['removefromgroup'] = 'Remove user from group {$a}';

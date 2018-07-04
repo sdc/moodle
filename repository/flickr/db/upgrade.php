@@ -36,12 +36,12 @@ function xmldb_repository_flickr_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
-    if ($oldversion < 2016120501) {
+    if ($oldversion < 2017051501) {
         // Drop legacy flickr auth tokens and nsid's.
         $DB->delete_records('user_preferences', ['name' => 'flickr_']);
         $DB->delete_records('user_preferences', ['name' => 'flickr__nsid']);
 
-        upgrade_plugin_savepoint(true, 2016120501, 'repository', 'flickr');
+        upgrade_plugin_savepoint(true, 2017051501, 'repository', 'flickr');
     }
 
     return true;

@@ -17,6 +17,7 @@ php:
     - 5.6
 
 addons:
+  postgresql: "9.6"
   packages:
     - mysql-server-5.6
     - mysql-client-core-5.6
@@ -54,7 +55,7 @@ matrix:
     include:
           # Run grunt/npm install on highest version ('node' is an alias for the latest node.js version.)
         - php: 7.1
-          env: DB=none     TASK=GRUNT   NVM_VERSION='8.9'
+          env: DB=none     TASK=GRUNT   NVM_VERSION='lts/carbon'
 
     exclude:
         # MySQL - it's just too slow.
@@ -137,7 +138,7 @@ before_script:
 
         # The wwwroot and dataroot.
         sed -i \
-          -e "s%http://example.com/moodle%http://localhost%" \
+          -e "s%http://example.com/moodle%https://localhost%" \
           -e "s%/home/example/moodledata%/home/travis/roots/base%" \
           config.php ;
 
@@ -207,7 +208,7 @@ before_script:
         # We need the official upstream for comparison
         git remote add upstream https://github.com/moodle/moodle.git;
 
-        git fetch upstream MOODLE_32_STABLE;
+        git fetch upstream MOODLE_33_STABLE;
         export GIT_PREVIOUS_COMMIT="`git merge-base FETCH_HEAD $TRAVIS_COMMIT`";
         export GIT_COMMIT="$TRAVIS_COMMIT";
         export UPSTREAM_FETCH_HEAD=`git rev-parse FETCH_HEAD`
@@ -248,7 +249,7 @@ script:
     - >
       if [ "$TASK" = 'PHPUNIT' ];
       then
-        vendor/bin/phpunit;
+        vendor/bin/phpunit --fail-on-risky --disallow-test-output --verbose;
       fi
 
     - >

@@ -415,19 +415,22 @@ EOD;
             $record['category'] = $DB->get_field_select('course_categories', "MIN(id)", "parent=0");
         }
 
+        if (!isset($record['startdate'])) {
+            $record['startdate'] = usergetmidnight(time());
+        }
+
         if (isset($record['tags']) && !is_array($record['tags'])) {
             $record['tags'] = preg_split('/\s*,\s*/', trim($record['tags']), -1, PREG_SPLIT_NO_EMPTY);
         }
 
+        if (!empty($options['createsections']) && empty($record['numsections'])) {
+            // Since Moodle 3.3 function create_course() automatically creates sections if numsections is specified.
+            // For BC if 'createsections' is given but 'numsections' is not, assume the default value from config.
+            $record['numsections'] = get_config('moodlecourse', 'numsections');
+        }
+
         $course = create_course((object)$record);
         context_course::instance($course->id);
-        if (!empty($options['createsections'])) {
-            if (isset($course->numsections)) {
-                course_create_sections_if_missing($course, range(0, $course->numsections));
-            } else {
-                course_create_sections_if_missing($course, 0);
-            }
-        }
 
         return $course;
     }

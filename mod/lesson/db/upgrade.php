@@ -390,7 +390,33 @@ function xmldb_lesson_upgrade($oldversion) {
     // Automatically generated Moodle v3.2.0 release upgrade line.
     // Put any upgrade step following this.
 
-    if ($oldversion < 2016120501) {
+    if ($oldversion < 2016120515) {
+        // Define new fields to be added to lesson.
+        $table = new xmldb_table('lesson');
+        $field = new xmldb_field('allowofflineattempts', XMLDB_TYPE_INTEGER, '1', null, null, null, 0, 'completiontimespent');
+        // Conditionally launch add field allowofflineattempts.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        // Lesson savepoint reached.
+        upgrade_mod_savepoint(true, 2016120515, 'lesson');
+    }
+    if ($oldversion < 2016120516) {
+        // New field for lesson_timer.
+        $table = new xmldb_table('lesson_timer');
+        $field = new xmldb_field('timemodifiedoffline', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0, 'completed');
+        // Conditionally launch add field timemodifiedoffline.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        // Lesson savepoint reached.
+        upgrade_mod_savepoint(true, 2016120516, 'lesson');
+    }
+
+    // Automatically generated Moodle v3.3.0 release upgrade line.
+    // Put any upgrade step following this.
+
+    if ($oldversion < 2017051501) {
 
         // Delete orphaned lesson answer and response files.
         $sql = "SELECT DISTINCT f.contextid, f.component, f.filearea, f.itemid
@@ -408,7 +434,7 @@ function xmldb_lesson_upgrade($oldversion) {
         }
         $orphanedfiles->close();
 
-        upgrade_mod_savepoint(true, 2016120501, 'lesson');
+        upgrade_mod_savepoint(true, 2017051501, 'lesson');
     }
 
     return true;

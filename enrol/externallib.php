@@ -253,7 +253,7 @@ class core_enrol_external extends external_api {
                     'preferences' => new external_multiple_structure(
                         new external_single_structure(
                             array(
-                                'name'  => new external_value(PARAM_ALPHANUMEXT, 'The name of the preferences'),
+                                'name'  => new external_value(PARAM_RAW, 'The name of the preferences'),
                                 'value' => new external_value(PARAM_RAW, 'The value of the custom field'),
                             )
                     ), 'User preferences', VALUE_OPTIONAL),
@@ -300,7 +300,7 @@ class core_enrol_external extends external_api {
         $params = self::validate_parameters(self::get_users_courses_parameters(), array('userid'=>$userid));
 
         $courses = enrol_get_users_courses($params['userid'], true, 'id, shortname, fullname, idnumber, visible,
-                   summary, summaryformat, format, showgrades, lang, enablecompletion, category');
+                   summary, summaryformat, format, showgrades, lang, enablecompletion, category, startdate, enddate');
         $result = array();
 
         foreach ($courses as $course) {
@@ -326,6 +326,11 @@ class core_enrol_external extends external_api {
             $course->fullname = external_format_string($course->fullname, $context->id);
             $course->shortname = external_format_string($course->shortname, $context->id);
 
+            $progress = null;
+            if ($course->enablecompletion) {
+                $progress = \core_completion\progress::get_course_progress_percentage($course);
+            }
+
             $result[] = array(
                 'id' => $course->id,
                 'shortname' => $course->shortname,
@@ -337,9 +342,12 @@ class core_enrol_external extends external_api {
                 'summaryformat' => $course->summaryformat,
                 'format' => $course->format,
                 'showgrades' => $course->showgrades,
-                'lang' => $course->lang,
+                'lang' => clean_param($course->lang, PARAM_LANG),
                 'enablecompletion' => $course->enablecompletion,
-                'category' => $course->category
+                'category' => $course->category,
+                'progress' => $progress,
+                'startdate' => $course->startdate,
+                'enddate' => $course->enddate,
             );
         }
 
@@ -369,6 +377,9 @@ class core_enrol_external extends external_api {
                     'enablecompletion' => new external_value(PARAM_BOOL, 'true if completion is enabled, otherwise false',
                                                                 VALUE_OPTIONAL),
                     'category' => new external_value(PARAM_INT, 'course category id', VALUE_OPTIONAL),
+                    'progress' => new external_value(PARAM_FLOAT, 'Progress percentage', VALUE_OPTIONAL),
+                    'startdate' => new external_value(PARAM_INT, 'Timestamp when the course start', VALUE_OPTIONAL),
+                    'enddate' => new external_value(PARAM_INT, 'Timestamp when the course end', VALUE_OPTIONAL),
                 )
             )
         );
@@ -623,7 +634,7 @@ class core_enrol_external extends external_api {
                     'preferences' => new external_multiple_structure(
                         new external_single_structure(
                             array(
-                                'name'  => new external_value(PARAM_ALPHANUMEXT, 'The name of the preferences'),
+                                'name'  => new external_value(PARAM_RAW, 'The name of the preferences'),
                                 'value' => new external_value(PARAM_RAW, 'The value of the custom field'),
                             )
                     ), 'User preferences', VALUE_OPTIONAL),

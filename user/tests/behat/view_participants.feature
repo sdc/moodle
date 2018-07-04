@@ -57,7 +57,7 @@ Feature: View course participants
   @javascript
   Scenario: Use select and deselect all buttons
     Given I log in as "teacher1x"
-    And I follow "Course 1"
+    And I am on "Course 1" course homepage
     And I navigate to course participants
     When I press "Select all"
     Then the field with xpath "//tbody//tr[1]//input[@class='usercheckbox']" matches value "1"
@@ -106,10 +106,10 @@ Feature: View course participants
   @javascript
   Scenario: Use select all users on this page, select all n users and deselect all
     Given the following "course enrolments" exist:
-      | user       | course | role    |
+      | user      | course | role    |
       | student20x | C1     | student |
     When I log in as "teacher1x"
-    And I follow "Course 1"
+    And I am on "Course 1" course homepage
     And I navigate to course participants
     And I follow "Surname"
     And I press "Select all users on this page"
