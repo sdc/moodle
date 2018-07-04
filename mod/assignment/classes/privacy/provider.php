@@ -53,7 +53,7 @@ class provider implements
      * @param collection $collection a reference to the collection to use to store the metadata.
      * @return collection the updated collection of metadata items.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table(
             'assignment_submissions',
             [
@@ -87,7 +87,7 @@ class provider implements
      * @param int $userid the userid.
      * @return contextlist the list of contexts containing user info for the user.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $contextlist = new contextlist();
 
         $sql = "SELECT DISTINCT
@@ -175,7 +175,7 @@ class provider implements
      *
      * @param  int $userid The user ID that we want the preferences for.
      */
-    public static function export_user_preferences($userid) {
+    public static function export_user_preferences(int $userid) {
         $context = \context_system::instance();
         $assignmentpreferences = [
             'assignment_filter' => [

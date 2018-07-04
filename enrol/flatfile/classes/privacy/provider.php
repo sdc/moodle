@@ -45,7 +45,7 @@ class provider implements
      * @param   collection $collection The initialised collection to add items to.
      * @return  collection     A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         return $collection->add_database_table('enrol_flatfile', [
             'action' => 'privacy:metadata:enrol_flatfile:action',
             'roleid' => 'privacy:metadata:enrol_flatfile:roleid',
@@ -63,7 +63,7 @@ class provider implements
      * @param   int $userid The user to search.
      * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $sql = "SELECT c.id
                   FROM {enrol_flatfile} ef
                   JOIN {context} c ON c.contextlevel = ? AND c.instanceid = ef.courseid

@@ -60,7 +60,7 @@ class provider implements metadataprovider, pluginprovider, preference_provider 
      * @param  collection $collection A collection of meta data items to be added to.
      * @return  collection Returns the collection of metadata.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $assigngrades = [
                 'userid' => 'privacy:metadata:userid',
                 'timecreated' => 'privacy:metadata:timecreated',
@@ -124,7 +124,7 @@ class provider implements metadataprovider, pluginprovider, preference_provider 
      * @param  int $userid The user ID.
      * @return contextlist an object with the contexts related to a userid.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $params = ['modulename' => 'assign',
                    'contextlevel' => CONTEXT_MODULE,
                    'userid' => $userid,
@@ -342,7 +342,7 @@ class provider implements metadataprovider, pluginprovider, preference_provider 
      * @param  assign $assign The assignment object.
      * @return array If successful an array of objects with userids that this user graded, otherwise false.
      */
-    protected static function get_graded_users($userid, \assign $assign) {
+    protected static function get_graded_users(int $userid, \assign $assign) {
         $params = ['grader' => $userid, 'assignid' => $assign->get_instance()->id];
 
         $sql = "SELECT DISTINCT userid AS id
@@ -368,7 +368,7 @@ class provider implements metadataprovider, pluginprovider, preference_provider 
      * @param  \assign $assign The assignment object.
      * @param  int $userid The user ID
      */
-    protected static function store_assign_user_flags(\context $context, \assign $assign, $userid) {
+    protected static function store_assign_user_flags(\context $context, \assign $assign, int $userid) {
         $datatypes = ['locked' => get_string('locksubmissions', 'mod_assign'),
                       'mailed' => get_string('privacy:metadata:mailed', 'mod_assign'),
                       'extensionduedate' => get_string('extensionduedate', 'mod_assign'),
@@ -433,7 +433,7 @@ class provider implements metadataprovider, pluginprovider, preference_provider 
      *
      * @param  int $userid The user ID that we want the preferences for.
      */
-    public static function export_user_preferences($userid) {
+    public static function export_user_preferences(int $userid) {
         $context = \context_system::instance();
         $assignpreferences = [
             'assign_perpage' => ['string' => get_string('privacy:metadata:assignperpage', 'mod_assign'), 'bool' => false],
@@ -494,7 +494,7 @@ class provider implements metadataprovider, pluginprovider, preference_provider 
      * @param  bool|boolean    $exportforteacher A flag for if this is exporting data as a teacher.
      */
     protected static function export_submission(\assign $assign, \stdClass $user, \context_module $context, array $path,
-                $exportforteacher = false) {
+            bool $exportforteacher = false) {
         $submissions = $assign->get_all_submissions($user->id);
         $teacher = ($exportforteacher) ? $user : null;
         foreach ($submissions as $submission) {

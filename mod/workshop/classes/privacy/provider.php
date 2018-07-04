@@ -54,7 +54,7 @@ class provider implements
      * @param collection $collection Collection of items to add metadata to.
      * @return collection Collection with our added items.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
 
         $collection->add_database_table('workshop_submissions', [
             'workshopid' => 'privacy:metadata:workshopid',
@@ -126,7 +126,7 @@ class provider implements
      * @param int $userid ID of the user.
      * @return contextlist List of contexts containing the user's personal data.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
 
         $contextlist = new contextlist();
         $sql = "SELECT ctx.id
@@ -198,7 +198,7 @@ class provider implements
      *
      * @param int $userid ID of the user we are exporting data for
      */
-    public static function export_user_preferences($userid) {
+    public static function export_user_preferences(int $userid) {
 
         $perpage = get_user_preferences('workshop_perpage', null, $userid);
 
@@ -483,7 +483,7 @@ class provider implements
      * @param array $subcontext Subcontext path of the assessment
      * @param int $assessmentid ID of the exported assessment
      */
-    protected static function export_assessment_forms(\stdClass $user, \context $context, array $subcontext, $assessmentid) {
+    protected static function export_assessment_forms(\stdClass $user, \context $context, array $subcontext, int $assessmentid) {
 
         foreach (\workshop::available_strategies_list() as $strategy => $title) {
             $providername = '\workshopform_'.$strategy.'\privacy\provider';

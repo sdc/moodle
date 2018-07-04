@@ -44,7 +44,7 @@ class provider implements
      * @param   collection     $collection The initialised item collection to add items to.
      * @return  collection     A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         // There is a one user preference.
         $collection->add_user_preference('tool_mobile_autologin_request_last',
             'privacy:metadata:preference:tool_mobile_autologin_request_last');
@@ -58,7 +58,7 @@ class provider implements
      * @param int $userid The user to search.
      * @return contextlist $contextlist The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $sql = "SELECT ctx.id
                   FROM {user_private_key} k
                   JOIN {user} u ON k.userid = u.id
@@ -94,7 +94,7 @@ class provider implements
      *
      * @param   int         $userid The userid of the user whose data is to be exported.
      */
-    public static function export_user_preferences($userid) {
+    public static function export_user_preferences(int $userid) {
         $autologinrequestlast = get_user_preferences('tool_mobile_autologin_request_last', null, $userid);
         if ($autologinrequestlast !== null) {
             $time = transform::datetime($autologinrequestlast);

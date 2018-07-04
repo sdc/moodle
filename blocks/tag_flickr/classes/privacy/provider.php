@@ -45,7 +45,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param   collection $collection The initialised collection to add items to.
      * @return  collection     A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_external_location_link(
             'flickr.com',
             [
@@ -63,7 +63,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param   int $userid The user to search.
      * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         return new contextlist();
     }
 

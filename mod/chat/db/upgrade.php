@@ -29,15 +29,6 @@ function xmldb_chat_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
-    // Moodle v2.8.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Moodle v2.9.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Moodle v3.0.0 release upgrade line.
-    // Put any upgrade step following this.
-
     // Moodle v3.1.0 release upgrade line.
     // Put any upgrade step following this.
 
@@ -47,7 +38,10 @@ function xmldb_chat_upgrade($oldversion) {
     // Automatically generated Moodle v3.3.0 release upgrade line.
     // Put any upgrade step following this.
 
-    if ($oldversion < 2017051501) {
+    // Automatically generated Moodle v3.4.0 release upgrade line.
+    // Put any upgrade step following this.
+
+    if ($oldversion < 2017111301) {
         // Rename field 'system' on table 'chat_messages' as it is a reserved word in MySQL 8+.
         $table = new xmldb_table('chat_messages');
         $field = new xmldb_field('system');
@@ -71,7 +65,7 @@ function xmldb_chat_upgrade($oldversion) {
         }
 
         // Savepoint reached.
-        upgrade_mod_savepoint(true, 2017051501, 'chat');
+        upgrade_mod_savepoint(true, 2017111301, 'chat');
     }
 
     return true;

@@ -116,4 +116,3 @@ If you have not done so already, you should edit your profile page so that we ca
 
   {$a->profileurl}';
 $string['privacy:metadata'] = 'The Self enrolment plugin does not store any personal data.';
-

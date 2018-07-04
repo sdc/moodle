@@ -854,5 +854,3 @@ $string['xml'] = 'XML';
 $string['yes'] = 'Yes';
 $string['yourgrade'] = 'Your grade';
 
-// Deprecated since 3.0.
-$string['categoriesanditems'] = 'Categories and items';

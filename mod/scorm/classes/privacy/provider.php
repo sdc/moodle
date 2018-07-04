@@ -49,7 +49,7 @@ class provider implements
      * @param   collection $collection The initialised collection to add items to.
      * @return  collection A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table('scorm_scoes_track', [
                 'userid' => 'privacy:metadata:userid',
                 'attempt' => 'privacy:metadata:attempt',
@@ -82,7 +82,7 @@ class provider implements
      * @param int $userid The user to search.
      * @return contextlist $contextlist The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $sql = "SELECT ctx.id
                   FROM {%s} ss
                   JOIN {modules} m
@@ -297,7 +297,7 @@ class provider implements
      * @param  string $sql    SQL query for getting the IDs of the scoestrack entries to delete.
      * @param  array  $params SQL params for the query.
      */
-    protected static function delete_data($tablename, $sql, array $params) {
+    protected static function delete_data(string $tablename, string $sql, array $params) {
         global $DB;
 
         $scoestracksids = $DB->get_fieldset_sql(sprintf($sql, $tablename), $params);

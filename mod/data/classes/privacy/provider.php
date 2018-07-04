@@ -54,7 +54,7 @@ class provider implements
      * @param collection $collection a reference to the collection to use to store the metadata.
      * @return collection the updated collection of metadata items.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table(
             'data_records',
             [
@@ -97,7 +97,7 @@ class provider implements
      * @param int $userid the userid.
      * @return contextlist the list of contexts containing user info for the user.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         // Fetch all data records.
         $sql = "SELECT c.id
                   FROM {context} c
@@ -283,7 +283,9 @@ class provider implements
         ];
         // Data about the record.
         writer::with_context($context)->export_data([$recordobj->id], (object)$data);
-
+        // Related tags.
+        \core_tag\privacy\provider::export_item_tags($user->id, $context, [$recordobj->id],
+            'mod_data', 'data_records', $recordobj->id);
         // Export comments. For records that were not made by this user export only this user's comments, for own records
         // export comments made by everybody.
         \core_comment\privacy\provider::export_comments($context, 'mod_data', 'database_entry', $recordobj->id,

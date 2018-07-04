@@ -49,7 +49,7 @@ class provider implements metadataprovider, \mod_assign\privacy\assignsubmission
      * @param  collection $collection A list of information to add to.
      * @return collection Return the collection after adding to it.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->link_subsystem('core_comment', 'privacy:metadata:commentpurpose');
         return $collection;
     }
@@ -61,7 +61,7 @@ class provider implements metadataprovider, \mod_assign\privacy\assignsubmission
      * @param  int $userid The user ID that we are finding contexts for.
      * @param  contextlist $contextlist A context list to add sql and params to for contexts.
      */
-    public static function get_context_for_userid_within_submission($userid, contextlist $contextlist) {
+    public static function get_context_for_userid_within_submission(int $userid, contextlist $contextlist) {
         $sql = "SELECT contextid
                   FROM {comments}
                  WHERE component = :component

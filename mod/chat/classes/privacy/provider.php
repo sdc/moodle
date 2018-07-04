@@ -29,11 +29,9 @@ defined('MOODLE_INTERNAL') || die();
 use context;
 use context_helper;
 use context_module;
-use moodle_recordset;
 use stdClass;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
-use core_privacy\local\request\contextlist;
 use core_privacy\local\request\helper;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
@@ -56,7 +54,7 @@ class provider implements
      * @param collection $collection The initialised collection to add items to.
      * @return collection A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
 
         $collection->add_database_table('chat_messages', [
             'userid' => 'privacy:metadata:messages:userid',
@@ -95,7 +93,7 @@ class provider implements
      * @param int $userid The user to search.
      * @return contextlist $contextlist The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : \core_privacy\local\request\contextlist {
         $contextlist = new \core_privacy\local\request\contextlist();
 
         $sql = "
@@ -257,7 +255,7 @@ class provider implements
      * @param callable $export The function to export the dataset, receives the last value from $splitkey and the dataset.
      * @return void
      */
-    protected static function recordset_loop_and_export(moodle_recordset $recordset, $splitkey, $initial,
+    protected static function recordset_loop_and_export(\moodle_recordset $recordset, $splitkey, $initial,
             callable $reducer, callable $export) {
 
         $data = $initial;

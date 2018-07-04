@@ -144,7 +144,8 @@ class mod_data_privacy_provider_testcase extends \core_privacy\tests\provider_te
         foreach ($fields as $fieldrecord) {
             $fieldcontents[$fieldrecord->id] = $contents[$count++];
         }
-        return $this->get_generator()->create_entry($datamodule, $fieldcontents);
+        $tags = ['Cats', 'mice' . $counter];
+        return $this->get_generator()->create_entry($datamodule, $fieldcontents, 0, $tags);
     }
 
     /**
@@ -208,6 +209,8 @@ class mod_data_privacy_provider_testcase extends \core_privacy\tests\provider_te
             $hasfile = in_array($data->field['type'], ['file', 'picture']);
             $this->assertEquals($hasfile, !empty($writer->get_files([$record->id, $content->id])));
         }
+        $tags = $writer->get_related_data([$record->id], 'tags');
+        $this->assertNotEmpty($tags);
     }
 
     /**

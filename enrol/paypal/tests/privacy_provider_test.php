@@ -370,7 +370,7 @@ class enrol_paypal_privacy_provider_testcase extends \core_privacy\tests\provide
         $this->assertCount(2, $data->transactions);
         $this->assertEquals(
                 ['STUDENT2-IN-COURSE2-00', 'STUDENT2-IN-COURSE2-01'],
-                [$data->transactions[0]->txn_id, $data->transactions[1]->txn_id],
+                array_column($data->transactions, 'txn_id'),
                 '', 0.0, 10, true
         );
     }

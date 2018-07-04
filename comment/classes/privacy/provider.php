@@ -44,7 +44,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param   collection     $collection The initialised collection to add items to.
      * @return  collection     A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table('comments', [
                 'content' => 'privacy:metadata:comment:content',
                 'timecreated' => 'privacy:metadata:comment:timecreated',
@@ -64,8 +64,8 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param  array  $subcontext The sub-context in which to export this data
      * @param  bool   $onlyforthisuser  Only return the comments this user made.
      */
-    public static function export_comments(\context $context, $component, $commentarea, $itemid, $subcontext,
-            $onlyforthisuser = true) {
+    public static function export_comments(\context $context, string $component, string $commentarea, int $itemid,
+                                           array $subcontext, bool $onlyforthisuser = true) {
         global $USER, $DB;
         $params = [
             'contextid' => $context->id,
@@ -120,7 +120,8 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param  string $commentarea Comment area to delete.
      * @param  int $itemid The item ID for use with deletion.
      */
-    public static function delete_comments_for_all_users(\context $context, $component, $commentarea = null, $itemid = null) {
+    public static function delete_comments_for_all_users(\context $context, string $component, string $commentarea = null,
+            int $itemid = null) {
         global $DB;
         $params = [
             'contextid' => $context->id,
@@ -146,7 +147,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      *      and may not use named parameters called contextid, component or commentarea.
      * @param array $params any query params used by $itemidstest.
      */
-    public static function delete_comments_for_all_users_select(\context $context, $component, $commentarea,
+    public static function delete_comments_for_all_users_select(\context $context, string $component, string $commentarea,
             $itemidstest, $params = []) {
         global $DB;
         $params += ['contextid' => $context->id, 'component' => $component, 'commentarea' => $commentarea];
@@ -165,7 +166,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param  int $itemid The item id to delete from.
      */
     public static function delete_comments_for_user(\core_privacy\local\request\approved_contextlist $contextlist,
-            $component, $commentarea = null, $itemid = null) {
+            string $component, string $commentarea = null, int $itemid = null) {
         global $DB;
 
         $userid = $contextlist->get_user()->id;

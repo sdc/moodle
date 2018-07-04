@@ -48,7 +48,7 @@ class provider implements
      * @param collection $items a reference to the collection to use to store the metadata.
      * @return collection the updated collection of metadata items.
      */
-    public static function get_metadata(collection $items) {
+    public static function get_metadata(collection $items) : collection {
         $items->add_database_table(
             'message',
             [
@@ -116,7 +116,7 @@ class provider implements
      *
      * @param  int $userid The userid of the user whose data is to be exported.
      */
-    public static function export_user_preferences($userid) {
+    public static function export_user_preferences(int $userid) {
         $preferences = get_user_preferences(null, null, $userid);
         foreach ($preferences as $name => $value) {
             if ((substr($name, 0, 16) == 'message_provider') || ($name == 'message_blocknoncontacts')) {
@@ -139,7 +139,7 @@ class provider implements
      * @param int $userid the userid.
      * @return contextlist the list of contexts containing user info for the user.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         // Messages are in the system context.
         $contextlist = new contextlist();
         $contextlist->add_system_context();
@@ -230,7 +230,7 @@ class provider implements
      *
      * @param int $userid
      */
-    protected static function export_user_data_contacts($userid) {
+    protected static function export_user_data_contacts(int $userid) {
         global $DB;
 
         $context = \context_system::instance();
@@ -253,7 +253,7 @@ class provider implements
      *
      * @param int $userid
      */
-    protected static function export_user_data_messages($userid) {
+    protected static function export_user_data_messages(int $userid) {
         global $DB;
 
         $context = \context_system::instance();
@@ -331,7 +331,7 @@ class provider implements
      *
      * @param int $userid
      */
-    protected static function export_user_data_notifications($userid) {
+    protected static function export_user_data_notifications(int $userid) {
         global $DB;
 
         $context = \context_system::instance();
@@ -381,7 +381,7 @@ class provider implements
      * @return array
      * @throws \dml_exception
      */
-    private static function get_userids_in_conversation_with($userid) {
+    private static function get_userids_in_conversation_with(int $userid) {
         global $DB;
 
         $sql = "SELECT DISTINCT(useridfrom) as id

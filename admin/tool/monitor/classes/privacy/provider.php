@@ -47,7 +47,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param  collection $collection An object for storing metadata.
      * @return collection The metadata.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $toolmonitorrules = [
             'description' => 'privacy:metadata:description',
             'name' => 'privacy:metadata:name',
@@ -85,7 +85,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param  int $userid The user ID.
      * @return contextlist The list of context IDs.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $params = ['useridrules' => $userid, 'useridsubscriptions' => $userid, 'contextuserrule' => CONTEXT_USER,
                 'contextusersub' => CONTEXT_USER];
         $sql = "SELECT DISTINCT ctx.id
@@ -147,7 +147,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      *
      * @param  int $userid The user ID
      */
-    protected static function delete_user_data($userid) {
+    protected static function delete_user_data(int $userid) {
         global $DB;
         // Delete this user's subscriptions first.
         subscription_manager::delete_user_subscriptions($userid);

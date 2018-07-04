@@ -173,7 +173,7 @@ class enrol_lti_privacy_provider_testcase extends \core_privacy\tests\provider_t
      * @param context $context
      * @param int $userid
      */
-    private function create_lti_users(\context $context, $userid) {
+    private function create_lti_users(\context $context, int $userid) {
         global $DB;
 
         // Create a tool.

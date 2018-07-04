@@ -58,7 +58,7 @@ class provider implements
      * @param collection $collection The initialised collection to add items to.
      * @return collection A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
 
         // Tables without 'real' user information.
         $collection->add_database_table('grade_outcomes', [
@@ -137,7 +137,7 @@ class provider implements
      * @param int $userid The user to search.
      * @return contextlist $contextlist The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : \core_privacy\local\request\contextlist {
         $contextlist = new \core_privacy\local\request\contextlist();
 
         // Add where we modified outcomes.

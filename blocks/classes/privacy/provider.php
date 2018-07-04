@@ -52,7 +52,7 @@ class provider implements
      * @param collection $collection The initialised collection to add items to.
      * @return collection A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_user_preference('blockIDhidden', 'privacy:metadata:userpref:hiddenblock');
         $collection->add_user_preference('docked_block_instance_ID', 'privacy:metadata:userpref:dockedinstance');
         return $collection;
@@ -64,7 +64,7 @@ class provider implements
      * @param int $userid The user to search.
      * @return contextlist $contextlist The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : \core_privacy\local\request\contextlist {
         global $DB;
         $contextlist = new \core_privacy\local\request\contextlist();
 
@@ -175,7 +175,7 @@ class provider implements
      *
      * @param int $userid The userid of the user whose data is to be exported.
      */
-    public static function export_user_preferences($userid) {
+    public static function export_user_preferences(int $userid) {
       // Our preferences aren't site-wide so they are exported in export_user_data.
     }
 

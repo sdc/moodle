@@ -297,7 +297,7 @@ class mod_lti_privacy_provider_testcase extends \core_privacy\tests\provider_tes
      * @param int $ltiid
      * @param int $userid
      */
-    protected function create_lti_submission($ltiid, $userid) {
+    protected function create_lti_submission(int $ltiid, int $userid) {
         global $DB;
 
         $ltisubmissiondata = [

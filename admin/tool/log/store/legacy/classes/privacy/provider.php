@@ -52,7 +52,7 @@ class provider implements
      * @param collection $collection The initialised collection to add items to.
      * @return collection A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_external_location_link('log', [
             'time' => 'privacy:metadata:log:time',
             'userid' => 'privacy:metadata:log:userid',

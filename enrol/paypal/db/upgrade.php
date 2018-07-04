@@ -47,15 +47,6 @@ function xmldb_enrol_paypal_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
-    // Moodle v2.8.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Moodle v2.9.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Moodle v3.0.0 release upgrade line.
-    // Put any upgrade step following this.
-
     // Moodle v3.1.0 release upgrade line.
     // Put any upgrade step following this.
 
@@ -65,7 +56,10 @@ function xmldb_enrol_paypal_upgrade($oldversion) {
     // Automatically generated Moodle v3.3.0 release upgrade line.
     // Put any upgrade step following this.
 
-    if ($oldversion < 2017051501) {
+    // Automatically generated Moodle v3.4.0 release upgrade line.
+    // Put any upgrade step following this.
+
+    if ($oldversion < 2017111301) {
 
         // Define field instanceid to be added to enrol_paypal.
         // For some reason, some Moodle instances that are upgraded from old versions do not have this field.
@@ -78,7 +72,70 @@ function xmldb_enrol_paypal_upgrade($oldversion) {
         }
 
         // Paypal savepoint reached.
-        upgrade_plugin_savepoint(true, 2017051501, 'enrol', 'paypal');
+        upgrade_plugin_savepoint(true, 2017111301, 'enrol', 'paypal');
+    }
+
+    if ($oldversion < 2017111302) {
+
+        // Define key courseid (foreign) to be added to enrol_paypal.
+        $table = new xmldb_table('enrol_paypal');
+        $key = new xmldb_key('courseid', XMLDB_KEY_FOREIGN, array('courseid'), 'course', array('id'));
+
+        // Launch add key courseid.
+        $dbman->add_key($table, $key);
+
+        // Paypal savepoint reached.
+        upgrade_plugin_savepoint(true, 2017111302, 'enrol', 'paypal');
+    }
+
+    if ($oldversion < 2017111303) {
+
+        // Define key userid (foreign) to be added to enrol_paypal.
+        $table = new xmldb_table('enrol_paypal');
+        $key = new xmldb_key('userid', XMLDB_KEY_FOREIGN, array('userid'), 'user', array('id'));
+
+        // Launch add key userid.
+        $dbman->add_key($table, $key);
+
+        // Paypal savepoint reached.
+        upgrade_plugin_savepoint(true, 2017111303, 'enrol', 'paypal');
+    }
+
+    if ($oldversion < 2017111304) {
+
+        // Define key instanceid (foreign) to be added to enrol_paypal.
+        $table = new xmldb_table('enrol_paypal');
+        $key = new xmldb_key('instanceid', XMLDB_KEY_FOREIGN, array('instanceid'), 'enrol', array('id'));
+
+        // Launch add key instanceid.
+        $dbman->add_key($table, $key);
+
+        // Paypal savepoint reached.
+        upgrade_plugin_savepoint(true, 2017111304, 'enrol', 'paypal');
+    }
+
+    if ($oldversion < 2017111305) {
+
+        $table = new xmldb_table('enrol_paypal');
+
+        // Define index business (not unique) to be added to enrol_paypal.
+        $index = new xmldb_index('business', XMLDB_INDEX_NOTUNIQUE, array('business'));
+
+        // Conditionally launch add index business.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Define index receiver_email (not unique) to be added to enrol_paypal.
+        $index = new xmldb_index('receiver_email', XMLDB_INDEX_NOTUNIQUE, array('receiver_email'));
+
+        // Conditionally launch add index receiver_email.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Paypal savepoint reached.
+        upgrade_plugin_savepoint(true, 2017111305, 'enrol', 'paypal');
     }
 
     return true;

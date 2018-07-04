@@ -20,6 +20,7 @@
  * @copyright  2018 Carlos Escobedo <carlos@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace auth_mnet\privacy;
 
 defined('MOODLE_INTERNAL') || die();
@@ -39,16 +40,13 @@ use \core_privacy\local\request\writer;
 class provider implements
         \core_privacy\local\metadata\provider,
         \core_privacy\local\request\plugin\provider {
-
-    use \core_privacy\local\legacy_polyfill;
-
     /**
      * Returns meta data about this system.
      *
-     * @param   collection     $collection The initialised item collection to add items to.
+     * @param   collection $collection The initialised item collection to add items to.
      * @return  collection     A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
 
         $sessionfields = [
                 'userid' => 'privacy:metadata:mnet_session:userid',
@@ -132,10 +130,10 @@ class provider implements
     /**
      * Get the list of contexts that contain user information for the specified user.
      *
-     * @param   int           $userid       The user to search.
+     * @param   int $userid The user to search.
      * @return  contextlist   $contextlist  The list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $sql = "SELECT ctx.id
                   FROM {mnet_log} ml
                   JOIN {context} ctx ON ctx.instanceid = ml.userid AND ctx.contextlevel = :contextlevel
@@ -151,7 +149,7 @@ class provider implements
     /**
      * Export all user data for the specified user, in the specified contexts, using the supplied exporter instance.
      *
-     * @param   approved_contextlist    $contextlist    The approved contexts to export information for.
+     * @param   approved_contextlist $contextlist The approved contexts to export information for.
      */
     public static function export_user_data(approved_contextlist $contextlist) {
         global $DB;

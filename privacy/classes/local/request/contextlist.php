@@ -43,7 +43,7 @@ class contextlist extends contextlist_base {
      * @param   array   $params The set of SQL parameters
      * @return  $this
      */
-    public function add_from_sql($sql, array $params) {
+    public function add_from_sql(string $sql, array $params) : contextlist {
         global $DB;
 
         $fields = \context_helper::get_preload_record_columns_sql('ctx');
@@ -67,7 +67,7 @@ class contextlist extends contextlist_base {
      *
      * @return $this
      */
-    public function add_system_context() {
+    public function add_system_context() : contextlist {
         return $this->add_from_sql(SYSCONTEXTID, []);
     }
 
@@ -77,7 +77,7 @@ class contextlist extends contextlist_base {
      * @param int $userid
      * @return $this
      */
-    public function add_user_context($userid) {
+    public function add_user_context(int $userid) : contextlist {
         $sql = "SELECT DISTINCT ctx.id
                   FROM {context} ctx
                  WHERE ctx.contextlevel = :contextlevel
@@ -91,7 +91,7 @@ class contextlist extends contextlist_base {
      * @param array $userids
      * @return $this
      */
-    public function add_user_contexts(array $userids) {
+    public function add_user_contexts(array $userids) : contextlist {
         global $DB;
 
         list($useridsql, $useridparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);

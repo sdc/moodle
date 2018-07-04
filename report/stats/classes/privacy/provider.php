@@ -44,7 +44,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param  collection $collection A list of information about this component
      * @return collection The collection object filled out with information about this component.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $statsuserdaily = [
             'courseid' => 'privacy:metadata:courseid',
             'userid' => 'privacy:metadata:userid',
@@ -86,7 +86,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param   int $userid The user to search.
      * @return  contextlist $contextlist The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $params = ['userid' => $userid, 'contextcourse' => CONTEXT_COURSE];
         $sql = "SELECT ctx.id
                 FROM {context} ctx
@@ -210,7 +210,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param int $courseid The course ID to delete the stats for.
      * @param int $userid Optionally a user id to delete records with.
      */
-    protected static function delete_stats($courseid, $userid = null) {
+    protected static function delete_stats(int $courseid, int $userid = null) {
         global $DB;
         $params = (isset($userid)) ? ['courseid' => $courseid, 'userid' => $userid] : ['courseid' => $courseid];
         $DB->delete_records('stats_user_daily', $params);

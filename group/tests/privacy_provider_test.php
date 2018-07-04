@@ -92,15 +92,10 @@ class core_group_privacy_provider_testcase extends provider_testcase {
         $data = $writer->get_data([get_string('groups', 'core_group')]);
         $exportedgroups = $data->groups;
 
-        $exportedgroupnames = [];
-        foreach ($exportedgroups as $exportedgroup) {
-            $exportedgroupnames[] = $exportedgroup->name;
-        }
-
         // User1 belongs to group1 and group2.
         $this->assertEquals(
                 [$group1->name, $group2->name],
-                $exportedgroupnames,
+                array_column($exportedgroups, 'name'),
                 '', 0.0, 10, true);
     }
 
@@ -623,15 +618,10 @@ class core_group_privacy_provider_testcase extends provider_testcase {
         $data = $writer->get_data([get_string('groups', 'core_group')]);
         $exportedgroups = $data->groups;
 
-        $exportedgroupnames = [];
-        foreach ($exportedgroups as $exportedgroup) {
-            $exportedgroupnames[] = $exportedgroup->name;
-        }
-
         // User1 belongs to group1 and group2.
         $this->assertEquals(
                 [$group1->name, $group2->name],
-                $exportedgroupnames,
+                array_column($exportedgroups, 'name'),
                 '', 0.0, 10, true);
     }
 

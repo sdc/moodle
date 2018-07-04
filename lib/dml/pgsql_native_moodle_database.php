@@ -1262,8 +1262,12 @@ class pgsql_native_moodle_database extends moodle_database {
         return true;
     }
 
-    public function sql_regex($positivematch=true) {
-        return $positivematch ? '~*' : '!~*';
+    public function sql_regex($positivematch = true, $casesensitive = false) {
+        if ($casesensitive) {
+            return $positivematch ? '~' : '!~';
+        } else {
+            return $positivematch ? '~*' : '!~*';
+        }
     }
 
     /**

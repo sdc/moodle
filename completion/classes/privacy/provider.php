@@ -47,7 +47,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param   collection $collection The initialised collection to add items to.
      * @return  collection A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table('course_completions', [
                 'userid' => 'privacy:metadata:userid',
                 'course' => 'privacy:metadata:course',
@@ -82,7 +82,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param  string $joinfield A field to join these tables to. Joins to course ID.
      * @return array The join, where, and params for this join.
      */
-    public static function get_course_completion_join_sql($userid, $prefix, $joinfield) {
+    public static function get_course_completion_join_sql(int $userid, string $prefix, string $joinfield) : array {
         $cccalias = "{$prefix}_ccc"; // Course completion criteria.
         $cmcalias = "{$prefix}_cmc"; // Course modules completion.
         $ccccalias = "{$prefix}_cccc"; // Course completion criteria completion.
@@ -106,7 +106,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param  \stdClass $cm Course module information.
      * @return \stdClass Activity completion information.
      */
-    public static function get_activity_completion_info(\stdClass $user, \stdClass $course, $cm) {
+    public static function get_activity_completion_info(\stdClass $user, \stdClass $course, $cm) : \stdClass {
         $completioninfo = new \completion_info($course);
         $completion = $completioninfo->is_enabled($cm);
         return ($completion != COMPLETION_TRACKING_NONE) ? $completioninfo->get_data($cm, true, $user->id) : new \stdClass();
@@ -119,7 +119,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param  \stdClass $course The course we are interested in.
      * @return \stdClass Course completion information.
      */
-    public static function get_course_completion_info(\stdClass $user, \stdClass $course) {
+    public static function get_course_completion_info(\stdClass $user, \stdClass $course) : array {
         $completioninfo = new \completion_info($course);
         $completion = $completioninfo->is_enabled();
 
@@ -173,7 +173,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      * @param int $courseid The course id. Provide this if you want course completion and activity completion deleted.
      * @param int $cmid The course module id. Provide this if you only want activity completion deleted.
      */
-    public static function delete_completion(\stdClass $user = null, $courseid = null, $cmid = null) {
+    public static function delete_completion(\stdClass $user = null, int $courseid = null, int $cmid = null) {
         global $DB;
 
         if (isset($cmid)) {

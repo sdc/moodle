@@ -68,7 +68,7 @@ class moodle_content_writer implements content_writer {
      *
      * @param   \context        $context    The context to use
      */
-    public function set_context(\context $context) {
+    public function set_context(\context $context) : content_writer {
         $this->context = $context;
 
         return $this;
@@ -81,7 +81,7 @@ class moodle_content_writer implements content_writer {
      * @param   \stdClass       $data       The data to be exported
      * @return  content_writer
      */
-    public function export_data(array $subcontext, \stdClass $data) {
+    public function export_data(array $subcontext, \stdClass $data) : content_writer {
         $path = $this->get_path($subcontext, 'data.json');
 
         $this->write_data($path, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
@@ -100,7 +100,7 @@ class moodle_content_writer implements content_writer {
      * @param   string          $description    The description of the value.
      * @return  content_writer
      */
-    public function export_metadata(array $subcontext, $key, $value, $description) {
+    public function export_metadata(array $subcontext, string $key, $value, string $description) : content_writer {
         $path = $this->get_full_path($subcontext, 'metadata.json');
 
         if (file_exists($path)) {
@@ -128,7 +128,7 @@ class moodle_content_writer implements content_writer {
      * @param   \stdClass       $data       The related data to export.
      * @return  content_writer
      */
-    public function export_related_data(array $subcontext, $name, $data) {
+    public function export_related_data(array $subcontext, $name, $data) : content_writer {
         $path = $this->get_path($subcontext, "{$name}.json");
 
         $this->write_data($path, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
@@ -143,7 +143,7 @@ class moodle_content_writer implements content_writer {
      * @param   string          $filename   The name of the file to be exported.
      * @param   string          $filecontent    The content to be exported.
      */
-    public function export_custom_file(array $subcontext, $filename, $filecontent) {
+    public function export_custom_file(array $subcontext, $filename, $filecontent) : content_writer {
         $filename = clean_param($filename, PARAM_FILE);
         $path = $this->get_path($subcontext, $filename);
         $this->write_data($path, $filecontent);
@@ -161,7 +161,7 @@ class moodle_content_writer implements content_writer {
      * @param   string          $text       The text to be processed
      * @return  string                      The processed string
      */
-    public function rewrite_pluginfile_urls(array $subcontext, $component, $filearea, $itemid, $text) {
+    public function rewrite_pluginfile_urls(array $subcontext, $component, $filearea, $itemid, $text) : string {
         return str_replace('@@PLUGINFILE@@/', $this->get_files_target_url($component, $filearea, $itemid).'/', $text);
     }
 
@@ -173,7 +173,7 @@ class moodle_content_writer implements content_writer {
      * @param   string          $filearea   The filearea within that component.
      * @param   string          $itemid     Which item those files belong to.
      */
-    public function export_area_files(array $subcontext, $component, $filearea, $itemid) {
+    public function export_area_files(array $subcontext, $component, $filearea, $itemid) : content_writer {
         $fs = get_file_storage();
         $files = $fs->get_area_files($this->context->id, $component, $filearea, $itemid);
         foreach ($files as $file) {
@@ -189,7 +189,7 @@ class moodle_content_writer implements content_writer {
      * @param   array           $subcontext The location within the current context that this data belongs.
      * @param   \stored_file    $file       The file to be exported.
      */
-    public function export_file(array $subcontext, \stored_file $file) {
+    public function export_file(array $subcontext, \stored_file $file) : content_writer {
         if (!$file->is_directory()) {
             $pathitems = array_merge(
                 $subcontext,
@@ -213,7 +213,7 @@ class moodle_content_writer implements content_writer {
      * @param   string          $description    A description of the value
      * @return  content_writer
      */
-    public function export_user_preference($component, $key, $value, $description) {
+    public function export_user_preference(string $component, string $key, string $value, string $description) : content_writer {
         $subcontext = [
             get_string('userpreferences'),
         ];
@@ -240,7 +240,7 @@ class moodle_content_writer implements content_writer {
      *
      * @return  array                       The context path.
      */
-    protected function get_context_path() {
+    protected function get_context_path() : Array {
         $path = [];
         $contexts = array_reverse($this->context->get_parent_contexts(true));
         foreach ($contexts as $context) {
@@ -259,7 +259,7 @@ class moodle_content_writer implements content_writer {
      * @param   string          $name       The intended filename, including any extensions.
      * @return  string                      The fully-qualfiied file path.
      */
-    protected function get_path(array $subcontext, $name) {
+    protected function get_path(array $subcontext, string $name) : string {
         $subcontext = shorten_filenames($subcontext, MAX_FILENAME_SIZE, true);
         $name = shorten_filename($name, MAX_FILENAME_SIZE, true);
 
@@ -284,7 +284,7 @@ class moodle_content_writer implements content_writer {
      * @param   string          $name       The intended filename, including any extensions.
      * @return  string                      The fully-qualfiied file path.
      */
-    protected function get_full_path(array $subcontext, $name) {
+    protected function get_full_path(array $subcontext, string $name) : string {
         $path = array_merge(
             [$this->path],
             [$this->get_path($subcontext, $name)]
@@ -306,7 +306,7 @@ class moodle_content_writer implements content_writer {
      * @param string $itemid Which item those files belong to.
      * @return string The path
      */
-    protected function get_files_target_path($component, $filearea, $itemid) {
+    protected function get_files_target_path($component, $filearea, $itemid) : string {
 
         // We do not need to include the component because we organise things by context.
         $parts = ['_files', $filearea];
@@ -326,7 +326,7 @@ class moodle_content_writer implements content_writer {
      * @param string $itemid Which item those files belong to.
      * @return string The url
      */
-    protected function get_files_target_url($component, $filearea, $itemid) {
+    protected function get_files_target_url($component, $filearea, $itemid) : string {
         // We do not need to include the component because we organise things by context.
         $parts = ['_files', $filearea];
 
@@ -343,7 +343,7 @@ class moodle_content_writer implements content_writer {
      * @param   string          $path       The path to export the data at.
      * @param   string          $data       The data to be exported.
      */
-    protected function write_data($path, $data) {
+    protected function write_data(string $path, string $data) {
         $targetpath = $this->path . DIRECTORY_SEPARATOR . $path;
         check_dir_exists(dirname($targetpath), true, true);
         file_put_contents($targetpath, $data);
@@ -355,7 +355,7 @@ class moodle_content_writer implements content_writer {
      *
      * @return  string
      */
-    public function finalise_content() {
+    public function finalise_content() : string {
         $exportfile = make_request_directory() . '/export.zip';
 
         $fp = get_file_packer();

@@ -49,7 +49,7 @@ class provider implements
      * @param   collection     $collection The initialised collection to add items to.
      * @return  collection     A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table('grading_definitions', [
                 'method' => 'privacy:metadata:grading_definitions:method',
                 'areaid' => 'privacy:metadata:grading_definitions:areaid',
@@ -86,7 +86,7 @@ class provider implements
      * @param int $userid The user to search.
      * @return contextlist $contextlist The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $contextlist = new contextlist();
 
         $sql = "SELECT c.id
@@ -140,7 +140,7 @@ class provider implements
      * @param  array            $subcontext Subcontext owner of the data.
      * @param  int              $userid The user whose information is to be exported.
      */
-    protected static function export_definitions(\context $context, array $subcontext, $userid = 0) {
+    protected static function export_definitions(\context $context, array $subcontext, int $userid = 0) {
         global $DB;
 
         $join = "JOIN {grading_areas} a ON a.id = d.areaid
@@ -226,7 +226,7 @@ class provider implements
      * @param  int              $definitionid The definition ID whose grading instance information is to be exported.
      * @param  int              $userid The user whose information is to be exported.
      */
-    protected static function export_grading_instances(\context $context, array $subcontext, $definitionid, $userid = 0) {
+    protected static function export_grading_instances(\context $context, array $subcontext, int $definitionid, int $userid = 0) {
         global $DB;
 
         $params = ['definitionid' => $definitionid];

@@ -43,7 +43,7 @@ class provider implements
      * @param   collection $collection The initialised collection to add items to.
      * @return  collection     A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table(
             'mnetservice_enrol_enrolments',
             [
@@ -65,7 +65,7 @@ class provider implements
      * @param   int $userid The user to search.
      * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $sql = "SELECT c.id
                   FROM {context} c
                   JOIN {mnetservice_enrol_enrolments} me
@@ -165,7 +165,7 @@ class provider implements
      *
      * @param  int $userid The user ID
      */
-    protected static function delete_user_data($userid) {
+    protected static function delete_user_data(int $userid) {
         global $DB;
         // Because we only use user contexts the instance ID is the user ID.
         $DB->delete_records('mnetservice_enrol_enrolments', ['userid' => $userid]);

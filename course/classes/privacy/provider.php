@@ -50,7 +50,7 @@ class provider implements
      * @param   collection $collection The initialised collection to add items to.
      * @return  collection A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_subsystem_link('core_completion', [], 'privacy:metadata:completionsummary');
         $collection->add_user_preference('coursecat_management_perpage', 'privacy:perpage');
         return $collection;
@@ -62,7 +62,7 @@ class provider implements
      * @param   int $userid The user to search.
      * @return  contextlist $contextlist The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         list($join, $where, $params) = \core_completion\privacy\provider::get_course_completion_join_sql($userid, 'cc', 'c.id');
         $sql = "SELECT ctx.id
                 FROM {context} ctx
@@ -181,7 +181,7 @@ class provider implements
      *
      * @param int $userid The userid of the user whose data is to be exported.
      */
-    public static function export_user_preferences($userid) {
+    public static function export_user_preferences(int $userid) {
         $perpage = get_user_preferences('coursecat_management_perpage', null, $userid);
         if (isset($perpage)) {
             writer::export_user_preference('core_course',

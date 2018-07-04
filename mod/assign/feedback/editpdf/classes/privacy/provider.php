@@ -51,7 +51,7 @@ class provider implements metadataprovider, assignfeedback_provider {
      * @param  collection $collection A list of information to add to.
      * @return collection Return the collection after adding to it.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $quickdata = [
             'userid' => 'privacy:metadata:userid',
             'rawtext' => 'privacy:metadata:rawtextpurpose',
@@ -70,7 +70,7 @@ class provider implements metadataprovider, assignfeedback_provider {
      * @param  int $userid The user ID.
      * @param  contextlist $contextlist The context list.
      */
-    public static function get_context_for_userid_within_feedback($userid, contextlist $contextlist) {
+    public static function get_context_for_userid_within_feedback(int $userid, contextlist $contextlist) {
         // This uses the assign_grade table.
     }
 

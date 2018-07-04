@@ -43,5 +43,5 @@ interface workshopform_provider extends \core_privacy\local\request\plugin\subpl
      * @param array $subcontext Subcontext within the context to export to
      * @param int $assessmentid ID of the assessment
      */
-    public static function export_assessment_form(\stdClass $user, \context $context, array $subcontext, $assessmentid);
+    public static function export_assessment_form(\stdClass $user, \context $context, array $subcontext, int $assessmentid);
 }

@@ -48,9 +48,9 @@ class provider implements
      * Returns meta data about this system.
      *
      * @param collection $collection
-     * @return $this|collection
+     * @return collection
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         return $collection->add_subsystem_link('core_comment', [], 'privacy:metadata:core_comment');
     }
 
@@ -60,7 +60,7 @@ class provider implements
      * @param int $userid
      * @return contextlist
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $contextlist = new contextlist();
 
         $sql = "SELECT contextid

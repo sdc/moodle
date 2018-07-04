@@ -53,7 +53,7 @@ class provider implements
      * @param   collection     $collection The initialised collection to add items to.
      * @return  collection     A listing of user data stored through the subsystem.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         // The table 'rating' cotains data that a user has entered.
         // It stores the user-entered rating alongside a mapping to describe what was mapped.
         $collection->add_database_table('rating', [
@@ -84,13 +84,13 @@ class provider implements
      * @param   bool        $onlyuser Whether to only export ratings that the current user has made, or all ratings
      */
     public static function export_area_ratings(
-        $userid,
+        int $userid,
         \context $context,
         array $subcontext,
-        $component,
-        $ratingarea,
-        $itemid,
-        $onlyuser = true
+        string $component,
+        string $ratingarea,
+        int $itemid,
+        bool $onlyuser = true
     ) {
         global $DB;
 
@@ -174,8 +174,8 @@ class provider implements
      * @param  string $ratingarea Rating area to delete.
      * @param  int $itemid The item ID for use with deletion.
      */
-    public static function delete_ratings(\context $context, $component = null,
-            $ratingarea = null, $itemid = null) {
+    public static function delete_ratings(\context $context, string $component = null,
+            string $ratingarea = null, int $itemid = null) {
         global $DB;
 
         $options = ['contextid' => $context->id];
@@ -206,8 +206,8 @@ class provider implements
      *      and may not use named parameters called contextid, component or ratingarea.
      * @param array $params any query params used by $itemidstest.
      */
-    public static function delete_ratings_select(\context $context, $component,
-             $ratingarea, $itemidstest, $params = []) {
+    public static function delete_ratings_select(\context $context, string $component,
+             string $ratingarea, $itemidstest, $params = []) {
         global $DB;
         $params += ['contextid' => $context->id, 'component' => $component, 'ratingarea' => $ratingarea];
         $DB->delete_records_select('rating',

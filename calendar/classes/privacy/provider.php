@@ -49,7 +49,7 @@ class provider implements
      * @param  collection $collection A collection of meta data items to be added to.
      * @return  collection Returns the collection of metadata.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         // The calendar 'event' table contains user data.
         $collection->add_database_table(
             'event',
@@ -89,12 +89,13 @@ class provider implements
      * @param   int $userid The user to search.
      * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $contextlist = new contextlist();
 
         // Calendar Events can exist at Site, Course Category, Course, Course Group, User, or Course Modules contexts.
         $params = [
             'sitecontext'        => CONTEXT_SYSTEM,
+            'categorycontext'    => CONTEXT_COURSECAT,
             'coursecontext'      => CONTEXT_COURSE,
             'groupcontext'       => CONTEXT_COURSE,
             'usercontext'        => CONTEXT_USER,
@@ -108,6 +109,7 @@ class provider implements
                   FROM {context} ctx
                   JOIN {event} e ON
                        (e.eventtype = 'site' AND ctx.contextlevel = :sitecontext) OR
+                       (e.categoryid = ctx.instanceid AND e.eventtype = 'category' AND ctx.contextlevel = :categorycontext) OR
                        (e.courseid = ctx.instanceid AND e.eventtype = 'course' AND ctx.contextlevel = :coursecontext) OR
                        (e.courseid = ctx.instanceid AND e.eventtype = 'group' AND ctx.contextlevel = :groupcontext) OR
                        (e.userid = ctx.instanceid AND e.eventtype = 'user' AND ctx.contextlevel = :usercontext)
@@ -124,6 +126,7 @@ class provider implements
         // Calendar Subscriptions can exist at Site, Course Category, Course, Course Group, or User contexts.
         $params = [
             'sitecontext'       => CONTEXT_SYSTEM,
+            'categorycontext'   => CONTEXT_COURSECAT,
             'coursecontext'     => CONTEXT_COURSE,
             'groupcontext'      => CONTEXT_COURSE,
             'usercontext'       => CONTEXT_USER,
@@ -135,6 +138,7 @@ class provider implements
                   FROM {context} ctx
                   JOIN {event_subscriptions} s ON
                        (s.eventtype = 'site' AND ctx.contextlevel = :sitecontext) OR
+                       (s.categoryid = ctx.instanceid AND s.eventtype = 'category' AND ctx.contextlevel = :categorycontext) OR
                        (s.courseid = ctx.instanceid AND s.eventtype = 'course' AND ctx.contextlevel = :coursecontext) OR
                        (s.courseid = ctx.instanceid AND s.eventtype = 'group' AND ctx.contextlevel = :groupcontext) OR
                        (s.userid = ctx.instanceid AND s.eventtype = 'user' AND ctx.contextlevel = :usercontext)
@@ -164,7 +168,7 @@ class provider implements
      *
      * @param   int $userid The userid of the user whose data is to be exported.
      */
-    public static function export_user_preferences($userid) {
+    public static function export_user_preferences(int $userid) {
         $calendarsavedflt = get_user_preferences('calendar_savedflt', null, $userid);
 
         if (null !== $calendarsavedflt) {
@@ -359,6 +363,7 @@ class provider implements
         } else {                                        // Other Moodle Contexts.
             $params = [
                 'sitecontext'       => CONTEXT_SYSTEM,
+                'categorycontext'   => CONTEXT_COURSECAT,
                 'coursecontext'     => CONTEXT_COURSE,
                 'groupcontext'      => CONTEXT_COURSE,
                 'usercontext'       => CONTEXT_USER,
@@ -371,6 +376,7 @@ class provider implements
                       FROM {context} ctx
                 INNER JOIN {event} e ON
                            (e.eventtype = 'site' AND ctx.contextlevel = :sitecontext) OR
+                           (e.categoryid = ctx.instanceid AND e.eventtype = 'category' AND ctx.contextlevel = :categorycontext) OR
                            (e.courseid = ctx.instanceid AND (e.eventtype = 'course' OR e.eventtype = 'group' OR e.modulename != '0') AND ctx.contextlevel = :coursecontext) OR
                            (e.userid = ctx.instanceid AND e.eventtype = 'user' AND ctx.contextlevel = :usercontext)
                      WHERE ctx.id = :contextid";
@@ -393,6 +399,7 @@ class provider implements
         // Calendar Subscriptions can exist at Site, Course Category, Course, Course Group, or User contexts.
         $params = [
             'sitecontext'       => CONTEXT_SYSTEM,
+            'categorycontext'   => CONTEXT_COURSECAT,
             'coursecontext'     => CONTEXT_COURSE,
             'groupcontext'      => CONTEXT_COURSE,
             'usercontext'       => CONTEXT_USER,
@@ -405,6 +412,7 @@ class provider implements
                   FROM {context} ctx
             INNER JOIN {event_subscriptions} s ON
                        (s.eventtype = 'site' AND ctx.contextlevel = :sitecontext) OR
+                       (s.categoryid = ctx.instanceid AND s.eventtype = 'category' AND ctx.contextlevel = :categorycontext) OR
                        (s.courseid = ctx.instanceid AND s.eventtype = 'course' AND ctx.contextlevel = :coursecontext) OR
                        (s.courseid = ctx.instanceid AND s.eventtype = 'group' AND ctx.contextlevel = :groupcontext) OR
                        (s.userid = ctx.instanceid AND s.eventtype = 'user' AND ctx.contextlevel = :usercontext)
@@ -432,6 +440,7 @@ class provider implements
         // Calendar Events can exist at Site, Course Category, Course, Course Group, User, or Course Modules contexts.
         $params = [
             'sitecontext'       => CONTEXT_SYSTEM,
+            'categorycontext'   => CONTEXT_COURSECAT,
             'coursecontext'     => CONTEXT_COURSE,
             'groupcontext'      => CONTEXT_COURSE,
             'usercontext'       => CONTEXT_USER,
@@ -456,6 +465,7 @@ class provider implements
                             FROM {context} ctx
                       INNER JOIN {event} e ON
                                  (e.eventtype = 'site' AND ctx.contextlevel = :sitecontext) OR
+                                 (e.categoryid = ctx.instanceid AND e.eventtype = 'category' AND ctx.contextlevel = :categorycontext) OR
                                  (e.courseid = ctx.instanceid AND e.eventtype = 'course' AND ctx.contextlevel = :coursecontext) OR
                                  (e.courseid = ctx.instanceid AND e.eventtype = 'group' AND ctx.contextlevel = :groupcontext) OR
                                  (e.userid = ctx.instanceid AND e.eventtype = 'user' AND ctx.contextlevel = :usercontext)
@@ -494,6 +504,7 @@ class provider implements
 
         $params = [
             'sitecontext' => CONTEXT_SYSTEM,
+            'categorycontext' => CONTEXT_COURSECAT,
             'coursecontext' => CONTEXT_COURSE,
             'groupcontext' => CONTEXT_COURSE,
             'usercontext' => CONTEXT_USER,
@@ -511,6 +522,7 @@ class provider implements
                   FROM {context} c
             INNER JOIN {event_subscriptions} s ON
                        (s.eventtype = 'site' AND c.contextlevel = :sitecontext) OR
+                       (s.categoryid = c.instanceid AND s.eventtype = 'category' AND c.contextlevel = :categorycontext) OR
                        (s.courseid = c.instanceid AND s.eventtype = 'course' AND c.contextlevel = :coursecontext) OR
                        (s.courseid = c.instanceid AND s.eventtype = 'group' AND c.contextlevel = :groupcontext) OR
                        (s.userid = c.instanceid AND s.eventtype = 'user' AND c.contextlevel = :usercontext)

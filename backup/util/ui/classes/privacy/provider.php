@@ -48,7 +48,7 @@ class provider implements
      * @param collection $items a reference to the collection to use to store the metadata.
      * @return collection the updated collection of metadata items.
      */
-    public static function get_metadata(collection $items) {
+    public static function get_metadata(collection $items) : collection {
         $items->link_external_location(
             'Backup',
             [
@@ -78,7 +78,7 @@ class provider implements
      * @param int $userid The user to search.
      * @return contextlist The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $contextlist = new contextlist();
 
         $sql = "SELECT DISTINCT ctx.id

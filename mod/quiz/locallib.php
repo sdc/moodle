@@ -2223,7 +2223,7 @@ function quiz_add_random_questions($quiz, $addonpage, $categoryid, $number,
                           FROM {quiz_slots}
                          WHERE questionid = q.id)
             ORDER BY id", array($category->id, ($includesubcategories ? '1' : '0')))) {
-            // Take as many of these as needed.
+        // Take as many of these as needed.
         while (($existingquestion = array_shift($existingquestions)) && $number > 0) {
             quiz_add_quiz_question($existingquestion->id, $quiz, $addonpage);
             $number -= 1;
@@ -2402,6 +2402,45 @@ function quiz_prepare_and_start_new_attempt(quiz $quizobj, $attemptnumber, $last
     $transaction->allow_commit();
 
     return $attempt;
+}
+
+/**
+ * Check if the given calendar_event is either a user or group override
+ * event for quiz.
+ *
+ * @param calendar_event $event The calendar event to check
+ * @return bool
+ */
+function quiz_is_overriden_calendar_event(\calendar_event $event) {
+    global $DB;
+
+    if (!isset($event->modulename)) {
+        return false;
+    }
+
+    if ($event->modulename != 'quiz') {
+        return false;
+    }
+
+    if (!isset($event->instance)) {
+        return false;
+    }
+
+    if (!isset($event->userid) && !isset($event->groupid)) {
+        return false;
+    }
+
+    $overrideparams = [
+        'quiz' => $event->instance
+    ];
+
+    if (isset($event->groupid)) {
+        $overrideparams['groupid'] = $event->groupid;
+    } else if (isset($event->userid)) {
+        $overrideparams['userid'] = $event->userid;
+    }
+
+    return $DB->record_exists('quiz_overrides', $overrideparams);
 }
 
 /**

@@ -54,7 +54,7 @@ class provider implements
      * @param   collection $collection The initialised collection to add items to.
      * @return  collection A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table('groups_members', [
             'groupid' => 'privacy:metadata:groups:groupid',
             'userid' => 'privacy:metadata:groups:userid',
@@ -72,7 +72,7 @@ class provider implements
      * @param array     $subcontext The sub-context in which to export this data.
      * @param int       $itemid     Optional itemid associated with component.
      */
-    public static function export_groups(\context $context, $component, $subcontext = [], $itemid = 0) {
+    public static function export_groups(\context $context, string $component, array $subcontext = [], int $itemid = 0) {
         global $DB, $USER;
 
         if (!$context instanceof \context_course) {
@@ -122,7 +122,7 @@ class provider implements
      * @param string    $component  Component to delete. Empty string means no component (manual group memberships).
      * @param int       $itemid     Optional itemid associated with component.
      */
-    public static function delete_groups_for_all_users(\context $context, $component, $itemid = 0) {
+    public static function delete_groups_for_all_users(\context $context, string $component, int $itemid = 0) {
         global $DB;
 
         if (!$context instanceof \context_course) {
@@ -154,7 +154,7 @@ class provider implements
      * @param string                $component      Component to delete from. Empty string means no component (manual memberships).
      * @param int                   $itemid         Optional itemid associated with component.
      */
-    public static function delete_groups_for_user(approved_contextlist $contextlist, $component, $itemid = 0) {
+    public static function delete_groups_for_user(approved_contextlist $contextlist, string $component, int $itemid = 0) {
         global $DB;
 
         $userid = $contextlist->get_user()->id;
@@ -196,7 +196,7 @@ class provider implements
      * @param   int $userid The user to search.
      * @return  contextlist The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $contextlist = new contextlist();
 
         $sql = "SELECT ctx.id

@@ -45,7 +45,7 @@ trait gradingform_legacy_polyfill {
      *
      * @return stdClass The data to export.
      */
-    public static function get_gradingform_export_data(\context $context, $definition, $userid) {
+    public static function get_gradingform_export_data(\context $context, $definition, int $userid) {
         return static::_get_gradingform_export_data($context, $definition, $userid);
     }
 
@@ -64,7 +64,7 @@ trait gradingform_legacy_polyfill {
      * @param int $userid The user whose information is to be deleted.
      * @param context $context Context owner of the data.
      */
-    public static function delete_gradingform_for_userid($userid, \context $context) {
+    public static function delete_gradingform_for_userid(int $userid, \context $context) {
         static::_delete_gradingform_for_userid($userid, $context);
     }
 }

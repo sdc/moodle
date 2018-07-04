@@ -54,7 +54,7 @@ class provider implements
      * @param   collection     $collection The initialised collection to add items to.
      * @return  collection     A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         // The table 'tag' contains data that a user has entered.
         // It is currently linked with a userid, but this field will hopefulyl go away.
         // Note: The userid is not necessarily 100% accurate. See MDL-61555.
@@ -107,13 +107,13 @@ class provider implements
      * @param   bool        $onlyuser Whether to only export ratings that the current user has made, or all tags
      */
     public static function export_item_tags(
-        $userid,
+        int $userid,
         \context $context,
         array $subcontext,
-        $component,
-        $itemtype,
-        $itemid,
-        $onlyuser = false
+        string $component,
+        string $itemtype,
+        int $itemid,
+        bool $onlyuser = false
     ) {
         global $DB;
 
@@ -200,7 +200,7 @@ class provider implements
      * @param   int         $userid     The user to search.
      * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $contextlist = new contextlist();
         $contextlist->add_from_sql("SELECT c.id
                   FROM {context} c

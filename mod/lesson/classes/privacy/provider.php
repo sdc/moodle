@@ -60,7 +60,7 @@ class provider implements
      * @param collection $collection The initialised collection to add items to.
      * @return collection A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table('lesson_attempts', [
             'userid' => 'privacy:metadata:attempts:userid',
             'pageid' => 'privacy:metadata:attempts:pageid',
@@ -117,7 +117,7 @@ class provider implements
      * @param int $userid The user to search.
      * @return contextlist $contextlist The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid(int $userid) : \core_privacy\local\request\contextlist {
         $contextlist = new \core_privacy\local\request\contextlist();
 
         $sql = "
@@ -352,7 +352,7 @@ class provider implements
      *
      * @param int $userid The userid of the user whose data is to be exported.
      */
-    public static function export_user_preferences($userid) {
+    public static function export_user_preferences(int $userid) {
         $lessonview = get_user_preferences('lesson_view', null, $userid);
         if ($lessonview !== null) {
             $value = $lessonview;

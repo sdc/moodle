@@ -169,12 +169,13 @@ class assign_submission_onlinetext extends assign_submission_plugin {
      * @return array
      */
     private function get_edit_options() {
-         $editoroptions = array(
-           'noclean' => false,
-           'maxfiles' => EDITOR_UNLIMITED_FILES,
-           'maxbytes' => $this->assignment->get_course()->maxbytes,
-           'context' => $this->assignment->get_context(),
-           'return_types' => (FILE_INTERNAL | FILE_EXTERNAL | FILE_CONTROLLED_LINK)
+        $editoroptions = array(
+            'noclean' => false,
+            'maxfiles' => EDITOR_UNLIMITED_FILES,
+            'maxbytes' => $this->assignment->get_course()->maxbytes,
+            'context' => $this->assignment->get_context(),
+            'return_types' => (FILE_INTERNAL | FILE_EXTERNAL | FILE_CONTROLLED_LINK),
+            'removeorphaneddrafts' => true // Whether or not to remove any draft files which aren't referenced in the text.
         );
         return $editoroptions;
     }
@@ -449,7 +450,7 @@ class assign_submission_onlinetext extends assign_submission_plugin {
                 require_once($CFG->libdir . '/plagiarismlib.php');
 
                 $plagiarismlinks .= plagiarism_get_links(array('userid' => $submission->userid,
-                    'content' => trim($result),
+                    'content' => trim($onlinetextsubmission->onlinetext),
                     'cmid' => $this->assignment->get_course_module()->id,
                     'course' => $this->assignment->get_course()->id,
                     'assignment' => $submission->assignment));
