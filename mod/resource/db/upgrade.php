@@ -47,9 +47,6 @@ defined('MOODLE_INTERNAL') || die;
 function xmldb_resource_upgrade($oldversion) {
     global $CFG;
 
-    // Moodle v3.1.0 release upgrade line.
-    // Put any upgrade step following this.
-
     // Automatically generated Moodle v3.2.0 release upgrade line.
     // Put any upgrade step following this.
 
@@ -59,7 +56,7 @@ function xmldb_resource_upgrade($oldversion) {
     // Automatically generated Moodle v3.4.0 release upgrade line.
     // Put any upgrade step following this.
 
-    // Automatically generated Moodle v3.3.0 release upgrade line.
+    // Automatically generated Moodle v3.5.0 release upgrade line.
     // Put any upgrade step following this.
 
     return true;

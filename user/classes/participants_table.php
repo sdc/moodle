@@ -129,6 +129,9 @@ class participants_table extends \table_sql {
      */
     protected $profileroles;
 
+    /** @var \stdClass[] $viewableroles */
+    private $viewableroles;
+
     /**
      * Sets up the table.
      *
@@ -235,6 +238,7 @@ class participants_table extends \table_sql {
         $this->allroles = role_fix_names(get_all_roles($this->context), $this->context);
         $this->assignableroles = get_assignable_roles($this->context, ROLENAME_ALIAS, false);
         $this->profileroles = get_profile_roles($this->context);
+        $this->viewableroles = get_viewable_roles($this->context);
     }
 
     /**
@@ -298,7 +302,8 @@ class participants_table extends \table_sql {
                                                               $this->allroles,
                                                               $this->assignableroles,
                                                               $this->profileroles,
-                                                              $roles);
+                                                              $roles,
+                                                              $this->viewableroles);
 
         return $OUTPUT->render_from_template('core/inplace_editable', $editable->export_for_template($OUTPUT));
     }
