@@ -52,7 +52,7 @@ class core_iplookup_geoip_testcase extends advanced_testcase {
         global $CFG;
 
         // Store the file somewhere where it won't be wiped out..
-        $gzfile = "$CFG->dataroot/phpunit/geoip/GeoLiteCity.dat.gz";
+        $gzfile = "$CFG->dataroot/phpunit/geoip/GeoLite2-City.mmdb.gz";
         check_dir_exists(dirname($gzfile));
         if (file_exists($gzfile) and (filemtime($gzfile) < time() - 60*60*24*30)) {
             // Delete file if older than 1 month.
@@ -60,24 +60,32 @@ class core_iplookup_geoip_testcase extends advanced_testcase {
         }
 
         if (!file_exists($gzfile)) {
-            download_file_content('http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz', null, null, false, 300, 20, false, $gzfile);
+            download_file_content('http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz',
+                null, null, false, 300, 20, false, $gzfile);
         }
 
         $this->assertTrue(file_exists($gzfile));
 
-        $zd = gzopen($gzfile, "r");
-        $contents = gzread($zd, 50000000);
-        gzclose($zd);
+        $geoipfile = str_replace('.gz', '', $gzfile);
 
-        $geoipfile = "$CFG->dataroot/geoip/GeoLiteCity.dat";
-        check_dir_exists(dirname($geoipfile));
-        $fp = fopen($geoipfile, 'w');
-        fwrite($fp, $contents);
-        fclose($fp);
+        // Open our files (in binary mode).
+        $file = gzopen($gzfile, 'rb');
+        $geoipfilebuf = fopen($geoipfile, 'wb');
+
+        // Keep repeating until the end of the input file.
+        while (!gzeof($file)) {
+            // Read buffer-size bytes.
+            // Both fwrite and gzread and binary-safe.
+            fwrite($geoipfilebuf, gzread($file, 4096));
+        }
+
+        // Files are done, close files.
+        fclose($geoipfilebuf);
+        gzclose($file);
 
         $this->assertTrue(file_exists($geoipfile));
 
-        $CFG->geoipfile = $geoipfile;
+        $CFG->geoip2file = $geoipfile;
     }
 
     /**
@@ -113,7 +121,9 @@ class core_iplookup_geoip_testcase extends advanced_testcase {
      */
     public function ip_provider() {
         return [
+            'IPv4: Sample suggested by maxmind themselves' => ['24.24.24.24'],
             'IPv4: github.com' => ['192.30.255.112'],
+            'IPv6: UCLA' => ['2607:f010:3fe:fff1::ff:fe00:25'],
         ];
     }
 }
