@@ -1,3 +1,6 @@
+/* =========================================================== *
+main slideshow
+============================================================== */
 .camera_wrap img, 
 .camera_wrap ol, .camera_wrap ul, .camera_wrap li,
 .camera_wrap table, .camera_wrap tbody, .camera_wrap tfoot, .camera_wrap thead, .camera_wrap tr, .camera_wrap th, .camera_wrap td
@@ -452,6 +455,10 @@
 	width:40%;
 	display:inline;
 }
+
+/* =========================================================== *
+carousel slider
+============================================================== */
 .bx-wrapper {
 	position: relative;
 	padding: 0;
@@ -515,6 +522,92 @@
 .bx-next:hover, .bx-prev:hover {
 	background-color:[[setting:mainhovercolor]];
 }
+
+/* =========================================================== *
+Image caption with hover effect
+============================================================== */
+.caption-hover {
+    background: #FFFFFF;
+    border: none;
+    box-shadow: 3px 3px 2px #ddd;
+    cursor: default;
+    float: left;
+    height: 160px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+}
+.caption-hover .mask {
+    height: 100%;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+	line-height: 1.5em;
+	width:100%;
+}
+.caption-hover img {
+    display: block;
+    position: relative;
+	height: 120px !important;
+    width: 260px !important;
+	margin: 0 !important;
+}
+.caption-hover h2 {
+    color: #FFFFFF;
+    font-size: 1.15em;
+    margin: 0;
+    position: relative;
+    text-align: center;
+    text-transform: uppercase;
+}
+.caption-hover p {
+    color: #FFFFFF;
+    padding: 0 10px;
+	margin:0 0 10px;
+    position: relative;
+    text-align: center;
+}
+.caption-hover a.info {
+    background: #333;
+	border-radius: 3px;
+    color: #FFFFFF;
+    display: inline-block;
+    padding: 7px 14px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+.caption-hover .mask {
+	margin:120px 0;
+    transition: all 0.3s ease-in-out 0s;
+	-moz-transition: all 0.3s ease-in-out 0s;
+    -webkit-transition: all 0.3s ease-in-out 0s;
+}
+.caption-hover:hover .mask {
+    margin:0;
+}
+.green {
+	background-color:#8EC63F;
+}
+.purple {
+	background-color:#92499E;
+}
+.orange {
+	background-color:#F1592A;
+}
+.lightblue {
+	background-color:#38B9EC;
+}
+.yellow {
+	background-color:#fdb53f;
+}
+.turquoise {
+	background-color:#29A294;
+}
+
+/* =========================================================== *
+Responsive & General Adjustments
+============================================================== */
 @media(max-width:1279px){
 	.camera_fakehover {min-height: 425px;}
 }
@@ -529,4 +622,48 @@
 	.camera_fakehover {min-height: 300px;}
 	.cameraContents .camera_caption h1 {font-size: 1.8em; line-height: 1.3em;}
 	.cameraContents .camera_caption span {font-size:13px}
+}
+@media (max-width: 480px) {
+    body.has_dock #page #camera_wrap {margin-left: -35px; width: calc(100% + 35px);}
+    body.dir-rtl.has_dock #page #camera_wrap {margin-right: 0;}
+}
+
+/* =========================================================== *
+Additional CSS for RTL Support
+============================================================== */
+.dir-rtl .camera_wrap {
+    direction:ltr;
+}
+.dir-rtl #camera_wrap .camera_target {
+    text-align: left;
+}
+.dir-rtl #camera_wrap .cameraContents {
+    direction: rtl;
+}
+.dir-rtl .cameraContents .camera_caption h1 {
+    padding: 0 10px;
+}
+.dir-rtl .cameraContents .camera_caption span {
+    border-left:none;
+    border-right: 4px solid [[setting:maincolor]];
+}
+.dir-rtl .camera_next > span {
+    background-position: 0 0;
+}
+.dir-rtl .camera_prev > span {
+    background-position: -40px 0;
+}
+.dir-rtl .camera_caption div > span > div {
+    text-align: left !important;
+}
+.dir-rtl .bx-wrapper {
+    direction: ltr;
+}
+.dir-rtl .bx-prev {
+    left: 36px;
+    right: inherit;
+}
+.dir-rtl .bx-next {
+    left: 0;
+    right: inherit;
 }

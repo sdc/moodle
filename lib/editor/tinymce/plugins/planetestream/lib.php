@@ -46,7 +46,15 @@ class tinymce_planetestream extends editor_tinymce_plugin {
         }
         $params['estream_url'] = $url;
         $checksum = $this->tinymce_planetestream_getchecksum();
-        $delta = $this->tinymce_planetestream_obfuscate($USER->username);
+		
+		profile_load_data($USER);
+	
+		if (isset($USER->profile_field_planetestreamusername) && !empty($USER->profile_field_planetestreamusername)) {
+		$delta = $this->tinymce_planetestream_obfuscate($USER->profile_field_planetestreamusername);
+		} else {
+		$delta = $this->tinymce_planetestream_obfuscate($USER->username);
+		}
+		
         $userip = $this->tinymce_planetestream_obfuscate(getremoteaddr());
         $authticket = $this->tinymce_planetestream_getauthticket($url, $checksum, $delta, $userip, $params);
         if ($authticket == '') {

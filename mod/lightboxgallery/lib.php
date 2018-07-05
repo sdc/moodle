@@ -78,7 +78,13 @@ function lightboxgallery_add_instance($gallery) {
 
     lightboxgallery_set_sizing($gallery);
 
-    return $DB->insert_record('lightboxgallery', $gallery);
+    $gallery->id = $DB->insert_record('lightboxgallery', $gallery);
+
+    $completiontimeexpected = !empty($gallery->completionexpected) ? $gallery->completionexpected : null;
+    \core_completion\api::update_completion_date_event($gallery->coursemodule, 'lightboxgallery', $gallery->id,
+        $completiontimeexpected);
+
+    return $gallery->id;
 }
 
 /**
@@ -100,6 +106,10 @@ function lightboxgallery_update_instance($gallery) {
     }
 
     lightboxgallery_set_sizing($gallery);
+
+    $completiontimeexpected = !empty($gallery->completionexpected) ? $gallery->completionexpected : null;
+    \core_completion\api::update_completion_date_event($gallery->coursemodule, 'lightboxgallery', $gallery->id,
+        $completiontimeexpected);
 
     return $DB->update_record('lightboxgallery', $gallery);
 }
@@ -134,6 +144,10 @@ function lightboxgallery_delete_instance($id) {
 
     $cm = get_coursemodule_from_instance('lightboxgallery', $gallery->id);
     $context = context_module::instance($cm->id);
+
+    // Cleanup our completion event.
+    \core_completion\api::update_completion_date_event($cm->id, 'lightboxgallery', $id, null);
+
     // Files.
     $fs = get_file_storage();
     $fs->delete_area_files($context->id, 'mod_lightboxgallery');
@@ -156,7 +170,7 @@ function lightboxgallery_delete_instance($id) {
  * @todo Finish documenting this function
  */
 function lightboxgallery_user_complete($course, $user, $mod, $resource) {
-    global $DB, $CFG;
+    global $DB;
 
     $sql = "SELECT c.*
               FROM {lightboxgallery_comments} c
@@ -186,7 +200,7 @@ function lightboxgallery_get_extra_capabilities() {
 }
 
 function lightboxgallery_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid=0, $groupid=0) {
-    global $DB, $CFG, $COURSE;
+    global $DB, $COURSE;
 
     if ($COURSE->id == $courseid) {
         $course = $COURSE;
@@ -204,11 +218,14 @@ function lightboxgallery_get_recent_mod_activity(&$activities, &$index, $timesta
               FROM {lightboxgallery_comments} c
                    JOIN {lightboxgallery} l ON l.id = c.gallery
                    JOIN {user}            u ON u.id = c.userid
-             WHERE c.timemodified > $timestart AND l.id = {$cm->instance}
-                   " . ($userid ? "AND u.id = $userid" : '') . "
+             WHERE c.timemodified > ? AND l.id = ?
+                   " . ($userid ? "AND u.id = ?" : '') . "
           ORDER BY c.timemodified ASC";
-
-    if ($comments = $DB->get_records_sql($sql)) {
+    $params = [$timestart, $cm->instance];
+    if ($userid) {
+        $params[] = $userid;
+    }
+    if ($comments = $DB->get_records_sql($sql, $params)) {
         foreach ($comments as $comment) {
             $display = lightboxgallery_resize_text(trim(strip_tags($comment->commenttext)), MAX_COMMENT_PREVIEW);
 
@@ -280,10 +297,11 @@ function lightboxgallery_print_recent_activity($course, $viewfullnames, $timesta
               FROM {lightboxgallery_comments} c
                    JOIN {lightboxgallery} l ON l.id = c.gallery
                    JOIN {user}            u ON u.id = c.userid
-             WHERE c.timemodified > $timestart AND l.course = {$course->id}
+             WHERE c.timemodified > ? AND l.course = ?
           ORDER BY c.timemodified ASC";
+    $params = [$timestart, $course->id];
 
-    if ($comments = $DB->get_records_sql($sql)) {
+    if ($comments = $DB->get_records_sql($sql, $params)) {
         echo $OUTPUT->heading(get_string('newgallerycomments', 'lightboxgallery').':', 3);
 
         echo '<ul class="unlist">';
@@ -327,7 +345,7 @@ function lightboxgallery_get_participants($galleryid) {
     return $DB->get_records_sql("SELECT DISTINCT u.id, u.id
                                    FROM {user} u,
                                         {lightboxgallery_comments} c
-                                  WHERE c.gallery = $galleryid AND u.id = c.userid");
+                                  WHERE c.gallery = ? AND u.id = c.userid", [$galleryid]);
 }
 
 function lightboxgallery_get_view_actions() {
@@ -350,7 +368,7 @@ function lightboxgallery_get_post_actions() {
  * @return bool false if file not found, does not return if found - just send the file
  */
 function lightboxgallery_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload) {
-    global $CFG, $DB, $USER;
+    global $CFG, $DB;
 
     require_once($CFG->libdir.'/filelib.php');
 
@@ -477,3 +495,34 @@ function lightboxgallery_rss_enabled() {
 
     return ($CFG->enablerssfeeds && get_config('lightboxgallery', 'enablerssfeeds'));
 }
+
+/**
+ * This function receives a calendar event and returns the action associated with it, or null if there is none.
+ *
+ * This is used by block_myoverview in order to display the event appropriately. If null is returned then the event
+ * is not displayed on the block.
+ *
+ * @param calendar_event $event
+ * @param \core_calendar\action_factory $factory
+ * @return \core_calendar\local\event\entities\action_interface|null
+ */
+function mod_lightboxgallery_core_calendar_provide_event_action(calendar_event $event,
+                                                            \core_calendar\action_factory $factory) {
+    $cm = get_fast_modinfo($event->courseid)->instances['lightboxgallery'][$event->instance];
+
+    $completion = new \completion_info($cm->get_course());
+
+    $completiondata = $completion->get_data($cm, false);
+
+    if ($completiondata->completionstate != COMPLETION_INCOMPLETE) {
+        return null;
+    }
+
+    return $factory->create_instance(
+            get_string('view'),
+            new \moodle_url('/mod/lightboxgallery/view.php', ['id' => $cm->id]),
+            1,
+            true
+    );
+}
+

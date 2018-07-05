@@ -62,9 +62,14 @@ class course_module_viewed extends \core\event\course_module_viewed {
      * @return array|null
      */
     protected function get_legacy_logdata() {
-        return array($this->courseid, 'checklist', 'view', 'view.php?id='.$this->contextinstanceid,
-            $this->objectid, $this->contextinstanceid);
+        return array(
+            $this->courseid, 'checklist', 'view', 'view.php?id='.$this->contextinstanceid,
+            $this->objectid, $this->contextinstanceid
+        );
     }
 
+    public static function get_objectid_mapping() {
+        return ['db' => 'checklist', 'restore' => 'checklist'];
+    }
 }
 

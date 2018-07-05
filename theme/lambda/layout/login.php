@@ -19,13 +19,15 @@
  * Built on: Essential by Julian Ridden
  *
  * @package   theme_lambda
- * @copyright 2016 redPIthemes
+ * @copyright 2018 redPIthemes
  *
  */
  
 $custom_login=$PAGE->theme->settings->custom_login;
-$login_lambda = "";
-if ($custom_login==1) {$login_lambda = "login_lambda";}
+$login_attr = "";
+if ($custom_login==1) {$login_attr = "login_lambda";}
+$centered_logo=$PAGE->theme->settings->page_centered_logo;
+if (($custom_login==1) && ($centered_logo==1)) {$login_attr .= " centered_logo";}
 $haslogo = (!empty($PAGE->theme->settings->logo));
 
 echo $OUTPUT->doctype() ?>
@@ -39,7 +41,7 @@ echo $OUTPUT->doctype() ?>
     <?php require_once(dirname(__FILE__).'/includes/fonts.php'); ?>
 </head>
 
-<body <?php echo $OUTPUT->body_attributes("$login_lambda"); ?> >
+<body <?php echo $OUTPUT->body_attributes("$login_attr"); ?> >
 
 <?php echo $OUTPUT->standard_top_of_body_html(); ?>
 
@@ -49,7 +51,7 @@ echo $OUTPUT->doctype() ?>
 <?php require_once(dirname(__FILE__).'/includes/header.php'); ?>
 <?php } else { ?>
 
-<header id="page-header" class="clearfix">
+<div id ="page-header-nav" class="clearfix">
        
     <div class="container-fluid">    
     <div class="row-fluid">
@@ -72,7 +74,7 @@ echo $OUTPUT->doctype() ?>
     </div>
     </div>
                
-</header>
+</div>
 
 <?php } ?>
 
@@ -89,52 +91,19 @@ echo $OUTPUT->doctype() ?>
         </section>
     </div>
     
-    <a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><p><?php print_string('backtotop', 'theme_lambda'); ?></p></a>
+    <a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><span class="lambda-sr-only"><?php echo get_string('back'); ?></span></a>
     
 </div>
 
 	<footer id="page-footer" class="container-fluid" <?php if ($custom_login==1) echo 'style="display:none;"';?>>
-		<?php require_once(dirname(__FILE__).'/includes/footer.php'); ?>
+		<?php require_once(dirname(__FILE__).'/includes/footer.php'); echo $OUTPUT->login_info();?>
 	</footer>
 
     <?php echo $OUTPUT->standard_end_of_body_html() ?>
 
-
 <!--[if lte IE 9]>
 <script src="<?php echo $CFG->wwwroot;?>/theme/lambda/javascript/ie/iefix.js"></script>
 <![endif]-->
-
-
-<script>
-$(window).on('load resize', function () {
-if (window.matchMedia('(min-width: 980px)').matches) {
-$('.navbar .dropdown').hover(function() {
-	$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
-}, function() {
-	$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp();
-});
-} else {$('.dropdown-menu').removeAttr("style"); $('.navbar .dropdown').unbind('mouseenter mouseleave');}
-});
-
-jQuery(document).ready(function() {
-    var offset = 220;
-    var duration = 500;
-    jQuery(window).scroll(function() {
-        if (jQuery(this).scrollTop() > offset) {
-            jQuery('.back-to-top').fadeIn(duration);
-        } else {
-            jQuery('.back-to-top').fadeOut(duration);
-        }
-    });
-    
-    jQuery('.back-to-top').click(function(event) {
-        event.preventDefault();
-        jQuery('html, body').animate({scrollTop: 0}, duration);
-        return false;
-    })
-});
-</script>
-
 
 </body>
 </html>

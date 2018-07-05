@@ -19,12 +19,14 @@
  * Built on: Essential by Julian Ridden
  *
  * @package   theme_lambda
- * @copyright 2016 redPIthemes
+ * @copyright 2018 redPIthemes
  *
  */
  
 $hide_breadrumb_setting = theme_lambda_get_setting('hide_breadcrumb');
 $hide_breadrumb = ((!isloggedin() or isguestuser()) and $hide_breadrumb_setting);
+$sidebar = FALSE;
+if ($PAGE->theme->settings->block_layout == 2) {$sidebar = TRUE; theme_lambda_init_sidebar($PAGE); $sidebar_stat = theme_lambda_get_sidebar_stat();}
 		
 echo $OUTPUT->doctype() ?>
 <html <?php echo $OUTPUT->htmlattributes(); ?>>
@@ -37,9 +39,20 @@ echo $OUTPUT->doctype() ?>
     <?php require_once(dirname(__FILE__).'/includes/fonts.php'); ?>
 </head>
 
-<body <?php echo $OUTPUT->body_attributes(); ?>>
+<?php 
+	$lambda_body_attributes = '';
+	if ($sidebar) {$lambda_body_attributes .= ' sidebar-enabled '.$sidebar_stat;}
+?>
+<body <?php echo $OUTPUT->body_attributes("$lambda_body_attributes"); ?>>
 
 <?php echo $OUTPUT->standard_top_of_body_html(); ?>
+
+<?php if ($sidebar) { ?>
+<div id="sidebar" class="">
+	<?php echo $OUTPUT->blocks('side-pre');?>
+    <div id="sidebar-btn"><span></span><span></span><span></span></div>
+</div>
+<?php } ?>
 
 <div id="wrapper">
 
@@ -47,14 +60,14 @@ echo $OUTPUT->doctype() ?>
 
 <div id="page" class="container-fluid">
 
-    <header id="page-header" class="clearfix">
+    <div id ="page-header-nav" class="clearfix">
     	<?php if (!($hide_breadrumb)) { ?>
         <div id="page-navbar" class="clearfix">
             <div class="breadcrumb-nav"><?php echo $OUTPUT->navbar(); ?></div>
-            <nav class="breadcrumb-button"><?php echo $OUTPUT->page_heading_button(); ?></nav>
+            <nav class="breadcrumb-button"><?php echo $OUTPUT->page_heading_button(); echo $OUTPUT->context_header_settings_menu(); ?></nav>
         </div>
         <?php } ?>
-    </header>
+    </div>
 
     <div id="page-content" class="row-fluid">
         <section id="region-main" class="span12">
@@ -69,57 +82,24 @@ echo $OUTPUT->doctype() ?>
     <div class="hidden-blocks">
         <div class="row-fluid">
             <?php
-                echo $OUTPUT->blocks('hidden-dock');
+                if (!$sidebar) {echo $OUTPUT->blocks('hidden-dock');}
             ?>
         </div>
     </div>
 
-    <a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><p><?php print_string('backtotop', 'theme_lambda'); ?></p></a>
+    <a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><span class="lambda-sr-only"><?php echo get_string('back'); ?></span></a>
     
 </div>
 
 	<footer id="page-footer" class="container-fluid">
-		<?php require_once(dirname(__FILE__).'/includes/footer.php'); ?>
+		<?php require_once(dirname(__FILE__).'/includes/footer.php'); echo $OUTPUT->login_info();?>
 	</footer>
 
     <?php echo $OUTPUT->standard_end_of_body_html() ?>
 
-
 <!--[if lte IE 9]>
 <script src="<?php echo $CFG->wwwroot;?>/theme/lambda/javascript/ie/iefix.js"></script>
 <![endif]-->
-
-
-<script>
-$(window).on('load resize', function () {
-if (window.matchMedia('(min-width: 980px)').matches) {
-$('.navbar .dropdown').hover(function() {
-	$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
-}, function() {
-	$(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp();
-});
-} else {$('.dropdown-menu').removeAttr("style"); $('.navbar .dropdown').unbind('mouseenter mouseleave');}
-});
-
-jQuery(document).ready(function() {
-    var offset = 220;
-    var duration = 500;
-    jQuery(window).scroll(function() {
-        if (jQuery(this).scrollTop() > offset) {
-            jQuery('.back-to-top').fadeIn(duration);
-        } else {
-            jQuery('.back-to-top').fadeOut(duration);
-        }
-    });
-    
-    jQuery('.back-to-top').click(function(event) {
-        event.preventDefault();
-        jQuery('html, body').animate({scrollTop: 0}, duration);
-        return false;
-    })
-});
-</script>
-
 
 </body>
 </html>

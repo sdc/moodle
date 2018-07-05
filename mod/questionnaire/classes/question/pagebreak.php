@@ -23,6 +23,8 @@
  */
 
 namespace mod_questionnaire\question;
+use mod_questionnaire\edit_question_form;
+use \questionnaire;
 defined('MOODLE_INTERNAL') || die();
 
 class pagebreak extends base {
@@ -36,14 +38,14 @@ class pagebreak extends base {
     }
 
     protected function question_survey_display($data, $descendantsdata, $blankquestionnaire=false) {
-        return;
+        return '';
     }
 
     protected function response_survey_display($data) {
-        return;
+        return '';
     }
 
-    public function edit_form(\MoodleQuickForm $qform, $questionnaire, $modcontext) {
+    public function edit_form(edit_question_form $form, questionnaire $questionnaire) {
         return false;
     }
 }

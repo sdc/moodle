@@ -43,7 +43,6 @@ class mod_questionnaire_lib_testcase extends advanced_testcase {
         $this->assertFalse(questionnaire_supports(FEATURE_GRADE_HAS_GRADE));
         $this->assertFalse(questionnaire_supports(FEATURE_GRADE_OUTCOMES));
         $this->assertTrue(questionnaire_supports(FEATURE_GROUPINGS));
-        $this->assertTrue(questionnaire_supports(FEATURE_GROUPMEMBERSONLY));
         $this->assertTrue(questionnaire_supports(FEATURE_GROUPS));
         $this->assertTrue(questionnaire_supports(FEATURE_MOD_INTRO));
         $this->assertTrue(questionnaire_supports(FEATURE_SHOW_DESCRIPTION));
@@ -67,6 +66,7 @@ class mod_questionnaire_lib_testcase extends advanced_testcase {
         // Create test data as a record.
         $questdata = new stdClass();
         $questdata->course = $course->id;
+        $questdata->coursemodule = '';
         $questdata->name = 'Test questionnaire';
         $questdata->intro = 'Intro to test questionnaire.';
         $questdata->introformat = FORMAT_HTML;
@@ -119,6 +119,7 @@ class mod_questionnaire_lib_testcase extends advanced_testcase {
         $qrow->timemodified = 3;
         $qrow->completionsubmit = 1;
         $qrow->autonum = 1;
+        $qrow->coursemodule = $questionnaire->cm->id;
 
         // Moodle update form passes "instance" instead of "id" to [mod]_update_instance.
         $qrow->instance = $qid;
@@ -201,7 +202,6 @@ class mod_questionnaire_lib_testcase extends advanced_testcase {
     }
 
     public function test_questionnaire_user_complete() {
-        // This only performs screen output. How do we unit test this?
         $this->resetAfterTest();
         $this->setAdminUser();
         $user = $this->getDataGenerator()->create_user();
@@ -210,6 +210,7 @@ class mod_questionnaire_lib_testcase extends advanced_testcase {
         $questionnaire = $generator->create_test_questionnaire($course, QUESYESNO);
 
         $this->assertTrue(questionnaire_user_complete($course, $user, null, $questionnaire));
+        $this->expectOutputString(get_string('noresponses', 'questionnaire'));
     }
 
     public function test_questionnaire_print_recent_activity() {

@@ -19,7 +19,7 @@
  * Built on: Essential by Julian Ridden
  *
  * @package   theme_lambda
- * @copyright 2016 redPIthemes
+ * @copyright 2018 redPIthemes
  *
  */
 
@@ -67,13 +67,12 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
-    
-    // Custom or standard block layout.
-    $name = 'theme_lambda/layout';
-    $title = get_string('layout', 'theme_lambda');
-    $description = get_string('layoutdesc', 'theme_lambda');
-    $default = false;
-    $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
+	
+	// logo position
+	$name = 'theme_lambda/page_centered_logo';
+    $title = get_string('page_centered_logo', 'theme_lambda');
+    $description = get_string('page_centered_logo_desc', 'theme_lambda');
+    $setting = new admin_setting_configcheckbox($name, $title, $description, 0);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	   
@@ -138,9 +137,54 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting = new admin_setting_configcheckbox($name, $title, $description, 0);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
+	
+	// upload header background image.
+    $name = 'theme_lambda/header_background';
+    $title = get_string('header_background', 'theme_lambda');
+    $description = get_string('header_background_desc', 'theme_lambda');
+    $setting = new admin_setting_configstoredfile($name, $title, $description, 'header_background');
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	// header bg repeat.
+	$name = 'theme_lambda/header_bg_repeat';
+    $title = get_string('header_bg_repeat', 'theme_lambda');
+    $description = get_string('header_bg_repeat_desc', 'theme_lambda');
+    $setting = new admin_setting_configcheckbox($name, $title, $description, 0);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	// upload course category background image.
+    $name = 'theme_lambda/category_background';
+    $title = get_string('category_background', 'theme_lambda');
+    $description = get_string('category_background_desc', 'theme_lambda');
+    $setting = new admin_setting_configstoredfile($name, $title, $description, 'category_background');
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	// banner font color
+	$name = 'theme_lambda/banner_font_color';
+    $title = get_string('banner_font_color', 'theme_lambda');
+    $description = get_string('banner_font_color_desc', 'theme_lambda');
+    $default = '0';
+    $choices = array(
+        '0' => get_string('banner_font_color_opt0', 'theme_lambda'),
+        '1' => get_string('banner_font_color_opt1', 'theme_lambda'),
+        '2' => get_string('banner_font_color_opt2', 'theme_lambda'));
+	$setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	// hide course category background image
+	$name = 'theme_lambda/hide_category_background';
+    $title = get_string('hide_category_background', 'theme_lambda');
+    $description = get_string('hide_category_background_desc', 'theme_lambda');
+    $setting = new admin_setting_configcheckbox($name, $title, $description, 0);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
     
     $ADMIN->add('theme_lambda', $temp);
-	
+		
 	// "settings colors" settingpage
 	$temp = new admin_settingpage('theme_lambda_colors',  get_string('settings_colors', 'theme_lambda'));
 	
@@ -189,6 +233,16 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $title = get_string('def_buttonhovercolor', 'theme_lambda');
     $description = get_string('def_buttonhovercolordesc', 'theme_lambda');
     $default = '#77ae29';
+    $previewconfig = null;
+    $setting = new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	// Header color setting.
+    $name = 'theme_lambda/headercolor';
+    $title = get_string('headercolor', 'theme_lambda');
+    $description = get_string('headercolor_desc', 'theme_lambda');
+    $default = '#ffffff';
     $previewconfig = null;
     $setting = new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig);
     $setting->set_updatedcallback('theme_reset_all_caches');
@@ -284,7 +338,51 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);	
 	
-	$ADMIN->add('theme_lambda', $temp); 
+	$ADMIN->add('theme_lambda', $temp);
+	
+	// "settings blocks" settingpage
+	$temp = new admin_settingpage('theme_lambda_blocks',  get_string('settings_blocks', 'theme_lambda'));
+	
+	// block layout
+	$name = 'theme_lambda/block_layout';
+    $title = get_string('block_layout', 'theme_lambda');
+    $description = get_string('block_layout_desc', 'theme_lambda');
+    $default = '0';
+    $choices = array(
+        '0' => get_string('block_layout_opt0', 'theme_lambda'),
+        '1' => get_string('block_layout_opt1', 'theme_lambda'),
+        '2' => get_string('block_layout_opt2', 'theme_lambda'));
+	$setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	// block style
+	$name = 'theme_lambda/block_style';
+    $title = get_string('block_style', 'theme_lambda');
+    $description = get_string('block_style_desc', 'theme_lambda');	
+    $default = '0';
+    $choices = array(
+        '0' => get_string('block_style_opt0', 'theme_lambda'),
+        '1' => get_string('block_style_opt1', 'theme_lambda'),
+        '2' => get_string('block_style_opt2', 'theme_lambda'));
+	$setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	// show block icons	
+	$name = 'theme_lambda/block_icons';
+    $title = get_string('block_icons', 'theme_lambda');
+    $description = get_string('block_icons_desc', 'theme_lambda');	
+    $default = '0';
+    $choices = array(
+        '0' => get_string('block_icons_opt0', 'theme_lambda'),
+        '1' => get_string('block_icons_opt1', 'theme_lambda'),
+        '2' => get_string('block_icons_opt2', 'theme_lambda'));
+	$setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+    $ADMIN->add('theme_lambda', $temp);
 	
 	// "settings socials" settingpage
 	$temp = new admin_settingpage('theme_lambda_socials',  get_string('settings_socials', 'theme_lambda'));
@@ -408,6 +506,21 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
 	// "settings fonts" settingpage
 	$temp = new admin_settingpage('theme_lambda_fonts',  get_string('settings_fonts', 'theme_lambda'));
 	
+    // source
+    $name = 'theme_lambda/fonts_source';
+    $title = get_string('fonts_source', 'theme_lambda');
+    $description = get_string('fonts_source_desc', 'theme_lambda');
+    $default = 1;
+    $choices = array(
+        1 => get_string('fonts_source_google', 'theme_lambda'),
+        2 => get_string('fonts_source_file', 'theme_lambda')
+    );
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	if (get_config('theme_lambda', 'fonts_source') !== "2") {
+		
 	$name = 'theme_lambda/font_body';
     $title = get_string('fontselect_body' , 'theme_lambda');
     $description = get_string('fontselectdesc_body', 'theme_lambda');
@@ -420,8 +533,8 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
 		'5'=>'Cabin',
 		'6'=>'Cantata One',
 		'7'=>'Crimson Text',
-		'8'=>'Droid Sans',
-		'9'=>'Droid Serif',
+		'8'=>'Encode Sans',
+		'9'=>'Enriqueta',
 		'10'=>'Gudea',
 		'11'=>'Imprima',
 		'12'=>'Lekton',
@@ -435,6 +548,20 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     	'20'=>'Vollkorn',
 		'21'=>'Work Sans');
 	 			
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	$name = 'theme_lambda/font_body_size';
+    $title = get_string('font_body_size' , 'theme_lambda');
+    $description = get_string('font_body_size_desc', 'theme_lambda');
+    $default = '2';
+    $choices = array(
+    	'1'=>'12px',
+		'2'=>'13px',
+		'3'=>'14px',
+		'4'=>'15px',
+		'5'=>'16px');			
     $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
@@ -453,8 +580,8 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
 		'7'=>'Cabin',
 		'8'=>'Cantata One',
 		'9'=>'Crimson Text',
-		'10'=>'Droid Sans',
-		'11'=>'Droid Serif',
+		'10'=>'Encode Sans',
+		'11'=>'Enriqueta',
 		'12'=>'Gudea',
 		'13'=>'Imprima',
 		'14'=>'Josefin Sans',
@@ -487,6 +614,59 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
         'greek' => get_string('font_languages_greek', 'theme_lambda'),
         'greek-ext' => get_string('font_languages_greekext', 'theme_lambda'),
     ));
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	} else if (get_config('theme_lambda', 'fonts_source') === "2") {
+	
+    // body font.
+    $name = 'theme_lambda/fonts_file_body';
+    $title = get_string('fonts_file_body', 'theme_lambda');
+    $description = get_string('fonts_file_body_desc', 'theme_lambda');
+    $setting = new admin_setting_configstoredfile($name, $title, $description, 'fonts_file_body');
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+
+	$name = 'theme_lambda/font_body_size';
+    $title = get_string('font_body_size' , 'theme_lambda');
+    $description = get_string('font_body_size_desc', 'theme_lambda');
+    $default = '2';
+    $choices = array(
+    	'1'=>'12px',
+		'2'=>'13px',
+		'3'=>'14px',
+		'4'=>'15px',
+		'5'=>'16px');
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+    // headings font.
+    $name = 'theme_lambda/fonts_file_headings';
+    $title = get_string('fonts_file_headings', 'theme_lambda');
+    $description = get_string('fonts_file_headings_desc', 'theme_lambda');
+    $setting = new admin_setting_configstoredfile($name, $title, $description, 'fonts_file_headings');
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	$name = 'theme_lambda/font_headings_weight';
+    $title = get_string('font_headings_weight' , 'theme_lambda');
+    $description = get_string('font_headings_weight_desc', 'theme_lambda');
+    $default = '1';
+    $choices = array(
+    	'1'=>'700',
+		'2'=>'400',
+		'3'=>'300');
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	}	
+	
+	// Font Awesome 5
+	$name = 'theme_lambda/use_fa5';
+    $title = get_string('use_fa5', 'theme_lambda');
+    $description = get_string('use_fa5_desc', 'theme_lambda');
+    $setting = new admin_setting_configcheckbox($name, $title, $description, 0);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	
@@ -804,7 +984,7 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $title = get_string('carousel_add_html', 'theme_lambda');
     $description = get_string('carousel_add_html_desc', 'theme_lambda');
     $default = '';
-    $setting = new admin_setting_configtextarea($name, $title, $description, $default);
+    $setting = new admin_setting_confightmleditor($name, $title, $description, $default);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	

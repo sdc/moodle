@@ -36,43 +36,46 @@ admin_externalpage_setup('h5plibraries');
 
 $PAGE->set_title("{$SITE->shortname}: " . get_string('libraries', 'hvp'));
 
-// Create form for automatically downloading and installing updates
-$update_available = \get_config('mod_hvp', 'update_available');
-$current_update = \get_config('mod_hvp', 'current_update');
-if ($update_available !== false && $current_update !== false && $current_update < $update_available) {
-    $updateform = new \mod_hvp\update_libraries_form();
-    if ($formdata = $updateform->get_data()) {
-        // Update successful, hide form.
-        $updateform = null;
-    }
-}
-
-// Create upload libraries form
+// Create upload libraries form.
 $uploadform = new \mod_hvp\upload_libraries_form();
 if ($formdata = $uploadform->get_data()) {
-    // Handle submitted valid form
-    $h5pStorage = \mod_hvp\framework::instance('storage');
-    $h5pStorage->savePackage(null, null, true);
+    // Handle submitted valid form.
+    $h5pstorage = \mod_hvp\framework::instance('storage');
+    $h5pstorage->savePackage(null, null, true);
 }
 
 $core = \mod_hvp\framework::instance();
-$numNotFiltered = $core->h5pF->getNumNotFiltered();
+
+$hubon = $core->h5pF->getOption('hub_is_enabled', true);
+if ($hubon) {
+    // Create content type cache form.
+    $ctcacheform = new \mod_hvp\content_type_cache_form();
+
+    // On form submit.
+    if ($ctcacheform->get_data()) {
+        // Update cache and reload page.
+        $core->updateContentTypeCache();
+        redirect($pageurl);
+    }
+}
+
+$numnotfiltered = $core->h5pF->getNumNotFiltered();
 $libraries = $core->h5pF->loadLibraries();
 
-// Add settings for each library
+// Add settings for each library.
 $settings = array();
 $i = 0;
 foreach ($libraries as $versions) {
     foreach ($versions as $library) {
-        $usage = $core->h5pF->getLibraryUsage($library->id, $numNotFiltered ? true : false);
+        $usage = $core->h5pF->getLibraryUsage($library->id, $numnotfiltered ? true : false);
         if ($library->runnable) {
             $upgrades = $core->getUpgrades($library, $versions);
-            $upgradeUrl = empty($upgrades) ? false : (new moodle_url('/mod/hvp/upgrade_content_page.php', array(
+            $upgradeurl = empty($upgrades) ? false : (new moodle_url('/mod/hvp/upgrade_content_page.php', array(
                 'library_id' => $library->id
             )))->out(false);
 
             $restricted = (isset($library->restricted) && $library->restricted == 1 ? true : false);
-            $restricted_url = (new moodle_url('/mod/hvp/ajax.php', array(
+            $restrictedurl = (new moodle_url('/mod/hvp/ajax.php', array(
                 'action' => 'restrict_library',
                 'token' => \H5PCore::createToken('library_' . $library->id),
                 'restrict' => ($restricted ? 0 : 1),
@@ -80,28 +83,28 @@ foreach ($libraries as $versions) {
             )))->out(false);
         }
         else {
-            $upgradeUrl = null;
+            $upgradeurl = null;
             $restricted = null;
-            $restricted_url = null;
+            $restrictedurl = null;
         }
 
         $settings['libraryList']['listData'][] = array(
             'title' => $library->title . ' (' . \H5PCore::libraryVersion($library) . ')',
             'restricted' => $restricted,
-            'restrictedUrl' => $restricted_url,
+            'restrictedUrl' => $restrictedurl,
             'numContent' => $core->h5pF->getNumContent($library->id),
             'numContentDependencies' => $usage['content'] === -1 ? '' : $usage['content'],
             'numLibraryDependencies' => $usage['libraries'],
-            'upgradeUrl' => $upgradeUrl,
-            'detailsUrl' => null, // Not implemented in Moodle
-            'deleteUrl' => null // Not implemented in Moodle
+            'upgradeUrl' => $upgradeurl,
+            'detailsUrl' => null, // Not implemented in Moodle.
+            'deleteUrl' => null // Not implemented in Moodle.
         );
 
         $i++;
     }
 }
 
-// All translations are made server side
+// All translations are made server side.
 $settings['libraryList']['listHeaders'] = array(
     get_string('librarylisttitle', 'hvp'),
     get_string('librarylistrestricted', 'hvp'),
@@ -111,34 +114,34 @@ $settings['libraryList']['listHeaders'] = array(
     get_string('librarylistactions', 'hvp')
 );
 
-// Add js
-$lib_url = $CFG->httpswwwroot . '/mod/hvp/library/';
+// Add js.
+$liburl = $CFG->httpswwwroot . '/mod/hvp/library/';
 
-hvp_admin_add_generic_css_and_js($PAGE, $lib_url, $settings);
-$PAGE->requires->js(new moodle_url($lib_url . 'js/h5p-library-list.js' . hvp_get_cache_buster()), true);
+hvp_admin_add_generic_css_and_js($PAGE, $liburl, $settings);
+$PAGE->requires->js(new moodle_url($liburl . 'js/h5p-library-list.js' . hvp_get_cache_buster()), true);
 
-// RENDER PAGE OUTPUT
+// RENDER PAGE OUTPUT.
 
 echo $OUTPUT->header();
 
-// Print any messages
+// Print any messages.
 \mod_hvp\framework::printMessages('info', \mod_hvp\framework::messages('info'));
 \mod_hvp\framework::printMessages('error', \mod_hvp\framework::messages('error'));
 
-// Page Header
+// Page Header.
 echo '<h2>' . get_string('libraries', 'hvp') . '</h2>';
 
-if (isset($updateform)) {
-    // Update All Libraries
-    echo '<h3 class="h5p-admin-header">' . get_string('updatelibraries', 'hvp') . '</h3>';
-    $updateform->display();
+if ($hubon) {
+    // Content type cache form.
+    echo '<h3>' . get_string('contenttypecacheheader', 'hvp') . '</h3>';
+    $ctcacheform->display();
 }
 
-// Upload Form
+// Upload Form.
 echo '<h3 class="h5p-admin-header">' . get_string('uploadlibraries', 'hvp') . '</h3>';
 $uploadform->display();
 
-// Installed Libraries List
+// Installed Libraries List.
 echo '<h3 class="h5p-admin-header">' . get_string('installedlibraries', 'hvp')  . '</h3>';
 echo '<div id="h5p-admin-container"></div>';
 

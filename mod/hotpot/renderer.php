@@ -257,13 +257,16 @@ class mod_hotpot_renderer extends plugin_renderer_base {
     /**
      * modedit_icon
      *
-     * @global object $hotpot
-     * @return string
+     * @param $hotpot
+     * @return xxx
+     * @todo Finish documenting this function
      */
     public function modedit_icon($hotpot) {
-        $params = array('update' => $hotpot->cm->id, 'return' => 1, 'sesskey' => sesskey());
+        $params = array('update' => $hotpot->cm->id,
+                        'return' => 1,
+                        'sesskey' => sesskey());
         $url = new moodle_url('/course/modedit.php', $params);
-        $img = html_writer::empty_tag('img', array('src' => $this->pix_url('t/edit')));
+        $img = $this->pix_icon('t/edit', get_string('edit'));
         return ' '.html_writer::link($url, $img);
     }
 
@@ -703,7 +706,7 @@ class mod_hotpot_renderer extends plugin_renderer_base {
         $buttontext = '';
 
         if ($hotpot->can_preview()) {
-            $buttontext = get_string('previewquiznow', 'quiz');
+            $buttontext = get_string('preview');
         } else if ($hotpot->can_start()) {
             if ($hotpot->count_distinct_clickreportids()) {
                 $buttontext = get_string('reattemptquiz', 'quiz');

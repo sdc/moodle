@@ -63,10 +63,10 @@ class assign_submission_estream extends assign_submission_plugin
         if (empty($url)) {
                 $url = rtrim(get_config('planetestream', 'url') , '/');
         }
-        if ($cdid == "") {
+        if ($cdid == "0") {
             return "";
         } else {
-            return "<iframe height=\"198\" width=\"352\" src=\"".$url."/Embed.aspx?id=".$cdid
+            return "<iframe allowfullscreen height=\"198\" width=\"352\" src=\"".$url."/Embed.aspx?id=".$cdid
             ."&amp;code=".$embedcode."&amp;wmode=opaque&amp;viewonestream=0\" frameborder=\"0\"></iframe>";
         }
     }
@@ -78,23 +78,46 @@ class assign_submission_estream extends assign_submission_plugin
      * @return bool
      */
     public function save(stdClass $submission, stdClass $data) {
-        if ($data->cdid > 0) {
-	    global $DB;
-            $thissubmission = $this->funcgetsubmission($submission->id);
-            if ($thissubmission) {
-                $thissubmission->submission = $submission->id;
-                $thissubmission->assignment = $this->assignment->get_instance()->id;
-                $thissubmission->embedcode = $data->embedcode;
-                $thissubmission->cdid = $data->cdid;
-                return $DB->update_record('assignsubmission_estream', $thissubmission);
-             } else {
-                $thissubmission = new stdClass();
-                $thissubmission->submission = $submission->id;
-                $thissubmission->assignment = $this->assignment->get_instance()->id;
-                $thissubmission->embedcode = $data->embedcode;
-                $thissubmission->cdid = $data->cdid;
-                return $DB->insert_record('assignsubmission_estream', $thissubmission) > 0;
-            }
+	    try {
+            if ($data->cdid > 0) {
+	        global $DB;
+                $thissubmission = $this->funcgetsubmission($submission->id);
+                if ($thissubmission) {
+                    $thissubmission->submission = $submission->id;
+                    $thissubmission->assignment = $this->assignment->get_instance()->id;
+                    $thissubmission->embedcode = $data->embedcode;
+                    $thissubmission->cdid = $data->cdid;
+                    return $DB->update_record('assignsubmission_estream', $thissubmission);
+                } else {
+                    $thissubmission = new stdClass();
+                    $thissubmission->submission = $submission->id;
+                    $thissubmission->assignment = $this->assignment->get_instance()->id;
+                    $thissubmission->embedcode = $data->embedcode;
+                    $thissubmission->cdid = $data->cdid;
+                    return $DB->insert_record('assignsubmission_estream', $thissubmission) > 0;
+                }
+            } else {
+		    global $DB; // beng
+                $thissubmission = $this->funcgetsubmission($submission->id);
+                if ($thissubmission) {
+                    $thissubmission->submission = $submission->id;
+                    $thissubmission->assignment = $this->assignment->get_instance()->id;
+                    $thissubmission->embedcode = "";
+                    $thissubmission->cdid = "";
+                    return $DB->update_record('assignsubmission_estream', $thissubmission);
+                } else {
+                    $thissubmission = new stdClass();
+                    $thissubmission->submission = $submission->id;
+                    $thissubmission->assignment = $this->assignment->get_instance()->id;
+                    $thissubmission->embedcode = "";
+                    $thissubmission->cdid = "";
+                    return $DB->insert_record('assignsubmission_estream', $thissubmission) > 0;
+                }		
+				
+			}
+			
+        } catch (Exception $e) {
+            // Non-fatal exception!
         }
     }
     /**
@@ -179,7 +202,8 @@ class assign_submission_estream extends assign_submission_plugin
      * @return bool
      */
     public function is_empty(stdClass $submission) {
-        return $this->view($submission) == '';
+       return $this->view($submission) == ''; 	
+	 /* Return false does not work. Return true 'works' in the sense that it doesn't regardless of file  */
     }
     /**
      * Add form elements

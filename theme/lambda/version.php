@@ -19,17 +19,17 @@
  * Built on: Essential by Julian Ridden
  *
  * @package   theme_lambda
- * @copyright 2016 redPIthemes
+ * @copyright 2018 redPIthemes
  *
  */
 
 defined('MOODLE_INTERNAL') || die;
 
 $plugin->component = 'theme_lambda'; // Full name of the plugin (used for diagnostics)
-$plugin->release   = '1.54';
-$plugin->version   = 2016110709; // The current module version (Date: YYYYMMDDXX)
+$plugin->release   = '1.75';
+$plugin->version   = 2018062432; // The current module version (Date: YYYYMMDDXX)
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->requires  = 2013051401; // Requires this Moodle version
+$plugin->requires  = 2016120500; // Requires this Moodle version
 $plugin->dependencies = array(
     'theme_bootstrapbase'  => 2013050100,
 );

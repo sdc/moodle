@@ -24,9 +24,11 @@
 
 namespace mod_hvp;
 
+use H5peditorFile;
+
 defined('MOODLE_INTERNAL') || die();
 
-require_once __DIR__ . '/../autoloader.php';
+require_once(__DIR__ . '/../autoloader.php');
 
 /**
  * Moodle's implementation of the H5P Editor framework interface.
@@ -49,10 +51,11 @@ class editor_framework implements \H5peditorStorage {
      * @param string $lang Language code
      * @return string Translation in JSON format
      */
+    // @codingStandardsIgnoreLine
     public function getLanguage($name, $major, $minor, $lang) {
         global $DB;
 
-        // Load translation field from DB
+        // Load translation field from DB.
         return $DB->get_field_sql(
             "SELECT hlt.language_json
                FROM {hvp_libraries_languages} hlt
@@ -76,10 +79,11 @@ class editor_framework implements \H5peditorStorage {
      *
      * @param int $fileid
      */
+    // @codingStandardsIgnoreLine
     public function keepFile($fileid) {
         global $DB;
 
-        // Remove from tmpfiles
+        // Remove from tmpfiles.
         $DB->delete_records('hvp_tmpfiles', array(
             'id' => $fileid
         ));
@@ -98,18 +102,19 @@ class editor_framework implements \H5peditorStorage {
      * @param array $libraries List of library names + version to load info for
      * @return array List of all libraries loaded
      */
+    // @codingStandardsIgnoreLine
     public function getLibraries($libraries = null) {
         global $DB;
 
-        $context_id = required_param('contextId', PARAM_RAW);
-        $super_user = has_capability('mod/hvp:userestrictedlibraries',
-            \context::instance_by_id($context_id));
+        $contextid = required_param('contextId', PARAM_RAW);
+        $superuser = has_capability('mod/hvp:userestrictedlibraries',
+            \context::instance_by_id($contextid));
 
         if ($libraries !== null) {
             // Get details for the specified libraries only.
             $librarieswithdetails = array();
             foreach ($libraries as $library) {
-                // Look for library
+                // Look for library.
                 $details = $DB->get_record_sql(
                         "SELECT title,
                                 runnable,
@@ -127,20 +132,20 @@ class editor_framework implements \H5peditorStorage {
                         )
                 );
                 if ($details) {
-                    // Library found, add details to list
+                    // Library found, add details to list.
                     $library->tutorialUrl = $details->tutorial_url;
                     $library->title = $details->title;
                     $library->runnable = $details->runnable;
-                    $library->restricted = $super_user ? false : ($details->restricted === '1' ? true : false);
+                    $library->restricted = $superuser ? false : ($details->restricted === '1' ? true : false);
                     $librarieswithdetails[] = $library;
                 }
             }
 
-            // Done, return list with library details
+            // Done, return list with library details.
             return $librarieswithdetails;
         }
 
-        // Load all libraries
+        // Load all libraries.
         $libraries = array();
         $librariesresult = $DB->get_records_sql(
                 "SELECT id,
@@ -156,10 +161,10 @@ class editor_framework implements \H5peditorStorage {
                ORDER BY title"
         );
         foreach ($librariesresult as $library) {
-            // Remove unique index
+            // Remove unique index.
             unset($library->id);
 
-            // Convert snakes to camels
+            // Convert snakes to camels.
             $library->majorVersion = (int) $library->major_version;
             unset($library->major_version);
             $library->minorVersion = (int) $library->minor_version;
@@ -172,24 +177,23 @@ class editor_framework implements \H5peditorStorage {
             // Make sure we only display the newest version of a library.
             foreach ($libraries as $key => $existinglibrary) {
                 if ($library->name === $existinglibrary->name) {
-                    // Found library with same name, check versions
+                    // Found library with same name, check versions.
                     if ( ( $library->majorVersion === $existinglibrary->majorVersion &&
                            $library->minorVersion > $existinglibrary->minorVersion ) ||
                          ( $library->majorVersion > $existinglibrary->majorVersion ) ) {
-                        // This is a newer version
+                        // This is a newer version.
                         $existinglibrary->isOld = true;
-                    }
-                    else {
-                        // This is an older version
+                    } else {
+                        // This is an older version.
                         $library->isOld = true;
                     }
                 }
             }
 
-            // Check to see if content type should be restricted
-            $library->restricted = $super_user ? false : ($library->restricted === '1' ? true : false);
+            // Check to see if content type should be restricted.
+            $library->restricted = $superuser ? false : ($library->restricted === '1' ? true : false);
 
-            // Add new library
+            // Add new library.
             $libraries[] = $library;
         }
         return $libraries;
@@ -206,7 +210,105 @@ class editor_framework implements \H5peditorStorage {
      *  List of libraries indexed by machineName with objects as values. The objects
      *  have majorVersion and minorVersion as properties.
      */
+    // @codingStandardsIgnoreLine
     public function alterLibraryFiles(&$files, $libraries) {
-        // TODO: h5p/h5p-moodle-plugin#12
+        global $PAGE;
+
+        // Refactor dependency list.
+        $librarylist = array();
+        foreach ($libraries as $dependency) {
+            $librarylist[$dependency['machineName']] = array(
+                'majorVersion' => $dependency['majorVersion'],
+                'minorVersion' => $dependency['minorVersion']
+            );
+        }
+
+        $contextid = required_param('contextId', PARAM_INT);
+        $context   = \context::instance_by_id($contextid);
+
+        $PAGE->set_context($context);
+        $renderer = $PAGE->get_renderer('mod_hvp');
+
+        $embedtype = 'editor';
+        $renderer->hvp_alter_scripts($files['scripts'], $librarylist, $embedtype);
+        $renderer->hvp_alter_styles($files['styles'], $librarylist, $embedtype);
+    }
+
+    /**
+     * Saves a file or moves it temporarily. This is often necessary in order to
+     * validate and store uploaded or fetched H5Ps.
+     *
+     * @param string $data Uri of data that should be saved as a temporary file
+     * @param boolean $movefile Can be set to TRUE to move the data instead of saving it
+     *
+     * @return bool|object Returns false if saving failed or an object with path
+     * of the directory and file that is temporarily saved
+     */
+    // @codingStandardsIgnoreLine
+    public static function saveFileTemporarily($data, $movefile = false) {
+        global $CFG;
+
+        // Generate local tmp file path.
+        $uniqueh5pid = uniqid('hvp-');
+        $filename = $uniqueh5pid . '.h5p';
+        $directory = $CFG->tempdir . DIRECTORY_SEPARATOR . $uniqueh5pid;
+        $filepath = $directory . DIRECTORY_SEPARATOR . $filename;
+
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
+        // Move file or save data to new file so core can validate H5P.
+        if ($movefile) {
+            move_uploaded_file($data, $filepath);
+        } else {
+            file_put_contents($filepath, $data);
+        }
+
+        // Add folder and file paths to H5P Core.
+        $interface = framework::instance('interface');
+        $interface->getUploadedH5pFolderPath($directory);
+        $interface->getUploadedH5pPath($directory . DIRECTORY_SEPARATOR . $filename);
+
+        return (object) array(
+            'dir' => $directory,
+            'fileName' => $filename
+        );
+    }
+
+    /**
+     * Marks a file for later cleanup, useful when files are not instantly cleaned
+     * up. E.g. for files that are uploaded through the editor.
+     *
+     * @param int $file Id of file that should be cleaned up
+     * @param int|null $contentid Content id of file
+     */
+    // @codingStandardsIgnoreLine
+    public static function markFileForCleanup($file, $contentid = null) {
+        global $DB;
+
+        // Let H5P Core clean up.
+        if ($contentid) {
+            return;
+        }
+
+        // Track temporary files for later cleanup.
+        $DB->insert_record_raw('hvp_tmpfiles', array(
+            'id' => $file
+        ), false, false, true);
+    }
+
+    /**
+     * Clean up temporary files
+     *
+     * @param string $filepath Path to file or directory
+     */
+    // @codingStandardsIgnoreLine
+    public static function removeTemporarilySavedFiles($filepath) {
+        if (is_dir($filepath)) {
+            \H5PCore::deleteFileTree($filepath);
+        } else {
+            @unlink($filepath);
+        }
     }
 }

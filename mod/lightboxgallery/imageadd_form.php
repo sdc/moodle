@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+require_once(dirname(__FILE__).'/locallib.php');
+require_once($CFG->libdir.'/formslib.php');
+require_once(dirname(__FILE__).'/imageclass.php');
 
 /**
  * Prints a particular instance of lightboxgallery
@@ -23,11 +28,6 @@
  * @copyright 2012 NetSpot Pty Ltd
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-require_once(dirname(__FILE__).'/locallib.php');
-require_once($CFG->libdir.'/formslib.php');
-require_once(dirname(__FILE__).'/imageclass.php');
-
 class mod_lightboxgallery_imageadd_form extends moodleform {
 
     public function definition() {
@@ -35,13 +35,11 @@ class mod_lightboxgallery_imageadd_form extends moodleform {
         global $COURSE, $cm;
 
         $mform =& $this->_form;
-        $gallery = $this->_customdata;
 
-        $handlecollisions = !get_config('lightboxgallery', 'overwritefiles');
         $mform->addElement('header', 'general', get_string('addimage', 'lightboxgallery'));
 
         $mform->addElement('filemanager', 'image', get_string('file'), '0',
-                           array('maxbytes' => $COURSE->maxbytes, 'accepted_types' => array('web_image', 'archive')));
+                           array('maxbytes' => $COURSE->maxbytes, 'accepted_types' => array('web_image', 'application/zip')));
         $mform->addRule('image', get_string('required'), 'required', null, 'client');
         $mform->addHelpButton('image', 'addimage', 'lightboxgallery');
 
@@ -91,8 +89,7 @@ class mod_lightboxgallery_imageadd_form extends moodleform {
 
 
     private function can_resize() {
-        global $gallery;
-
+        $gallery = $this->_customdata['gallery'];
         return !in_array($gallery->autoresize, array(AUTO_RESIZE_UPLOAD, AUTO_RESIZE_BOTH));
     }
 }

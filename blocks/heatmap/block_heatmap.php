@@ -247,9 +247,9 @@ class block_heatmap extends block_base {
             'block_heatmap_updated'
         );
         $this->content->text .= html_writer::link(
-            '#null',
+            null,
             get_string('toggleheatmap', 'block_heatmap'),
-            array('onclick' => 'M.block_heatmap.toggleHeatmap();')
+            array('onclick' => 'M.block_heatmap.toggleHeatmap();', 'style' => 'cursor: pointer;')
         );
 
         // Set up JS for injecting heatmap.

@@ -109,9 +109,15 @@ class mod_hotpot_attempt_hp_6_jmatch_renderer extends mod_hotpot_attempt_hp_6_re
             ."	// IE8+ (compatible mode) IE7, IE6, IE5 ...\n"
             ."} else {\n"
             ."	// Firefox, Safari, Opera, IE8+\n"
-            ."	var obj = document.getElementsByTagName('div');\n"
-            ."	if (obj && obj.length) {\n"
-            ."		myParentNode = obj[obj.length - 1].parentNode;\n"
+            ."	// prevent selection of parent node\n"
+            ."	myParentNode = document.getElementById('$this->themecontainer');\n"
+            ."	if (myParentNode==null) {\n"
+            ."		var obj = document.getElementsByTagName('div');\n"
+            ."		if (obj && obj.length) {\n"
+            ."			myParentNode = obj[obj.length - 1].parentNode;\n"
+            ."		}\n"
+            ."	}\n"
+            ."	if (myParentNode) {\n"
             ."		var css_prefix = new Array('webkit', 'khtml', 'moz', 'ms', 'o', '');\n"
             ."		for (var i=0; i<css_prefix.length; i++) {\n"
             ."			if (css_prefix[i]=='') {\n"
@@ -309,6 +315,10 @@ class mod_hotpot_attempt_hp_6_jmatch_renderer extends mod_hotpot_attempt_hp_6_re
             ."		var count = 0;\n"
             ."	}\n"
             ."	if (count==0){\n"
+            ."		if (Qs) {\n"
+            ."			var p = Qs.parentNode;\n"
+            ."			p.parentNode.removeChild(p);\n"
+            ."		}\n"
             ."		HP_send_results($event);\n"
             ."	}\n"
             ."}\n"
@@ -334,17 +344,7 @@ class mod_hotpot_attempt_hp_6_jmatch_renderer extends mod_hotpot_attempt_hp_6_re
 
         if ($pos = strrpos($substr, '}')) {
             $append = "\n"
-                ."	var canvas = document.getElementById('$this->themecontainer');\n"
-                ."	if (canvas) {\n"
-                ."		var b = 0;\n"
-                ."		var tbody = document.getElementById('Questions');\n"
-                ."		if (tbody) {\n"
-                ."			var b = getOffset(tbody.parentNode, 'Bottom');\n"
-                ."			if (b){\n"
-                ."				setOffset(canvas, 'Bottom', b+4);\n"
-                ."			}\n"
-                ."		}\n"
-                ."	}\n"
+                ."	StretchCanvasToCoverContent();\n"
                 ."	HP.onclickCheck(CurrItem);\n"
             ;
             $substr = substr_replace($substr, $append, $pos, 0);
@@ -362,9 +362,7 @@ class mod_hotpot_attempt_hp_6_jmatch_renderer extends mod_hotpot_attempt_hp_6_re
         if (preg_match($search, $this->bodycontent, $matches)) {
             $title = $this->get_title();
             if ($this->hotpot->can_manage()) {
-                $url = new moodle_url('/course/modedit.php', array('update' => $this->hotpot->cm->id, 'return' => 1, 'sesskey' => sesskey()));
-                $img = html_writer::empty_tag('img', array('src' => $this->pix_url('t/edit')));
-                $title .= html_writer::link($url, $img);
+                $title .= $this->modedit_icon($this->hotpot);
             }
             $replace = $matches[1].$title.$matches[3];
             $this->bodycontent = str_replace($matches[0], $replace, $this->bodycontent);

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
 
 class edit_tag extends edit_base {
 
@@ -22,7 +23,7 @@ class edit_tag extends edit_base {
     }
 
     public function output() {
-        global $CFG, $OUTPUT;
+        global $OUTPUT;
 
         $stradd = get_string('add');
 
@@ -39,7 +40,6 @@ class edit_tag extends edit_base {
         $path = $storedfile->copy_content_to_temp();
         $tags = $image->get_tags();
 
-        $size = getimagesize($path, $info);
         if (isset($info['APP13'])) {
             $iptc = iptcparse($info['APP13']);
             if (isset($iptc['2#025'])) {

@@ -40,12 +40,23 @@
 <body>
     <form onsubmit="insertMedia();return false;" action="#">
         <script type="text/javascript">
-            document.write("<iframe style=\"border: 0px; width: 984px; height: 684px;\" src=\""
+            document.write("<div id=\"scrollWrapper\" style=\"border: 0px; width: 100%; height: 100%;\"><iframe id=\"ifDefault\" style=\"border: 0px; width: 100%; height: 99%;\" src=\""
             + querystring("estream_url") + decodeURIComponent(querystring("estream_path"))
             + '&td=' + window.location.protocol + '//' + window.location.host + ':'
             + ((window.location.port === '80' && window.location.protocol==='http')|
             (window.location.port === '443' && window.location.protocol==='https') 
-            ? '' : window.location.port) + "\"></iframe>");
+            ? '' : window.location.port) + "\"></iframe></div>");
+			
+			document.getElementById("scrollWrapper").style.overflowY = "scroll";
+			document.getElementById("scrollWrapper").style.WebkitOverflowScrolling = 'touch';
+			document.getElementById("scrollWrapper").style.position = "fixed";
+			document.getElementById("scrollWrapper").style.height = "100%";
+			document.getElementById("scrollWrapper").style.width = "100%";
+			
+			//document.getElementById("ifDefault").style.height = "100%";
+			//document.getElementById("ifDefault").style.overflow = "auto";
+		//	document.getElementById("ifDefault").style.WebkitOverflowScrolling = "touch";
+			document.getElementById("ifDefault").style.WebkitTransform = "translate3d(0,0,0)";
             if (window.addEventListener) {
                 eventMethod = 'addEventListener';
                 messageEvent = 'message';
@@ -55,17 +66,27 @@
             } else {
                 insertContent('Sorry, your web-browser is not compatible with this feature.');
             }
+			
+			
+			
             var evX = window[eventMethod];
             evX(messageEvent, function (e) {
-                //insertContent('<p><iframe style="width: ' + querystring('estream_width', true) + 'px;'
-                //+ ' height: ' + querystring('estream_height', true) + 'px; border: 0;" src="'
-                //+ querystring('estream_url', true) + '/Embed.aspx?' + e.data + '"></iframe><a href="'
-                //+ '_planetestreamiframe_/Embed.aspx?' + e.data + '"></a></p>');
+                
+			//cant get this working, shame, would be nice. for in future, it just cannot get the height from the querystring for some reason
 
-                insertContent('<p><iframe style="width: ' + querystring('estream_width', true) + 'px;'
+			//	var responsiveDiv = '<div style="position: relative; overflow: hidden; padding-top: 56.25%">';
+				
+			//	insertContent(responsiveDiv + '<p><iframe allowfullscreen style="width: 100%;'
+            //  + ' height: 100%; position: absolute; top: 0; left: 0; border: 0;" src="'
+            //  + querystring('estream_url', true) + '/Embed.aspx?' + e.data + '&delta=ESDLTA" ></iframe><a href="'
+            //   + '/_planetestreamiframe_/Embed.aspx?' + e.data + '">&nbsp;</a></p></div>');
+
+			insertContent('<p><iframe allow="autoplay; fullscreen" style="width: ' + querystring('estream_width', true) + 'px;'
                 + ' height: ' + querystring('estream_height', true) + 'px; border: 0;" src="'
-                + querystring('estream_url', true) + '/Embed.aspx?' + e.data + '"></iframe><a href="'
+                + querystring('estream_url', true) + '/Embed.aspx?' + e.data + '&delta=ESDLTA" ></iframe><a href="'
                 + '/_planetestreamiframe_/Embed.aspx?' + e.data + '">&nbsp;</a></p>');
+			
+             
 
             }, false);
 </script>

@@ -82,16 +82,23 @@ class display_support {
                     $percent = 100;
                 }
                 if ($num) {
-                    $out = '&nbsp;<img alt="'.$alt.'" src="'.$imageurl.'hbar_l.gif" />'.
-                               '<img style="height:9px; width:'.($percent * 1.4).'px;" alt="'.$alt.'" src="'.
-                               $imageurl.'hbar.gif" />'.'<img alt="'.$alt.'" src="'.$imageurl.'hbar_r.gif" />'.
-                               sprintf('&nbsp;%.'.$precision.'f%%', $percent);
+                    if (!right_to_left()) {
+                        $out = '&nbsp;<img alt="'.$alt.'" src="'.$imageurl.'hbar_l.gif" />'.
+                            '<img style="height:9px; width:'.($percent * 1.4).'px;" alt="'.$alt.'" src="'.
+                            $imageurl.'hbar.gif" />'.'<img alt="'.$alt.'" src="'.$imageurl.'hbar_r.gif" />'.
+                            sprintf('&nbsp;%.'.$precision.'f%%', $percent);
+                    } else {
+                        $out = '&nbsp;<img alt="'.$alt.'" src="'.$imageurl.'hbar_r.gif" />'.
+                            '<img style="height:9px; width:'.($percent * 1.4).'px;" alt="'.$alt.'" src="'.
+                            $imageurl.'hbar.gif" />'.'<img alt="'.$alt.'" src="'.$imageurl.'hbar_l.gif" />'.
+                            sprintf('&nbsp;%.'.$precision.'f%%', $percent);
+                    }
                 } else {
                     $out = '';
                 }
 
                 $tabledata = array();
-                $tabledata = array_merge($tabledata, array(format_text($content, FORMAT_HTML), $out, $num));
+                $tabledata = array_merge($tabledata, array(format_text($content, FORMAT_HTML, ['noclean' => true]), $out, $num));
                 $table->data[] = $tabledata;
                 $i += $num;
                 $pos++;
@@ -106,11 +113,17 @@ class display_support {
                 if ($percent > 100) {
                     $percent = 100;
                 }
-
-                $out = '&nbsp;<img alt="'.$alt.'" src="'.$imageurl.'thbar_l.gif" />'.
-                                '<img style="height:9px;  width:'.($percent * 1.4).'px;" alt="'.$alt.'" src="'.
-                                $imageurl.'thbar.gif" />'.'<img alt="'.$alt.'" src="'.$imageurl.'thbar_r.gif" />'.
-                                sprintf('&nbsp;%.'.$precision.'f%%', $percent);
+                if (!right_to_left()) {
+                    $out = '&nbsp;<img alt="'.$alt.'" src="'.$imageurl.'thbar_l.gif" />'.
+                        '<img style="height:9px;  width:'.($percent * 1.4).'px;" alt="'.$alt.'" src="'.
+                        $imageurl.'thbar.gif" />'.'<img alt="'.$alt.'" src="'.$imageurl.'thbar_r.gif" />'.
+                        sprintf('&nbsp;%.'.$precision.'f%%', $percent);
+                } else {
+                    $out = '&nbsp;<img alt="'.$alt.'" src="'.$imageurl.'thbar_r.gif" />'.
+                        '<img style="height:9px;  width:'.($percent * 1.4).'px;" alt="'.$alt.'" src="'.
+                        $imageurl.'thbar.gif" />'.'<img alt="'.$alt.'" src="'.$imageurl.'thbar_l.gif" />'.
+                        sprintf('&nbsp;%.'.$precision.'f%%', $percent);
+                }
                 $table->data[] = 'hr';
                 $tabledata = array();
                 $tabledata = array_merge($tabledata, array($strtotal, $out, "$i/$total"));
@@ -122,7 +135,7 @@ class display_support {
             $table->data[] = $tabledata;
         }
 
-        echo html_writer::table($table);
+        return html_writer::table($table);
     }
 
     public static function mkreslisttext($rows) {
@@ -148,7 +161,7 @@ class display_support {
             $table->size = array('*');
         }
         foreach ($rows as $row) {
-            $text = format_text($row->response, FORMAT_HTML);
+            $text = format_text($row->response, FORMAT_HTML, ['noclean' => true]);
             if ($viewsingleresponse && $nonanonymous) {
                 $rurl = $url.'&amp;rid='.$row->rid.'&amp;individualresponse=1';
                 $title = userdate($row->submitted);
@@ -159,14 +172,14 @@ class display_support {
                 $table->data[] = array($text);
             }
         }
-        echo html_writer::table($table);
+        return html_writer::table($table);
     }
 
     public static function mkreslistdate($counts, $total, $precision, $showtotals) {
         $dateformat = get_string('strfdate', 'questionnaire');
 
         if ($total == 0) {
-            return;
+            return '';
         }
         $strresponse = get_string('response', 'questionnaire');
         $strnum = get_string('num', 'questionnaire');
@@ -186,12 +199,12 @@ class display_support {
             $table->data[] = array('', get_string('noresponsedata', 'questionnaire'));
         }
 
-        echo html_writer::table($table);
+        return html_writer::table($table);
     }
 
     public static function mkreslistnumeric($counts, $total, $precision) {
         if ($total == 0) {
-            return;
+            return '';
         }
         $nbresponses = 0;
         $sum = 0;
@@ -221,7 +234,7 @@ class display_support {
             $table->data[] = array('', $strnoresponsedata);
         }
 
-        echo html_writer::table($table);
+        return html_writer::table($table);
     }
 
     /* {{{ proto void mkresavg(array weights, int total, int precision, bool show_totals)
@@ -281,7 +294,7 @@ class display_support {
         $nameddegrees = 0;
         foreach ($choices as $choice) {
             // To take into account languages filter.
-            $content = (format_text($choice->content, FORMAT_HTML));
+            $content = (format_text($choice->content, FORMAT_HTML, ['noclean' => true]));
             if (preg_match("/^[0-9]{1,3}=/", $content, $ndd)) {
                 $n[$nameddegrees] = substr($content, strlen($ndd[0]));
                 $nameddegrees++;
@@ -342,8 +355,13 @@ class display_support {
                         if (($j = $avg * $width) > 0) {
                             $marginposition = ($avg - 0.5 ) / ($length + $isrestricted) * 100;
                         }
-                        $out .= '<img style="height:12px; width: 6px; margin-left: '.$marginposition.
-                            '%;" alt="" src="'.$imageurl.'hbar.gif" />';
+                        if (!right_to_left()) {
+                            $out .= '<img style="height:12px; width: 6px; margin-left: '.$marginposition.
+                                '%;" alt="" src="'.$imageurl.'hbar.gif" />';
+                        } else {
+                            $out .= '<img style="height:12px; width: 6px; margin-right: '.$marginposition.
+                                '%;" alt="" src="'.$imageurl.'hbar.gif" />';
+                        }
                     } else {
                             $out = '';
                     }
@@ -358,8 +376,9 @@ class display_support {
                         }
                     }
                     if ($osgood) {
-                        $table->data[] = array('<div class="mdl-right">'.format_text($content, FORMAT_HTML).'</div>', $out,
-                            '<div class="mdl-left">'.format_text($contentright, FORMAT_HTML).'</div>');
+                        $table->data[] = array('<div class="mdl-right">'.
+                            format_text($content, FORMAT_HTML, ['noclean' => true]).'</div>', $out,
+                            '<div class="mdl-left">'.format_text($contentright, FORMAT_HTML, ['noclean' => true]).'</div>');
                         // JR JUNE 2012 do not display meaningless average rank values for Osgood.
                     } else {
                         if ($avg) {
@@ -368,14 +387,14 @@ class display_support {
                                 $stravgval = '('.sprintf('%.1f', $avgvalue).')';
                             }
                             if ($isna) {
-                                $table->data[] = array(format_text($content, FORMAT_HTML), $out, sprintf('%.1f', $avg).
-                                        '&nbsp;'.$stravgval, $nbna);
+                                $table->data[] = [format_text($content, FORMAT_HTML, ['noclean' => true]), $out,
+                                    sprintf('%.1f', $avg).'&nbsp;'.$stravgval, $nbna];
                             } else {
-                                $table->data[] = array(format_text($content, FORMAT_HTML), $out, sprintf('%.1f', $avg).
-                                        '&nbsp;'.$stravgval);
+                                $table->data[] = [format_text($content, FORMAT_HTML, ['noclean' => true]), $out,
+                                    sprintf('%.1f', $avg).'&nbsp;'.$stravgval];
                             }
                         } else if ($nbna != 0) {
-                            $table->data[] = array(format_text($content, FORMAT_HTML), $out, '', $nbna);
+                            $table->data[] = array(format_text($content, FORMAT_HTML, ['noclean' => true]), $out, '', $nbna);
                         }
                     }
                 } // End if named degrees.
@@ -383,7 +402,7 @@ class display_support {
         } else {
             $table->data[] = array('', get_string('noresponsedata', 'questionnaire'));
         }
-        echo html_writer::table($table);
+        return html_writer::table($table);
     }
 
     public static function mkrescount($counts, $rids, $rows, $question, $precision, $length, $sort) {
@@ -473,7 +492,7 @@ class display_support {
             $content = $choice->content;
             // Check for number from 1 to 3 digits, followed by the equal sign = (to accomodate named degrees).
             if (preg_match("/^([0-9]{1,3})=(.*)$/", $content, $ndd)) {
-                $n[$nameddegrees] = format_text($ndd[2], FORMAT_HTML);
+                $n[$nameddegrees] = format_text($ndd[2], FORMAT_HTML, ['noclean' => true]);
                 $nameddegrees++;
             } else {
                 $contents = questionnaire_choice_values($content);
@@ -533,14 +552,14 @@ class display_support {
                 if ($osgood) {
                     // Ensure there are two bits of content.
                     list($content, $contentright) = array_merge(preg_split('/[|]/', $content), array(' '));
-                    $data[] = format_text($content, FORMAT_HTML);
+                    $data[] = format_text($content, FORMAT_HTML, ['noclean' => true]);
                 } else {
                     // Eliminate potentially short-named choices.
                     $contents = questionnaire_choice_values($content);
                     if ($contents->modname) {
                         $content = $contents->text;
                     }
-                    $data[] = format_text($content, FORMAT_HTML);
+                    $data[] = format_text($content, FORMAT_HTML, ['noclean' => true]);
                 }
                 // Display ranks/rates numbers.
                 $maxrank = max($rank);
@@ -561,7 +580,7 @@ class display_support {
                     $data[] = $str.$percent;
                 }
                 if ($osgood) {
-                    $data[] = format_text($contentright, FORMAT_HTML);
+                    $data[] = format_text($contentright, FORMAT_HTML, ['noclean' => true]);
                 }
                 $data[] = $nbresp;
                 if ($isrestricted) {
@@ -575,7 +594,7 @@ class display_support {
             } // End named degrees.
             $table->data[] = $data;
         }
-        echo html_writer::table($table);
+        return html_writer::table($table);
     }
 
     /**

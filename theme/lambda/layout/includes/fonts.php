@@ -1,4 +1,5 @@
 <?php
+if ($PAGE->theme->settings->fonts_source ==1) {
 	$font_languages = $PAGE->theme->settings->font_languages;
 	if ($font_languages != '') {$font_languages = '&subset='.$font_languages;}
 	$bodyfontsetting = $PAGE->theme->settings->font_body;
@@ -60,6 +61,9 @@
 		break;
     case "18":
 		$bodyfont='Raleway';
+		break;
+    case "22":
+		$bodyfont='Roboto';
 		break; 
 	case "19":
 		$bodyfont='Ubuntu';
@@ -95,7 +99,6 @@
 		break; 
 	case "6":
 		$headingfont='Bree+Serif';
-		$headingweight = 700;
 		break;
 	case "7":
 		$headingfont='Cabin';
@@ -103,18 +106,17 @@
 		break;
 	case "8":
 		$headingfont='Cantata+One';
-		$headingweight = 700;
 		break;
 	case "9":
 		$headingfont='Crimson+Text';
 		$headingweight = 700;
 		break;
 	case "10":
-		$headingfont='Droid+Sans';
+		$headingfont='Encode+Sans';
 		$headingweight = 700;
 		break;
 	case "11":
-		$headingfont='Droid+Serif';
+		$headingfont='Enriqueta';
 		$headingweight = 700;
 		break;
 	case "12":
@@ -123,10 +125,10 @@
 		break;
 	case "13":
 		$headingfont='Imprima';
-		$headingweight = 700;
 		break;
 	case "14":
 		$headingfont='Josefin+Sans';
+		$headingweight = '700';
 		break;
 	case "15":
 		$headingfont='Lekton';
@@ -152,7 +154,6 @@
 		break;
 	case "21":
 		$headingfont='Pontano+Sans';
-		$headingweight = 700;
 		break;
 	case "22":
 		$headingfont='PT+Sans';
@@ -161,6 +162,10 @@
     case "23":
 		$headingfont='Raleway';
 		$headingweight = 500;
+		break;
+    case "28":
+		$headingfont='Roboto';
+		$headingweight = 700;
 		break; 
 	case "24":
 		$headingfont='Sansita+One';
@@ -180,7 +185,12 @@
 	default:
 		$headingfont='Open+Sans';
 		$headingweight = 700;
-	}	
-?>
-
+	} ?>
 <link href="https://fonts.googleapis.com/css?family=<?php echo $bodyfont.':'.$bodyweight.'|'.$headingfont.':'.$headingweight.$font_languages;?>" rel="stylesheet">
+<?php } ?>
+
+<?php if ($PAGE->theme->settings->use_fa5 == 1) { ?>
+	<link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet">
+<?php } else if ($CFG->version < 2017051500) { ?>
+	<script src="https://use.fontawesome.com/c85108fa98.js"></script>
+<?php } ?>

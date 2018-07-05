@@ -312,9 +312,9 @@ function attendanceregister__get_tracked_users($register) {
     $uniqueTrackedUsers = attendanceregister__unique_object_array_by_id($trackedUsers);
 
     // sort Users by fullname [issue #13]
-    // (hack seen on http://www.php.net/manual/en/function.usort.php#104873 )
-    $compareByFullName = "return strcmp( fullname(\$a), fullname(\$b) );";
-    usort($uniqueTrackedUsers, create_function('$a,$b', $compareByFullName));
+    usort($uniqueTrackedUsers, function($a, $b) {
+        return strcmp( fullname($a), fullname($b) );
+    });
 
     return $uniqueTrackedUsers;    
 }
@@ -874,8 +874,8 @@ function attendanceregister__areCompletionConditionsMet($register, $trackedValue
  */
 function attendanceregister__didCronRanAfterInstanceCreation($cm) {
     global $DB;
-    $module = $DB->get_record('modules', array('name'=>'attendanceregister'), '*', MUST_EXIST);
-    return ( $cm->added < $module->lastcron );
+    $module = $DB->get_record('task_scheduled', array('component'=>'mod_attendanceregister'), '*', MUST_EXIST);
+    return ( $cm->added < $module->lastruntime );
 }
 
 /**

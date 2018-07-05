@@ -31,6 +31,10 @@ features are continuously made available on the community portal
 View our [setup for Moodle](https://h5p.org/moodle) to get information on how
 to get started with H5P.
 
+### GDPR Compliance
+Information useful to help you achieve GDPR compliance while using this plugin
+can be found at [H5P.org's GDPR Compliance](https://h5p.org/plugin-gdpr-compliance) page.
+
 ## Install
 
 ### Beta Version
@@ -39,7 +43,7 @@ you can download the beta version.
 Here is an example. Remember to replace the version number with the latest from
 the [releases](https://github.com/h5p/h5p-moodle-plugin/releases) page:
 ```
-git clone --branch 0.3-beta https://github.com/h5p/h5p-moodle-plugin.git hvp && cd hvp && git submodule update --init
+git clone --branch 1.0-rc.2 https://github.com/h5p/h5p-moodle-plugin.git hvp && cd hvp && git submodule update --init
 ```
 
 It's not recommended to download the tag/version from the

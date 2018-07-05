@@ -155,8 +155,11 @@ if ($PAGE->theme->settings->slideshow_txtfx!='') {$txtfx=$PAGE->theme->settings-
     				
 	</div>
     
-    <?php if ($shadow_effect) { ?>
-	<div class="container-fluid" style="margin-bottom: 3px;"><img src="<?php echo $OUTPUT->pix_url('bg/lambda-shadow', 'theme'); ?>" class="lambda-shadow" alt=""></div>
-	<?php } ?>
+<?php if ($shadow_effect) {
+	if ($moodle_release > 2017051500) { ?>
+		<div class="container-fluid"><img src="<?php echo $OUTPUT->image_url('bg/lambda-shadow', 'theme'); ?>" class="lambda-shadow" alt=""></div>
+    <?php } else { ?>
+		<div class="container-fluid"><img src="<?php echo $OUTPUT->pix_url('bg/lambda-shadow', 'theme'); ?>" class="lambda-shadow" alt=""></div>
+<?php }} ?>
     
 <?php } ?>

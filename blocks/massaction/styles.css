@@ -1,8 +1,37 @@
-#mod-massaction-control-section-list-select {width: 99%;}
-#mod-massaction-control-section-list-moveto {margin-left: 0.5em; max-width: 95%;}
-#mod-massaction-control-section-list-dupto {margin-left: 0.5em; max-width: 95%;}
-#mod-massaction-control-deselectlist {float:right; position:relative;}
-.block_massaction .massaction-action {margin-left: 0.5em; position: relative;}
-#mod-massaction-help-icon {padding:0.2em; text-align:center;}
+.block-massaction-jsenabled {
+    margin-left: -16px;
+}
 
-#block_massaction_module_list th {padding-bottom:0.1em;}
+.block-massaction-select > ul,
+.block-massaction-action > ul,
+.block-massaction-operation > ul {
+    list-style-type: none !important;
+}
+
+.block-massaction-action a .icon {
+    margin-bottom: 3px;
+}
+
+.block-massaction-select,
+.block-massaction-action {
+    margin-bottom: 20px;
+}
+
+#block-massaction-selectsome,
+#block-massaction-move,
+#block-massaction-clone {
+    width: 100%;
+}
+
+#block-massaction-move {
+    margin-bottom: 5px;
+}
+
+#block-massaction-selectnone {
+    float: right;
+}
+
+#block-massaction-help-icon {
+    margin: -5px 0 -5px 0;
+    text-align: center;
+}
