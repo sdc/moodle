@@ -37,7 +37,7 @@ $string['choosereadme'] = '
 </div>
 <h4>Theme Summary</h4>
 <div style="color: #888; text-transform: uppercase; margin-bottom:20px;">
-<p>Compatibility: Moodle 2.5 - 3.5<br />Theme Version: 1.76<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
+<p>Compatibility: Moodle 2.5 - 3.5<br />Theme Version: 1.77<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
 </div>
 <hr />
 <p style="text-align:center;"><img class="img-polaroid" src="lambda/pix/redPIthemes.jpg" /></p>';
@@ -48,11 +48,6 @@ $string['logo'] = 'Logo';
 $string['logodesc'] = 'Please upload your custom logo here. If you upload a logo it will appear in the header.';
 $string['logo_res'] = 'Standard logo dimension';
 $string['logo_res_desc'] = 'Sets the dimension of your logo to a maximum height of 90px. Using this setting, your logo will adapt to different screen resolutions and you can also use a @2x version for high-res screens.';
-$string['home_button'] = 'Home button';
-$string['home_button_desc'] = 'Choose from the list of available texts for the home button (the first button in the custom menu)';
-$string['home_button_shortname'] = 'Short site name';
-$string['home_button_frontpage'] = 'Frontpage';
-$string['home_button_frontpagedashboard'] = 'Frontpage (for non-logged-in users) / Dashboard (for logged-in users)';
 $string['pagewidth'] = 'Set Page Width';
 $string['pagewidthdesc'] = 'Choose from the list of availble page layouts.';
 $string['boxed_wide'] = 'Boxed - fixed width wide';
@@ -218,6 +213,10 @@ $string['slidecaption'] = 'Slide Caption';
 $string['slidecaptiondesc'] = 'Enter the caption text to use for the slide';
 $string['slide_url'] = 'Slide URL';
 $string['slide_url_desc'] = 'If you enter an URL, a "Read more" button will be displayed in your slide.';
+$string['slideshow_height'] = 'Height for the slideshow';
+$string['slideshow_height_desc'] = 'Select a height for the slideshow that will be used for desktop resolutions. This height will be adapted and decreased for tablets and mobiles.';
+$string['slideshow_hide_captions'] = 'hide captions on mobile devices';
+$string['slideshow_hide_captions_desc'] = 'In case you use a decreased height for the slideshow or if you have chosen the <em>responsive</em> setting, it may be necessary to hide the headings and captions for mobile devices. Otherwise, the captions might not fit to the adapted image height for mobile devices.';
 $string['slideshowpattern'] = 'Pattern/Overlay';
 $string['slideshowpatterndesc'] = 'Select a pattern as a transparent overlay on your images';
 $string['pattern1'] = 'none';
@@ -282,6 +281,10 @@ $string['custom_login_link_txt'] = 'Custom Login Link Text';
 $string['custom_login_link_txt_desc'] = 'Here you can enter a custom text for your additional link at the login form. This will override the setting from the dropdown.';
 $string['auth_googleoauth2'] = 'Oauth2';
 $string['auth_googleoauth2_desc'] = 'Use the Moodle Oauth2 authentication plugin instead of the default login form?<br /><strong>Please note: </strong>For all Moodle versions prior to 3.3 you have to install this additional plugin first from the Moodle plugins directory. This plugin allows your users to sign-in with a Google / Facebook / Github / Linkedin / Windows Live / VK / Battle.net account. The first time a user signs in, a new account is created.';
+$string['home_button'] = 'Home button';
+$string['home_button_desc'] = 'Choose from the list of available texts for the home button (the first button in the custom menu)';
+$string['home_button_shortname'] = 'Short site name';
+$string['home_button_frontpagedashboard'] = 'Frontpage (for non-logged-in users) / Dashboard (for logged-in users)';
 
 
 /* Theme */
@@ -295,3 +298,4 @@ $string['region-hidden-dock'] = 'Hidden from users';
 $string['nextsection'] = '';
 $string['previoussection'] = '';
 $string['backtotop'] = '';
+$string['responsive'] = 'responsive';

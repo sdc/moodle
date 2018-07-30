@@ -316,7 +316,7 @@ function theme_lambda_process_css($css, $theme) {
 		$headingweight = '500';
     } else if ($theme->settings->font_heading ==28) {
         $headingfont = 'Roboto';
-		$headingweight = '700';
+		$headingweight = '500';
     } else if ($theme->settings->font_heading ==24) {
         $headingfont = 'Sansita One';
 		$headingweight = '400';
@@ -475,6 +475,14 @@ function theme_lambda_process_css($css, $theme) {
         $socials_color = null;
     }
     $css = theme_lambda_set_socials_color($css, $socials_color);
+	
+	if (!empty($theme->settings->slideshow_height)) {
+        $slideshow_height = $theme->settings->slideshow_height;
+    } else {
+        $slideshow_height = null;
+    }
+	$hide_captions = $theme->settings->slideshow_hide_captions;
+    $css = theme_lambda_set_slideshow_height($css, $slideshow_height, $hide_captions);
 	
 	if (!is_null($theme->setting_file_url('category_background', 'category_background'))) {
 		$background = $theme->setting_file_url('category_background', 'category_background');
@@ -771,6 +779,86 @@ function theme_lambda_set_socials_color($css, $themecolor) {
     return $css;
 }
 
+function theme_lambda_set_slideshow_height($css, $slideshow_height, $hide_captions) {
+    $tag = '[[setting:slideshow_height]]';
+    $replacement = $slideshow_height;
+    if (is_null($replacement) || ($replacement == 'responsive')) {
+        $replacement = '475px';
+    }
+    $css = str_replace($tag, $replacement, $css);
+	if ($replacement == '475px') {
+		$tag = '[[setting:slideshow_height_desktop_s]]';
+		$replacement_tablet_l = '425px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+		$tag = '[[setting:slideshow_height_tablet]]';
+		$replacement_tablet_l = '375px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+		$tag = '[[setting:slideshow_height_mobile]]';
+		$replacement_tablet_l = '300px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+	}
+	else if ($replacement == '525px') {
+		$tag = '[[setting:slideshow_height_desktop_s]]';
+		$replacement_tablet_l = '475px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+		$tag = '[[setting:slideshow_height_tablet]]';
+		$replacement_tablet_l = '425px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+		$tag = '[[setting:slideshow_height_mobile]]';
+		$replacement_tablet_l = '350px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+	}
+	else if ($replacement == '575px') {
+		$tag = '[[setting:slideshow_height_desktop_s]]';
+		$replacement_tablet_l = '525px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+		$tag = '[[setting:slideshow_height_tablet]]';
+		$replacement_tablet_l = '475px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+		$tag = '[[setting:slideshow_height_mobile]]';
+		$replacement_tablet_l = '400px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+	}
+	else if ($replacement == '425px') {
+		$tag = '[[setting:slideshow_height_desktop_s]]';
+		$replacement_tablet_l = '375px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+		$tag = '[[setting:slideshow_height_tablet]]';
+		$replacement_tablet_l = '325px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+		$tag = '[[setting:slideshow_height_mobile]]';
+		$replacement_tablet_l = '275px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+	}
+	else if ($replacement == '375px') {
+		$tag = '[[setting:slideshow_height_desktop_s]]';
+		$replacement_tablet_l = '325px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+		$tag = '[[setting:slideshow_height_tablet]]';
+		$replacement_tablet_l = '275px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+		$tag = '[[setting:slideshow_height_mobile]]';
+		$replacement_tablet_l = '200px';
+		$css = str_replace($tag, $replacement_tablet_l, $css);
+	}
+	
+	$tag = '[[setting:slideshow_height_responsive]]';
+    $replacement = '';
+    if ($slideshow_height=='responsive') {
+        $replacement = '.camera_wrap {position: relative;} .camera_fakehover {min-height: 60px !important;}';
+    }
+    $css = str_replace($tag, $replacement, $css);
+	
+	$tag = '[[setting:slideshow_hide_captions]]';
+    $replacement = '';
+    if ($hide_captions == 1) {
+        $replacement = '@media(max-width:767px){#camera_wrap .camera_caption {display: none;}}';
+    }
+    $css = str_replace($tag, $replacement, $css);
+	
+    return $css;
+}
+
 function theme_lambda_set_category_banner_font_color($css, $themecolor) {
     $tag = '[[setting:category_banner_font_color]]';
     $replacement = $themecolor;
@@ -830,6 +918,78 @@ function theme_lambda_init_sidebar(moodle_page $page) {
 
 function theme_lambda_get_sidebar_stat() {
     return get_user_preferences('theme_lambda_sidebar', '');
+}
+
+function is_jpeg(&$pict) {
+    return (bin2hex($pict[0]) == 'ff' && bin2hex($pict[1]) == 'd8');
+}
+
+function is_png(&$pict) {
+    return (bin2hex($pict[0]) == '89' && $pict[1] == 'P' && $pict[2] == 'N' && $pict[3] == 'G');
+}
+
+function theme_lambda_getslidesize($img_loc) {
+	if (is_jpeg($img_loc)) {
+    $handle = fopen($img_loc, "rb");
+    $new_block = NULL;
+    if(!feof($handle)) {
+        $new_block = fread($handle, 32);
+        $i = 0;
+        if($new_block[$i]=="\xFF" && $new_block[$i+1]=="\xD8" && $new_block[$i+2]=="\xFF" && $new_block[$i+3]=="\xE0") {
+            $i += 4;
+            if($new_block[$i+2]=="\x4A" && $new_block[$i+3]=="\x46" && $new_block[$i+4]=="\x49" && $new_block[$i+5]=="\x46" && $new_block[$i+6]=="\x00") {
+                $block_size = unpack("H*", $new_block[$i] . $new_block[$i+1]);
+                $block_size = hexdec($block_size[1]);
+                while(!feof($handle)) {
+                    $i += $block_size;
+                    $new_block .= fread($handle, $block_size);
+                    if($new_block[$i]=="\xFF") {
+                        $sof_marker = array("\xC0", "\xC1", "\xC2", "\xC3", "\xC5", "\xC6", "\xC7", "\xC8", "\xC9", "\xCA", "\xCB", "\xCD", "\xCE", "\xCF");
+                        if(in_array($new_block[$i+1], $sof_marker)) {
+                            $size_data = $new_block[$i+2] . $new_block[$i+3] . $new_block[$i+4] . $new_block[$i+5] . $new_block[$i+6] . $new_block[$i+7] . $new_block[$i+8];
+                            $unpacked = unpack("H*", $size_data);
+                            $unpacked = $unpacked[1];
+                            $height = hexdec($unpacked[6] . $unpacked[7] . $unpacked[8] . $unpacked[9]);
+                            $width = hexdec($unpacked[10] . $unpacked[11] . $unpacked[12] . $unpacked[13]);
+                            return array($width, $height);
+                        } else {
+                            $i += 2;
+                            $block_size = unpack("H*", $new_block[$i] . $new_block[$i+1]);
+                            $block_size = hexdec($block_size[1]);
+                        }
+                    } else {
+                        return FALSE;
+                    }
+                }
+            }
+        }
+    }
+    return FALSE;
+	} else if (is_png($img_loc)) {
+		$handle = fopen( $img_loc, "rb" );
+    	if ( ! feof( $handle ) ) {
+        $new_block = fread( $handle, 24 );
+        if ( $new_block[0] == "\x89" &&
+            $new_block[1] == "\x50" &&
+            $new_block[2] == "\x4E" &&
+            $new_block[3] == "\x47" &&
+            $new_block[4] == "\x0D" &&
+            $new_block[5] == "\x0A" &&
+            $new_block[6] == "\x1A" &&
+            $new_block[7] == "\x0A" ) {
+                if ( $new_block[12] . $new_block[13] . $new_block[14] . $new_block[15] === "\x49\x48\x44\x52" ) {
+                    $width  = unpack( 'H*', $new_block[16] . $new_block[17] . $new_block[18] . $new_block[19] );
+                    $width  = hexdec( $width[1] );
+                    $height = unpack( 'H*', $new_block[20] . $new_block[21] . $new_block[22] . $new_block[23] );
+                    $height  = hexdec( $height[1] );
+                    return array( $width, $height );
+                }
+            }
+        }
+    return FALSE;
+	} else {
+		return getimagesize($img_loc);
+	}
 }
 
 function theme_lambda_page_init(moodle_page $page) {

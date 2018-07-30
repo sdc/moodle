@@ -37,7 +37,7 @@ $string['choosereadme'] = '
 </div>
 <h4>Résumé du thème</h4>
 <div style="color: #888; text-transform: uppercase; margin-bottom:20px;">
-<p>Compatibilité: Moodle 2.5 - 3.5<br />Version du thème : 1.76<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
+<p>Compatibilité: Moodle 2.5 - 3.5<br />Version du thème : 1.77<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
 </div>
 <hr />
 <p style="text-align:center;"><img class="img-polaroid" src="lambda/pix/redPIthemes.jpg" /></p>';
@@ -48,11 +48,6 @@ $string['logo'] = 'Logo';
 $string['logodesc'] = 'Veuillez téléverser votre logo personnalisé ici. Si vous téléversez un logo, il apparaîtra dans l\'entête de la page.';
 $string['logo_res'] = 'Dimensions standards du logo';
 $string['logo_res_desc'] = 'Fixez la hauteur de votre logo à 90px au maximum. Activer cette option permet à votre logo de s\'adapter aux résolutions des différents écrans, vous pouvez aussi utiliser une version @2 pour les écrans en haute-résolution.';
-$string['home_button'] = 'Bouton de la page d\'accueil';
-$string['home_button_desc'] = 'Sélectionnez dans la liste le texte que vous désirez utiliser comme bouton pour accéder à la page d\'accueil (le premier bouton dans le menu personnalisé)';
-$string['home_button_shortname'] = 'Nom abrégé du site';
-$string['home_button_frontpage'] = 'Page d\'accueil';
-$string['home_button_frontpagedashboard'] = 'Page d\'accueil (utilisateurs non authentifiés) / Tableau de bord (utilisateurs authentifiés)';
 $string['pagewidth'] = 'Largeur de la page';
 $string['pagewidthdesc'] = 'Sélectionnez dans la liste la présentation souhaitée.';
 $string['boxed_wide'] = 'Encadré - largeur fixe';
@@ -257,6 +252,10 @@ $string['custom_login_link_txt'] = 'Texte pour le lien vers la page personnalis�
 $string['custom_login_link_txt_desc'] = 'Entrez ici le texte du lien supplémentaire à ajouter au formulaire de connexion. Ceci remplace le paramètre de l\'option précédente.';
 $string['auth_googleoauth2'] = 'Oauth2';
 $string['auth_googleoauth2_desc'] = 'Utilisez le système d\'authentification Oauth2 de Moodle au lieu du formulaire standard ?<br /><strong>Veuillez noter : </strong>Pour versions antérieures à Moodle 3.3, vous devez d\'abord installer ce plug-in additionnel depuis la page des plug-ins. Ce plug-in permet à vos utilisateurs d\'utiliser leur compte Google / Facebook / Github / Linkedin / Windows Live / VK / Battle.net pour se connecter à votre Moodle. A la première connexion, un nouveau compte utilisateur est créé.';
+$string['home_button'] = 'Bouton de la page d\'accueil';
+$string['home_button_desc'] = 'Sélectionnez dans la liste le texte que vous désirez utiliser comme bouton pour accéder à la page d\'accueil (le premier bouton dans le menu personnalisé)';
+$string['home_button_shortname'] = 'Nom abrégé du site';
+$string['home_button_frontpagedashboard'] = 'Page d\'accueil (utilisateurs non authentifiés) / Tableau de bord (utilisateurs authentifiés)';
 
 /* Theme */
 $string['visibleadminonly'] ='Les blocs placés dans la zone ci-dessous ne sont affichés qu\'aux administrateurs du site.';

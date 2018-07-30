@@ -1916,7 +1916,7 @@ group Tabs
 }
 
 /*================================================== * 
-equation editor
+Atto editor
 =====================================================*/
 .yui3-skin-sam .yui3-tab-label {
     background: #f2f2f2 none repeat scroll 0 0;
@@ -1930,6 +1930,9 @@ equation editor
 }
 .yui3-skin-sam .yui3-tabview-panel {
     background: #fafafa none repeat scroll 0 0;
+}
+#page-lib-editor-atto-plugins-managefiles-manage {
+    background: none !important;
 }
 
 /* =========================================================== *
@@ -2408,7 +2411,7 @@ Additional CSS for RTL Support
     transform: rotate(180deg);
 }
 
-
+[[setting:fontface]]
 [[setting:logo_res]]
 [[setting:pagewidth_wide]]
 [[setting:block_style]]

@@ -15,6 +15,22 @@ $advance='true';
 if($PAGE->theme->settings->slideshow_advance==0) {$advance='false';}
 $navhover='true';
 if($PAGE->theme->settings->slideshow_nav==0) {$navhover='false';}
+$slideshow_height='auto';
+if($PAGE->theme->settings->slideshow_height=='responsive') {
+	if ($hasslideshow) {
+		if ($hasslide1image) {$i = 1;}
+		else if ($hasslide2image) {$i = 2;}
+		else if ($hasslide3image) {$i = 3;}
+		else if ($hasslide4image) {$i = 4;}
+		else if ($hasslide5image) {$i = 5;}
+		$slide_img_src = $PAGE->theme->setting_file_url('slide'.$i.'image', 'slide'.$i.'image');
+		if (!empty($_SERVER['HTTPS'])) {$slide_img_src = 'https:'.$slide_img_src;} else {$slide_img_src = 'http:'.$slide_img_src;}
+		list($width, $height) = theme_lambda_getslidesize($slide_img_src);
+		$relative = $height/$width*100;
+		$relative .= '%';
+		$slideshow_height=$relative;
+	}
+}
 $loader='';
 if($PAGE->theme->settings->slideshow_loader==0) {$loader='bar';}
 else if($PAGE->theme->settings->slideshow_loader==1) {$loader='pie';}

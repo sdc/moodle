@@ -165,7 +165,7 @@ if ($PAGE->theme->settings->fonts_source ==1) {
 		break;
     case "28":
 		$headingfont='Roboto';
-		$headingweight = 700;
+		$headingweight = 500;
 		break; 
 	case "24":
 		$headingfont='Sansita+One';
@@ -190,7 +190,7 @@ if ($PAGE->theme->settings->fonts_source ==1) {
 <?php } ?>
 
 <?php if ($PAGE->theme->settings->use_fa5 == 1) { ?>
-	<link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 <?php } else if ($CFG->version < 2017051500) { ?>
 	<script src="https://use.fontawesome.com/c85108fa98.js"></script>
 <?php } ?>

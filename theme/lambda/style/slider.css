@@ -28,7 +28,7 @@ main slideshow
 }
 .camera_fakehover {
 	height: 100%;
-	min-height: 475px;
+	min-height: [[setting:slideshow_height]];
 	position: relative;
 	width: 100%;
 	z-index: 1;
@@ -609,17 +609,17 @@ Image caption with hover effect
 Responsive & General Adjustments
 ============================================================== */
 @media(max-width:1279px){
-	.camera_fakehover {min-height: 425px;}
+	.camera_fakehover {min-height: [[setting:slideshow_height_desktop_s]];}
 }
 @media(max-width:979px){
 	.camera_caption {display: inline;left: 4%;width: 60%;}
-	.camera_fakehover {min-height: 375px;}
+	.camera_fakehover {min-height: [[setting:slideshow_height_tablet]];}
 	.cameraContents .camera_caption h1 {font-size: 2em; line-height: 1.4em;}
 	.cameraContents .camera_caption span {line-height: 20px; padding: 10px 20px;}
 }
 @media(max-width:767px){
 	.camera_caption {display: inline;left: 5%;width: 90%;}
-	.camera_fakehover {min-height: 300px;}
+	.camera_fakehover {min-height: [[setting:slideshow_height_mobile]];}
 	.cameraContents .camera_caption h1 {font-size: 1.8em; line-height: 1.3em;}
 	.cameraContents .camera_caption span {font-size:13px}
 }
@@ -667,3 +667,5 @@ Additional CSS for RTL Support
     left: 0;
     right: inherit;
 }
+
+[[setting:slideshow_height_responsive]]

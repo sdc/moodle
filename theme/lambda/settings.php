@@ -48,16 +48,6 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 
-	// Label of home button
-    $name = 'theme_lambda/home_button';
-    $title = get_string('home_button', 'theme_lambda');
-    $description = get_string('home_button_desc', 'theme_lambda');
-    $default = 'shortname';
-    $choices = array('shortname' => get_string('home_button_shortname','theme_lambda'), 'frontpage' => get_string('home_button_frontpage', 'theme_lambda'), 'frontpagedashboard' => get_string('home_button_frontpagedashboard', 'theme_lambda'));
-    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
-    $setting->set_updatedcallback('theme_reset_all_caches');
-    $temp->add($setting);
-
 	// Fixed or Variable Width.
     $name = 'theme_lambda/pagewidth';
     $title = get_string('pagewidth', 'theme_lambda');
@@ -878,6 +868,30 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
      * Options
      */
 	 $temp->add(new admin_setting_heading('theme_lambda_slider_options', get_string('slideshow_options', 'theme_lambda'),NULL));
+	 
+	// slideshow height
+	$name = 'theme_lambda/slideshow_height';
+    $title = get_string('slideshow_height', 'theme_lambda');
+    $description = get_string('slideshow_height_desc', 'theme_lambda');
+    $default = '475px';
+    $choices = array(
+		'375px'=>'375px',
+		'425px'=>'425px',
+		'475px'=>'475px',
+		'525px'=>'525px',
+		'575px'=>'575px',
+		'responsive'=>get_string('responsive', 'theme_lambda'));
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	// hide captions mobile
+	$name = 'theme_lambda/slideshow_hide_captions';
+    $title = get_string('slideshow_hide_captions', 'theme_lambda');
+    $description = get_string('slideshow_hide_captions_desc', 'theme_lambda');
+    $setting = new admin_setting_configcheckbox($name, $title, $description, 0);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
 	
     // Slideshow Pattern 
     $name = 'theme_lambda/slideshowpattern';
@@ -894,7 +908,7 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	
-	// Slidshow AutoAdvance
+	// Slideshow AutoAdvance
 	$name = 'theme_lambda/slideshow_advance';
     $title = get_string('slideshow_advance', 'theme_lambda');
     $description = get_string('slideshow_advance_desc', 'theme_lambda');
@@ -902,7 +916,7 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	
-	// Slidshow Navigation
+	// Slideshow Navigation
 	$name = 'theme_lambda/slideshow_nav';
     $title = get_string('slideshow_nav', 'theme_lambda');
     $description = get_string('slideshow_nav_desc', 'theme_lambda');
@@ -1082,6 +1096,14 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
 	// "settings login and navigations" settingpage
 	$temp = new admin_settingpage('theme_lambda_login',  get_string('settings_login', 'theme_lambda'));
 	
+	// customized login page.
+	$name = 'theme_lambda/custom_login';
+    $title = get_string('custom_login', 'theme_lambda');
+    $description = get_string('custom_login_desc', 'theme_lambda');
+    $setting = new admin_setting_configcheckbox($name, $title, $description, 1);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
 	// Additional Login Link
     $name = 'theme_lambda/login_link';
     $title = get_string('login_link', 'theme_lambda');
@@ -1110,7 +1132,7 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	
-	// customized login page.
+	// oauth2 buttons
 	$name = 'theme_lambda/auth_googleoauth2';
     $title = get_string('auth_googleoauth2', 'theme_lambda');
     $description = get_string('auth_googleoauth2_desc', 'theme_lambda');
@@ -1118,11 +1140,13 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	
-	// customized login page.
-	$name = 'theme_lambda/custom_login';
-    $title = get_string('custom_login', 'theme_lambda');
-    $description = get_string('custom_login_desc', 'theme_lambda');
-    $setting = new admin_setting_configcheckbox($name, $title, $description, 1);
+	// Label of home button
+    $name = 'theme_lambda/home_button';
+    $title = get_string('home_button', 'theme_lambda');
+    $description = get_string('home_button_desc', 'theme_lambda');
+    $default = 'shortname';
+    $choices = array('shortname' => get_string('home_button_shortname','theme_lambda'), 'home' => get_string('home'), 'frontpagedashboard' => get_string('home_button_frontpagedashboard', 'theme_lambda'));
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 
@@ -1134,20 +1158,20 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	
-	// custom menu with shadow effect
-	$name = 'theme_lambda/shadow_effect';
-    $title = get_string('shadow_effect', 'theme_lambda');
-    $description = get_string('shadow_effect_desc', 'theme_lambda');
-    $setting = new admin_setting_configcheckbox($name, $title, $description, 0);
-    $setting->set_updatedcallback('theme_reset_all_caches');
-    $temp->add($setting);
-	
     // Show MyCourses dropdown in custommenu.
     $name = 'theme_lambda/mycourses_dropdown';
     $title = get_string('mycourses_dropdown', 'theme_lambda');
     $description = get_string('mycourses_dropdown_desc', 'theme_lambda');
     $default = false;
     $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+	// custom menu with shadow effect
+	$name = 'theme_lambda/shadow_effect';
+    $title = get_string('shadow_effect', 'theme_lambda');
+    $description = get_string('shadow_effect_desc', 'theme_lambda');
+    $setting = new admin_setting_configcheckbox($name, $title, $description, 0);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	

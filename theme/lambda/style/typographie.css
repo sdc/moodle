@@ -476,14 +476,14 @@ Headlines
 }
 @media(max-width:979px){
 	.course-pano.title h2 {margin-bottom: 5px;margin-top: 10px;}
-	.course-pano.title h2 > span {font-size: 0.8em; line-height: 0.8em;}
-	.course-pano.title h4 > span {font-size: 0.7em; line-height: 0.7em;}
+	.course-pano.title h2 > span {font-size: .85em; line-height: 1.1em; padding-top: 6px;}
+	.course-pano.title h4 > span {font-size: .85em; line-height: 1.1em;}
 }
 @media(max-width:767px){
 	.course-pano.title h2 {margin-top: 5px;}
-	.course-pano.title h2 > span {font-size: 0.7em; line-height: 0.7em;}
+	.course-pano.title h2 > span {font-size: 0.75em; line-height: 1em;}
 	.course-pano.title h4 {margin-left:0;}
-	.course-pano.title h4 > span {font-size: 0.63em; line-height: 0.63em;}
+	.course-pano.title h4 > span {font-size: 0.8em; line-height: 1em;}
 }
 .course-pano > img {
     bottom: 0;
@@ -1051,7 +1051,7 @@ right: 0px;
 .nav-tabs {
     border-bottom: 2px solid [[setting:maincolor]];
 }
-.nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus {
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus, .nav-tabs a.nav-link.active {
     background-color: [[setting:maincolor]];
     color: #fff;
     cursor: default;

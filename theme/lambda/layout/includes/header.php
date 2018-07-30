@@ -61,8 +61,8 @@ if (strpos($checkuseragent, 'MSIE 8')) {$username = str_replace("'", "&prime;", 
                 if ($home_button == 'shortname') { 
                     $home_button_string = '<a class="brand" href="'.$CFG->wwwroot.'">'.$SITE->shortname.'</a>'; 
                 }
-                else if ($home_button == 'frontpage') { 
-                    $home_button_string = '<a class="brand" href="'.$CFG->wwwroot.'">'.get_string('frontpage', 'admin').'</a>'; 
+                else if ($home_button == 'home') { 
+                    $home_button_string = '<a class="brand" href="'.$CFG->wwwroot.'">'.get_string('home').'</a>'; 
                 }
                 else if ($home_button == 'frontpagedashboard') { 
                     if (isloggedin()) {

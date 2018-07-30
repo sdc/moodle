@@ -136,7 +136,7 @@ echo $OUTPUT->doctype() ?>
 	jQuery(function(){
 		jQuery('#camera_wrap').camera({
 			fx: '<?php echo $imgfx; ?>',
-			height: 'auto',
+			height: '<?php echo $slideshow_height; ?>',
 			loader: '<?php echo $loader; ?>',
 			thumbnails: false,
 			pagination: false,
