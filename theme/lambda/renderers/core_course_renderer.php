@@ -48,7 +48,7 @@
                     '/'. $file->get_contextid(). '/'. $file->get_component(). '/'.
                     $file->get_filearea(). $file->get_filepath(). $file->get_filename(), !$isimage);
             if ($isimage) {
-                $contentimages .= '<div class="courseimage" style="background-image: url('.$url.')";></div>';
+                $contentimages .= '<div class="courseimage" style="background-image: url('.$url.');"></div>';
             } else {
                 $image = $this->output->pix_icon(file_file_icon($file, 24), $file->get_filename(), 'moodle');
                 $filename = html_writer::tag('span', $image, array('class' => 'fp-icon')).

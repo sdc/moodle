@@ -236,6 +236,8 @@ function theme_lambda_process_css($css, $theme) {
         $bodyfont = 'PT Sans';
 	} else if ($theme->settings->font_body ==18) {
         $bodyfont = 'Raleway';
+	} else if ($theme->settings->font_body ==22) {
+        $bodyfont = 'Roboto';
 	} else if ($theme->settings->font_body ==19) {
         $bodyfont = 'Ubuntu';
 	} else if ($theme->settings->font_body ==20) {
@@ -312,6 +314,9 @@ function theme_lambda_process_css($css, $theme) {
     } else if ($theme->settings->font_heading ==23) {
         $headingfont = 'Raleway';
 		$headingweight = '500';
+    } else if ($theme->settings->font_heading ==28) {
+        $headingfont = 'Roboto';
+		$headingweight = '700';
     } else if ($theme->settings->font_heading ==24) {
         $headingfont = 'Sansita One';
 		$headingweight = '400';

@@ -978,7 +978,6 @@ course formats
 }
 #gridshadebox_content {
     border: solid 1px #ddd;
-    max-width: 1200px;
 }
 #gridshadebox_content .content h3.sectionname {
     border: none;
@@ -989,8 +988,11 @@ course formats
 div#gridshadebox_overlay {
     z-index: 101;
 }
-#gridshadebox_content.absolute {
+#gridshadebox_content.absolute, #gridshadebox_content.fit_to_window {
     z-index: 102;
+    left: 7%;
+    right: 7%;
+    max-width: 84%;
 }
 .buttons li.section.hidden .summary {
 	opacity: 1 !important;
@@ -2113,6 +2115,7 @@ Moodle dialogue and modals
 .modal-body {
     position: relative;
     overflow-y: visible;
+	max-height: initial;
 }
 
 /* =========================================================== *

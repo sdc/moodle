@@ -26,8 +26,8 @@
 defined('MOODLE_INTERNAL') || die;
 
 $plugin->component = 'theme_lambda'; // Full name of the plugin (used for diagnostics)
-$plugin->release   = '1.75';
-$plugin->version   = 2018062432; // The current module version (Date: YYYYMMDDXX)
+$plugin->release   = '1.76';
+$plugin->version   = 2018072132; // The current module version (Date: YYYYMMDDXX)
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->requires  = 2016120500; // Requires this Moodle version
 $plugin->dependencies = array(
