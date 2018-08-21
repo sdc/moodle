@@ -37,7 +37,7 @@ $string['choosereadme'] = '
 </div>
 <h4>Theme Summary</h4>
 <div style="color: #888; text-transform: uppercase; margin-bottom:20px;">
-<p>Compatibility: Moodle 2.5 - 3.5<br />Theme Version: 1.77<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
+<p>Compatibility: Moodle 2.5 - 3.5<br />Theme Version: 1.78<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
 </div>
 <hr />
 <p style="text-align:center;"><img class="img-polaroid" src="lambda/pix/redPIthemes.jpg" /></p>';
@@ -56,6 +56,10 @@ $string['boxed_variable'] = 'Boxed - variable width';
 $string['full_wide'] = 'Wide - variable width';
 $string['page_centered_logo'] = 'Header with centered logo';
 $string['page_centered_logo_desc'] = 'Mark the checkbox to use a variation for the header with a centered logo.';
+$string['category_layout'] = 'Course category view';
+$string['category_layout_desc'] = 'Choose a layout for the courses in the course category view. You can select to show your courses in a list or in a grid view.';
+$string['category_layout_list'] = 'Course list';
+$string['category_layout_grid'] = 'Course grid';
 $string['footnote'] = 'Footnote';
 $string['footnotedesc'] = 'Whatever you add to this textarea will be displayed in the footer throughout your Moodle site, e.g. Copyright and the name of your organisation.';
 $string['customcss'] = 'Custom CSS';

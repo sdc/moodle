@@ -37,7 +37,7 @@ $string['choosereadme'] = '
 </div>
 <h4>Résumé du thème</h4>
 <div style="color: #888; text-transform: uppercase; margin-bottom:20px;">
-<p>Compatibilité: Moodle 2.5 - 3.5<br />Version du thème : 1.77<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
+<p>Compatibilité: Moodle 2.5 - 3.5<br />Version du thème : 1.78<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
 </div>
 <hr />
 <p style="text-align:center;"><img class="img-polaroid" src="lambda/pix/redPIthemes.jpg" /></p>';
@@ -58,6 +58,10 @@ $string['footnote'] = 'Pied de page';
 $string['footnotedesc'] = 'Tout ce que vous placez dans cette zone de texte sera affiché dans le pied de chaque page de Moodle; par exemple le Copyright et le nom de votre organisation.';
 $string['customcss'] = 'CSS personalisé';
 $string['customcssdesc'] = 'Chaque règle CSS que vous ajoutez à cette zone de texte sera utilisée sur toutes les pages de Moodle, ce qui rend plus facile la personnalisation de ce thème.';
+$string['category_layout'] = 'Affichage de la catégorie de cours';
+$string['category_layout_desc'] = 'Choisissez un format de présentation des cours dans les différentes catégories. Vous pouvez afficher les cours sous forme d\'une grille ou d\'une liste.';
+$string['category_layout_list'] = 'Liste des cours';
+$string['category_layout_grid'] = 'Grille des cours';
 
 /* Settings - Background images */
 $string['settings_background'] = 'Fond de la page';
@@ -69,6 +73,7 @@ $string['page_bg_repeat'] = 'Répéter l\'image téléversée ?';
 $string['page_bg_repeat_desc'] = 'Si vous avez téléversé une image et que vous désirez l\'utiliser comme un motif, vous devez sélectionner cette option pour répéter cette image horizontalement et verticalement sur la page.<br />Dans le cas contraire, si vous laissez l\'option non cochée, l\'image sera affichée de manière à ce qu\'elle occupe toute la fenêtre du navigateur web.';
 $string['hide_category_background'] = 'Masquer la bannière en arrière-plan de la catégorie de cours ?';
 $string['hide_category_background_desc'] = 'Cochez cette option si vous souhaitez masquer complètement la bannière en arrière-plan de la catégorie de cours.';
+$string['category_background_desc'] = 'Téléversez votre propre image pour la banière de fond pour l\'affichage de la catégorie de cours. Si aucune image n\'est téléversée, celle présente par défaut sera utilisée.';
 
 /* Settings - Colors */
 $string['settings_colors'] = 'Couleurs';
@@ -168,6 +173,16 @@ $string['font_languages_greekext'] = 'Grec étendu';
 $string['use_fa5'] = 'Font Awesome 5';
 $string['use_fa5_desc'] = 'Utiliser les nouvelles icônes web Font Awesome 5.<br />
 <strong>Note :</strong> Font Awesome version 5 a été complètement récrit et redessiné. Vous devez donc effectuer un certain nombre d\'opérations si vous avez déjà utilisé Font Awesome par le passé avec le thème Lambda. Il nécessaire de rechercher tous les noms des icônes de la version 4 qui ont un nom différent dans la version 5 et les remplacer par ces derniers. Veuillez svp vous référer au document <a href="https://fontawesome.com/how-to-use/upgrading-from-4#icon-name-changes" target="_blank">liste des icônes dont le nom a changé</a>.<br />Si c\'est la première fois que vous mettez le thème Lambda en service, il est recommandé d\'utiliser directement la version 5 des icônes de Font Awesome.';
+$string['fonts_source'] = 'Sélecteur du type de police';
+$string['fonts_source_desc'] = 'Choisissez si vous désirez utiliser les polices web Google ou si vous désirez téléverser les fichier des polices sur votre site.<br /><strong>Note :</strong> Vous devez <em>Enregistrer les modifications</em> avant de pouvoir accéder à des nouvelles options en fonction de votre choix.';
+$string['fonts_source_google'] = 'Polices Google';
+$string['fonts_source_file'] = 'Fichier de polices';
+$string['fonts_file_body'] = 'Fichier de police pour le corps';
+$string['fonts_file_body_desc'] = 'Téléversez le fichier de police que vous désirez utiliser pour le corps des textes sur votre site. La compatibilité avec les différents navigateurs sera meilleure si vous utilisez le format True Type ou le Web Open Font Format.';
+$string['fonts_file_headings'] = 'Fichier de police pour les titres';
+$string['fonts_file_headings_desc'] = 'Téléversez le fichier de police à utiliser dans les titres. La compatibilité avec les différents navigateurs sera meilleure si vous utilisez le format True Type ou le Web Open Font Format.';
+$string['font_headings_weight'] = 'Graisse des titres';
+$string['font_headings_weight_desc'] = 'Décidez de la graisse à utiliser dans vos titres. Une valeur de 700 correspond au style gras, 400 au style normal, alors qu\'une valeur de 300 affiche les caractères de manière plus fine.';
 
 /* Settings - Slider */
 $string['settings_slider'] = 'Diaporama';
@@ -205,6 +220,12 @@ $string['slideshow_imgfx'] ='Effets pour les images';
 $string['slideshow_imgfx_desc'] ='Indiquez dans cette rubrique le nom de l\'effet de transition à appliquer aux images. Les valeurs possibles sont : <br /><i>random, simpleFade, curtainTopLeft, curtainTopRight, curtainBottomLeft, curtainBottomRight, curtainSliceLeft, curtainSliceRight, blindCurtainTopLeft, blindCurtainTopRight, blindCurtainBottomLeft, blindCurtainBottomRight, blindCurtainSliceBottom, blindCurtainSliceTop, stampede, mosaic, mosaicReverse, mosaicRandom, mosaicSpiral, mosaicSpiralReverse, topLeftBottomRight, bottomRightTopLeft, bottomLeftTopRight, bottomLeftTopRight, scrollLeft, scrollRight, scrollHorz, scrollBottom, scrollTop</i>';
 $string['slideshow_txtfx'] ='Effets pour les textes';
 $string['slideshow_txtfx_desc'] ='Indiquez dans cette rubrique le nom de l\'effet de transition à appliquer au texte de toutes les diapositives. Les options possibles sont :<br /><i>moveFromLeft, moveFromRight, moveFromTop, moveFromBottom, fadeIn, fadeFromLeft, fadeFromRight, fadeFromTop, fadeFromBottom</i>';
+$string['slide_url'] = 'URL de la diapo';
+$string['slide_url_desc'] = 'Si vous indiquez une URL, un bouton « Continuer… » apparaît sur votre diapositive et permet de se rendre sur la page liée.';
+$string['slideshow_height'] = 'Hauteur du diaporama ';
+$string['slideshow_height_desc'] = 'Fixez la hauteur du diaporama pour l\'affichage sur les navigateurs ordinaires. La hauteur reste ajustée, quelle que soit la valeur indiquée, sur les appareils mobiles.';
+$string['slideshow_hide_captions'] = 'Ne pas afficher l\'accroche sur les appareils mobiles';
+$string['slideshow_hide_captions_desc'] = 'Dans la cas où vous avez choisi une hauteur plus basse que la normale pour le diaporama ou que vous avez sélectionné l\'option <em>adaptable</em>, il est peut-être plus prudent de ne pas afficher l\'accroche et le titre sur les appareils mobiles. Autrement, il se peut que l\'accroche dépasse la taille adaptée du diaporama et déborde de celui-ci sur les appareils mobiles.';
 
 /* Settings - Carousel */
 $string['settings_carousel'] = 'Carousel';
@@ -268,3 +289,4 @@ $string['region-hidden-dock'] = 'Caché aux utilisateurs';
 $string['nextsection'] = '';
 $string['previoussection'] = '';
 $string['backtotop'] = '';
+$string['responsive'] = 'réactif';

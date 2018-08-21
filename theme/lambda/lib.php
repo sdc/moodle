@@ -103,6 +103,38 @@ function lambda_set_pagewidth2($css, $pagewidth) {
     return $css;
 }
 
+function lambda_set_category_layout($css,$category_layout) {
+	global $CFG;
+    $tag = '[[setting:category_layout]]';
+    if ($category_layout == "0") {
+        $replacement = '.coursebox{border:none;border-bottom:1px solid #e5e5e5;margin-bottom:25px;padding-bottom:35px}.coursebox .content .courseimage{float:left;margin-right:2em}@media (min-width:1187px){.coursebox .content .courseimage{height:225px;width:325px}}@media (max-width:1186px){.coursebox .content .courseimage{height:200px;width:290px}}@media (max-width:980px){.coursebox .content .courseimage{height:150px;width:220px}.coursebox .content .coursecat,.coursebox .content .summary{padding-top:0}}@media (max-width:580px){.coursebox .content .courseimage{height:250px;width:100%;float:unset}}';
+		if ($CFG->version >= 2018051700) {
+			$replacement .= '#myoverview_courses_view .row-fluid .span6{border-bottom:1px solid #e5e5e5;margin-bottom:1em;position:relative}@media (min-width:440px){#myoverview_courses_view .row-fluid .span6{width:100%;padding-bottom:.5em}#myoverview_courses_view .myoverviewimg{float:left}}@media (min-width:647px) and (max-width:767px){#myoverview_courses_view .row-fluid .span6{padding-bottom:2.5em}}#myoverview_courses_view .course-info-container{margin-top:1em}#myoverview_courses_view .myoverviewimg{width:240px;height:166px;margin-right:2em}#myoverview_courses_view .course-info-container .media-heading a,#myoverview_timeline_courses .course-info-container h4 a{color:#555;margin-top:2em}#myoverview_courses_view .course-info-container p.text-muted,#myoverview_timeline_courses .course-info-container p.muted{color:#555}#myoverview_courses_view .course-info-container .progress-chart-container{position:absolute;left:175px;top:1.5em}.progress-chart-container .no-progress{display:none}.progress-chart-container .progress-doughnut .progress-indicator svg .circle{stroke:[[setting:maincolor]]}.progress-chart-container .progress-doughnut{background:rgba(255,255,255,.5)}.progress-chart-container .progress-doughnut .progress-text.has-percent{color:#333;font-weight:700}#myoverview_timeline_courses .progress-chart-container .no-progress{height:0;width:0;margin-bottom:-70px;display:block}#myoverview_timeline_courses .progress-chart-container .no-progress .icon{display:none}';
+		}
+		else if ($CFG->version >= 2017051500) {
+			$replacement .= '.progress-chart-container .progress-doughnut .progress-indicator svg .circle{stroke:[[setting:maincolor]]}#myoverview_courses_view .course-info-container p.text-muted,#myoverview_timeline_courses .course-info-container p.muted{color:#555}#myoverview_courses_view .course-info-container p.text-muted{margin-left:10px}#myoverview_courses_view .course-info-container .progress-chart-container{height:unset;width:unset}.progress-chart-container .no-progress{display:none}#myoverview_courses_view .well,#myoverview_timeline_courses .well{border-bottom:1px solid #e5e5e5}#myoverview_timeline_courses .progress-chart-container .no-progress{height:0;width:0;margin-bottom:-70px;display:block}#myoverview_timeline_courses .progress-chart-container .no-progress .icon{display:none}.progress-chart-container .progress-doughnut .progress-text.has-percent {color: #555}';
+		}
+		$css = str_replace($tag, $replacement, $css);
+	}
+	else if ($category_layout == "1") {
+        $replacement = '#frontpage-course-list,.courses.frontpage-course-list-all{display:inline-block}#frontpage-category-combo .category.loaded.with_children .content .courses .coursebox{margin-top:10px}.coursebox{float:left;width:325px;position:relative;margin:20px;padding-bottom:15px;border:1px solid #fff;box-shadow:0 0 10px rgba(0,0,0,.1);transition:all .3s ease-out 0s}.coursebox:hover{box-shadow:1px 4px 20px -2px rgba(0,0,0,.2);transform:translateY(-1px)}.coursebox .course-btn,.coursebox h3.coursename{text-align:center;margin-top:0}.coursebox .summary>div{height:100.2px;overflow:hidden;text-overflow:ellipsis;display:block;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;line-height:25px}.coursebox .content .courseimage{width:100%!important;height:166px;margin:0!important;float:unset}.coursebox .content .teachers{display:none}.coursebox .enrolmenticons,.coursebox .moreinfo{padding:0}.coursebox .enrolmenticons img{padding:5px!important;background:rgba(255,255,255,.75);border-radius:50%;height:16px;width:16px;float:left;position:absolute;top:20px;left:10px}.coursebox .enrolmenticons img+img{left:40px}.coursebox .enrolmenticons img+img+img{left:70px}.coursebox .enrolmenticons img+img+img+img{left:100px}.coursebox .enrolmenticons img+img+img+img+img{left:130px}';
+		if ($CFG->version >= 2018051700) {
+			$replacement .= '#myoverview_courses_view .row-fluid .span6{width:325px!important}#myoverview_courses_view .row-fluid .span6 .well{border:1px solid #fff;box-shadow:0 0 10px rgba(0,0,0,.1);transition:all .3s ease-out 0s;padding:5px;position:relative;margin-bottom:15px}#myoverview_courses_view .row-fluid .span6 .well:hover{box-shadow:1px 4px 20px -2px rgba(0,0,0,.2);transform:translateY(-1px)}#myoverview_courses_view .course-info-container .media-body{text-align:center}#myoverview_courses_view .course-info-container .media-heading a,#myoverview_timeline_courses .course-info-container h4 a{color:#555;margin-top:2em}#myoverview_courses_view .course-info-container p.text-muted,#myoverview_timeline_courses .course-info-container p.muted{color:#555}#myoverview_courses_view .myoverviewimg{height:166px}#myoverview_courses_view .course-info-container .progress-chart-container{position:absolute;left:225px;top:1.5em}.progress-chart-container .no-progress{display:none}.progress-chart-container .progress-doughnut .progress-indicator svg .circle{stroke:[[setting:maincolor]]}.progress-chart-container .progress-doughnut{background:rgba(255,255,255,.5)}.progress-chart-container .progress-doughnut .progress-text.has-percent{color:#333;font-weight:700}#myoverview_timeline_courses .progress-chart-container .no-progress{height:0;width:0;margin-bottom:-70px;display:block}#myoverview_timeline_courses .progress-chart-container .no-progress .icon{display:none}';
+		}
+		else if ($CFG->version >= 2017051500) {
+			$replacement .= '.progress-chart-container .progress-doughnut .progress-indicator svg .circle{stroke:[[setting:maincolor]]}#myoverview_courses_view .course-info-container p.text-muted,#myoverview_timeline_courses .course-info-container p.muted{color:#555}#myoverview_courses_view .course-info-container p.text-muted{margin-left:10px}#myoverview_courses_view .course-info-container .progress-chart-container{height:unset;width:unset}.progress-chart-container .no-progress{display:none}#myoverview_courses_view .well,#myoverview_timeline_courses .well{border-bottom:1px solid #e5e5e5}#myoverview_timeline_courses .progress-chart-container .no-progress{height:0;width:0;margin-bottom:-70px;display:block}#myoverview_timeline_courses .progress-chart-container .no-progress .icon{display:none}.progress-chart-container .progress-doughnut .progress-text.has-percent {color: #555}';
+		}
+		else {
+			$replacement .= '.block.block_course_overview .box.coursebox{width:100%;box-shadow:none;margin: 0 0 25px 0;}.block.block_course_overview .box.coursebox:hover{transform:none;}';
+		}
+		$css = str_replace($tag, $replacement, $css);
+	}
+	else { 
+		$css = str_replace($tag, "", $css);
+	}
+    return $css;
+}
+
 function lambda_set_block_style($css, $block_style) {
     $tag = '[[setting:block_style]]';
     if ($block_style == "1") {
@@ -177,6 +209,8 @@ function theme_lambda_process_css($css, $theme) {
 	$css = lambda_set_pagewidth2($css,$pagewidth);
 	$logo_res = $theme->settings->logo_res;
 	$css = lambda_set_logo_res($css,$logo_res);
+	$category_layout = $theme->settings->category_layout;
+	$css = lambda_set_category_layout($css,$category_layout);
 	$block_style = $theme->settings->block_style;
 	$css = lambda_set_block_style($css,$block_style);
 	$block_icons = $theme->settings->block_icons;

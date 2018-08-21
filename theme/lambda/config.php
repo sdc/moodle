@@ -27,12 +27,11 @@ $THEME->name = 'lambda';
 
 $THEME->doctype = 'html5';
 $THEME->parents = array('bootstrapbase');
-if ($THEME->settings->use_fa5 == 1) {
-	$THEME->sheets = array('slider', 'typographie', 'auth', 'fa-5', 'style');
-}
-else {
-	$THEME->sheets = array('slider', 'typographie', 'auth', 'fa-4', 'style');
-}
+$fa_version = 'fa-4';
+if ($THEME->settings->use_fa5 == 1) {$fa_version = 'fa-5';}
+
+$THEME->sheets = array('slider', 'typographie', 'auth', $fa_version, 'style');
+
 $THEME->editor_sheets = array();
 $THEME->supportscssoptimisation = false;
 if ($THEME->settings->block_layout == 2) {

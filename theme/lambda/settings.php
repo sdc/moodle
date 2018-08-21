@@ -65,6 +65,19 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting = new admin_setting_configcheckbox($name, $title, $description, 0);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
+	
+    // course category layout
+    $name = 'theme_lambda/category_layout';
+    $title = get_string('category_layout', 'theme_lambda');
+    $description = get_string('category_layout_desc', 'theme_lambda');
+    $default = '0';
+    $choices = array(
+        '0' => get_string('category_layout_list', 'theme_lambda'),
+        '1' => get_string('category_layout_grid', 'theme_lambda')
+    );
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
 	   
     // Footnote setting.
     $name = 'theme_lambda/footnote';
