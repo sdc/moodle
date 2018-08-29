@@ -732,7 +732,8 @@ class enrol_leap_plugin extends enrol_plugin {
             $events_count++;
 
             // Everything suddenly seems to be one layer deeper. I don't know what changed.
-            $event = $event->event;
+            // [20180829 OW] The line below was commented out as reverted to correct level.
+            // $event = $event->event;
 
             if ( $this->logging ) {
                 error_log( $this->errorlogtag . '  Processing enrolment ' . $events_count . ' of ' . $events_total );
