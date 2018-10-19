@@ -117,7 +117,7 @@ function lambda_set_category_layout($css,$category_layout) {
 		$css = str_replace($tag, $replacement, $css);
 	}
 	else if ($category_layout == "1") {
-        $replacement = '#frontpage-course-list,.courses.frontpage-course-list-all{display:inline-block}#frontpage-category-combo .category.loaded.with_children .content .courses .coursebox{margin-top:10px}.coursebox{float:left;width:325px;position:relative;margin:20px;padding-bottom:15px;border:1px solid #fff;box-shadow:0 0 10px rgba(0,0,0,.1);transition:all .3s ease-out 0s}.coursebox:hover{box-shadow:1px 4px 20px -2px rgba(0,0,0,.2);transform:translateY(-1px)}.coursebox .course-btn,.coursebox h3.coursename{text-align:center;margin-top:0}.coursebox .summary>div{height:100.2px;overflow:hidden;text-overflow:ellipsis;display:block;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;line-height:25px}.coursebox .content .courseimage{width:100%!important;height:166px;margin:0!important;float:unset}.coursebox .content .teachers{display:none}.coursebox .enrolmenticons,.coursebox .moreinfo{padding:0}.coursebox .enrolmenticons img{padding:5px!important;background:rgba(255,255,255,.75);border-radius:50%;height:16px;width:16px;float:left;position:absolute;top:20px;left:10px}.coursebox .enrolmenticons img+img{left:40px}.coursebox .enrolmenticons img+img+img{left:70px}.coursebox .enrolmenticons img+img+img+img{left:100px}.coursebox .enrolmenticons img+img+img+img+img{left:130px}';
+        $replacement = '#frontpage-course-list,.courses.frontpage-course-list-all{display:inline-block}#frontpage-category-combo .category.loaded.with_children .content .courses .coursebox{margin-top:10px}.coursebox{float:left;width:325px;position:relative;margin:20px;padding-bottom:15px;border:1px solid #fff;box-shadow:0 0 10px rgba(0,0,0,.1);transition:all .3s ease-out 0s}.coursebox:hover{box-shadow:1px 4px 20px -2px rgba(0,0,0,.2);transform:translateY(-1px)}.coursebox .course-btn,.coursebox h3.coursename{text-align:center;margin-top:0}.coursebox .summary>div{height:100.2px;overflow:hidden;text-overflow:ellipsis;display:block;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;line-height:25px}.coursebox .content .courseimage{width:100%!important;height:166px;margin:0!important;float:unset}.coursebox .content .teachers{display:none}.coursebox .enrolmenticons,.coursebox .moreinfo{padding:0}.coursebox .enrolmenticons img{padding:5px!important;background:rgba(255,255,255,.75);border-radius:50%;height:16px;width:16px;float:left;position:absolute;top:20px;left:10px}.coursebox .enrolmenticons img+img{left:40px}.coursebox .enrolmenticons img+img+img{left:70px}.coursebox .enrolmenticons img+img+img+img{left:100px}.coursebox .enrolmenticons img+img+img+img+img{left:130px}@media (max-width:360px){.coursebox{width:85%;}}';
 		if ($CFG->version >= 2018051700) {
 			$replacement .= '#myoverview_courses_view .row-fluid .span6{width:325px!important}#myoverview_courses_view .row-fluid .span6 .well{border:1px solid #fff;box-shadow:0 0 10px rgba(0,0,0,.1);transition:all .3s ease-out 0s;padding:5px;position:relative;margin-bottom:15px}#myoverview_courses_view .row-fluid .span6 .well:hover{box-shadow:1px 4px 20px -2px rgba(0,0,0,.2);transform:translateY(-1px)}#myoverview_courses_view .course-info-container .media-body{text-align:center}#myoverview_courses_view .course-info-container .media-heading a,#myoverview_timeline_courses .course-info-container h4 a{color:#555;margin-top:2em}#myoverview_courses_view .course-info-container p.text-muted,#myoverview_timeline_courses .course-info-container p.muted{color:#555}#myoverview_courses_view .myoverviewimg{height:166px}#myoverview_courses_view .course-info-container .progress-chart-container{position:absolute;left:225px;top:1.5em}.progress-chart-container .no-progress{display:none}.progress-chart-container .progress-doughnut .progress-indicator svg .circle{stroke:[[setting:maincolor]]}.progress-chart-container .progress-doughnut{background:rgba(255,255,255,.5)}.progress-chart-container .progress-doughnut .progress-text.has-percent{color:#333;font-weight:700}#myoverview_timeline_courses .progress-chart-container .no-progress{height:0;width:0;margin-bottom:-70px;display:block}#myoverview_timeline_courses .progress-chart-container .no-progress .icon{display:none}';
 		}
@@ -217,6 +217,8 @@ function theme_lambda_process_css($css, $theme) {
 	$css = lambda_set_block_icons($css,$block_icons);
 	$hide_category_background = $theme->settings->hide_category_background;
 	$css = lambda_hide_category_background($css,$hide_category_background);
+	$socials_header_bg = $theme->settings->socials_header_bg;
+	$css = theme_lambda_set_border_top($css,$socials_header_bg);
     
 	// Set the Fonts.
 	$font_heading_src = '';
@@ -397,6 +399,13 @@ function theme_lambda_process_css($css, $theme) {
         $banner_font_color = null;
     }
     $css = theme_lambda_set_category_banner_font_color($css, $banner_font_color);
+	
+	if (!empty($theme->settings->socials_header_bg)) {
+        $socials_header_bg = $theme->settings->socials_header_bg;
+    } else {
+        $socials_header_bg = null;
+    }
+    $css = theme_lambda_set_socials_header_bg($css, $socials_header_bg);
 	
     if (!empty($theme->settings->maincolor)) {
         $maincolor = $theme->settings->maincolor;
@@ -813,6 +822,30 @@ function theme_lambda_set_socials_color($css, $themecolor) {
     return $css;
 }
 
+function theme_lambda_set_socials_header_bg($css, $themecolor) {
+    $tag = '[[setting:socials_header_bg]]';
+	$replacement = '#ff0000';
+	switch ($themecolor) {
+    case 0:
+        $replacement = 'transparent';
+        break;
+    case 1:
+        $replacement = 'rgba(0,0,0,0.025)';
+        break;
+    case 2:
+        $replacement = 'rgba(0,0,0,0.25)';
+        break;
+    case 3:
+        $replacement = '[[setting:maincolor]]';
+        break;
+    case 4:
+        $replacement = '[[setting:copyrightcolor]]';
+        break;
+	}
+    $css = str_replace($tag, $replacement, $css);
+    return $css;
+}
+
 function theme_lambda_set_slideshow_height($css, $slideshow_height, $hide_captions) {
     $tag = '[[setting:slideshow_height]]';
     $replacement = $slideshow_height;
@@ -942,6 +975,15 @@ function theme_lambda_set_background_repeat($css, $repeat, $size) {
     $css = str_replace($tag, $repeat, $css);
 	$tag = '[[setting:background-size]]';
     $css = str_replace($tag, $size, $css);
+    return $css;
+}
+
+function theme_lambda_set_border_top($css,$socials_header_bg) {
+    $tag = '[[setting:border_top]]';
+	$replacement = '';
+	if (($socials_header_bg==3) || ($socials_header_bg==4)) {$replacement = '#wrapper {border-top: none;
+}';}
+	$css = str_replace($tag, $replacement, $css);
     return $css;
 }
 

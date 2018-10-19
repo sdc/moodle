@@ -23,6 +23,7 @@
  *
  */
 
+$searchbox = theme_lambda_get_setting('navbar_search_form');
 $login_link = theme_lambda_get_setting('login_link');
 $login_custom_url = theme_lambda_get_setting('custom_login_link_url');
 $login_custom_txt = theme_lambda_get_setting('custom_login_link_txt');
@@ -96,12 +97,13 @@ if (strpos($checkuseragent, 'MSIE 8')) {$username = str_replace("'", "&prime;", 
 					}
 				}?>
                 
+                <?php if (($searchbox==0) OR ($searchbox==1 AND (isloggedin() AND !isguestuser()))) { ?>
                 <form id="search" action="<?php if ($moodle_global_search) {echo $CFG->wwwroot.'/search/index.php';} else {echo $CFG->wwwroot.'/course/search.php';} ?>" >
-                <div class="divider pull-left"></div>
                 	<label for="coursesearchbox" class="lambda-sr-only"><?php if ($moodle_global_search) {echo get_string('search', 'search');} else {echo get_string('searchcourses');} ?></label>						
 					<input id="coursesearchbox" type="text" onFocus="if(this.value =='<?php if ($moodle_global_search) {echo get_string('search', 'search');} else {echo get_string('searchcourses');} ?>' ) this.value=''" onBlur="if(this.value=='') this.value='<?php if ($moodle_global_search) {echo get_string('search', 'search');} else {echo get_string('searchcourses');} ?>'" value="<?php if ($moodle_global_search) {echo get_string('search', 'search');} else {echo get_string('searchcourses');} ?>" <?php if ($moodle_global_search) {echo 'name="q"';} else {echo 'name="search"';} ?> >
 					<button type="submit"><span class="lambda-sr-only"><?php echo get_string('submit'); ?></span></button>						
 				</form>
+                <?php } ?>
                 
             </div>
         </div>

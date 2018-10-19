@@ -37,7 +37,7 @@ $string['choosereadme'] = '
 </div>
 <h4>Theme Summary</h4>
 <div style="color: #888; text-transform: uppercase; margin-bottom:20px;">
-<p>Compatibility: Moodle 2.5 - 3.5<br />Theme Version: 1.78<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
+<p>Compatibility: Moodle 2.5 - 3.5<br />Theme Version: 1.79<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
 </div>
 <hr />
 <p style="text-align:center;"><img class="img-polaroid" src="lambda/pix/redPIthemes.jpg" /></p>';
@@ -169,6 +169,13 @@ $string['socials_color'] = 'Social Icons Color';
 $string['socials_color_desc'] = 'Set the color for your social media icons.';
 $string['socials_position'] = 'Icons Position';
 $string['socials_position_desc'] = 'Choose where to place the social media icons: at the bottom of the page (footer) or at the top (header).';
+$string['socials_header_bg'] = 'Social Icons Header Background';
+$string['socials_header_bg_desc'] = 'Here you can select how you would like to separate the background color for the social icons at the header.';
+$string['socials_header_bg_0'] = 'fully transparent (use header background)';
+$string['socials_header_bg_1'] = 'slightly dimmed';
+$string['socials_header_bg_2'] = 'darkened';
+$string['socials_header_bg_3'] = 'use main theme color';
+$string['socials_header_bg_4'] = 'use footer copyright background';
 
 /* Settings - Fonts */
 $string['settings_fonts'] = 'Fonts';
@@ -289,7 +296,11 @@ $string['home_button'] = 'Home button';
 $string['home_button_desc'] = 'Choose from the list of available texts for the home button (the first button in the custom menu)';
 $string['home_button_shortname'] = 'Short site name';
 $string['home_button_frontpagedashboard'] = 'Frontpage (for non-logged-in users) / Dashboard (for logged-in users)';
-
+$string['navbar_search_form'] = 'Search box on Navigation Bar';
+$string['navbar_search_form_desc'] = 'Here you can choose whether the search box at the navigation bar should be always visible, hidden for non-logged in guest users or always hidden.';
+$string['navbar_search_form_0'] = 'always visible';
+$string['navbar_search_form_1'] = 'hide for non-logged in and guest users';
+$string['navbar_search_form_2'] = 'always hidden';
 
 /* Theme */
 $string['visibleadminonly'] ='Blocks moved into the area below will only be seen by admins';
@@ -303,3 +314,6 @@ $string['nextsection'] = '';
 $string['previoussection'] = '';
 $string['backtotop'] = '';
 $string['responsive'] = 'responsive';
+$string['privacy:metadata:preference:sidebarstat'] = 'The user\'s preference for hiding or showing the drawer menu navigation.';
+$string['privacy_sidebar_closed'] = 'The current preference for the collapsible sidebar is closed.';
+$string['privacy_sidebar_open'] = 'The current preference for the collapsible sidebar is open.';

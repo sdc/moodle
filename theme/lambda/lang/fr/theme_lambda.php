@@ -37,7 +37,7 @@ $string['choosereadme'] = '
 </div>
 <h4>Résumé du thème</h4>
 <div style="color: #888; text-transform: uppercase; margin-bottom:20px;">
-<p>Compatibilité: Moodle 2.5 - 3.5<br />Version du thème : 1.78<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
+<p>Compatibilité: Moodle 2.5 - 3.5<br />Version du thème : 1.79<br />Parent theme: Bootstrapbase by Bas Brands<br />Built on: Essential by Julian Ridden</p>
 </div>
 <hr />
 <p style="text-align:center;"><img class="img-polaroid" src="lambda/pix/redPIthemes.jpg" /></p>';
@@ -154,6 +154,13 @@ $string['socials_color'] = 'Couleur des icônes pour les réseaux sociaux';
 $string['socials_color_desc'] = 'Sélectionnez la couleur que vous désirez appliquer aux icônes des réseaux sociaux.';
 $string['socials_position'] = 'Position des icônes';
 $string['socials_position_desc'] = 'Choisissez où vous désirez placer les icônes des réseaux sociaux : footer (pied de page) ou header (en-tête).';
+$string['socials_header_bg'] = 'Présentation des icônes de réseaux sociaux';
+$string['socials_header_bg_desc'] = 'Vous pouvez déterminer ici comment afficher les icônes des réseaux sociaux dans l\'en-tête de la page.';
+$string['socials_header_bg_0'] = 'complètement transparent (utilise la couleur du fond de l\'en-tête)';
+$string['socials_header_bg_1'] = 'légèrement transparent';
+$string['socials_header_bg_2'] = 'foncé';
+$string['socials_header_bg_3'] = 'utiliser la couleur du thème';
+$string['socials_header_bg_4'] = 'utiliser la couleur du copyright en bas de page';
 
 /* Settings - Fonts */
 $string['settings_fonts'] = 'Polices';
@@ -277,6 +284,11 @@ $string['home_button'] = 'Bouton de la page d\'accueil';
 $string['home_button_desc'] = 'Sélectionnez dans la liste le texte que vous désirez utiliser comme bouton pour accéder à la page d\'accueil (le premier bouton dans le menu personnalisé)';
 $string['home_button_shortname'] = 'Nom abrégé du site';
 $string['home_button_frontpagedashboard'] = 'Page d\'accueil (utilisateurs non authentifiés) / Tableau de bord (utilisateurs authentifiés)';
+$string['navbar_search_form'] = 'Zone de recherche dans la barre de navigation';
+$string['navbar_search_form_desc'] = 'Vous pouvez déterminer ici si la zone de recherche dans la barre de navigation est toujours visible, cachée pour les utilisateurs non connectés, ou toujours invisible.';
+$string['navbar_search_form_0'] = 'toujours visible';
+$string['navbar_search_form_1'] = 'cachée aux utilisateurs non connectés';
+$string['navbar_search_form_2'] = 'toujours cachée';
 
 /* Theme */
 $string['visibleadminonly'] ='Les blocs placés dans la zone ci-dessous ne sont affichés qu\'aux administrateurs du site.';
@@ -290,3 +302,6 @@ $string['nextsection'] = '';
 $string['previoussection'] = '';
 $string['backtotop'] = '';
 $string['responsive'] = 'réactif';
+$string['privacy:metadata:preference:sidebarstat'] = 'Préférence de l\'utilisateur pour fermer ou ouvrir le menu de navigation en marge de la page.';
+$string['privacy_sidebar_closed'] = 'La valeur courante de la préférence est que le menu est fermé.';
+$string['privacy_sidebar_open'] = 'La valeur courante de la préférence est que le menu est ouvert.';

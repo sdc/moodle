@@ -594,16 +594,15 @@ ul.breadcrumb li:last-child:after {
 	background:[[setting:maincolor]] url([[pix:theme|bg/icon-search]]) no-repeat center center;
 	width:50px;
 	height:50px;
-	-webkit-transition:all 0.3s ease;
-	-moz-transition:all 0.3s ease;
-	-o-transition:all 0.3s ease;
-	transition:all 0.3s ease;
 	margin: 0;
 	border-radius: 0;
 	box-shadow: none;
 }
-.navbar #search button[type="submit"]:hover {
-	background: [[setting:mainhovercolor]] url([[pix:theme|bg/icon-search]]) no-repeat center center;
+@media (min-width:980px) {
+	.navbar #search {width: 256px;}
+	.navbar #search button[type="submit"] {position: absolute; right: 0;}
+	.navbar #search input#coursesearchbox {width: 50px; height: 50px; float: right; -webkit-transition: 0.3s ease; transition: 0.3s ease;}
+	.navbar #search:hover input#coursesearchbox {width: 256px; background-color: rgba(255,255,255,0.1);}
 }
 .navbar .nav .dropdown-toggle .caret {
 	margin-top:13px;
@@ -718,6 +717,25 @@ Moodle gear menus and admin tabs
 }
 
 /* =========================================================== *
+Moodle 3.5 GDPR admin panels
+============================================================== */
+#page-admin-tool-dataprivacy-datarequests table.generaltable {
+    margin-bottom: 200px;
+}
+#page-admin-tool-dataprivacy-datarequests .moodle-actionmenu.show[data-enhanced] .menu {
+    padding: 1px;
+}
+.path-admin-tool-dataprivacy .moodle-actionmenu.show[data-enhanced] .menu a {
+    padding: 5px;
+}
+.nav-pills.context-tree a.nav-link {
+    color: #555;
+}
+.path-admin-tool-dataprivacy .top-nav .jsenabled .moodle-actionmenu[data-enhance] .toggle-display.textmenu {
+    padding: 4px 8px 8px 8px;
+}
+
+/* =========================================================== *
 Moodle 3.2 messages
 ============================================================== */
 .messaging-area-container .messaging-area .contacts-area .tabs .tab {
@@ -781,7 +799,7 @@ Course
 .course-content ul li.section.main {
     border-bottom: 0px none;
     background: url([[pix:theme|bg/dot]]) bottom repeat-x;
-	padding:20px 0 !important;
+	margin-bottom: 20px !important;
 }
 .course-content .current {
     background-color: #FCF8E3 !important;
@@ -890,18 +908,11 @@ td.ygtvcell {
 	margin-left: 8px;
     margin-right: 8px;
 }
-.course-content ul.ctopics li.section .content .toggle {
-    border-radius: 2px;
-    margin-bottom: 8px;
-}
-.course-content ul.topics li#section-0 {
-    padding-top: 0 !important;
-}
 .course-content ul li.section.main {
 	border: medium none;
 }
-a.dimmed .instancename {
-    color: #999;
+a.dimmed, a.dimmed:link, a.dimmed:visited, a.dimmed_text, a.dimmed_text:link, a.dimmed_text:visited, .dimmed_text, .dimmed_text a, .dimmed_text a:link, .dimmed_text a:visited, .usersuspended, .usersuspended a, .usersuspended a:link, .usersuspended a:visited, .dimmed_category, .dimmed_category a {
+    color: #999 !important;
 }
 .modal.modal-in-page {
     margin: 0 auto 35px;
@@ -1000,6 +1011,36 @@ div#gridshadebox_overlay {
 .buttons li.section.hidden .summary > div {
 	opacity: 0.5;
 }
+.ctopics #section-0 .content {
+    margin: 0;
+}
+.course-content ul.ctopics li.section .content .toggle {
+    border-radius: 2px;
+    margin-bottom: 8px;
+}
+.ctopics #section-0 h3.section-title a {
+    color: #666;
+}
+.ctopics #section-0 h3.section-title {
+    border: none;
+    background: rgba(0, 0, 0, 0) url([[pix:theme|bg/block-divider]]) repeat-x scroll left bottom;
+	margin-bottom: 25px;
+	margin-top: 0;
+	padding-bottom: 0;
+    font-size: 2rem;
+    line-height: 1.54rem;
+}
+.ctopics #section-0 h3.section-title::after {
+    background: [[setting:maincolor]] none repeat scroll 0 0;
+    content: "";
+    display: block;
+    height: 3px;
+	margin-left: -4px;
+    margin-top: 15px;
+    max-width: 75px;
+    padding: 0;
+    width: 50%;
+}
 .ctopics.topics .content .toggle h3 {
     background: transparent none repeat scroll 0 0;
     border: medium none;
@@ -1057,13 +1098,23 @@ div#gridshadebox_overlay {
 .course-content .section.main.section-summary .content h3 {
     font-size: 18px;
 }
+.format-onetopic.editing ul li.section.hidden .sectionname > span, .format-onetopic.editing ul li.section.hidden .content > div.summary {
+    margin-right: 60px;
+}
+.format-flexsections .course-content ul.flexsections-level-1 > li.section.main {
+    border: none;
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
+}
+.format-flexsections .flexsections .content > .flexsections .content > .flexsections h3.sectionname a {
+	font-size: 0.75em;
+}
 
 /*================================================== * 
 course category
 =====================================================*/
 .coursebox .content .summary, .coursebox .content .coursecat {
     width: 98%;
-    float: unset;
+    float: none;
     padding-top: 0.5em;
 }
 .coursebox .content .courseimage {
@@ -1083,11 +1134,11 @@ course category
     background-color: transparent;
 }
 .coursebox .content .teachers, .coursebox .content .coursefile {
-    width: unset;
+    width: auto;
 }
 .coursebox > .info > .coursename, .coursebox .content .teachers, .coursebox .content .coursefile {
-    clear: unset;
-    float: unset;
+    clear: none;
+    float: none;
 }
 .path-enrol .coursebox .content .course-btn .btn.btn-primary {
     display: none;
@@ -1425,11 +1476,11 @@ z-index: 999 !important;
   transition: 1s;
 }
 body {
-    transition: 1s;
+    transition: padding-left 1s;
 }
 body.sidebar-open {
     padding-left: 275px;
-    transition: 1s;
+    transition: padding-left 1s;
 }
 body.sidebar-open #sidebar .block-region {
     left: 0;
@@ -1492,6 +1543,22 @@ body.sidebar-open #sidebar .block-region {
 .block.block_html.blank .content {
     padding: 6px 0;
 }
+#dock {
+    z-index: auto;
+}
+#dock .dockedtitle {
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    color: #555;
+    text-shadow: none;
+    cursor: pointer;
+    background-color: #f4f4f4;
+    background-image: none;
+}
+#dockeditempanel .dockeditempanel_content {
+    box-shadow: none;
+}
 
 /* =========================================================== *
 Frontpage & Dashboard
@@ -1553,9 +1620,6 @@ Frontpage & Dashboard
 }
 #region-main .block.block_course_overview .content h2.title a {
 	color:#555;
-}
-#region-main .block.block_course_overview .content h2.title a.dimmed {
-	color:#999;
 }
 #region-main .block.block_course_overview .content {
 	padding-left:10px;
@@ -1922,6 +1986,19 @@ Atto editor
 #page-lib-editor-atto-plugins-managefiles-manage {
     background: none !important;
 }
+.btn.btn-default.openimagebrowser, .btn.btn-default.openmediabrowser, .btn.btn-default.openlinkbrowser {
+    display: block;
+    border-radius: 2px;
+    margin: 5px 0 0 0;
+    font-size: 14px;
+}
+.atto_form .input-group.w-100 > input {
+    width: 100%;
+}
+.atto_recordrtc, .atto_recordrtc div {
+    max-width: 250px;
+    margin: 0 auto;
+}
 
 /* =========================================================== *
 social media
@@ -1932,14 +2009,17 @@ social media
 	background: [[setting:headercolor]];
 }
 .socials-header .socials {
-    background-color: rgba(0,0,0,0.025);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    background-color: [[setting:socials_header_bg]];
+    box-shadow: 0 -1px 0 rgba(0,0,0,.05) inset;
 }
 .socials-header .social_icons.pull-right {
     padding-right:20px;
 }
 .socials-header .social_contact {
     padding-left:20px;
+}
+.socials-header .social_contact a {
+    color:[[setting:socials_color]];
 }
 #page-footer .social_icons.pull-right {
     padding-right: 15px;
@@ -2075,6 +2155,9 @@ login
 /* =========================================================== *
 Moodle dialogue and modals
 ============================================================== */
+.modal {
+	outline: none !important;
+}
 .modal-container .modal .modal-footer {
     border-top: 1px solid #ddd;
 }
@@ -2092,7 +2175,6 @@ Moodle dialogue and modals
 }
 .modal-container .modal {
     border-radius: 4px;
-	outline: 0;
 }
 .moodle-dialogue-base .moodle-dialogue-wrap .moodle-dialogue-hd, .moodle-dialogue-base .moodle-dialogue-wrap .moodle-dialogue-hd.yui3-widget-hd {
     background: none repeat scroll 0 0 #F2F2F2;

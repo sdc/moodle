@@ -23,10 +23,10 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-$plugin->version   = 2018060700;
+$plugin->version   = 2018101100;
 $plugin->requires  = 2014041100; // Moodle 2.7.
 $plugin->component = 'atto_planetestream';
-$plugin->release   = '6.41';
+$plugin->release   = '6.43';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->dependencies = array(
     'assignsubmission_estream' => ANY_VERSION,

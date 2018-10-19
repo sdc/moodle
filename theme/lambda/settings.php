@@ -492,6 +492,21 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
 	
+	// social icons header
+    $name = 'theme_lambda/socials_header_bg';
+    $title = get_string('socials_header_bg', 'theme_lambda');
+    $description = get_string('socials_header_bg_desc', 'theme_lambda');
+    $default = '1';
+    $choices = array(
+		'0'=>get_string('socials_header_bg_0', 'theme_lambda'),
+		'1'=>get_string('socials_header_bg_1', 'theme_lambda'),
+		'2'=>get_string('socials_header_bg_2', 'theme_lambda'),
+		'3'=>get_string('socials_header_bg_3', 'theme_lambda'),
+		'4'=>get_string('socials_header_bg_4', 'theme_lambda'));
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
 	// social icons position 
     $name = 'theme_lambda/socials_position';
     $title = get_string('socials_position', 'theme_lambda');
@@ -1159,6 +1174,19 @@ $ADMIN->add('themes', new admin_category('theme_lambda', 'Theme-Lambda'));
     $description = get_string('home_button_desc', 'theme_lambda');
     $default = 'shortname';
     $choices = array('shortname' => get_string('home_button_shortname','theme_lambda'), 'home' => get_string('home'), 'frontpagedashboard' => get_string('home_button_frontpagedashboard', 'theme_lambda'));
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $temp->add($setting);
+	
+    // Navbar search form
+    $name = 'theme_lambda/navbar_search_form';
+    $title = get_string('navbar_search_form', 'theme_lambda');
+    $description = get_string('navbar_search_form_desc', 'theme_lambda');
+	$default = '0';
+    $choices = array(
+		'0'=> get_string('navbar_search_form_0', 'theme_lambda'),
+		'1'=> get_string('navbar_search_form_1', 'theme_lambda'),
+		'2'=> get_string('navbar_search_form_2', 'theme_lambda'));
     $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $temp->add($setting);
