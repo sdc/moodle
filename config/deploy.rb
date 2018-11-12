@@ -3,6 +3,7 @@
 
 set :application, 'moodle2'
 set :repo_url, 'git@github.com:sdc/moodle.git'
+# set :repo_url, 'https://github.com/sdc/moodle.git'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call

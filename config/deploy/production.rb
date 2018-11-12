@@ -6,6 +6,6 @@
 
 # role :web, %w{deploy@moodle.southdevon.ac.uk deploy@appmoodle.southdevon.ac.uk deploy@onlinelearning.southdevon.ac.uk}
 
-role :web, %w{deploy@onlinelearning.southdevon.ac.uk}
+role :web, %w{deploy@moodle.southdevon.ac.uk}
 
 set :deploy_to, '/srv/moodle2'
