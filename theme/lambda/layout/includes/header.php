@@ -55,8 +55,8 @@ if (strpos($checkuseragent, 'MSIE 8')) {$username = str_replace("'", "&prime;", 
 			else {require_once(dirname(__FILE__).'/header_var2.php');}
 		?>               
 </header>
-<header role="banner" class="navbar" <?php if (($PAGE->theme->settings->headercolor != "#ffffff") || (!empty($PAGE->theme->settings->header_background))) { ?> style="padding: 0;" <?php } ?>>
-    <nav role="navigation" class="navbar-inner">
+<header class="navbar" <?php if (($PAGE->theme->settings->headercolor != "#ffffff") || (!empty($PAGE->theme->settings->header_background))) { ?> style="padding: 0;" <?php } ?>>
+    <nav class="navbar-inner">
         <div class="container-fluid">
             <?php
                 if ($home_button == 'shortname') { 

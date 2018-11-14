@@ -53,6 +53,10 @@ a:hover {
 	transition: all 0.3s ease 0.1s;
 	text-decoration: none;
 }
+#page-mod-scorm-player .breadcrumb-button a.btn {
+    color: #fff;
+    float: left;
+}
 .block ul.block_tree a, .breadcrumb a, .instancename, .block_book_toc li a, .block_site_main_menu li a, .navbottom .booknext, .navbottom .bookprev, .navbottom .bookexit  {
 	color:#555;
 }
@@ -533,15 +537,17 @@ ul.breadcrumb li:last-child:after {
     background-color: [[setting:mainhovercolor]];
     color: [[setting:menufirstlevel_linkcolor]];
 }
-.navbar .dropdown-menu > li > a:hover, .navbar .dropdown-menu > li > a:focus {
+.navbar .dropdown-menu > li > a:hover {
 	background-image:none;
-	background-color:[[setting:mainhovercolor]];
+	background-color:[[setting:mainhovercolor]] !important;
 	color: #fff;
 }
-.navbar .dropdown-submenu:hover > a, .dropdown-submenu:focus > a {
-	background-image:none;
-	background-color:[[setting:menusecondlevelcolor]];
+.navbar .dropdown-menu > li > a:visited , .navbar .dropdown-menu > li > a:active {
 	color: [[setting:menusecondlevel_linkcolor]];
+}
+.navbar .dropdown-submenu:hover > a {
+    background-image: none;
+    background-color: transparent;
 }
 .navbar .dropdown-submenu:hover > a:after, .dropdown-submenu:focus > a:after {
 	border-color: transparent transparent transparent #ccc;
@@ -753,7 +759,7 @@ Moodle 3.2 messages
     background: none;
     box-shadow: none;
     font-size: 1.2em;
-    color: #F9BF3B;
+    color: [[setting:maincolor]];
     font-weight: 700;
 }
 .messaging-area-container .send-button-container .btn.btn-link, .messaging-area-container .messaging-area .messages-area .messages-header .actions .btn-link {
@@ -976,7 +982,6 @@ course formats
 }
 .course-content ul.gridicons li .icon_content.content_inside {
     z-index: 1;
-	height: 1em !important;
 }
 .course-content ul.gridicons li .icon_content {
     font-size: 1.23rem;
@@ -1004,6 +1009,9 @@ div#gridshadebox_overlay {
     left: 7%;
     right: 7%;
     max-width: 84%;
+}
+.gridshadebox_arrow {
+    top: 40%;
 }
 .buttons li.section.hidden .summary {
 	opacity: 1 !important;
@@ -1791,6 +1799,13 @@ Footer
 	line-height: 0;
 	margin-top: -20px;
 }
+#page-footer .tool_dataprivacy {
+    display: none;
+}
+#page-footer, #page-footer .validators, #page-footer .purgecaches, #page-footer .performanceinfo {
+    text-align: center;
+    padding-bottom: 5px;
+}
 	
 /* =========================================================== *
 Profile
@@ -2474,6 +2489,9 @@ Additional CSS for RTL Support
 }
 .dir-rtl.empty-region-side-post.used-region-side-pre #region-main.span8 {
     width: 74.359% !important;
+}
+.dir-rtl.sidebar-enabled.empty-region-side-post.used-region-side-pre #region-main.span8 {
+    width: 100% !important;
 }
 #page-footer .content a, #page-footer .footerlinks a {
     display: inline-block;

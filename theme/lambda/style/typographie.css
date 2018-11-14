@@ -838,11 +838,11 @@ Bootstrap
     line-height: 2em;
 }
 .panel-primary > .panel-heading {
-    background-color: #f9bf3b;
-    border-color: #f9bf3b;
+    background-color: [[setting:maincolor]];
+    border-color: [[setting:maincolor]];
 }
 .panel-primary {
-    border-color: #f9bf3b;
+    border-color: [[setting:maincolor]];
 }
 .panel-primary > .panel-heading > .panel-title {
     color: #fff !important;
@@ -1090,12 +1090,12 @@ right: 0px;
     margin: 0;
 }
 .tabs-left .tab-content {
-    border-left: 2px solid #F9BF3B;
+    border-left: 2px solid [[setting:maincolor]];
     margin-left: 0;
     padding: 0 0 0 20px;
 }
 .tabs-right .tab-content {
-    border-left: 2px solid #F9BF3B;
+    border-left: 2px solid [[setting:maincolor]];
     margin-left: 0;
     padding: 0 0 0 20px;
 }

@@ -119,7 +119,8 @@ echo $OUTPUT->doctype() ?>
 
 	<a href="#top" class="back-to-top"><i class="fa fa-chevron-circle-up fa-3x"></i><span class="lambda-sr-only"><?php echo get_string('back'); ?></span></a>
 
-</div>
+	</div>
+	</div>
 
 	<footer id="page-footer" class="container-fluid">
 		<?php require_once(dirname(__FILE__).'/includes/footer.php'); echo $OUTPUT->login_info();?>

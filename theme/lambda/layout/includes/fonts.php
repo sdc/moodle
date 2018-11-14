@@ -186,7 +186,7 @@ if ($PAGE->theme->settings->fonts_source ==1) {
 		$headingfont='Open+Sans';
 		$headingweight = 700;
 	} ?>
-<link href="https://fonts.googleapis.com/css?family=<?php echo $bodyfont.':'.$bodyweight.'|'.$headingfont.':'.$headingweight.$font_languages;?>" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=<?php echo $bodyfont.':'.$bodyweight.'%7C'.$headingfont.':'.$headingweight.$font_languages;?>" rel="stylesheet">
 <?php } ?>
 
 <?php if ($PAGE->theme->settings->use_fa5 == 1) { ?>

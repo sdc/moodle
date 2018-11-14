@@ -22,7 +22,14 @@
  * @copyright 2018 redPIthemes
  *
  */
- 
+global $USER, $CFG;
+$moodle_release = $CFG->version;
+$login_token = '';
+if (($moodle_release >= 2017051509) && ($moodle_release < 2017111300) || ($moodle_release >= 2017111306) && ($moodle_release < 2018051700) || ($moodle_release >= 2018051703)) {
+	$token = s(\core\session\manager::get_login_token());
+	$login_token = '<input type="hidden" name="logintoken" value="'.$token.'" />';
+}
+
 $fa_user_icon = "fa fa-user"; if ($PAGE->theme->settings->use_fa5 == 1) {$fa_user_icon = "fas fa-user";}
 $fa_pass_icon = "fa fa-key"; if ($PAGE->theme->settings->use_fa5 == 1) {$fa_pass_icon = "fas fa-unlock-alt";}
 ?>
@@ -51,11 +58,8 @@ $fa_pass_icon = "fa fa-key"; if ($PAGE->theme->settings->use_fa5 == 1) {$fa_pass
 			<div class="profileblock">
 
 				<?php 
-	function get_content () {
-	global $USER, $CFG, $SESSION, $COURSE;
-	$wwwroot = '';
-	$signup = '';}
 
+	$wwwroot = '';
 	if (empty($CFG->loginhttps)) {
 		$wwwroot = $CFG->wwwroot;
 	} else {
@@ -72,7 +76,7 @@ $fa_pass_icon = "fa fa-key"; if ($PAGE->theme->settings->use_fa5 == 1) {$fa_pass
 			if ($login_custom_url != '') {$login_link_url = $login_custom_url;}
 			if ($login_custom_txt != '') {$login_link_txt = $login_custom_txt;}
 
-			$moodle_release = $CFG->version; // oauth2 Moodle core
+			// oauth2 Moodle core
 			if (($moodle_release >= 2017051500) && ($auth_googleoauth2)) {
 					$authsequence = get_enabled_auth_plugins(true);
             		$potentialidps = array();
@@ -95,14 +99,15 @@ $fa_pass_icon = "fa fa-key"; if ($PAGE->theme->settings->use_fa5 == 1) {$fa_pass
 					</div>
 				</div>
 				<div style="clear:both;"></div>
+				<?php } ?> 
 				<div class="forgotpass oauth2">
 					<?php 
-							if ($login_link_url != '' and $login_link_txt != '') { ?>
+					if ($login_link_url != '' and $login_link_txt != '') { ?>
 					<a target="_self" href="<?php echo $login_link_url; ?>"><?php echo $login_link_txt; ?></a>
 					<?php } ?> 
 				</div>
-				<?php }
-			} 
+
+			<?php } 
 			else if (($auth_googleoauth2) && (file_exists($CFG->dirroot . '/auth/googleoauth2/lib.php'))) { // oauth2 plugin
         		require_once($CFG->dirroot . '/auth/googleoauth2/lib.php'); auth_googleoauth2_display_buttons(); ?>
 				<div style="clear:both;"></div>
@@ -118,6 +123,7 @@ $fa_pass_icon = "fa fa-key"; if ($PAGE->theme->settings->use_fa5 == 1) {$fa_pass
 						<div id="block-login">
 							<div id="user"><i class="<?php echo $fa_user_icon; ?>"></i></div>
 							<label for="inputName" class="lambda-sr-only"><?php echo $username; ?></label>
+							<?php echo $login_token; ?>
 							<input id="inputName" class="span2" type="text" name="username" placeholder="<?php echo $username; ?>">
 								<div id="pass"><i class="<?php echo $fa_pass_icon; ?>"></i></div>
 								<label for="inputPassword" class="lambda-sr-only"><?php echo get_string('password'); ?></label>
@@ -127,7 +133,7 @@ $fa_pass_icon = "fa fa-key"; if ($PAGE->theme->settings->use_fa5 == 1) {$fa_pass
 
 								<div class="forgotpass">
 									<?php 
-					if ($login_link_url != '' and $login_link_txt != '') { ?>
+									if ($login_link_url != '' and $login_link_txt != '') { ?>
 									<a target="_self" href="<?php echo $login_link_url; ?>"><?php echo $login_link_txt; ?></a>
 									<?php } ?> 
 								</div>
