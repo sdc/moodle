@@ -1802,7 +1802,7 @@ Footer
 #page-footer .tool_dataprivacy {
     display: none;
 }
-#page-footer, #page-footer .validators, #page-footer .purgecaches, #page-footer .performanceinfo {
+#page-footer .validators, #page-footer .purgecaches, #page-footer .performanceinfo {
     text-align: center;
     padding-bottom: 5px;
 }

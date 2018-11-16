@@ -43,7 +43,6 @@ echo $OUTPUT->doctype() ?>
 <div id="page" class="container-fluid">
 
     <div id ="page-header-nav" class="clearfix">
-        <?php echo $html->heading; ?>
     </div>
 
     <div id="page-content" class="row-fluid">
